@@ -1,0 +1,391 @@
+{
+    "_comment": "Made with the This Could Be Better MusicTracker app, available at the URL 'https://github.com/thiscouldbebetter/MusicTracker'.",
+    "name": "Greensleeves",
+    "samplesPerSecond": 8000,
+    "bitsPerSample": 8,
+    "instruments": [
+        {
+            "name": "Instrument0",
+            "soundSource": {
+                "child": {
+                    "typeName": "Sine"
+                }
+            }
+        }
+    ],
+    "sequences": [
+        {
+            "name": "B",
+            "ticksPerSecond": 8,
+            "durationInTicks": 102,
+            "tracks": [
+                {
+                    "instrumentName": "Instrument0",
+                    "notes": [
+                        {
+                            "timeStartInTicks": 0,
+                            "octaveIndex": 3,
+                            "pitchCode": "C_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 4,
+                            "octaveIndex": 3,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 12,
+                            "octaveIndex": 3,
+                            "pitchCode": "G_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 16,
+                            "octaveIndex": 3,
+                            "pitchCode": "A_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 24,
+                            "octaveIndex": 3,
+                            "pitchCode": "B_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 2
+                        },
+                        {
+                            "timeStartInTicks": 26,
+                            "octaveIndex": 3,
+                            "pitchCode": "A_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 30,
+                            "octaveIndex": 3,
+                            "pitchCode": "G_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 38,
+                            "octaveIndex": 3,
+                            "pitchCode": "E_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 42,
+                            "octaveIndex": 3,
+                            "pitchCode": "C_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 50,
+                            "octaveIndex": 3,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 2
+                        },
+                        {
+                            "timeStartInTicks": 52,
+                            "octaveIndex": 3,
+                            "pitchCode": "E_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 56,
+                            "octaveIndex": 3,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 64,
+                            "octaveIndex": 3,
+                            "pitchCode": "E_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 2
+                        },
+                        {
+                            "timeStartInTicks": 66,
+                            "octaveIndex": 3,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 70,
+                            "octaveIndex": 3,
+                            "pitchCode": "C#",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 78,
+                            "octaveIndex": 2,
+                            "pitchCode": "B_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 2
+                        },
+                        {
+                            "timeStartInTicks": 80,
+                            "octaveIndex": 3,
+                            "pitchCode": "C#",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 84,
+                            "octaveIndex": 3,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 16
+                        }
+                    ]
+                },
+                {
+                    "instrumentName": "Instrument0",
+                    "notes": [
+                        {
+                            "timeStartInTicks": 4,
+                            "octaveIndex": 2,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 24
+                        },
+                        {
+                            "timeStartInTicks": 30,
+                            "octaveIndex": 2,
+                            "pitchCode": "G_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 24
+                        },
+                        {
+                            "timeStartInTicks": 56,
+                            "octaveIndex": 2,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 24
+                        },
+                        {
+                            "timeStartInTicks": 70,
+                            "octaveIndex": 2,
+                            "pitchCode": "C#",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 12
+                        },
+                        {
+                            "timeStartInTicks": 84,
+                            "octaveIndex": 2,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 16
+                        }
+                    ]
+                }
+            ],
+            "trackIndexSelected": 1,
+            "tickIndexSelected": 70
+        },
+        {
+            "name": "A",
+            "ticksPerSecond": 8,
+            "durationInTicks": 102,
+            "tracks": [
+                {
+                    "instrumentName": "Instrument0",
+                    "notes": [
+                        {
+                            "timeStartInTicks": 0,
+                            "octaveIndex": 3,
+                            "pitchCode": "C_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 4,
+                            "octaveIndex": 3,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 12,
+                            "octaveIndex": 3,
+                            "pitchCode": "G_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 16,
+                            "octaveIndex": 3,
+                            "pitchCode": "A_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 24,
+                            "octaveIndex": 3,
+                            "pitchCode": "B_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 2
+                        },
+                        {
+                            "timeStartInTicks": 26,
+                            "octaveIndex": 3,
+                            "pitchCode": "A_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 30,
+                            "octaveIndex": 3,
+                            "pitchCode": "G_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 38,
+                            "octaveIndex": 3,
+                            "pitchCode": "E_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 42,
+                            "octaveIndex": 3,
+                            "pitchCode": "C_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 50,
+                            "octaveIndex": 3,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 2
+                        },
+                        {
+                            "timeStartInTicks": 52,
+                            "octaveIndex": 3,
+                            "pitchCode": "E_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 56,
+                            "octaveIndex": 3,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 64,
+                            "octaveIndex": 3,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 68,
+                            "octaveIndex": 3,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 76,
+                            "octaveIndex": 3,
+                            "pitchCode": "C_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 2
+                        },
+                        {
+                            "timeStartInTicks": 78,
+                            "octaveIndex": 3,
+                            "pitchCode": "D_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 82,
+                            "octaveIndex": 3,
+                            "pitchCode": "E_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        },
+                        {
+                            "timeStartInTicks": 90,
+                            "octaveIndex": 3,
+                            "pitchCode": "C_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 4
+                        },
+                        {
+                            "timeStartInTicks": 94,
+                            "octaveIndex": 2,
+                            "pitchCode": "A_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 8
+                        }
+                    ]
+                },
+                {
+                    "instrumentName": "Instrument0",
+                    "notes": [
+                        {
+                            "timeStartInTicks": 4,
+                            "octaveIndex": 2,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 24
+                        },
+                        {
+                            "timeStartInTicks": 30,
+                            "octaveIndex": 2,
+                            "pitchCode": "G_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 24
+                        },
+                        {
+                            "timeStartInTicks": 56,
+                            "octaveIndex": 2,
+                            "pitchCode": "F_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 24
+                        },
+                        {
+                            "timeStartInTicks": 82,
+                            "octaveIndex": 2,
+                            "pitchCode": "E_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 12
+                        },
+                        {
+                            "timeStartInTicks": 94,
+                            "octaveIndex": 1,
+                            "pitchCode": "A_",
+                            "volumeAsPercentage": 25,
+                            "durationInTicks": 12
+                        }
+                    ]
+                }
+            ],
+            "trackIndexSelected": 1,
+            "tickIndexSelected": 94
+        }
+    ],
+    "sequenceNamesToPlayInOrder": [
+        "A",
+        "B"
+    ],
+    "sequenceNameSelected": "B",
+    "instrumentNameSelected": "Instrument0"
+}
