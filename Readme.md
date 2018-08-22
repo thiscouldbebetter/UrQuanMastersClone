@@ -9,4 +9,4 @@ Screenshots
 -----------
 
 ![Title](/Media/Images/Screenshots/Screenshot-Title.png?raw=true "Title")
-![Gameplay](/Media/Images/Screenshots/Screenshot-Gameplay.png?raw=true "Gameplay")
+![Starsystem](/Media/Images/Screenshots/Screenshot-Starsystem.png?raw=true "Starsystem")
