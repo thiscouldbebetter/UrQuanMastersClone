@@ -26,10 +26,8 @@ function World(name, dateCreated, defns, place)
 		var place = new PlaceStarsystem
 		(
 			universe.display.sizeInPixels.clone(), // size
-			new Coords(15, 15), // playerPos
-			5 // numberOfItems
 		);
-		place.placeInner.entitiesSpawn();
+		place.entitiesSpawn();
 
 		var constraintDefns =
 		[
@@ -64,6 +62,14 @@ function World(name, dateCreated, defns, place)
 
 	World.prototype.updateForTimerTick = function(universe)
 	{
+		if (this.placeNext != null)
+		{
+			this.place.finalize(universe, world);
+			this.place = this.placeNext;
+			this.place.initialize(universe, world);
+			this.placeNext = null;
+		}
+
 		this.place.updateForTimerTick(universe, this);
 		this.timerTicksSoFar++;
 	}

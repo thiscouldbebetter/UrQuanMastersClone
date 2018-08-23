@@ -128,7 +128,7 @@ function PlaceStarsystem(size)
 					]
 				);
 
-				place.placeInner.entitiesToSpawn.push(itemProjectileEntity);
+				place.entitiesToSpawn.push(itemProjectileEntity);
 			}
 		),
 	].addLookups("name");
@@ -192,7 +192,7 @@ function PlaceStarsystem(size)
 	for (var i = 0; i < numberOfPlanets; i++)
 	{
 		var iPlusOne = i + 1;
-		
+
 		var distanceOfPlanetFromSun = iPlusOne * distanceBetweenPlanetOrbits;
 
 		var planetPos = sunPos.clone().add
@@ -307,7 +307,7 @@ function PlaceStarsystem(size)
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
-		// todo
+		world.placeNext = new PlaceStarsystem(place.size);
 	}
 
 	var constraintSpeedMax = new Constraint("SpeedMax", 1);
@@ -442,8 +442,7 @@ function PlaceStarsystem(size)
 		entities.push(wallEntity);
 	}
 
-	this.placeInner = new Place(entities);
-	this.placeInner.parent = this;
+	Place.call(this, entities);
 
 	// Helper variables.
 
@@ -451,6 +450,10 @@ function PlaceStarsystem(size)
 	this.drawLoc = new Location(this.drawPos);
 }
 {
+	PlaceStarsystem.prototype = Object.create(Place.prototype);
+	PlaceStarsystem.prototype.constructor = Place;
+
+	PlaceStarsystem.prototype.draw_FromSuperclass = PlaceStarsystem.prototype.draw;
 	PlaceStarsystem.prototype.draw = function(universe, world)
 	{
 		var display = universe.display;
@@ -460,7 +463,7 @@ function PlaceStarsystem(size)
 		var drawLoc = this.drawLoc;
 		var drawPos = drawLoc.pos;
 
-		var player = this.placeInner.entities["Player"];
+		var player = this.entities["Player"];
 		var playerLoc = player.locatable.loc;
 
 		var camera = this.camera;
@@ -473,7 +476,7 @@ function PlaceStarsystem(size)
 			this.size.clone().subtract(camera.viewSizeHalf)
 		);
 
-		this.placeInner.draw(universe, world);
+		this.draw_FromSuperclass(universe, world);
 	}
 
 	PlaceStarsystem.prototype.entityAccelerateInDirection = function
@@ -494,15 +497,5 @@ function PlaceStarsystem(size)
 		(
 			accelerationPerTick
 		);
-	}
-
-	PlaceStarsystem.prototype.initialize = function(universe, world)
-	{
-		this.placeInner.initialize(universe, world);
-	}
-
-	PlaceStarsystem.prototype.updateForTimerTick = function(universe, world)
-	{
-		this.placeInner.updateForTimerTick(universe, world);
 	}
 }
