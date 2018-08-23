@@ -1,5 +1,5 @@
 
-function PlaceStarsystem(size)
+function PlacePlanetVicinity(size)
 {
 	this.size = size;
 
@@ -88,71 +88,71 @@ function PlaceStarsystem(size)
 
 	var entities = [];
 
-	// sun
+	// planet
 
 	var sizeHalf = this.size.clone().half();
 
-	var sunRadius = entityDimension;
-	var sunPos = sizeHalf.clone();
-	var sunColor = "Orange";
-	var sunVisual = new VisualCircle(sunRadius, sunColor);
-	var sunCollider = new Sphere(sunPos, sunRadius);
+	var planetRadius = entityDimension;
+	var planetPos = sizeHalf.clone();
+	var planetColor = "Cyan";
+	var planetVisual = new VisualCircle(planetRadius, planetColor);
+	var planetCollider = new Sphere(planetPos, planetRadius);
 
-	var sunEntity = new Entity
+	var planetEntity = new Entity
 	(
-		"Sun",
+		"Planet",
 		[
-			new Locatable( new Location(sunPos) ),
-			new Collidable(sunCollider),
-			new Drawable(sunVisual)
+			new Locatable( new Location(planetPos) ),
+			new Collidable(planetCollider),
+			new Drawable(planetVisual)
 		]
 	);
 
-	entities.push(sunEntity);
+	entities.push(planetEntity);
 
-	// planets
+	// moons
 
-	var numberOfPlanets = 6;
-	var planetColor = "Cyan";
+	var numberOfMoons = 1;
+	var moonColor = "LightGray";
 	var orbitColor = "LightGray";
-	var planetRadius = entityDimension / 2;
+	var moonRadius = entityDimension / 2;
 
-	var distanceBetweenPlanetOrbits = sizeHalf.y / (numberOfPlanets + 1);
+	var distanceBetweenMoonOrbits = sizeHalf.y / (numberOfMoons + 1);
 
-	for (var i = 0; i < numberOfPlanets; i++)
+	for (var i = 0; i < numberOfMoons; i++)
 	{
 		var iPlusOne = i + 1;
 
-		var distanceOfPlanetFromSun = iPlusOne * distanceBetweenPlanetOrbits;
+		var distanceOfMoonFromPlanet = iPlusOne * distanceBetweenMoonOrbits;
 
-		var planetPos = sunPos.clone().add
+		var moonPos = planetPos.clone().add
 		(
-			new Polar(Math.random(), distanceOfPlanetFromSun).toCoords(new Coords())
+			new Polar(Math.random(), distanceOfMoonFromPlanet).toCoords(new Coords())
 		);
 
-		var planetVisual = new VisualGroup
+		var moonVisual = new VisualGroup
 		([
 			new VisualAnchor
 			(
-				new VisualCircle(distanceBetweenPlanetOrbits * iPlusOne, null, orbitColor),
-				sunPos
+				new VisualCircle(distanceBetweenMoonOrbits * iPlusOne, null, orbitColor),
+				planetPos
 			),
-			new VisualCircle(planetRadius, planetColor)
+			new VisualCircle(moonRadius, moonColor)
 		]);
 
-		var planetCollider = new Sphere(planetPos, planetRadius);
+		var moonCollider = new Sphere(moonPos, moonRadius);
 
-		var planetEntity = new Entity
+		var moonEntity = new Entity
 		(
-			"Planet" + i,
+			"Moon" + i,
 			[
-				new Locatable( new Location(planetPos) ),
-				new Collidable(planetCollider),
-				new Drawable(planetVisual)
+				new Locatable( new Location(moonPos) ),
+				new Collidable(moonCollider),
+				new Drawable(moonVisual)
 			]
 		);
 
-		entities.push(planetEntity);
+		entities.push(moonEntity);
 	}
 
 	// player
@@ -238,17 +238,13 @@ function PlaceStarsystem(size)
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
-		if (entityOtherName.startsWith("Enemy"))
+		if (entityOtherName.startsWith("Planet") || entityOtherName.startsWith("Moon"))
 		{
-			world.placeNext = new PlaceCombat(place.size.clone());
-		}
-		else if (entityOtherName.startsWith("Planet"))
-		{
-			world.placeNext = new PlacePlanetVicinity(place.size.clone());
+			world.placeNext = new PlacePlanetSurface(place.size.clone());
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
-			world.placeNext = new PlaceHyperspace(place.size.clone());
+			world.placeNext = new PlaceStarsystem(place.size.clone());
 		}
 	}
 
@@ -275,64 +271,6 @@ function PlaceStarsystem(size)
 	);
 
 	entities.push(playerEntity);
-
-	// enemy
-
-	var damagerColor = "Red";
-	var enemyColor = damagerColor;
-	var enemyPos = this.size.clone().subtract(playerLoc.pos);
-	var enemyLoc = new Location(enemyPos);
-
-	var enemyColliderAsFace = new Face
-	([
-		new Coords(0, -entityDimension).half(),
-		new Coords(entityDimension, entityDimension).half(),
-		new Coords(-entityDimension, entityDimension).half(),
-	]);
-
-	var enemyCollider = Mesh.fromFace
-	(
-		enemyPos, // center
-		enemyColliderAsFace,
-		1 // thickness
-	);
-
-	var enemyVisual = new VisualPolygon
-	(
-		new Path(enemyColliderAsFace.vertices), enemyColor
-	);
-
-	var enemyEntity = new Entity
-	(
-		"Enemy",
-		[
-			new Locatable(enemyLoc),
-			new Constrainable([constraintSpeedMax]),
-			new Collidable(enemyCollider),
-			new Damager(),
-			new Killable(),
-			new Drawable(enemyVisual),
-			new Actor
-			(
-				function activity(universe, world, place, actor)
-				{
-					var entityToTargetName = "Player";
-					var target = place.entities[entityToTargetName];
-					var actorLoc = actor.locatable.loc;
-
-					actorLoc.vel.overwriteWith
-					(
-						target.locatable.loc.pos
-					).subtract
-					(
-						actorLoc.pos
-					).normalize();
-				}
-			),
-		]
-	);
-
-	entities.push(enemyEntity);
 
 	this.camera = new Camera
 	(
@@ -392,11 +330,11 @@ function PlaceStarsystem(size)
 	this.drawLoc = new Location(this.drawPos);
 }
 {
-	PlaceStarsystem.prototype = Object.create(Place.prototype);
-	PlaceStarsystem.prototype.constructor = Place;
+	PlacePlanetVicinity.prototype = Object.create(Place.prototype);
+	PlacePlanetVicinity.prototype.constructor = Place;
 
-	PlaceStarsystem.prototype.draw_FromSuperclass = PlaceStarsystem.prototype.draw;
-	PlaceStarsystem.prototype.draw = function(universe, world)
+	PlacePlanetVicinity.prototype.draw_FromSuperclass = PlacePlanetVicinity.prototype.draw;
+	PlacePlanetVicinity.prototype.draw = function(universe, world)
 	{
 		var display = universe.display;
 
@@ -421,7 +359,7 @@ function PlaceStarsystem(size)
 		this.draw_FromSuperclass(universe, world);
 	}
 
-	PlaceStarsystem.prototype.entityAccelerateInDirection = function
+	PlacePlanetVicinity.prototype.entityAccelerateInDirection = function
 	(
 		world, entity, directionToMove
 	)

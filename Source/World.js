@@ -64,9 +64,9 @@ function World(name, dateCreated, defns, place)
 	{
 		if (this.placeNext != null)
 		{
-			this.place.finalize(universe, world);
+			this.place.finalize(universe, this);
 			this.place = this.placeNext;
-			this.place.initialize(universe, world);
+			this.place.initialize(universe, this);
 			this.placeNext = null;
 		}
 
