@@ -65,6 +65,15 @@ function PlaceCombat(size)
 		),
 		new Action
 		(
+			"Exit",
+			function perform(universe, world, place, actor)
+			{
+				var placeNext = world.hyperspace.starsystems[0]; // hack
+				world.placeNext = new PlaceStarsystem(placeNext);
+			}
+		),
+		new Action
+		(
 			"Fire",
 			function perform(universe, world, place, actor)
 			{
@@ -139,12 +148,14 @@ function PlaceCombat(size)
 		new InputToActionMapping("ArrowRight", "MoveRight"),
 		new InputToActionMapping("ArrowUp", "MoveUp"),
 		new InputToActionMapping("Enter", "Fire"),
+		new InputToActionMapping("_x", "Exit"),
 
 		new InputToActionMapping("Gamepad0Down", "MoveDown"),
 		new InputToActionMapping("Gamepad0Left", "MoveLeft"),
 		new InputToActionMapping("Gamepad0Right", "MoveRight"),
 		new InputToActionMapping("Gamepad0Up", "MoveUp"),
 		new InputToActionMapping("Gamepad0Button0", "Fire"),
+		new InputToActionMapping("Gamepad0Button1", "Exit"),
 
 	].addLookups("inputName");
 
@@ -251,11 +262,26 @@ function PlaceCombat(size)
 		]
 	);
 
-	var playerVisual = new VisualGroup
-	([
-		playerVisualBody,
-		playerVisualMovementIndicator,
-	]);
+	this.camera = new Camera
+	(
+		this.size.clone(),
+		null, // focalLength
+		new Location
+		(
+			new Coords(0, 0, 0),
+			Orientation.Instances.ForwardZDownY.clone()
+		)
+	);
+
+	var playerVisual = new VisualCamera
+	(
+		new VisualGroup
+		([
+			playerVisualBody,
+			playerVisualMovementIndicator,
+		]),
+		this.camera
+	);
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
@@ -266,11 +292,11 @@ function PlaceCombat(size)
 		}
 		else if (entityOtherName.startsWith("Planet"))
 		{
-			world.placeNext = new PlacePlanetVicinity(place.size.clone());
+			// todo
 		}
-		else if (entityOtherName.startsWith("Wall"))
+		else if (entityOtherName.startsWith("Projectile"))
 		{
-			world.placeNext = new PlaceHyperspace(place.size.clone());
+			// todo
 		}
 	}
 
@@ -355,17 +381,6 @@ function PlaceCombat(size)
 	);
 
 	entities.push(enemyEntity);
-
-	this.camera = new Camera
-	(
-		this.size.clone(),
-		null, // focalLength
-		new Location
-		(
-			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
-		)
-	);
 
 	Place.call(this, entities);
 

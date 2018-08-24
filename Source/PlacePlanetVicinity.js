@@ -1,7 +1,8 @@
 
-function PlacePlanetVicinity(size)
+function PlacePlanetVicinity(size, planet)
 {
 	this.size = size;
+	this.planet = planet;
 
 	this.actions =
 	[
@@ -102,6 +103,7 @@ function PlacePlanetVicinity(size)
 	(
 		"Planet",
 		[
+			new Modellable(planet),
 			new Locatable( new Location(planetPos) ),
 			new Collidable(planetCollider),
 			new Drawable(planetVisual)
@@ -238,13 +240,13 @@ function PlacePlanetVicinity(size)
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
-		if (entityOtherName.startsWith("Planet") || entityOtherName.startsWith("Moon"))
+		if (entityOtherName.startsWith("Planet"))
 		{
-			world.placeNext = new PlacePlanetSurface(place.size.clone());
+			world.placeNext = new PlacePlanetSurface(entityOther.modellable.model);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
-			world.placeNext = new PlaceStarsystem(place.size.clone());
+			world.placeNext = new PlaceStarsystem(place.planet.starsystem);
 		}
 	}
 

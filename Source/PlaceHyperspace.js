@@ -1,7 +1,8 @@
 
-function PlaceHyperspace(size)
+function PlaceHyperspace(hyperspace)
 {
-	this.size = size;
+	this.hyperspace = hyperspace;
+	this.size = this.hyperspace.size;
 
 	this.actions =
 	[
@@ -63,74 +64,6 @@ function PlaceHyperspace(size)
 				);
 			}
 		),
-		new Action
-		(
-			"Fire",
-			function perform(universe, world, place, actor)
-			{
-				var itemWeapon = new Item("Weapon", 1);
-				var actorHasWeapon = actor.itemHolder.hasItems(itemWeapon);
-
-				if (actorHasWeapon == false) { return; }
-
-				var actorLoc = actor.locatable.loc;
-				var actorPos = actorLoc.pos;
-				var actorVel = actorLoc.vel;
-				var actorSpeed = actorVel.magnitude();
-				if (actorSpeed == 0) { return; }
-
-				var itemProjectileColor = "Cyan";
-				var itemProjectileRadius = 3;
-				var itemProjectileVisual = new VisualGroup
-				([
-					new VisualCircle(itemProjectileRadius, itemProjectileColor),
-					new VisualOffset
-					(
-						new VisualText("Projectile", itemProjectileColor),
-						new Coords(0, itemProjectileRadius)
-					)
-				]);
-
-				var actorDirection = actorVel.clone().normalize();
-				var actorRadius = actor.collidable.collider.radius;
-				var itemProjectilePos = actorPos.clone().add
-				(
-					actorDirection.clone().multiplyScalar(actorRadius).double().double()
-				); 
-				var itemProjectileLoc = new Location(itemProjectilePos);
-				itemProjectileLoc.vel.overwriteWith(actorVel).double();
-
-				var itemProjectileCollider = 
-					new Sphere(itemProjectilePos, itemProjectileRadius);
-
-				var itemProjectileCollide = function(universe, world, place, entityPlayer, entityOther)
-				{
-					if (entityOther.killable != null)
-					{
-						place.entitiesToRemove.push(entityOther);
-					}
-				}
-
-				var itemProjectileEntity = new Entity
-				(
-					"Projectile",
-					[
-						new Damager(),
-						new Ephemeral(32),
-						new Locatable( itemProjectileLoc ),
-						new Collidable
-						(
-							itemProjectileCollider, 
-							[ "killable" ],
-							itemProjectileCollide
-						),
-						new Drawable(itemProjectileVisual)
-					]
-				);
-
-				place.entitiesToSpawn.push(itemProjectileEntity);
-			}
-		),
 	].addLookups("name");
 
 	this.inputToActionMappings =
@@ -141,15 +74,24 @@ function PlaceHyperspace(size)
 		new InputToActionMapping("ArrowLeft", "MoveLeft"),
 		new InputToActionMapping("ArrowRight", "MoveRight"),
 		new InputToActionMapping("ArrowUp", "MoveUp"),
-		new InputToActionMapping("Enter", "Fire"),
 
 		new InputToActionMapping("Gamepad0Down", "MoveDown"),
 		new InputToActionMapping("Gamepad0Left", "MoveLeft"),
 		new InputToActionMapping("Gamepad0Right", "MoveRight"),
 		new InputToActionMapping("Gamepad0Up", "MoveUp"),
-		new InputToActionMapping("Gamepad0Button0", "Fire"),
 
 	].addLookups("inputName");
+
+	this.camera = new Camera
+	(
+		new Coords(400, 300), // hack
+		null, // focalLength
+		new Location
+		(
+			new Coords(0, 0, 0),
+			Orientation.Instances.ForwardZDownY.clone()
+		)
+	);
 
 	// entities
 
@@ -160,8 +102,9 @@ function PlaceHyperspace(size)
 
 	// stars
 
-	var numberOfStars = 8;
-	var starColor = "Yellow";
+	var starsystems = this.hyperspace.starsystems;
+	var numberOfStars = starsystems.length;
+	var starColor = "Yellow"; // todo
 	var starRadius = entityDimension / 2;
 	var starVisualPath = new PathBuilder().star(5, .5).transform
 	(
@@ -170,11 +113,16 @@ function PlaceHyperspace(size)
 			new Coords(1, 1, 1).multiplyScalar(starRadius)
 		)
 	);
-	var starVisual = new VisualPolygon(starVisualPath, starColor);
+	var starVisual = new VisualCamera
+	(
+		new VisualPolygon(starVisualPath, starColor),
+		this.camera
+	);
 
 	for (var i = 0; i < numberOfStars; i++)
 	{
-		var starPos = new Coords().randomize().multiply(this.size);
+		var starsystem = starsystems[i];
+		var starPos = starsystem.pos;
 
 		var starCollider = new Sphere(starPos, starRadius);
 
@@ -182,6 +130,7 @@ function PlaceHyperspace(size)
 		(
 			"Star" + i,
 			[
+				new Modellable(starsystem),
 				new Locatable( new Location(starPos) ),
 				new Collidable(starCollider),
 				new Drawable(starVisual)
@@ -193,7 +142,7 @@ function PlaceHyperspace(size)
 
 	// player
 
-	var playerPos = new Coords(.5, .9).multiply(this.size);
+	var playerPos = this.size.clone().half(); // todo
 	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
@@ -265,31 +214,38 @@ function PlaceHyperspace(size)
 		]
 	);
 
-	var playerVisual = new VisualGroup
-	([
-		playerVisualBody,
-		playerVisualMovementIndicator,
-	]);
+	var playerVisual = new VisualCamera
+	(
+		new VisualGroup
+		([
+			playerVisualBody,
+			playerVisualMovementIndicator,
+		]),
+		this.camera
+	);
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
 		if (entityOtherName.startsWith("Star"))
 		{
-			world.placeNext = new PlaceStarsystem(place.size.clone());
+			world.placeNext = new PlaceStarsystem(entityOther.modellable.model);
 		}
 	}
 
-	var constraintSpeedMax = new Constraint("SpeedMax", 1);
-	//var constraintFriction = new Constraint("Friction", 0.3); 
-	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
+	var constraintSpeedMax = new Constraint("SpeedMax", 4);
+	var constraintFriction = new Constraint("Friction", 0.03); 
+	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
 
 	var playerEntity = new Entity
 	(
 		"Player",
 		[
 			new Locatable(playerLoc),
-			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
+			new Constrainable
+			([
+				constraintSpeedMax, constraintFriction, constraintTrimToRange
+			]),
 			new Collidable
 			(
 				playerCollider,
@@ -303,17 +259,6 @@ function PlaceHyperspace(size)
 	);
 
 	entities.push(playerEntity);
-
-	this.camera = new Camera
-	(
-		this.size.clone(),
-		null, // focalLength
-		new Location
-		(
-			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
-		)
-	);
 
 	Place.call(this, entities);
 

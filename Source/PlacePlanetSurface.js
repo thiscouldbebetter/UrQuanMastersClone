@@ -1,7 +1,8 @@
 
-function PlacePlanetSurface(size)
+function PlacePlanetSurface(planet)
 {
-	this.size = size;
+	this.planet = planet;
+	this.size = this.planet.size;
 
 	this.actions =
 	[
@@ -65,10 +66,10 @@ function PlacePlanetSurface(size)
 		),
 		new Action
 		(
-			"Launch",
+			"Exit",
 			function perform(universe, world, place, actor)
 			{
-				world.placeNext = new PlacePlanetVicinity(place.size.clone());
+				world.placeNext = new PlacePlanetVicinity(place.size.clone(), place.planet);
 			}
 		),
 		new Action
@@ -141,21 +142,21 @@ function PlacePlanetSurface(size)
 
 	this.inputToActionMappings =
 	[
-		//new InputToActionMapping("Escape", "ShowMenu"),
+		new InputToActionMapping("Escape", "ShowMenu"),
 
 		new InputToActionMapping("ArrowDown", "MoveDown"),
 		new InputToActionMapping("ArrowLeft", "MoveLeft"),
 		new InputToActionMapping("ArrowRight", "MoveRight"),
 		new InputToActionMapping("ArrowUp", "MoveUp"),
 		new InputToActionMapping("Enter", "Fire"),
-		new InputToActionMapping("Escape", "Launch"),
+		new InputToActionMapping("_x", "Exit"),
 
 		new InputToActionMapping("Gamepad0Down", "MoveDown"),
 		new InputToActionMapping("Gamepad0Left", "MoveLeft"),
 		new InputToActionMapping("Gamepad0Right", "MoveRight"),
 		new InputToActionMapping("Gamepad0Up", "MoveUp"),
 		new InputToActionMapping("Gamepad0Button0", "Fire"),
-		new InputToActionMapping("Gamepad0Button1", "Launch"),
+		new InputToActionMapping("Gamepad0Button1", "Exit"),
 
 	].addLookups("inputName");
 
@@ -168,7 +169,7 @@ function PlacePlanetSurface(size)
 
 	// player
 
-	var playerPos = new Coords(.5, .9).multiply(this.size);
+	var playerPos = this.size.clone().half(); // todo
 	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
@@ -286,7 +287,7 @@ function PlacePlanetSurface(size)
 		actorLoc.vel.randomize().double().subtract(Coords.Instances.Ones);
 	}
 
-	var lifeformColor = "Red";
+	var lifeformColor = "Green";
 	var numberOfLifeforms = 8;
 
 	for (var i = 0; i < numberOfLifeforms; i++)
@@ -296,7 +297,8 @@ function PlacePlanetSurface(size)
 
 		var lifeformColliderAsFace = new Face
 		([
-			new Coords(0, -entityDimension).half(),
+			new Coords(-entityDimension / 2, -entityDimension).half(),
+			new Coords(entityDimension / 2, -entityDimension).half(),
 			new Coords(entityDimension, entityDimension).half(),
 			new Coords(-entityDimension, entityDimension).half(),
 		]);
@@ -357,7 +359,7 @@ function PlacePlanetSurface(size)
 	{
 		var display = universe.display;
 
-		display.drawBackground("Gray", "Black");
+		display.drawBackground("Gray", "DarkGray");
 
 		var drawLoc = this.drawLoc;
 		var drawPos = drawLoc.pos;

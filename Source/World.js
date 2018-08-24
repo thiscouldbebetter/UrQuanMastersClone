@@ -3,7 +3,7 @@
 // including the constructor, the draw() and update() methods,
 // and the World.new() method.
 
-function World(name, dateCreated, defns, place)
+function World(name, dateCreated, defns, hyperspace)
 {
 	this.name = name;
 	this.dateCreated = dateCreated;
@@ -12,7 +12,12 @@ function World(name, dateCreated, defns, place)
 
 	this.defns = defns;
 
-	this.place = place;
+	this.hyperspace = hyperspace;
+
+	var starsystem0 = hyperspace.starsystems[0];
+	this.place = new PlaceStarsystem(starsystem0);
+	this.place.entitiesSpawn();
+
 }
 
 {
@@ -23,27 +28,29 @@ function World(name, dateCreated, defns, place)
 		var now = DateTime.now();
 		var nowAsString = now.toStringMMDD_HHMM_SS();
 
-		var place = new PlaceStarsystem
-		(
-			universe.display.sizeInPixels.clone(), // size
-		);
-		place.entitiesSpawn();
-
 		var constraintDefns =
 		[
 			ConstraintDefn.Instances.Friction,
 			ConstraintDefn.Instances.SpeedMax,
+			ConstraintDefn.Instances.TrimToRange,
 			ConstraintDefn.Instances.WrapToRange
 		];
 
 		var defns = new Defns(constraintDefns);
+
+		var hyperspace = Hyperspace.random
+		(
+			new Coords(1024, 1024), // size 
+			64, //numberOfStarsystems
+			new Coords(400, 300), // starsystemSize 
+		);
 
 		var returnValue = new World
 		(
 			"World-" + nowAsString,
 			now, // dateCreated
 			defns,
-			place
+			hyperspace
 		);
 		return returnValue;
 	}

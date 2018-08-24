@@ -1,7 +1,8 @@
 
-function PlaceStarsystem(size)
+function PlaceStarsystem(starsystem)
 {
-	this.size = size;
+	this.starsystem = starsystem;
+	this.size = this.starsystem.size;
 
 	this.actions =
 	[
@@ -94,7 +95,7 @@ function PlaceStarsystem(size)
 
 	var sunRadius = entityDimension;
 	var sunPos = sizeHalf.clone();
-	var sunColor = "Orange";
+	var sunColor = starsystem.starColor;
 	var sunVisual = new VisualCircle(sunRadius, sunColor);
 	var sunCollider = new Sphere(sunPos, sunRadius);
 
@@ -112,29 +113,27 @@ function PlaceStarsystem(size)
 
 	// planets
 
-	var numberOfPlanets = 6;
-	var planetColor = "Cyan";
+	var planets = starsystem.planets;
+	var numberOfPlanets = planets.length;
 	var orbitColor = "LightGray";
 	var planetRadius = entityDimension / 2;
 
-	var distanceBetweenPlanetOrbits = sizeHalf.y / (numberOfPlanets + 1);
-
 	for (var i = 0; i < numberOfPlanets; i++)
 	{
-		var iPlusOne = i + 1;
-
-		var distanceOfPlanetFromSun = iPlusOne * distanceBetweenPlanetOrbits;
+		var planet = planets[i];
+		var planetColor = planet.color;
+		var planetPosAsPolar = planet.posAsPolar;
 
 		var planetPos = sunPos.clone().add
 		(
-			new Polar(Math.random(), distanceOfPlanetFromSun).toCoords(new Coords())
+			planetPosAsPolar.toCoords(new Coords())
 		);
 
 		var planetVisual = new VisualGroup
 		([
 			new VisualAnchor
 			(
-				new VisualCircle(distanceBetweenPlanetOrbits * iPlusOne, null, orbitColor),
+				new VisualCircle(planetPosAsPolar.radius, null, orbitColor),
 				sunPos
 			),
 			new VisualCircle(planetRadius, planetColor)
@@ -146,6 +145,7 @@ function PlaceStarsystem(size)
 		(
 			"Planet" + i,
 			[
+				new Modellable(planet),
 				new Locatable( new Location(planetPos) ),
 				new Collidable(planetCollider),
 				new Drawable(planetVisual)
@@ -244,11 +244,12 @@ function PlaceStarsystem(size)
 		}
 		else if (entityOtherName.startsWith("Planet"))
 		{
-			world.placeNext = new PlacePlanetVicinity(place.size.clone());
+			var planet = entityOther.modellable.model;
+			world.placeNext = new PlacePlanetVicinity(place.size.clone(), planet);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
-			world.placeNext = new PlaceHyperspace(place.size.clone());
+			world.placeNext = new PlaceHyperspace(world.hyperspace);
 		}
 	}
 
@@ -354,17 +355,17 @@ function PlaceStarsystem(size)
 		var wallSize;
 		if (i % 2 == 0)
 		{
-			wallSize = new Coords(size.x, wallThickness, 1);
+			wallSize = new Coords(this.size.x, wallThickness, 1);
 		}
 		else
 		{
-			wallSize = new Coords(wallThickness, size.y, 1);
+			wallSize = new Coords(wallThickness, this.size.y, 1);
 		}
 
 		var wallPos = wallSize.clone().half().clearZ();
 		if (i >= 2)
 		{
-			wallPos.invert().add(size);
+			wallPos.invert().add(this.size);
 		}
 
 		var wallLoc = new Location(wallPos);
