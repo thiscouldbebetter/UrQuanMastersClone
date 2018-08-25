@@ -8,9 +8,9 @@ To minimize the possibility of legal entanglements, this repository will not con
 Screenshots
 -----------
 
-![Title](/Media/Images/Screenshots/Screenshot-Title.png?raw=true "Title")
-![Hyperspace](/Media/Images/Screenshots/Screenshot-Hyperspace.png?raw=true "Hyperspace")
-![Starsystem](/Media/Images/Screenshots/Screenshot-Starsystem.png?raw=true "Starsystem")
-![Planet Vicinity](/Media/Images/Screenshots/Screenshot-PlanetVicinity.png?raw=true "Planet Vicinity")
-![Planet Surface](/Media/Images/Screenshots/Screenshot-PlanetSurface.png?raw=true "Planet Surface")
-![Combat](/Media/Images/Screenshots/Screenshot-Combat.png?raw=true "Combat")
+![Title](/Screenshots/Screenshot-Title.png?raw=true "Title")
+![Hyperspace](/Screenshots/Screenshot-Hyperspace.png?raw=true "Hyperspace")
+![Starsystem](/Screenshots/Screenshot-Starsystem.png?raw=true "Starsystem")
+![Planet Vicinity](/Screenshots/Screenshot-PlanetVicinity.png?raw=true "Planet Vicinity")
+![Planet Surface](/Screenshots/Screenshot-PlanetSurface.png?raw=true "Planet Surface")
+![Combat](/Screenshots/Screenshot-Combat.png?raw=true "Combat")
