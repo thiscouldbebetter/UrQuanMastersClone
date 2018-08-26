@@ -4,83 +4,8 @@ function PlacePlanetVicinity(size, planet)
 	this.size = size;
 	this.planet = planet;
 
-	this.actions =
-	[
-		Action.Instances.DoNothing,
-		new Action
-		(
-			"ShowMenu",
-			function perform(universe, world, place, actor)
-			{
-				var venueNext = new VenueControls
-				(
-					universe.controlBuilder.configure(universe)
-				);
-				venueNext = new VenueFader(venueNext, universe.venueCurrent);
-				universe.venueNext = venueNext;
-			}
-		),
-		new Action
-		(
-			"MoveDown",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.ZeroOneZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveLeft",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.MinusOneZeroZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveRight",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.OneZeroZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveUp",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.ZeroMinusOneZero
-				);
-			}
-		),
-	].addLookups("name");
-
-	this.inputToActionMappings =
-	[
-		new InputToActionMapping("Escape", "ShowMenu"),
-
-		new InputToActionMapping("ArrowDown", "MoveDown"),
-		new InputToActionMapping("ArrowLeft", "MoveLeft"),
-		new InputToActionMapping("ArrowRight", "MoveRight"),
-		new InputToActionMapping("ArrowUp", "MoveUp"),
-
-		new InputToActionMapping("Gamepad0Down", "MoveDown"),
-		new InputToActionMapping("Gamepad0Left", "MoveLeft"),
-		new InputToActionMapping("Gamepad0Right", "MoveRight"),
-		new InputToActionMapping("Gamepad0Up", "MoveUp"),
-
-	].addLookups("inputName");
+	this.actions = Ship.actions();
+	this.inputToActionMappings = Ship.inputToActionMappings();
 
 	// entities
 
@@ -95,7 +20,7 @@ function PlacePlanetVicinity(size, planet)
 
 	var planetRadius = entityDimension;
 	var planetPos = sizeHalf.clone();
-	var planetColor = "Cyan";
+	var planetColor = planet.color;
 	var planetVisual = new VisualCircle(planetRadius, planetColor);
 	var planetCollider = new Sphere(planetPos, planetRadius);
 
@@ -164,77 +89,11 @@ function PlacePlanetVicinity(size, planet)
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
-	var playerVisualPath = new Path
-	([
-		new Coords(1, 0).multiplyScalar(entityDimension).half(),
-		new Coords(-1, .8).multiplyScalar(entityDimension).half(),
-		new Coords(-1, -.8).multiplyScalar(entityDimension).half(),
-	]);
-
-	var playerVisualBody = new VisualDirectional
-	(
-		new VisualPolygon(playerVisualPath, playerColor),
-		[
-			new VisualPolygon(playerVisualPath.clone(), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(1)), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(2)), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(3)), playerColor),
-		]
-	);
-
-	var exhaustColor = "Red";
-	var visualExhaust = new VisualRectangle
-	(
-		entitySize.clone().divideScalar(4), exhaustColor
-	);
-
-	var playerVisualMovementIndicator = new VisualDirectional
-	(
-		new VisualNone(),
-		[
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(-1, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(-1.5, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(-2, 0).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(0, -1).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, -1.5).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, -2).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(1, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(1.5, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(2, 0).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(0, 1).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, 1.5).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, 2).multiplyScalar(entityDimension)),
-				]
-			),
-		]
-	);
+	var playerVisualBody = Ship.visual(entityDimension, playerColor);
 
 	var playerVisual = new VisualGroup
 	([
 		playerVisualBody,
-		playerVisualMovementIndicator,
 	]);
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
@@ -242,11 +101,23 @@ function PlacePlanetVicinity(size, planet)
 		var entityOtherName = entityOther.name;
 		if (entityOtherName.startsWith("Planet"))
 		{
-			world.placeNext = new PlacePlanetSurface(entityOther.modellable.model);
+			world.placeNext = new PlacePlanetSurface(place.planet);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
-			world.placeNext = new PlaceStarsystem(place.planet.starsystem);
+			var planet = place.planet;
+			var starsystem = planet.starsystem;
+			var posNext = planet.posAsPolar.toCoords(new Coords()).add
+			(
+				starsystem.sizeInner.clone().half()
+			).add
+			(
+				new Coords(2.5, 0).multiplyScalar(planet.radiusOuter)
+			);
+			world.placeNext = new PlaceStarsystem
+			(
+				planet.starsystem, posNext
+			);
 		}
 	}
 
@@ -309,7 +180,6 @@ function PlacePlanetVicinity(size, planet)
 
 		var wallLoc = new Location(wallPos);
 		var wallCollider = new Bounds(wallPos, wallSize);
-		var wallVisual = new VisualRectangle(wallSize, wallColor);
 
 		var wallEntity = new Entity
 		(
@@ -317,7 +187,6 @@ function PlacePlanetVicinity(size, planet)
 			[
 				new Locatable(wallLoc),
 				new Collidable(wallCollider),
-				new Drawable(wallVisual)
 			]
 		);
 
@@ -359,25 +228,5 @@ function PlacePlanetVicinity(size, planet)
 		);
 
 		this.draw_FromSuperclass(universe, world);
-	}
-
-	PlacePlanetVicinity.prototype.entityAccelerateInDirection = function
-	(
-		world, entity, directionToMove
-	)
-	{
-		var entityLoc = entity.locatable.loc;
-
-		entityLoc.orientation.forwardSet(directionToMove);
-		var vel = entityLoc.vel;
-		var accelerationPerTick = .03; // hack
-		if (vel.equals(directionToMove) == false)
-		{
-			entityLoc.timeOffsetInTicks = world.timerTicksSoFar;
-		}
-		entityLoc.accel.overwriteWith(directionToMove).multiplyScalar
-		(
-			accelerationPerTick
-		);
 	}
 }

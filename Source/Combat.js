@@ -1,7 +1,8 @@
 
-function Combat(size, planet, fleets)
+function Combat(size, placeToReturnTo, pos, shipGroups)
 {
 	this.size = size;
-	this.planet = planet;
-	this.fleets = fleets;
+	this.placeToReturnTo = placeToReturnTo;
+	this.pos = pos;
+	this.shipGroups = shipGroups;
 }

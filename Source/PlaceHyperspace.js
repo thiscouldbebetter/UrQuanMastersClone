@@ -1,86 +1,11 @@
 
-function PlaceHyperspace(hyperspace)
+function PlaceHyperspace(hyperspace, playerPos)
 {
 	this.hyperspace = hyperspace;
 	this.size = this.hyperspace.size;
 
-	this.actions =
-	[
-		Action.Instances.DoNothing,
-		new Action
-		(
-			"ShowMenu",
-			function perform(universe, world, place, actor)
-			{
-				var venueNext = new VenueControls
-				(
-					universe.controlBuilder.configure(universe)
-				);
-				venueNext = new VenueFader(venueNext, universe.venueCurrent);
-				universe.venueNext = venueNext;
-			}
-		),
-		new Action
-		(
-			"MoveDown",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.ZeroOneZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveLeft",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.MinusOneZeroZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveRight",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.OneZeroZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveUp",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.ZeroMinusOneZero
-				);
-			}
-		),
-	].addLookups("name");
-
-	this.inputToActionMappings =
-	[
-		new InputToActionMapping("Escape", "ShowMenu"),
-
-		new InputToActionMapping("ArrowDown", "MoveDown"),
-		new InputToActionMapping("ArrowLeft", "MoveLeft"),
-		new InputToActionMapping("ArrowRight", "MoveRight"),
-		new InputToActionMapping("ArrowUp", "MoveUp"),
-
-		new InputToActionMapping("Gamepad0Down", "MoveDown"),
-		new InputToActionMapping("Gamepad0Left", "MoveLeft"),
-		new InputToActionMapping("Gamepad0Right", "MoveRight"),
-		new InputToActionMapping("Gamepad0Up", "MoveUp"),
-
-	].addLookups("inputName");
+	this.actions = Ship.actions();
+	this.inputToActionMappings = Ship.inputToActionMappings();
 
 	this.camera = new Camera
 	(
@@ -95,7 +20,7 @@ function PlaceHyperspace(hyperspace)
 
 	// entities
 
-	var entityDimension = 10;
+	var entityDimension = hyperspace.starsystemRadiusOuter;
 	var entitySize = new Coords(1, 1, 1).multiplyScalar(entityDimension);
 
 	var entities = [];
@@ -104,27 +29,44 @@ function PlaceHyperspace(hyperspace)
 
 	var starsystems = this.hyperspace.starsystems;
 	var numberOfStars = starsystems.length;
-	var starColor = "Yellow"; // todo
 	var starRadius = entityDimension / 2;
+	var transformScale = new Transform_Scale
+	(
+		new Coords(1, 1, 1).multiplyScalar(starRadius)
+	);
+	var transformRotate = new Transform_Rotate2D(.75);
+
 	var starVisualPath = new PathBuilder().star(5, .5).transform
 	(
-		new Transform_Scale
-		(
-			new Coords(1, 1, 1).multiplyScalar(starRadius)
-		)
-	);
-	var starVisual = new VisualCamera
+		transformScale
+	).transform
 	(
-		new VisualPolygon(starVisualPath, starColor),
-		this.camera
+		transformRotate
 	);
+
+	var starColors = Starsystem.StarColors;
+
+	var starVisualsForColors = [];
+	for (var i = 0; i < starColors.length; i++)
+	{
+		var starColor = starColors[i];
+		var starVisualForColor = new VisualCamera
+		(
+			new VisualPolygon(starVisualPath, starColor),
+			this.camera
+		);
+		starVisualsForColors[starColor] = starVisualForColor;
+	}
 
 	for (var i = 0; i < numberOfStars; i++)
 	{
 		var starsystem = starsystems[i];
-		var starPos = starsystem.pos;
+		var starPos = starsystem.posInHyperspace;
 
 		var starCollider = new Sphere(starPos, starRadius);
+
+		var starColor = starsystem.starColor;
+		var starVisual = starVisualsForColors[starColor];
 
 		var starEntity = new Entity
 		(
@@ -142,84 +84,17 @@ function PlaceHyperspace(hyperspace)
 
 	// player
 
-	var playerPos = this.size.clone().half(); // todo
 	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
-	var playerVisualPath = new Path
-	([
-		new Coords(1, 0).multiplyScalar(entityDimension).half(),
-		new Coords(-1, .8).multiplyScalar(entityDimension).half(),
-		new Coords(-1, -.8).multiplyScalar(entityDimension).half(),
-	]);
-
-	var playerVisualBody = new VisualDirectional
-	(
-		new VisualPolygon(playerVisualPath, playerColor),
-		[
-			new VisualPolygon(playerVisualPath.clone(), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(1)), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(2)), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(3)), playerColor),
-		]
-	);
-
-	var exhaustColor = "Red";
-	var visualExhaust = new VisualRectangle
-	(
-		entitySize.clone().divideScalar(4), exhaustColor
-	);
-
-	var playerVisualMovementIndicator = new VisualDirectional
-	(
-		new VisualNone(),
-		[
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(-1, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(-1.5, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(-2, 0).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(0, -1).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, -1.5).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, -2).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(1, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(1.5, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(2, 0).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(0, 1).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, 1.5).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, 2).multiplyScalar(entityDimension)),
-				]
-			),
-		]
-	);
+	var playerVisualBody = Ship.visual(entityDimension, playerColor);
 
 	var playerVisual = new VisualCamera
 	(
 		new VisualGroup
 		([
 			playerVisualBody,
-			playerVisualMovementIndicator,
 		]),
 		this.camera
 	);
@@ -229,7 +104,12 @@ function PlaceHyperspace(hyperspace)
 		var entityOtherName = entityOther.name;
 		if (entityOtherName.startsWith("Star"))
 		{
-			world.placeNext = new PlaceStarsystem(entityOther.modellable.model);
+			var starsystem = entityOther.modellable.model;
+			world.placeNext = new PlaceStarsystem
+			(
+				starsystem, 
+				new Coords(.5, .9).multiply(starsystem.sizeInner)
+			);
 		}
 	}
 
@@ -264,8 +144,8 @@ function PlaceHyperspace(hyperspace)
 
 	// Helper variables.
 
-	this.drawPos = new Coords();
-	this.drawLoc = new Location(this.drawPos);
+	this._drawLoc = new Location(new Coords());
+	this._polar = new Polar();
 }
 {
 	PlaceHyperspace.prototype = Object.create(Place.prototype);
@@ -278,7 +158,7 @@ function PlaceHyperspace(hyperspace)
 
 		display.drawBackground("Gray", "Black");
 
-		var drawLoc = this.drawLoc;
+		var drawLoc = this._drawLoc;
 		var drawPos = drawLoc.pos;
 
 		var player = this.entities["Player"];
@@ -295,25 +175,5 @@ function PlaceHyperspace(hyperspace)
 		);
 
 		this.draw_FromSuperclass(universe, world);
-	}
-
-	PlaceHyperspace.prototype.entityAccelerateInDirection = function
-	(
-		world, entity, directionToMove
-	)
-	{
-		var entityLoc = entity.locatable.loc;
-
-		entityLoc.orientation.forwardSet(directionToMove);
-		var vel = entityLoc.vel;
-		var accelerationPerTick = .03; // hack
-		if (vel.equals(directionToMove) == false)
-		{
-			entityLoc.timeOffsetInTicks = world.timerTicksSoFar;
-		}
-		entityLoc.accel.overwriteWith(directionToMove).multiplyScalar
-		(
-			accelerationPerTick
-		);
 	}
 }

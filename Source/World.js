@@ -10,9 +10,11 @@ function World(name, dateCreated, defns, hyperspace)
 	this.hyperspace = hyperspace;
 
 	var starsystem0 = hyperspace.starsystems[0];
-	this.place = new PlaceStarsystem(starsystem0);
+	this.place = new PlaceStarsystem
+	(
+		starsystem0, new Coords(.5, .9).multiply(starsystem0.sizeInner)
+	);
 	this.place.entitiesSpawn();
-
 }
 
 {
@@ -35,9 +37,10 @@ function World(name, dateCreated, defns, hyperspace)
 
 		var hyperspace = Hyperspace.random
 		(
-			new Coords(1024, 1024), // size 
+			new Coords(1024, 1024), // size
 			64, //numberOfStarsystems
-			new Coords(400, 300), // starsystemSize 
+			10, // starsystemRadiusOuter
+			new Coords(400, 300), // starsystemSizeInner
 		);
 
 		var returnValue = new World

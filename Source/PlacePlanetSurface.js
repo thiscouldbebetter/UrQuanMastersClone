@@ -2,163 +2,39 @@
 function PlacePlanetSurface(planet)
 {
 	this.planet = planet;
-	this.size = this.planet.size;
+	this.size = this.planet.sizeSurface;
 
-	this.actions =
-	[
-		Action.Instances.DoNothing,
-		new Action
-		(
-			"ShowMenu",
-			function perform(universe, world, place, actor)
-			{
-				var venueNext = new VenueControls
-				(
-					universe.controlBuilder.configure(universe)
-				);
-				venueNext = new VenueFader(venueNext, universe.venueCurrent);
-				universe.venueNext = venueNext;
-			}
-		),
-		new Action
-		(
-			"MoveDown",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.ZeroOneZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveLeft",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.MinusOneZeroZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveRight",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.OneZeroZero
-				);
-			}
-		),
-		new Action
-		(
-			"MoveUp",
-			function perform(universe, world, place, actor)
-			{
-				place.entityAccelerateInDirection
-				(
-					world, actor, Coords.Instances.ZeroMinusOneZero
-				);
-			}
-		),
-		new Action
-		(
-			"Exit",
-			function perform(universe, world, place, actor)
-			{
-				world.placeNext = new PlacePlanetVicinity(place.size.clone(), place.planet);
-			}
-		),
-		new Action
-		(
-			"Fire",
-			function perform(universe, world, place, actor)
-			{
-				var itemWeapon = new Item("Weapon", 1);
-				var actorHasWeapon = actor.itemHolder.hasItems(itemWeapon);
+	this.actions = Ship.actions();
 
-				var actorLoc = actor.locatable.loc;
-				var actorPos = actorLoc.pos;
-				var actorVel = actorLoc.vel;
-				var actorSpeed = actorVel.magnitude();
-				if (actorSpeed == 0) { return; }
+	var actionExit = new Action
+	(
+		"Exit",
+		function perform(universe, world, place, actor)
+		{
+			world.placeNext = new PlacePlanetVicinity(place.size.clone(), place.planet);
+		}
+	);
 
-				var itemProjectileColor = "Cyan";
-				var itemProjectileRadius = 3;
-				var itemProjectileVisual = new VisualGroup
-				([
-					new VisualCircle(itemProjectileRadius, itemProjectileColor),
-					new VisualOffset
-					(
-						new VisualText("Projectile", itemProjectileColor),
-						new Coords(0, itemProjectileRadius)
-					)
-				]);
+	var actionFire = Ship.actionFire();
 
-				var actorDirection = actorVel.clone().normalize();
-				var actorRadius = actor.collidable.collider.radius;
-				var itemProjectilePos = actorPos.clone().add
-				(
-					actorDirection.clone().multiplyScalar(actorRadius).double().double()
-				); 
-				var itemProjectileLoc = new Location(itemProjectilePos);
-				itemProjectileLoc.vel.overwriteWith(actorVel).double();
+	this.actions.push(actionExit);
+	this.actions.push(actionFire);
 
-				var itemProjectileCollider = 
-					new Sphere(itemProjectilePos, itemProjectileRadius);
+	this.actions.addLookups("name");
 
-				var itemProjectileCollide = function(universe, world, place, entityPlayer, entityOther)
-				{
-					if (entityOther.killable != null)
-					{
-						place.entitiesToRemove.push(entityOther);
-					}
-				}
+	this.inputToActionMappings = Ship.inputToActionMappings();
+	this.inputToActionMappings = this.inputToActionMappings.concat
+	(
+		[
+			new InputToActionMapping("Enter", "Fire"),
+			new InputToActionMapping("_x", "Exit"),
 
-				var itemProjectileEntity = new Entity
-				(
-					"Projectile",
-					[
-						new Damager(),
-						new Ephemeral(32),
-						new Locatable( itemProjectileLoc ),
-						new Collidable
-						(
-							itemProjectileCollider, 
-							[ "killable" ],
-							itemProjectileCollide
-						),
-						new Drawable(itemProjectileVisual)
-					]
-				);
+			new InputToActionMapping("Gamepad0Button0", "Fire"),
+			new InputToActionMapping("Gamepad0Button1", "Exit"),
 
-				place.entitiesToSpawn.push(itemProjectileEntity);
-			}
-		),
-	].addLookups("name");
-
-	this.inputToActionMappings =
-	[
-		new InputToActionMapping("Escape", "ShowMenu"),
-
-		new InputToActionMapping("ArrowDown", "MoveDown"),
-		new InputToActionMapping("ArrowLeft", "MoveLeft"),
-		new InputToActionMapping("ArrowRight", "MoveRight"),
-		new InputToActionMapping("ArrowUp", "MoveUp"),
-		new InputToActionMapping("Enter", "Fire"),
-		new InputToActionMapping("_x", "Exit"),
-
-		new InputToActionMapping("Gamepad0Down", "MoveDown"),
-		new InputToActionMapping("Gamepad0Left", "MoveLeft"),
-		new InputToActionMapping("Gamepad0Right", "MoveRight"),
-		new InputToActionMapping("Gamepad0Up", "MoveUp"),
-		new InputToActionMapping("Gamepad0Button0", "Fire"),
-		new InputToActionMapping("Gamepad0Button1", "Exit"),
-
-	].addLookups("inputName");
+		]
+	);
+	this.inputToActionMappings.addLookups("inputName");
 
 	// entities
 
@@ -174,78 +50,7 @@ function PlacePlanetSurface(planet)
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
-	var playerVisualPath = new Path
-	([
-		new Coords(1, 0).multiplyScalar(entityDimension).half(),
-		new Coords(-1, .8).multiplyScalar(entityDimension).half(),
-		new Coords(-1, -.8).multiplyScalar(entityDimension).half(),
-	]);
-
-	var playerVisualBody = new VisualDirectional
-	(
-		new VisualPolygon(playerVisualPath, playerColor),
-		[
-			new VisualPolygon(playerVisualPath.clone(), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(1)), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(2)), playerColor),
-			new VisualPolygon(playerVisualPath.clone().transform(new Transform_RotateRight(3)), playerColor),
-		]
-	);
-
-	var exhaustColor = "Red";
-	var visualExhaust = new VisualRectangle
-	(
-		entitySize.clone().divideScalar(4), exhaustColor
-	);
-
-	var playerVisualMovementIndicator = new VisualDirectional
-	(
-		new VisualNone(),
-		[
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(-1, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(-1.5, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(-2, 0).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(0, -1).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, -1.5).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, -2).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(1, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(1.5, 0).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(2, 0).multiplyScalar(entityDimension)),
-				]
-			),
-			new VisualAnimation
-			(
-				5, // ticksPerFrame
-				[
-					new VisualOffset(visualExhaust, new Coords(0, 1).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, 1.5).multiplyScalar(entityDimension)),
-					new VisualOffset(visualExhaust, new Coords(0, 2).multiplyScalar(entityDimension)),
-				]
-			),
-		]
-	);
-
-	var playerVisual = new VisualGroup
-	([
-		playerVisualBody,
-		playerVisualMovementIndicator,
-	]);
+	var playerVisual = Ship.visual(entityDimension, playerColor);
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
@@ -354,7 +159,7 @@ function PlacePlanetSurface(planet)
 	PlacePlanetSurface.prototype = Object.create(Place.prototype);
 	PlacePlanetSurface.prototype.constructor = Place;
 
-	PlacePlanetSurface.prototype.draw_FromSuperclass = PlacePlanetSurface.prototype.draw;
+	PlacePlanetSurface.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlacePlanetSurface.prototype.draw = function(universe, world)
 	{
 		var display = universe.display;
@@ -378,25 +183,5 @@ function PlacePlanetSurface(planet)
 		);
 
 		this.draw_FromSuperclass(universe, world);
-	}
-
-	PlacePlanetSurface.prototype.entityAccelerateInDirection = function
-	(
-		world, entity, directionToMove
-	)
-	{
-		var entityLoc = entity.locatable.loc;
-
-		entityLoc.orientation.forwardSet(directionToMove);
-		var vel = entityLoc.vel;
-		var accelerationPerTick = .03; // hack
-		if (vel.equals(directionToMove) == false)
-		{
-			entityLoc.timeOffsetInTicks = world.timerTicksSoFar;
-		}
-		entityLoc.accel.overwriteWith(directionToMove).multiplyScalar
-		(
-			accelerationPerTick
-		);
 	}
 }

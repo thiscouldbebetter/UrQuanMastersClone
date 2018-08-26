@@ -1,10 +1,11 @@
 
-function Starsystem(name, starColor, size, pos, planets)
+function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, planets)
 {
 	this.name = name;
 	this.starColor = starColor;
-	this.size = size;
-	this.pos = pos;
+	this.posInHyperspace = posInHyperspace;
+	this.sizeInner = sizeInner;
+	this.factionName = factionName;
 	this.planets = planets;
 
 	for (var p = 0; p < this.planets.length; p++)
@@ -12,4 +13,15 @@ function Starsystem(name, starColor, size, pos, planets)
 		var planet = this.planets[p];
 		planet.starsystem = this;
 	}
+}
+{
+	Starsystem.StarColors = 
+	[ 
+		"Red",
+		"Orange",
+		"Yellow",
+		"Green",
+		"Blue",
+		"White",
+	];
 }
