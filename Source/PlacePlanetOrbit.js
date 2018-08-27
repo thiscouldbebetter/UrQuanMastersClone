@@ -1,9 +1,10 @@
 
-function PlacePlanetOrbit(planet)
+function PlacePlanetOrbit(world, planet)
 {
 	this.planet = planet;
-	Place.call(this, entities);
 
+	var entities = [];
+	Place.call(this, entities);
 }
 {
 	PlacePlanetOrbit.prototype = Object.create(Place.prototype);
@@ -22,18 +23,51 @@ function PlacePlanetOrbit(planet)
 		this.updateForTimerTick_FromSuperclass(universe, world);
 		if (this.venueControls == null)
 		{
-			var controlRoot = universe.controlBuilder.message
+			var messageToShow = "[Orbit]";
+
+			var controlRoot = universe.controlBuilder.choice
 			(
 				universe,
-				this.sizeInPixels(universe),
-				this.messageToShow,
-				function acknowledge(universe)
-				{
-					// todo
-				}
+				universe.display.sizeInPixels.clone(),
+				messageToShow,
+				[
+					"Land", "Leave",
+				],
+				[
+					function land(universe)
+					{
+						var world = universe.world;
+						var placeOrbit = world.place;
+						var planet = placeOrbit.planet;
+						var placeNext = new PlacePlanetSurface(world, planet);
+						world.placeNext = placeNext;
+					},
+
+					function leave(universe)
+					{
+						var world = universe.world;
+						var placeOrbit = world.place;
+						var planet = placeOrbit.planet;
+						var size = planet.starsystem.sizeInner;
+						var placeNext = new PlacePlanetVicinity(world, size, planet);
+						world.placeNext = placeNext;
+					}
+				]
 			);
 
 			this.venueControls = new VenueControls(controlRoot);
 		}
+
+		this.venueControls.updateForTimerTick(universe, world);
+	}
+
+	PlacePlanetOrbit.prototype.returnToPlace = function(world)
+	{
+		var placeNext = this.placeToReturnTo;
+		var playerFromPlaceNext = placeNext.entities["Player"];
+		var playerLoc = playerFromPlaceNext.locatable.loc;
+		playerLoc.pos.overwriteWith(this.posToReturnTo);
+		playerLoc.vel.clear();
+		world.placeNext = placeNext;
 	}
 }

@@ -1,8 +1,7 @@
 
-function Combat(size, placeToReturnTo, pos, shipGroups)
+function Combat(size, encounter, shipGroups)
 {
 	this.size = size;
-	this.placeToReturnTo = placeToReturnTo;
-	this.pos = pos;
+	this.encounter = encounter;
 	this.shipGroups = shipGroups;
 }

@@ -1,4 +1,4 @@
-function World(name, dateCreated, defns, hyperspace)
+function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 {
 	this.name = name;
 	this.dateCreated = dateCreated;
@@ -7,12 +7,13 @@ function World(name, dateCreated, defns, hyperspace)
 
 	this.defns = defns;
 
+	this.playerShipGroup = playerShipGroup;
 	this.hyperspace = hyperspace;
 
 	var starsystem0 = hyperspace.starsystems[0];
 	this.place = new PlaceStarsystem
 	(
-		starsystem0, new Coords(.5, .9).multiply(starsystem0.sizeInner)
+		this, starsystem0, new Coords(.5, .9).multiply(starsystem0.sizeInner)
 	);
 	this.place.entitiesSpawn();
 }
@@ -28,12 +29,26 @@ function World(name, dateCreated, defns, hyperspace)
 		var constraintDefns =
 		[
 			ConstraintDefn.Instances.Friction,
+			ConstraintDefn.Instances.FrictionDry,
 			ConstraintDefn.Instances.SpeedMax,
+			ConstraintDefn.Instances.StopBelowSpeedMin,
 			ConstraintDefn.Instances.TrimToRange,
 			ConstraintDefn.Instances.WrapToRange
 		];
 
-		var defns = new Defns(constraintDefns);
+		var shipDefns = ShipDefn.Instances();
+
+		var defns = new Defns(constraintDefns, shipDefns);
+
+		var playerShipDefnName = "Default";
+		var playerShip = new Ship(playerShipDefnName);
+		var playerShipGroup = new ShipGroup
+		(
+			"Player",
+			10, // fuel
+			.1, // fuelPerTick
+			[ playerShip ]
+		);
 
 		var hyperspace = Hyperspace.random
 		(
@@ -48,6 +63,7 @@ function World(name, dateCreated, defns, hyperspace)
 			"World-" + nowAsString,
 			now, // dateCreated
 			defns,
+			playerShipGroup,
 			hyperspace
 		);
 		return returnValue;

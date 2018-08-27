@@ -10,15 +10,34 @@ function Ship(defnName)
 
 	// static methods
 
-	Ship.accelerate = function(world, entity)
+	Ship.accelerateAtRate = function(world, entity, accelerationPerTick)
 	{
 		var entityLoc = entity.locatable.loc;
-
 		var entityForward = entityLoc.orientation.forward;
-		var accelerationPerTick = .03; // hack
 		entityLoc.accel.overwriteWith(entityForward).multiplyScalar
 		(
 			accelerationPerTick
+		);
+	}
+
+	Ship.accelerate = function(world, entity)
+	{
+		var model = entity.modellable.model;
+		var modelTypeName = model.constructor.name;
+		var ship = (modelTypeName == "ShipGroup" ? model.ships[0]: model);
+		var shipDefn = ship.defn(world);
+		Ship.accelerateAtRate(world, entity, shipDefn.acceleration);
+	}
+
+	Ship.actionAccelerate = function()
+	{
+		return new Action
+		(
+			"Accelerate",
+			function perform(universe, world, place, actor)
+			{
+				Ship.accelerate(world, actor);
+			}
 		);
 	}
 
@@ -35,7 +54,7 @@ function Ship(defnName)
 				var actorLoc = actor.locatable.loc;
 				var actorPos = actorLoc.pos;
 
-				var projectileColor = "Cyan";
+				var projectileColor = "Yellow";
 				var projectileRadius = 2;
 				var projectileVisual = new VisualGroup
 				([
@@ -47,12 +66,12 @@ function Ship(defnName)
 				var actorRadius = actor.collidable.collider.radius;
 				var projectilePos = actorPos.clone().add
 				(
-					actorForward.clone().multiplyScalar(actorRadius).double().double()
-				); 
+					actorForward.clone().multiplyScalar(actorRadius).double()
+				);
 				var projectileLoc = new Location(projectilePos);
-				projectileLoc.vel.overwriteWith(actorForward).double();
+				projectileLoc.vel.overwriteWith(actorForward).double().double();
 
-				var projectileCollider = 
+				var projectileCollider =
 					new Sphere(projectilePos, projectileRadius);
 
 				var projectileCollide = function(universe, world, place, entityPlayer, entityOther)
@@ -72,7 +91,7 @@ function Ship(defnName)
 						new Locatable( projectileLoc ),
 						new Collidable
 						(
-							projectileCollider, 
+							projectileCollider,
 							[ "killable" ],
 							projectileCollide
 						),
@@ -87,60 +106,45 @@ function Ship(defnName)
 		return returnValue;
 	}
 
-	Ship.actions = function()
+	Ship.actionShowMenu = function()
 	{
-		var returnValues = 
-		[
-			Action.Instances.DoNothing,
-			new Action
-			(
-				"ShowMenu",
-				function perform(universe, world, place, actor)
-				{
-					var venueNext = new VenueControls
-					(
-						universe.controlBuilder.configure(universe)
-					);
-					venueNext = new VenueFader(venueNext, universe.venueCurrent);
-					universe.venueNext = venueNext;
-				}
-			),
-			new Action
-			(
-				"Accelerate",
-				function perform(universe, world, place, actor)
-				{
-					Ship.accelerate
-					(
-						world, actor
-					);
-				}
-			),
-			new Action
-			(
-				"TurnLeft",
-				function perform(universe, world, place, actor)
-				{
-					Ship.turnInDirection
-					(
-						world, actor, -1
-					);
-				}
-			),
-			new Action
-			(
-				"TurnRight",
-				function perform(universe, world, place, actor)
-				{
-					Ship.turnInDirection
-					(
-						world, actor, 1
-					);
-				}
-			),
-		].addLookups("name");
+		return new Action
+		(
+			"ShowMenu",
+			function perform(universe, world, place, actor)
+			{
+				var venueNext = new VenueControls
+				(
+					universe.controlBuilder.configure(universe)
+				);
+				venueNext = new VenueFader(venueNext, universe.venueCurrent);
+				universe.venueNext = venueNext;
+			}
+		);
+	}
 
-		return returnValues;
+	Ship.actionTurnLeft = function()
+	{
+		return new Action
+		(
+			"TurnLeft",
+			function perform(universe, world, place, actor)
+			{
+				Ship.turnInDirection(world, actor, -1);
+			}
+		);
+	}
+
+	Ship.actionTurnRight = function()
+	{
+		return new Action
+		(
+			"TurnRight",
+			function perform(universe, world, place, actor)
+			{
+				Ship.turnInDirection(world, actor, 1);
+			}
+		);
 	}
 
 	Ship.inputToActionMappings = function()
@@ -204,7 +208,7 @@ function Ship(defnName)
 
 			var visualForAngle = new VisualPolygon
 			(
-				visualPath.clone().transform(transformRotate2D), 
+				visualPath.clone().transform(transformRotate2D),
 				color
 			);
 
@@ -218,5 +222,21 @@ function Ship(defnName)
 		);
 
 		return returnValue;
+	}
+
+	// instance methods
+
+	Ship.prototype.defn = function(world)
+	{
+		return world.defns.shipDefns[this.defnName];
+	}
+
+	Ship.prototype.initialize = function(world)
+	{
+		var defn = this.defn(world);
+
+		this.integrity = defn.integrityMax;
+		this.energy = defn.energyMax;
+		this.fuel = defn.fuelMax;
 	}
 }

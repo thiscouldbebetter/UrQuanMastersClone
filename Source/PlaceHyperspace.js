@@ -1,11 +1,37 @@
 
-function PlaceHyperspace(hyperspace, playerPos)
+function PlaceHyperspace(world, hyperspace, playerPos)
 {
 	this.hyperspace = hyperspace;
 	this.size = this.hyperspace.size;
 
-	this.actions = Ship.actions();
+	var actionMapView = new Action
+	(
+		"MapView",
+		function perform(universe, world, place, actor)
+		{
+			world.placeNext = new PlaceHyperspaceMap(place);
+		}
+	);
+
+	this.actions =
+	[
+		Ship.actionShowMenu(),
+		Ship.actionAccelerate(),
+		Ship.actionTurnLeft(),
+		Ship.actionTurnRight(),
+		actionMapView
+	].addLookups("name");
+
 	this.inputToActionMappings = Ship.inputToActionMappings();
+	this.inputToActionMappings = this.inputToActionMappings.concat
+	(
+		[
+			new InputToActionMapping("Tab", "MapView"),
+
+			new InputToActionMapping("Gamepad0Button0", "MapView"),
+		]
+	);
+	this.inputToActionMappings.addLookups("inputName");
 
 	this.camera = new Camera
 	(
@@ -107,14 +133,18 @@ function PlaceHyperspace(hyperspace, playerPos)
 			var starsystem = entityOther.modellable.model;
 			world.placeNext = new PlaceStarsystem
 			(
-				starsystem, 
-				new Coords(.5, .9).multiply(starsystem.sizeInner)
+				world, starsystem, new Coords(.5, .9).multiply(starsystem.sizeInner)
 			);
 		}
 	}
 
-	var constraintSpeedMax = new Constraint("SpeedMax", 4);
-	var constraintFriction = new Constraint("Friction", 0.03); 
+	var playerShipGroup = world.playerShipGroup;
+	var playerShip = playerShipGroup.ships[0];
+	var playerShipDefn = playerShip.defn(world);
+
+	var constraintSpeedMax = new Constraint("SpeedMax", playerShipDefn.speedMax);
+	var constraintFriction = new Constraint("Friction", 0.1);
+	var constraintStopBelowSpeedMin = new Constraint("StopBelowSpeedMin", 0.02);
 	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
 
 	var playerEntity = new Entity
@@ -124,7 +154,10 @@ function PlaceHyperspace(hyperspace, playerPos)
 			new Locatable(playerLoc),
 			new Constrainable
 			([
-				constraintSpeedMax, constraintFriction, constraintTrimToRange
+				//constraintSpeedMax,
+				constraintFriction,
+				constraintStopBelowSpeedMin,
+				constraintTrimToRange
 			]),
 			new Collidable
 			(
@@ -135,6 +168,7 @@ function PlaceHyperspace(hyperspace, playerPos)
 			new Drawable(playerVisual),
 			new ItemHolder(),
 			new Playable(),
+			new Modellable(playerShipGroup),
 		]
 	);
 
@@ -151,7 +185,7 @@ function PlaceHyperspace(hyperspace, playerPos)
 	PlaceHyperspace.prototype = Object.create(Place.prototype);
 	PlaceHyperspace.prototype.constructor = Place;
 
-	PlaceHyperspace.prototype.draw_FromSuperclass = PlaceHyperspace.prototype.draw;
+	PlaceHyperspace.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlaceHyperspace.prototype.draw = function(universe, world)
 	{
 		var display = universe.display;

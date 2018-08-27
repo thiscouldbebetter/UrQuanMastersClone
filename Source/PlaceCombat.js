@@ -1,31 +1,30 @@
 
-function PlaceCombat(combat)
+function PlaceCombat(world, combat)
 {
 	this.combat = combat;
 	this.size = this.combat.size;
-
-	this.actions = Ship.actions();
 
 	var actionExit = new Action
 	(
 		"Exit",
 		function perform(universe, world, place, actor)
 		{
-			//world.placeNext = new PlacePlanetVicinity(place.size.clone(), place.planet);
-			var combat = place.combat;
-			var actorLoc = actor.locatable.loc;
-			actorLoc.pos.overwriteWith(combat.pos);
-			actorLoc.vel.clear();
-			world.placeNext = combat.placeToReturnTo;
+			var encounter = place.combat.encounter;
+			encounter.returnToPlace(world);
 		}
 	);
 
 	var actionFire = Ship.actionFire();
 
-	this.actions.push(actionExit);
-	this.actions.push(actionFire);
-
-	this.actions.addLookups("name");
+	this.actions =
+	[
+		Ship.actionShowMenu(),
+		Ship.actionAccelerate(),
+		Ship.actionTurnLeft(),
+		Ship.actionTurnRight(),
+		actionFire,
+		actionExit,
+	].addLookups("name");
 
 	this.inputToActionMappings = Ship.inputToActionMappings();
 	this.inputToActionMappings = this.inputToActionMappings.concat
@@ -119,10 +118,13 @@ function PlaceCombat(combat)
 	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
 
+	var playerShip = world.playerShipGroup.ships[0]; // todo
+
 	var playerEntity = new Entity
 	(
 		"Player",
 		[
+			new Modellable(playerShip),
 			new Locatable(playerLoc),
 			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
 			new Collidable
@@ -238,16 +240,15 @@ function PlaceCombat(combat)
 	PlaceCombat.prototype.updateForTimerTick = function(universe, world)
 	{
 		this.updateForTimerTick_FromSuperclass(universe, world);
-		var entityEnemy = this.entities["Enemy"];
+		var enemyName = "Enemy"; // todo
+		var entityEnemy = this.entities[enemyName];
 		if (entityEnemy == null)
 		{
-			var combat = this.combat;
-			var placeNext = combat.placeToReturnTo;
-			var playerFromPlaceNext = placeNext.entities["Player"];
-			var playerLoc = playerFromPlaceNext.locatable.loc;
-			playerLoc.pos.overwriteWith(combat.pos);
-			playerLoc.vel.clear();
-			world.placeNext = combat.placeToReturnTo;
+			var encounter = this.combat.encounter;
+			var placeNext = encounter.placeToReturnTo;
+			var enemyFromPlaceNext = placeNext.entities[enemyName];
+			placeNext.entitiesToRemove.push(enemyFromPlaceNext);
+			encounter.returnToPlace(world);
 		}
 	}
 }

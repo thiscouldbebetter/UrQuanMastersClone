@@ -1,10 +1,18 @@
 
-function PlacePlanetVicinity(size, planet)
+function PlacePlanetVicinity(world, size, planet)
 {
 	this.size = size;
 	this.planet = planet;
 
-	this.actions = Ship.actions();
+	this.actions =
+	[
+		Ship.actionShowMenu(),
+		Ship.actionAccelerate(),
+		Ship.actionTurnLeft(),
+		Ship.actionTurnRight(),
+
+	].addLookups("name");
+
 	this.inputToActionMappings = Ship.inputToActionMappings();
 
 	// entities
@@ -101,7 +109,7 @@ function PlacePlanetVicinity(size, planet)
 		var entityOtherName = entityOther.name;
 		if (entityOtherName.startsWith("Planet"))
 		{
-			world.placeNext = new PlacePlanetSurface(place.planet);
+			world.placeNext = new PlacePlanetOrbit(world, place.planet);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
@@ -116,19 +124,20 @@ function PlacePlanetVicinity(size, planet)
 			);
 			world.placeNext = new PlaceStarsystem
 			(
-				planet.starsystem, posNext
+				world, planet.starsystem, posNext
 			);
 		}
 	}
 
 	var constraintSpeedMax = new Constraint("SpeedMax", 1);
-	//var constraintFriction = new Constraint("Friction", 0.3); 
+	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
 
 	var playerEntity = new Entity
 	(
 		"Player",
 		[
+			new Modellable(world.playerShipGroup),
 			new Locatable(playerLoc),
 			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
 			new Collidable

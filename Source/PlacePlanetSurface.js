@@ -1,26 +1,30 @@
 
-function PlacePlanetSurface(planet)
+function PlacePlanetSurface(world, planet)
 {
 	this.planet = planet;
 	this.size = this.planet.sizeSurface;
-
-	this.actions = Ship.actions();
 
 	var actionExit = new Action
 	(
 		"Exit",
 		function perform(universe, world, place, actor)
 		{
-			world.placeNext = new PlacePlanetVicinity(place.size.clone(), place.planet);
+			world.placeNext = new PlacePlanetVicinity(world, place.size.clone(), place.planet);
 		}
 	);
 
 	var actionFire = Ship.actionFire();
 
-	this.actions.push(actionExit);
-	this.actions.push(actionFire);
+	this.actions =
+	[
+		Ship.actionShowMenu(),
+		Ship.actionAccelerate(),
+		Ship.actionTurnLeft(),
+		Ship.actionTurnRight(),
+		actionFire,
+		actionExit,
 
-	this.actions.addLookups("name");
+	].addLookups("name");
 
 	this.inputToActionMappings = Ship.inputToActionMappings();
 	this.inputToActionMappings = this.inputToActionMappings.concat
@@ -58,13 +62,14 @@ function PlacePlanetSurface(planet)
 	}
 
 	var constraintSpeedMax = new Constraint("SpeedMax", 3);
-	var constraintFriction = new Constraint("Friction", 0.3); 
+	var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
 
 	var playerEntity = new Entity
 	(
 		"Player",
 		[
+			new Modellable(world.playerShipGroup), // hack
 			new Locatable(playerLoc),
 			new Constrainable([constraintFriction, constraintSpeedMax, constraintWrapToRange]),
 			new Collidable

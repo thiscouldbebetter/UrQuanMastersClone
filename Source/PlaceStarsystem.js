@@ -1,10 +1,18 @@
 
-function PlaceStarsystem(starsystem, playerPos)
+function PlaceStarsystem(world, starsystem, playerPos)
 {
 	this.starsystem = starsystem;
 	this.size = this.starsystem.sizeInner;
 
-	this.actions = Ship.actions();
+	this.actions =
+	[
+		Ship.actionShowMenu(),
+		Ship.actionAccelerate(),
+		Ship.actionTurnLeft(),
+		Ship.actionTurnRight(),
+
+	].addLookups("name");
+
 	this.inputToActionMappings = Ship.inputToActionMappings();
 
 	// entities
@@ -99,26 +107,23 @@ function PlaceStarsystem(starsystem, playerPos)
 		var entityOtherName = entityOther.name;
 		if (entityOtherName.startsWith("Enemy"))
 		{
-			place.entitiesToRemove.push(entityOther); // hack - Assumes combat.
-			var combat = new Combat
-			(
-				place.size.clone(),
-				place,
-				entityPlayer.locatable.loc.pos,
-				[] // shipGroups
-			);
-			world.placeNext = new PlaceCombat(combat);
+			var shipGroupOther = entityOther.modellable.model;
+			entityPlayer.collidable.ticksUntilCanCollide = 50; // hack
+			var encounter = new Encounter(shipGroupOther, place, entityPlayer.locatable.loc.pos);
+			var placeEncounter = new PlaceEncounter(world, encounter);
+			world.placeNext = placeEncounter;
 		}
 		else if (entityOtherName.startsWith("Planet"))
 		{
 			var planet = entityOther.modellable.model;
-			world.placeNext = new PlacePlanetVicinity(place.size.clone(), planet);
+			world.placeNext = new PlacePlanetVicinity(world, place.size.clone(), planet);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
 			var hyperspace = world.hyperspace;
 			world.placeNext = new PlaceHyperspace
 			(
+				world,
 				hyperspace,
 				place.starsystem.posInHyperspace.clone().add
 				(
@@ -131,6 +136,8 @@ function PlaceStarsystem(starsystem, playerPos)
 	var constraintSpeedMax = new Constraint("SpeedMax", 1);
 	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
+
+	var playerShipGroup = world.playerShipGroup;
 
 	var playerEntity = new Entity
 	(
@@ -147,6 +154,7 @@ function PlaceStarsystem(starsystem, playerPos)
 			new Drawable(playerVisual),
 			new ItemHolder(),
 			new Playable(),
+			new Modellable(playerShipGroup),
 		]
 	);
 
@@ -180,10 +188,20 @@ function PlaceStarsystem(starsystem, playerPos)
 			new Path(enemyColliderAsFace.vertices), enemyColor
 		);
 
+		var enemyShipDefnName = "Default";
+		var enemyShip = new Ship(enemyShipDefnName);
+		var enemyShipGroup = new ShipGroup
+		(
+			"Enemy",
+			0, 0, // fuel
+			[ enemyShip ]
+		);
+
 		var enemyEntity = new Entity
 		(
 			"Enemy",
 			[
+				new Modellable(enemyShipGroup),
 				new Locatable(enemyLoc),
 				new Constrainable([constraintSpeedMax]),
 				new Collidable(enemyCollider),

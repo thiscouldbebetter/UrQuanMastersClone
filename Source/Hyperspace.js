@@ -10,13 +10,40 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 	{
 		var planetsPerStarsystemMax = 6;
 		var factionName = null; // todo
+		var distanceBetweenStarsystemsMin = starsystemRadiusOuter * 2;
+		var displacement = new Coords();
 
 		var starsystems = [];
 		for (var i = 0; i < numberOfStarsystems; i++)
 		{
 			var starName = "Star" + i;
 			var starColor = Starsystem.StarColors.random();
-			var starsystemPos = new Coords().randomize().multiply(size);
+
+			var starsystemPos;
+			var isTooCloseToExistingStarsystem = true;
+			while (isTooCloseToExistingStarsystem == true)
+			{
+				starsystemPos = new Coords().randomize().multiply(size);
+
+				isTooCloseToExistingStarsystem = false;
+				for (var j = 0; j < i; j++)
+				{
+					var starsystemExistingPos = starsystems[j].posInHyperspace;
+					var distance = displacement.overwriteWith
+					(
+						starsystemPos
+					).subtract
+					(
+						starsystemExistingPos
+					).magnitude();
+
+					if (distance < distanceBetweenStarsystemsMin)
+					{
+						isTooCloseToExistingStarsystem = true;
+						break;
+					}
+				}
+			}
 
 			var planets = [];
 			var planetSizeInner = starsystemSizeInner;
