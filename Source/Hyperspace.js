@@ -56,18 +56,32 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 
 			for (var p = 0; p < numberOfPlanets; p++)
 			{
-				var planetName = starName + "Planet" + p;
+				var planetName = "Planet" + p;
 				var planetColor = Planet.Colors.random();
 				var planetRadiusOuter =
 					(Math.random() * 3 + 3)
 					* distanceBetweenPlanetOrbits / 32;
 				var planetDistanceFromSun = (p + 1) * distanceBetweenPlanetOrbits;
 				var planetPosAsPolar = new Polar(Math.random(), planetDistanceFromSun);
-				var moons = [];
+				var numberOfMoons = Math.floor(Math.random() * 3);
+				var satellites = [];
+				for (var m = 0; m < numberOfMoons; m++)
+				{
+					var moonName = planetName + "Moon" + m;
+					var moonColor = planetColor;
+					var moonRadiusOuter = planetRadiusOuter;
+					var moonPosAsPolar = new Polar(Math.random(), distanceBetweenPlanetOrbits * (m + 1));
+					var moonAsPlanet = new Planet
+					(
+						moonName, moonColor, moonRadiusOuter,
+						moonPosAsPolar, planetSizeInner, [] // satellites
+					);
+					satellites.push(moonAsPlanet);
+				}
 				var planet = new Planet
 				(
 					planetName, planetColor, planetRadiusOuter,
-					planetPosAsPolar, planetSizeInner, moons
+					planetPosAsPolar, planetSizeInner, satellites
 				);
 				planets.push(planet);
 			}

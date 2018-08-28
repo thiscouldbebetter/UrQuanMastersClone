@@ -45,31 +45,27 @@ function PlacePlanetVicinity(world, size, planet)
 
 	entities.push(planetEntity);
 
-	// moons
+	// satellites
 
-	var numberOfMoons = 1;
-	var moonColor = "LightGray";
 	var orbitColor = "LightGray";
-	var moonRadius = entityDimension / 2;
-
-	var distanceBetweenMoonOrbits = sizeHalf.y / (numberOfMoons + 1);
-
-	for (var i = 0; i < numberOfMoons; i++)
+	var satellites = planet.satellites;
+	var numberOfMoons = satellites.length;
+	for (var i = 0; i < satellites.length; i++)
 	{
-		var iPlusOne = i + 1;
-
-		var distanceOfMoonFromPlanet = iPlusOne * distanceBetweenMoonOrbits;
+		var moon = satellites[i];
+		var moonRadius = moon.radiusOuter;
+		var moonColor = moon.color;
 
 		var moonPos = planetPos.clone().add
 		(
-			new Polar(Math.random(), distanceOfMoonFromPlanet).toCoords(new Coords())
+			moon.posAsPolar.toCoords(new Coords())
 		);
 
 		var moonVisual = new VisualGroup
 		([
 			new VisualAnchor
 			(
-				new VisualCircle(distanceBetweenMoonOrbits * iPlusOne, null, orbitColor),
+				new VisualCircle(moon.posAsPolar.radius, null, orbitColor),
 				planetPos
 			),
 			new VisualCircle(moonRadius, moonColor)
@@ -79,7 +75,7 @@ function PlacePlanetVicinity(world, size, planet)
 
 		var moonEntity = new Entity
 		(
-			"Moon" + i,
+			moon.name,
 			[
 				new Locatable( new Location(moonPos) ),
 				new Collidable(moonCollider),
