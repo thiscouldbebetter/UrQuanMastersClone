@@ -31,9 +31,7 @@ function PlaceStation(world, station, placePlanetVicinity)
 				universe,
 				universe.display.sizeInPixels.clone(),
 				messageToShow,
-				[
-					"Talk", "Leave",
-				],
+				[ "Talk", "Dock", "Leave", ],
 				[
 					function talk(universe)
 					{
@@ -41,6 +39,15 @@ function PlaceStation(world, station, placePlanetVicinity)
 						var size = new Coords(400, 300); // todo
 						var conversation = new Conversation(size);
 						var placeNext = new PlaceConversation(world, conversation, world.place);
+						world.placeNext = placeNext;
+					},
+
+					function dock(universe)
+					{
+						var world = universe.world;
+						var size = new Coords(400, 300); // todo
+						var placeStation = world.place;
+						var placeNext = new PlaceStationDock(world, placeStation);
 						world.placeNext = placeNext;
 					},
 

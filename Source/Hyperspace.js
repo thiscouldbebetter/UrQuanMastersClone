@@ -102,6 +102,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		}
 
 		var starsystem0 = starsystems[0];
+		starsystem0.factionName = "todo"; // Spawns "enemy".
 		var planet = starsystem0.planets.random();
 		var station = new Station
 		(
