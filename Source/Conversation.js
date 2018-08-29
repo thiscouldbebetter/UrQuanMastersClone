@@ -1,6 +1,6 @@
 
-function Conversation(size, encounter)
+function Conversation(size, placeToReturnTo)
 {
 	this.size = size;
-	this.encounter = encounter;
+	this.placeToReturnTo = placeToReturnTo;
 }

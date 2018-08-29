@@ -54,13 +54,15 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			var distanceBetweenPlanetOrbits =
 				starsystemSizeInner.clone().half().y / (numberOfPlanets + 1);
 
+			var planetRadiusBase = 1;
+
 			for (var p = 0; p < numberOfPlanets; p++)
 			{
 				var planetName = "Planet" + p;
 				var planetColor = Planet.Colors.random();
 				var planetRadiusOuter =
 					(Math.random() * 3 + 3)
-					* distanceBetweenPlanetOrbits / 32;
+					* planetRadiusBase;
 				var planetDistanceFromSun = (p + 1) * distanceBetweenPlanetOrbits;
 				var planetPosAsPolar = new Polar(Math.random(), planetDistanceFromSun);
 				var numberOfMoons = Math.floor(Math.random() * 3);
@@ -99,7 +101,22 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			starsystems.push(starsystem);
 		}
 
-		starsystems[0].factionName = "todo";
+		var starsystem0 = starsystems[0];
+		var planet = starsystem0.planets.random();
+		var station = new Station
+		(
+			"Station",
+			"Gray", // color
+			10, // radius
+			new Polar(Math.random(), distanceBetweenPlanetOrbits),
+		);
+		var satellites = planet.satellites;
+
+		if (satellites.length > 0)
+		{
+			satellites.removeAt(0);
+		}
+		planet.satellites.push(station);
 
 		var returnValue = new Hyperspace
 		(

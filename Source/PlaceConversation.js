@@ -1,7 +1,8 @@
 
-function PlaceConversation(world, conversation)
+function PlaceConversation(world, conversation, placeToReturnTo)
 {
 	this.conversation = conversation;
+	this.placeToReturnTo = placeToReturnTo;
 
 	var entities = [];
 	Place.call(this, entities);
@@ -38,9 +39,8 @@ function PlaceConversation(world, conversation)
 				{
 					var world = universe.world;
 					var placeConversation = world.place;
-					var conversation = placeConversation.conversation;
-					var encounter = conversation.encounter;
-					encounter.returnToPlace(world);
+					var placeNext = placeConversation.placeToReturnTo;
+					world.placeNext = placeNext;
 				}
 			);
 

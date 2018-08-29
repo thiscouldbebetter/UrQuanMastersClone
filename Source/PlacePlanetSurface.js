@@ -1,15 +1,17 @@
 
-function PlacePlanetSurface(world, planet)
+function PlacePlanetSurface(world, planet, placePlanetOrbit)
 {
 	this.planet = planet;
 	this.size = this.planet.sizeSurface;
+	this.placePlanetOrbit = placePlanetOrbit;
 
 	var actionExit = new Action
 	(
 		"Exit",
 		function perform(universe, world, place, actor)
 		{
-			world.placeNext = new PlacePlanetVicinity(world, place.size.clone(), place.planet);
+			var placePlanetOrbit = place.placePlanetOrbit;
+			world.placeNext = placePlanetOrbit;
 		}
 	);
 

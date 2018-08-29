@@ -47,45 +47,10 @@ function PlaceStarsystem(world, starsystem, playerPos)
 	// planets
 
 	var planets = starsystem.planets;
-	var numberOfPlanets = planets.length;
-	var orbitColor = "LightGray";
-
-	for (var i = 0; i < numberOfPlanets; i++)
+	for (var i = 0; i < planets.length; i++)
 	{
 		var planet = planets[i];
-		var planetColor = planet.color;
-		var planetPosAsPolar = planet.posAsPolar;
-
-		var planetPos = sunPos.clone().add
-		(
-			planetPosAsPolar.toCoords(new Coords())
-		);
-
-		var planetRadius = planet.radiusOuter;
-
-		var planetVisual = new VisualGroup
-		([
-			new VisualAnchor
-			(
-				new VisualCircle(planetPosAsPolar.radius, null, orbitColor),
-				sunPos
-			),
-			new VisualCircle(planetRadius, planetColor)
-		]);
-
-		var planetCollider = new Sphere(planetPos, planetRadius);
-
-		var planetEntity = new Entity
-		(
-			"Planet" + i,
-			[
-				new Modellable(planet),
-				new Locatable( new Location(planetPos) ),
-				new Collidable(planetCollider),
-				new Drawable(planetVisual)
-			]
-		);
-
+		var planetEntity = planet.toEntity(sunPos);
 		entities.push(planetEntity);
 	}
 
@@ -116,7 +81,22 @@ function PlaceStarsystem(world, starsystem, playerPos)
 		else if (entityOtherName.startsWith("Planet"))
 		{
 			var planet = entityOther.modellable.model;
-			world.placeNext = new PlacePlanetVicinity(world, place.size.clone(), planet);
+			var sizeNext = place.size.clone();
+			var heading = entityPlayer.locatable.loc.orientation.headingInTurns();
+			var playerPosNext = new Polar
+			(
+				heading + .5, .4 * sizeNext.y
+			).wrap().toCoords
+			(
+				new Coords()
+			).add
+			(
+				sizeNext.clone().half()
+			);
+			world.placeNext = new PlacePlanetVicinity
+			(
+				world, sizeNext, planet, playerPosNext, place
+			);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{

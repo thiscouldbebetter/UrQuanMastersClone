@@ -1,27 +1,13 @@
 
-function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites)
+function Station(name, color, radiusOuter, posAsPolar)
 {
 	this.name = name;
 	this.color = color;
 	this.radiusOuter = radiusOuter;
 	this.posAsPolar = posAsPolar;
-	this.sizeSurface = sizeSurface;
-	this.satellites = satellites;
 }
 {
-	Planet.Colors =
-	[
-		"Brown",
-		"Cyan",
-		"Green",
-		"LightGray",
-		"Orange",
-		"White",
-	];
-
-	// instance methods
-
-	Planet.prototype.toEntity = function(primaryPos)
+	Station.prototype.toEntity = function(primaryPos)
 	{
 		var pos = primaryPos.clone().add
 		(
@@ -35,7 +21,7 @@ function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites)
 				new VisualCircle(this.posAsPolar.radius, null, "Gray"),
 				primaryPos
 			),
-			new VisualCircle(this.radiusOuter, this.color)
+			new VisualRectangle(new Coords(1, 1).multiplyScalar(this.radiusOuter), this.color)
 		]);
 
 		var collider = new Sphere(pos, this.radiusOuter);
@@ -53,6 +39,4 @@ function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites)
 
 		return returnValue;
 	}
-
 }
-

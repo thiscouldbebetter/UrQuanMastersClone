@@ -1,8 +1,9 @@
 
-function PlacePlanetVicinity(world, size, planet)
+function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 {
 	this.size = size;
 	this.planet = planet;
+	this.placeStarsystem = placeStarsystem;
 
 	this.actions =
 	[
@@ -52,44 +53,20 @@ function PlacePlanetVicinity(world, size, planet)
 	var numberOfMoons = satellites.length;
 	for (var i = 0; i < satellites.length; i++)
 	{
-		var moon = satellites[i];
-		var moonRadius = moon.radiusOuter;
-		var moonColor = moon.color;
+		var satellite = satellites[i];
 
-		var moonPos = planetPos.clone().add
-		(
-			moon.posAsPolar.toCoords(new Coords())
-		);
+		var satelliteEntity = satellite.toEntity(planetPos);
 
-		var moonVisual = new VisualGroup
-		([
-			new VisualAnchor
-			(
-				new VisualCircle(moon.posAsPolar.radius, null, orbitColor),
-				planetPos
-			),
-			new VisualCircle(moonRadius, moonColor)
-		]);
-
-		var moonCollider = new Sphere(moonPos, moonRadius);
-
-		var moonEntity = new Entity
-		(
-			moon.name,
-			[
-				new Locatable( new Location(moonPos) ),
-				new Collidable(moonCollider),
-				new Drawable(moonVisual)
-			]
-		);
-
-		entities.push(moonEntity);
+		entities.push(satelliteEntity);
 	}
 
 	// player
 
-	var playerPos = new Coords(.5, .9).multiply(this.size);
 	var playerLoc = new Location(playerPos);
+	playerLoc.orientation.forwardSet
+	(
+		planetPos.clone().subtract(playerPos).normalize()
+	)
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
@@ -105,22 +82,28 @@ function PlacePlanetVicinity(world, size, planet)
 		var entityOtherName = entityOther.name;
 		if (entityOtherName.startsWith("Planet"))
 		{
-			world.placeNext = new PlacePlanetOrbit(world, place.planet);
+			world.placeNext = new PlacePlanetOrbit(world, place.planet, place);
+		}
+		else if (entityOtherName.startsWith("Station"))
+		{
+			var station = entityOther.modellable.model;
+			world.placeNext = new PlaceStation(world, station, place);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
 			var planet = place.planet;
-			var starsystem = planet.starsystem;
+			var placeStarsystem = place.placeStarsystem;
+			var starsystem = placeStarsystem.starsystem;
 			var posNext = planet.posAsPolar.toCoords(new Coords()).add
 			(
 				starsystem.sizeInner.clone().half()
 			).add
 			(
-				new Coords(2.5, 0).multiplyScalar(planet.radiusOuter)
+				new Coords(3, 0).multiplyScalar(planet.radiusOuter)
 			);
 			world.placeNext = new PlaceStarsystem
 			(
-				world, planet.starsystem, posNext
+				world, starsystem, posNext
 			);
 		}
 	}

@@ -1,7 +1,8 @@
 
-function PlacePlanetOrbit(world, planet)
+function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 {
 	this.planet = planet;
+	this.placePlanetVicinity = placePlanetVicinity;
 
 	var entities = [];
 	Place.call(this, entities);
@@ -39,7 +40,7 @@ function PlacePlanetOrbit(world, planet)
 						var world = universe.world;
 						var placeOrbit = world.place;
 						var planet = placeOrbit.planet;
-						var placeNext = new PlacePlanetSurface(world, planet);
+						var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
 						world.placeNext = placeNext;
 					},
 
@@ -47,10 +48,24 @@ function PlacePlanetOrbit(world, planet)
 					{
 						var world = universe.world;
 						var placeOrbit = world.place;
+						var placePlanetVicinity = placeOrbit.placePlanetVicinity;
 						var planet = placeOrbit.planet;
-						var size = planet.starsystem.sizeInner;
-						var placeNext = new PlacePlanetVicinity(world, size, planet);
-						world.placeNext = placeNext;
+						var size = placePlanetVicinity.size;
+						var playerHeading = 0; // todo
+						var playerPos = new Polar
+						(
+							playerHeading + .5, .4 * size.y
+						).wrap().toCoords
+						(
+							new Coords()
+						).add
+						(
+							size.clone().half()
+						);
+						world.placeNext = new PlacePlanetVicinity
+						(
+							world, size, planet, playerPos, placePlanetVicinity.placeStarsystem
+						);
 					}
 				]
 			);
