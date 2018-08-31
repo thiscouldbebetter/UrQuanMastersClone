@@ -23,115 +23,157 @@ function PlaceStationDock(world, placeStation)
 		this.updateForTimerTick_FromSuperclass(universe, world);
 		if (this.venueControls == null)
 		{
-			var containerSize = universe.display.sizeInPixels;
-			var fontHeight = 10;
+			var containerDockSize = universe.display.sizeInPixels.clone();
+			var fontHeight = 20;
+			var fontHeightShort = fontHeight / 2;
+			var buttonSize = new Coords(25, 25);
+			var marginWidth = 10;
+			var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
+
+			var titleSize = new Coords(containerDockSize.x, 25);
+			var labelSize = new Coords(100, 10);
+
+			var containerRightSize = new Coords
+			(
+				(containerDockSize.x - marginSize.x * 3) / 3,
+				containerDockSize.y - marginSize.y * 3 - titleSize.y
+			);
+
+			var containerLeftSize = new Coords
+			(
+				containerDockSize.x - marginSize.x * 3 - containerRightSize.x,
+				(containerRightSize.y - marginSize.y) / 2
+			);
+
+			var containerLeftInnerSize = new Coords
+			(
+				(containerLeftSize.x - marginSize.x * 3) / 2,
+				(containerLeftSize.y - labelSize.y - marginSize.y * 3)
+			); // size
 
 			var controlRoot = new ControlContainer
 			(
-				"controlStationDock",
+				"containerDock",
 				new Coords(0, 0), // pos
-				containerSize,
+				containerDockSize,
 				[
 					new ControlLabel
 					(
 						"labelDock",
-						new Coords(200, 50), 
-						new Coords(200, 50),
+						new Coords(containerDockSize.x / 2, marginSize.y + titleSize.y / 2),
+						titleSize,
 						true, // isTextCentered
-						"[Dock]",
+						"Dock",
 						fontHeight
 					),
 
-					new ControlLabel
+					new ControlContainer
 					(
-						"labelResources",
-						new Coords(100, 100), 
-						new Coords(100, 50),
-						true, // isTextCentered
-						"[Resources]",
-						fontHeight
+						"containerTop",
+						new Coords
+						(
+							marginSize.x,
+							marginSize.y * 2 + titleSize.y
+						),
+						containerLeftSize,
+						// children
+						[
+							new ControlLabel
+							(
+								"labelFlagship",
+								marginSize,
+								labelSize,
+								false, // isTextCentered
+								"Flagship:",
+								fontHeightShort
+							),
+
+							new ControlContainer
+							(
+								"listComponents",
+								new Coords(marginSize.x, marginSize.y * 2 + labelSize.y),
+								containerLeftInnerSize,
+								[] // todo
+							),
+						]
 					),
 
-					new ControlLabel
+					new ControlContainer
 					(
-						"labelShips",
-						new Coords(200, 100), 
-						new Coords(100, 50),
-						true, // isTextCentered
-						"[Ships]",
-						fontHeight
+						"containerBottom",
+						new Coords
+						(
+							marginSize.x,
+							marginSize.y * 3 + titleSize.y + containerLeftSize.y
+						),
+						containerLeftSize,
+						// children
+						[
+							new ControlLabel
+							(
+								"labelFleet",
+								marginSize,
+								labelSize,
+								false, // isTextCentered
+								"Fleet:",
+								fontHeightShort
+							),
+
+							new ControlContainer
+							(
+								"listShips",
+								new Coords(marginSize.x, marginSize.y * 2 + labelSize.y),
+								containerLeftInnerSize,
+								[] // todo
+							),
+						]
+					),
+
+					new ControlContainer
+					(
+						"containerRight",
+						new Coords
+						(
+							marginSize.x * 2 + containerLeftSize.x,
+							marginSize.y * 2 + titleSize.y
+						),
+						containerRightSize,
+						// children
+						[
+							new ControlLabel
+							(
+								"labelResources",
+								marginSize,
+								labelSize,
+								false, // isTextCentered
+								"Resources:",
+								fontHeightShort
+							),
+
+							new ControlContainer
+							(
+								"containerMinerals",
+								new Coords
+								(
+									marginSize.x,
+									marginSize.y * 2 + labelSize.y
+								),
+								new Coords
+								(
+									containerRightSize.x - marginSize.x * 2,
+									containerRightSize.y - marginSize.y * 3 - labelSize.y
+								), // size
+								[] // todo
+							),
+						]
 					),
 
 					new ControlButton
 					(
-						"buttonFuelAdd",
-						new Coords(100, 125), // pos
-						new Coords(45, 50), // size
-						"Fuel+",
-						fontHeight,
-						true, // hasBorder,
-						true, // isEnabled,
-						function click(universe)
-						{
-							// todo
-						},
-						universe // context
-					),
-
-					new ControlButton
-					(
-						"buttonFuelSubtract",
-						new Coords(150, 125), // pos
-						new Coords(45, 50), // size
-						"Fuel-",
-						fontHeight,
-						true, // hasBorder,
-						true, // isEnabled,
-						function click(universe)
-						{
-							// todo
-						},
-						universe // context
-					),
-
-					new ControlButton
-					(
-						"buttonCrewAdd",
-						new Coords(200, 125), // pos
-						new Coords(45, 50), // size
-						"Crew+",
-						10, // fontHeight
-						true, // hasBorder,
-						true, // isEnabled,
-						function click(universe)
-						{
-							// todo
-						},
-						universe // context
-					),
-
-					new ControlButton
-					(
-						"buttonCrewSubtract",
-						new Coords(250, 125), // pos
-						new Coords(45, 50), // size
-						"Crew-",
-						fontHeight,
-						true, // hasBorder,
-						true, // isEnabled,
-						function click(universe)
-						{
-							// todo
-						},
-						universe // context
-					),
-
-					new ControlButton
-					(
-						"buttonLeave",
-						new Coords(100, 200), // pos
-						new Coords(200, 50), // size
-						"Leave",
+						"buttonBack",
+						marginSize,
+						buttonSize,
+						"<",
 						fontHeight,
 						true, // hasBorder,
 						true, // isEnabled,

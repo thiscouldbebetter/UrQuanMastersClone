@@ -136,7 +136,7 @@ function PlaceConversation(world, conversation, placeToReturnTo)
 								), // pos
 								paneSizeTopAndBottom,
 								true, // isTextCentered
-								"How does that make you feel?",
+								this.conversation._statementCurrent,
 								fontHeight
 							),
 						]
@@ -183,9 +183,12 @@ function PlaceConversation(world, conversation, placeToReturnTo)
 								fontHeight,
 								true, // hasBorder,
 								true, // isEnabled
-								function click()
+								function click(universe)
 								{
-									alert("todo");
+									var world = universe.world;
+									var place = world.place;
+									var conversation = place.conversation;
+									conversation.statementAdvance();
 								},
 								universe, // context
 								false // canBeHeldDown

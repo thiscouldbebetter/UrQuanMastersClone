@@ -103,7 +103,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 
 		var starsystem0 = starsystems[0];
 		starsystem0.factionName = "todo"; // Spawns "enemy".
-		var planet = starsystem0.planets.random();
+		var planetWithStation = starsystem0.planets[0];
 		var station = new Station
 		(
 			"Station",
@@ -111,13 +111,13 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			10, // radius
 			new Polar(Math.random(), distanceBetweenPlanetOrbits),
 		);
-		var satellites = planet.satellites;
+		var satellites = planetWithStation.satellites;
 
 		if (satellites.length > 0)
 		{
 			satellites.removeAt(0);
 		}
-		planet.satellites.push(station);
+		planetWithStation.satellites.push(station);
 
 		var returnValue = new Hyperspace
 		(

@@ -37,7 +37,7 @@ function PlaceStation(world, station, placePlanetVicinity)
 					{
 						var world = universe.world;
 						var size = new Coords(400, 300); // todo
-						var conversation = new Conversation(size);
+						var conversation = Conversation.demo();
 						var placeNext = new PlaceConversation(world, conversation, world.place);
 						world.placeNext = placeNext;
 					},

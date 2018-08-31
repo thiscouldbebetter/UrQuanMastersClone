@@ -43,7 +43,7 @@ function PlaceEncounter(world, encounter)
 						var world = universe.world;
 						var placeEncounter = world.place;
 						var encounter = placeEncounter.encounter;
-						var conversation = new Conversation(size);
+						var conversation = Conversation.demo();
 						world.placeNext = new PlaceConversation(world, conversation, placeEncounter);
 					},
 

@@ -42,51 +42,18 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	);
 	this.inputToActionMappings.addLookups("inputName");
 
+	// constraints
+
+	var constraintSpeedMax = new Constraint("SpeedMax", 3);
+	var constraintFriction = new Constraint("Friction", 0.3);
+	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
+
 	// entities
 
 	var entityDimension = 10;
 	var entitySize = new Coords(1, 1, 1).multiplyScalar(entityDimension);
 
 	var entities = [];
-
-	// player
-
-	var playerPos = this.size.clone().half(); // todo
-	var playerLoc = new Location(playerPos);
-	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
-	var playerColor = "Gray";
-
-	var playerVisual = Ship.visual(entityDimension, playerColor);
-
-	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
-	{
-		// todo
-	}
-
-	var constraintSpeedMax = new Constraint("SpeedMax", 3);
-	var constraintFriction = new Constraint("Friction", 0.3);
-	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
-
-	var playerEntity = new Entity
-	(
-		"Player",
-		[
-			new Modellable(world.playerShipGroup), // hack
-			new Locatable(playerLoc),
-			new Constrainable([constraintFriction, constraintSpeedMax, constraintWrapToRange]),
-			new Collidable
-			(
-				playerCollider,
-				[ "collidable" ], // entityPropertyNamesToCollideWith
-				playerCollide
-			),
-			new Drawable(playerVisual),
-			new ItemHolder(),
-			new Playable(),
-		]
-	);
-
-	entities.push(playerEntity);
 
 	// enemy
 
@@ -143,6 +110,76 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 		entities.push(lifeformEntity);
 	}
+
+	var numberOfItems = 8;
+	var itemColor = "Blue";
+	var itemVisual = new VisualRectangle
+	(
+		new Coords(1, 1).multiplyScalar(entityDimension), itemColor
+	);
+
+	for (var i = 0; i < numberOfItems; i++)
+	{
+		var itemPos = new Coords().randomize().multiply(this.size);
+		var itemCollider = new Sphere(itemPos, entityDimension / 2);
+
+		var itemEntity = new Entity
+		(
+			"Item" + i,
+			[
+				new Item("Item", 1),
+				new Locatable( new Location(itemPos) ),
+				new Collidable(itemCollider),
+				new Drawable(itemVisual)
+			]
+		);
+
+		entities.push(itemEntity);
+	}
+
+	// player
+
+	var playerPos = this.size.clone().half(); // todo
+	var playerLoc = new Location(playerPos);
+	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
+	var playerColor = "Gray";
+
+	var playerVisual = Ship.visual(entityDimension, playerColor);
+
+	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
+	{
+		if (entityOther.item != null)
+		{
+			var item = entityOther.item;
+			entityPlayer.itemHolder.itemAdd(item);
+			place.entitiesToRemove.push(entityOther);
+		}
+		else if (entityOther.name.startsWith("Lifeform") == true)
+		{
+			place.entitiesToRemove.push(entityOther); // todo
+		}
+	}
+
+	var playerEntity = new Entity
+	(
+		"Player",
+		[
+			new Modellable(world.playerShipGroup), // hack
+			new Locatable(playerLoc),
+			new Constrainable([constraintFriction, constraintSpeedMax, constraintWrapToRange]),
+			new Collidable
+			(
+				playerCollider,
+				[ "collidable" ], // entityPropertyNamesToCollideWith
+				playerCollide
+			),
+			new Drawable(playerVisual),
+			new ItemHolder(),
+			new Playable(),
+		]
+	);
+
+	entities.push(playerEntity);
 
 	this.camera = new Camera
 	(
