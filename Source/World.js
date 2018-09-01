@@ -10,10 +10,11 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 	this.playerShipGroup = playerShipGroup;
 	this.hyperspace = hyperspace;
 
-	var starsystem0 = hyperspace.starsystems[0];
+	var starsystems = hyperspace.starsystems;
+	var starsystemFinal = starsystems[starsystems.length - 1];
 	this.place = new PlaceStarsystem
 	(
-		this, starsystem0, new Coords(.5, .9).multiply(starsystem0.sizeInner)
+		this, starsystemFinal, new Coords(.5, .9).multiply(starsystemFinal.sizeInner)
 	);
 	this.place.entitiesSpawn();
 }
@@ -50,12 +51,25 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 			[ playerShip ]
 		);
 
+		/*
 		var hyperspace = Hyperspace.random
 		(
 			new Coords(1024, 1024), // size
 			64, //numberOfStarsystems
 			10, // starsystemRadiusOuter
 			new Coords(400, 300), // starsystemSizeInner
+		);
+		*/
+
+		var hyperspaceMapAsTextString = 
+			universe.mediaLibrary.textStringGetByName("HyperspaceMap");
+
+		var hyperspace = Hyperspace.fromFileContentsAsString
+		(
+			new Coords(10000, 10000), // size
+			10, // starsystemRadiusOuter
+			new Coords(400, 300), // starsystemSizeInner
+			hyperspaceMapAsTextString.value
 		);
 
 		var returnValue = new World

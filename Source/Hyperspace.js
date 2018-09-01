@@ -45,49 +45,6 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 				}
 			}
 
-			var planets = [];
-			var planetSizeInner = starsystemSizeInner;
-			var numberOfPlanets = Math.floor
-			(
-				Math.random() * planetsPerStarsystemMax
-			) + 1;
-			var distanceBetweenPlanetOrbits =
-				starsystemSizeInner.clone().half().y / (numberOfPlanets + 1);
-
-			var planetRadiusBase = 1;
-
-			for (var p = 0; p < numberOfPlanets; p++)
-			{
-				var planetName = "Planet" + p;
-				var planetColor = Planet.Colors.random();
-				var planetRadiusOuter =
-					(Math.random() * 3 + 3)
-					* planetRadiusBase;
-				var planetDistanceFromSun = (p + 1) * distanceBetweenPlanetOrbits;
-				var planetPosAsPolar = new Polar(Math.random(), planetDistanceFromSun);
-				var numberOfMoons = Math.floor(Math.random() * 3);
-				var satellites = [];
-				for (var m = 0; m < numberOfMoons; m++)
-				{
-					var moonName = planetName + "Moon" + m;
-					var moonColor = planetColor;
-					var moonRadiusOuter = planetRadiusOuter;
-					var moonPosAsPolar = new Polar(Math.random(), distanceBetweenPlanetOrbits * (m + 1));
-					var moonAsPlanet = new Planet
-					(
-						moonName, moonColor, moonRadiusOuter,
-						moonPosAsPolar, planetSizeInner, [] // satellites
-					);
-					satellites.push(moonAsPlanet);
-				}
-				var planet = new Planet
-				(
-					planetName, planetColor, planetRadiusOuter,
-					planetPosAsPolar, planetSizeInner, satellites
-				);
-				planets.push(planet);
-			}
-
 			var starsystem = new Starsystem
 			(
 				starName,
@@ -95,29 +52,19 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 				starsystemPos,
 				starsystemSizeInner,
 				factionName,
-				planets
+				[], //planets
 			);
+
+			starsystem.contentsRandomize();
 
 			starsystems.push(starsystem);
 		}
 
-		var starsystem0 = starsystems[0];
-		starsystem0.factionName = "todo"; // Spawns "enemy".
-		var planetWithStation = starsystem0.planets[0];
-		var station = new Station
-		(
-			"Station",
-			"Gray", // color
-			10, // radius
-			new Polar(Math.random(), distanceBetweenPlanetOrbits),
-		);
-		var satellites = planetWithStation.satellites;
+		var starsystemFinal = starsystems[starsystem.length - 1];
+		starsystemFinal.factionName = "todo"; // Spawns "enemy".
+		starsystemFinal.toSolarSystem();
 
-		if (satellites.length > 0)
-		{
-			satellites.removeAt(0);
-		}
-		planetWithStation.satellites.push(station);
+		starsystemFinal.stationBuild();
 
 		var returnValue = new Hyperspace
 		(
@@ -128,4 +75,86 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 
 		return returnValue;
 	}
+
+	Hyperspace.fromFileContentsAsString = function
+	(
+		size,
+		starsystemRadiusOuter,
+		starsystemSizeInner,
+		fileContentsAsString, 
+	)
+	{
+		if (fileContentsAsString == null)
+		{
+			return Hyperspace.random
+			(
+				size, 
+				512, // numberOfStarsystems
+				10, // starsystemRadiusOuter
+				starsystemSizeInner
+			);
+		}
+
+		var starsystems = [];
+
+		// Parses the file "plandata.c" from the UQM codebase.
+		var linesFromFile = fileContentsAsString.split("\n");
+		for (var i = 0; i < linesFromFile.length; i++)
+		{
+			var line = linesFromFile[i];
+			line = line.trim().toLowerCase();
+			line = line.replaceAll(" ", "");
+			line = line.replaceAll("}", "");
+			line = line.replaceAll("(", ",");
+			line = line.replaceAll("_body", "");
+
+			if (line.startsWith("{{") == true && line.indexOf("_star") >= 0)
+			{
+				line = line.replaceAll("{", "");
+
+				var tokens = line.split(",");
+				var starsystemPos = new Coords
+				(
+					parseInt(tokens[0]),
+					size.y - parseInt(tokens[1])
+				);
+
+				var colorName = tokens[4].toTitleCase();
+				var starColor = colorName;
+
+				var factionPresentID = tokens[6];
+				factionPresentName = (factionPresentID == 0 ? null : factionPresentID);
+
+				var orderInConstellation = tokens[7];
+				var constellationIndex = tokens[8];
+
+				var starName = "Star_" + constellationIndex + "_" + orderInConstellation;
+
+				var starsystem = new Starsystem
+				(
+					starName,
+					starColor,
+					starsystemPos,
+					starsystemSizeInner,
+					factionPresentName,
+					[], //planets
+				);
+
+				starsystem.contentsRandomize();
+
+				starsystems.push(starsystem);
+			} // end if
+
+		} // end for
+
+		var returnValue = new Hyperspace
+		(
+			size,
+			starsystemRadiusOuter,
+			starsystems
+		);
+
+		return returnValue;
+	}
+
 }
