@@ -24,7 +24,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		var hyperspaceSize = hyperspace.size;
 		var controlRoot = this.venueControls.controlRoot;
 		var containerMap = controlRoot.children["containerMap"];
-		var mapPos = containerMap.pos; 
+		var mapPos = containerMap.pos;
 		var mapSize = containerMap.size;
 		display.drawRectangle(mapPos, mapSize, "Black", "Gray");
 
@@ -54,13 +54,14 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			display.drawCircle(drawPos, starRadius, starColor);
 		}
 
-		var entityForPlayer = 
+		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
 		var playerPos = entityForPlayer.locatable.loc.pos;
 		drawPos.overwriteWith(playerPos).divide(hyperspaceSize).multiply(mapSize);
 		var reticleSize = new Coords(1, 1).multiplyScalar(starRadius * 4);
 		display.drawRectangleCentered(drawPos, reticleSize, null, "Gray");
 
+		/*
 		var shipGroup = entityForPlayer.modellable.model;
 		var ship = shipGroup.ships[0];
 		var shipDefn = ship.defn(world);
@@ -72,6 +73,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			 * mapSize.x
 			 * safetyFactor;
 		display.drawCircle(drawPos, fuelRangeRadius, null, "Gray");
+		*/
 	}
 
 	PlaceHyperspaceMap.prototype.updateForTimerTick_FromSuperclass = Place.prototype.draw;
@@ -125,7 +127,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 						"labelHyperspaceMap",
 						new Coords
 						(
-							containerSize.x / 2, 
+							containerSize.x / 2,
 							marginSize.y + titleSize.y / 2
 						),
 						titleSize,

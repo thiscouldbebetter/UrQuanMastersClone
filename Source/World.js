@@ -37,17 +37,26 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 			ConstraintDefn.Instances.WrapToRange
 		];
 
+		var factions =
+		[
+			new Faction
+			(
+				"SlaverGuardDrone",
+				null, // shipDefnName
+				true, // talksImmediately
+			)
+		];
+
 		var shipDefns = ShipDefn.Instances();
 
-		var defns = new Defns(constraintDefns, shipDefns);
+		var defns = new Defns(constraintDefns, factions, shipDefns);
 
 		var playerShipDefnName = "Default";
 		var playerShip = new Ship(playerShipDefnName);
 		var playerShipGroup = new ShipGroup
 		(
 			"Player",
-			10, // fuel
-			.1, // fuelPerTick
+			"Player", // factionName
 			[ playerShip ]
 		);
 
@@ -61,7 +70,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 		);
 		*/
 
-		var hyperspaceMapAsTextString = 
+		var hyperspaceMapAsTextString =
 			universe.mediaLibrary.textStringGetByName("HyperspaceMap");
 
 		var hyperspace = Hyperspace.fromFileContentsAsString

@@ -80,11 +80,19 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
-		if (entityOtherName.startsWith("Planet"))
+		var entityOtherModel = entityOther.modellable.model;
+		var entityOtherModelTypeName = entityOtherModel.constructor.name;
+
+		if (entityOtherModelTypeName == "Planet")
 		{
 			world.placeNext = new PlacePlanetOrbit(world, place.planet, place);
 		}
-		else if (entityOtherName.startsWith("Station"))
+		else if (entityOtherModelTypeName == "ShipGroup")
+		{
+			var shipGroupOther = entityOtherModel;
+			shipGroupOther.encounter(world, place, entityOther, entityPlayer);
+		}
+		else if (entityOtherModelTypeName == "Station")
 		{
 			var station = entityOther.modellable.model;
 			world.placeNext = new PlaceStation(world, station, place);
@@ -132,6 +140,70 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	);
 
 	entities.push(playerEntity);
+
+	var shipGroups = this.planet.shipGroups;
+	for (var i = 0; i < shipGroups.length; i++)
+	{
+		var shipGroup = shipGroups[i];
+
+		var damagerColor = "Red";
+		var enemyColor = damagerColor;
+		var enemyPos = this.size.clone().subtract(playerLoc.pos);
+		var enemyLoc = new Location(enemyPos);
+
+		var enemyColliderAsFace = new Face
+		([
+			new Coords(0, -entityDimension).half(),
+			new Coords(entityDimension, entityDimension).half(),
+			new Coords(-entityDimension, entityDimension).half(),
+		]);
+
+		var enemyCollider = Mesh.fromFace
+		(
+			enemyPos, // center
+			enemyColliderAsFace,
+			1 // thickness
+		);
+
+		var enemyVisual = new VisualPolygon
+		(
+			new Path(enemyColliderAsFace.vertices), enemyColor
+		);
+
+		var enemyEntity = new Entity
+		(
+			"Enemy",
+			[
+				new Modellable(shipGroup),
+				new Locatable(enemyLoc),
+				new Constrainable([constraintSpeedMax]),
+				new Collidable(enemyCollider),
+				new Damager(),
+				new Killable(),
+				new Drawable(enemyVisual),
+				new Talker("AnEveningWithProfessorSurly"),
+				new Actor
+				(
+					function activity(universe, world, place, actor)
+					{
+						var entityToTargetName = "Player";
+						var target = place.entities[entityToTargetName];
+						var actorLoc = actor.locatable.loc;
+
+						actorLoc.vel.overwriteWith
+						(
+							target.locatable.loc.pos
+						).subtract
+						(
+							actorLoc.pos
+						).normalize();
+					}
+				),
+			]
+		);
+	}
+
+	entities.push(enemyEntity);
 
 	this.camera = new Camera
 	(

@@ -1,7 +1,8 @@
 
-function Faction(name, shipDefnName, conversationOptions)
+function Faction(name, shipDefnName, isHostile, talksImmediately)
 {
 	this.name = name;
 	this.shipDefnName = shipDefnName;
-	this.conversationOptions = conversationOptions;
+	this.isHostile = isHostile;
+	this.talksImmediately = talksImmediately;
 }

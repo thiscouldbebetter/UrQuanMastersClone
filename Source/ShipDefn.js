@@ -36,6 +36,17 @@ function ShipDefn
 				new VisualNone() // todo
 			);
 
+			var shipDefnSlaverGuardDrone = new ShipDefn
+			(
+				"SlaverGuardDrone",
+				null, // factionName
+				.1, // accel
+				2, // speedMax
+				.01, // turnsPerTick
+				10, // integrityMax
+				new VisualNone() // todo
+			);
+
 			ShipDefn._instances =
 			[
 				shipDefnDefault

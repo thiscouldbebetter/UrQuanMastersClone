@@ -70,6 +70,8 @@ function PlaceStarsystem(world, starsystem, playerPos)
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
+		var entityOtherModel = entityOther.modellable.model;
+		var entityOtherModelTypeName = entityOtherModel.constructor.name;
 		if (entityOtherName.startsWith("Enemy"))
 		{
 			var shipGroupOther = entityOther.modellable.model;
@@ -78,7 +80,7 @@ function PlaceStarsystem(world, starsystem, playerPos)
 			var placeEncounter = new PlaceEncounter(world, encounter);
 			world.placeNext = placeEncounter;
 		}
-		else if (entityOtherName.startsWith("Planet"))
+		else if (entityOtherModelTypeName == "Planet")
 		{
 			var planet = entityOther.modellable.model;
 			var sizeNext = place.size.clone();
@@ -173,7 +175,7 @@ function PlaceStarsystem(world, starsystem, playerPos)
 		var enemyShipGroup = new ShipGroup
 		(
 			"Enemy",
-			0, 0, // fuel
+			"Enemy", // factionName
 			[ enemyShip ]
 		);
 

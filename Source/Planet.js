@@ -1,5 +1,5 @@
 
-function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites)
+function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups)
 {
 	this.name = name;
 	this.color = color;
@@ -7,6 +7,7 @@ function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites)
 	this.posAsPolar = posAsPolar;
 	this.sizeSurface = sizeSurface;
 	this.satellites = satellites;
+	this.shipGroups = (shipGroups == null ? [] : shipGroups);
 }
 {
 	Planet.Colors =

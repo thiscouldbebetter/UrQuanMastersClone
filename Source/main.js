@@ -25,6 +25,8 @@ function main()
 		[
 			//new TextString("Instructions", "../Content/Text/Instructions.txt"),
 			new TextString("HyperspaceMap", "../Content/Import/sc2/src/uqm/plandata.c"),
+			new TextString("Conversation", "../Content/Text/Conversation.json"),
+
 		]
 	);
 

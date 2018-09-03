@@ -9,8 +9,8 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 	this.planets = planets;
 }
 {
-	Starsystem.StarColors = 
-	[ 
+	Starsystem.StarColors =
+	[
 		"Red",
 		"Orange",
 		"Yellow",
@@ -19,7 +19,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 		"White",
 	];
 
-	Starsystem.prototype.toSolarSystem = function()
+	Starsystem.prototype.solarSystem = function()
 	{
 		var numberOfPlanets = 9;
 
@@ -28,100 +28,114 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 
 		var radiusBase = 5;
 
-		this.planets = 
+		this.planets =
 		[
 			new Planet
 			(
-				"Mercury", 
-				"Gray", 
+				"Mercury",
+				"Gray",
 				radiusBase,
-				new Polar(Math.random(), 1 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], //satellites
+				new Polar(Math.random(), 1 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] //satellites
 			),
 			new Planet
 			(
-				"Venus", 
-				"White", 
+				"Venus",
+				"White",
 				radiusBase,
-				new Polar(Math.random(), 2 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], //satellites
-			),
-
-			new Planet
-			(
-				"Earth", 
-				"Cyan", 
-				radiusBase,
-				new Polar(Math.random(), 3 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], //satellites
+				new Polar(Math.random(), 2 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] //satellites
 			),
 
 			new Planet
 			(
-				"Mars", 
-				"Red", 
+				"Earth",
+				"Cyan",
 				radiusBase,
-				new Polar(Math.random(), 4 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], // satellites
+				new Polar(Math.random(), 3 * distanceBetweenOrbits),
+				this.sizeInner,
+				[
+					new Station
+					(
+						"Station",
+						"Gray", // color
+						10, // radius
+						new Polar(Math.random(), distanceBetweenOrbits)
+					)
+				], //satellites
+				// shipGroups
+				[
+					new ShipGroup
+					(
+						"SlaverGuardDrone",
+						"SlaverGuardDrone", // factionName
+						null // ships
+					)
+				]
 			),
 
 			new Planet
 			(
-				"Jupiter", 
-				"Orange", 
+				"Mars",
+				"Red",
 				radiusBase,
-				new Polar(Math.random(), 5 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], // satellites
+				new Polar(Math.random(), 4 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] // satellites
 			),
 
 			new Planet
 			(
-				"Saturn", 
-				"Tan", 
+				"Jupiter",
+				"Orange",
 				radiusBase,
-				new Polar(Math.random(), 6 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], // satellites
+				new Polar(Math.random(), 5 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] // satellites
 			),
 
 			new Planet
 			(
-				"Uranus", 
-				"Cyan", 
+				"Saturn",
+				"Tan",
 				radiusBase,
-				new Polar(Math.random(), 7 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], // satellites
+				new Polar(Math.random(), 6 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] // satellites
 			),
 
 			new Planet
 			(
-				"Neptune", 
-				"Cyan", 
+				"Uranus",
+				"Cyan",
 				radiusBase,
-				new Polar(Math.random(), 8 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], // satellites
+				new Polar(Math.random(), 7 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] // satellites
 			),
 
 			new Planet
 			(
-				"Pluto", 
-				"Violet", 
+				"Neptune",
+				"Cyan",
 				radiusBase,
-				new Polar(Math.random(), 9 * distanceBetweenOrbits), 
-				this.sizeInner, 
-				[], // satellites
+				new Polar(Math.random(), 8 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] // satellites
 			),
 
-		]
-
-		this.planets = planets;
+			new Planet
+			(
+				"Pluto",
+				"Violet",
+				radiusBase,
+				new Polar(Math.random(), 9 * distanceBetweenOrbits),
+				this.sizeInner,
+				[] // satellites
+			),
+		];
 	}
 
 	Starsystem.prototype.contentsRandomize = function()
@@ -155,7 +169,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				var moonName = planetName + "Moon" + m;
 				var moonColor = planetColor;
 				var moonRadiusOuter = planetRadiusOuter;
-				var moonPosAsPolar = 
+				var moonPosAsPolar =
 					new Polar(Math.random(), distanceBetweenPlanetOrbits * (m + 1));
 				var moonAsPlanet = new Planet
 				(
@@ -175,13 +189,12 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 		this.planets = planets;
 	}
 
-	Starsystem.prototype.stationBuild = function()
+	Starsystem.prototype.stationBuild = function(planetWithStation)
 	{
 		var numberOfPlanets = this.planets.length;
 		var distanceBetweenPlanetOrbits =
 			this.sizeInner.clone().half().y / (numberOfPlanets + 1);
 
-		var planetWithStation = this.planets[0];
 		var station = new Station
 		(
 			"Station",

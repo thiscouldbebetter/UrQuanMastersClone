@@ -60,11 +60,9 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			starsystems.push(starsystem);
 		}
 
-		var starsystemFinal = starsystems[starsystem.length - 1];
+		var starsystemFinal = starsystems[starsystems.length - 1];
 		starsystemFinal.factionName = "todo"; // Spawns "enemy".
-		starsystemFinal.toSolarSystem();
-
-		starsystemFinal.stationBuild();
+		starsystemFinal.solarSystem();
 
 		var returnValue = new Hyperspace
 		(
@@ -81,14 +79,14 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		size,
 		starsystemRadiusOuter,
 		starsystemSizeInner,
-		fileContentsAsString, 
+		fileContentsAsString,
 	)
 	{
 		if (fileContentsAsString == null)
 		{
 			return Hyperspace.random
 			(
-				size, 
+				size,
 				512, // numberOfStarsystems
 				10, // starsystemRadiusOuter
 				starsystemSizeInner
@@ -146,6 +144,10 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			} // end if
 
 		} // end for
+
+		var starsystemFinal = starsystems[starsystems.length - 1];
+		//starsystemFinal.factionName = "todo"; // Spawns "enemy".
+		starsystemFinal.solarSystem();
 
 		var returnValue = new Hyperspace
 		(

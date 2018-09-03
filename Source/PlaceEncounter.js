@@ -31,31 +31,52 @@ function PlaceEncounter(world, encounter)
 
 			var size = new Coords(400, 300); // hack - size
 
+			var choiceActionTalk = function(universe)
+			{
+				var world = universe.world;
+				var placeEncounter = world.place;
+				var encounter = placeEncounter.encounter;
+
+				var conversationDefnAsJSON =
+					universe.mediaLibrary.textStringGetByName("Conversation").value;
+				var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+				var conversation = new ConversationRun(conversationDefn);
+				var conversationSize = universe.display.sizeDefault.clone();
+				var conversationAsControl =
+					conversation.toControl(conversationSize, universe);
+
+				var venueNext = new VenueControls(conversationAsControl);
+
+				universe.venueNext = venueNext;
+			};
+
+			var choiceActionFight = function(universe)
+			{
+				var world = universe.world;
+				var placeEncounter = world.place;
+				var encounter = placeEncounter.encounter;
+				var combat = new Combat(size, encounter);
+				world.placeNext = new PlaceCombat(world, combat);
+			}
+
+			var choiceNames = [ "Talk" ];
+			var choiceActions = [ choiceActionTalk ];
+
+			var factionName = this.encounter.shipGroupOther.factionName;
+			var faction = universe.world.defns.factions[factionName];
+			if (faction.isHostile == true)
+			{
+				choiceNames.push("Fight");
+				choiceActions.push(choiceActionFight);
+			}
+
 			var controlRoot = universe.controlBuilder.choice
 			(
 				universe,
 				universe.display.sizeInPixels.clone(),
 				messageToShow,
-				[ "Talk", "Fight" ],
-				[
-					function talk(universe)
-					{
-						var world = universe.world;
-						var placeEncounter = world.place;
-						var encounter = placeEncounter.encounter;
-						var conversation = Conversation.demo();
-						world.placeNext = new PlaceConversation(world, conversation, placeEncounter);
-					},
-
-					function fight(universe)
-					{
-						var world = universe.world;
-						var placeEncounter = world.place;
-						var encounter = placeEncounter.encounter;
-						var combat = new Combat(size, encounter);
-						world.placeNext = new PlaceCombat(world, combat);
-					}
-				]
+				choiceNames,
+				choiceActions
 			);
 
 			this.venueControls = new VenueControls(controlRoot);
