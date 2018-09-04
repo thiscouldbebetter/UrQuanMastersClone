@@ -1,12 +1,18 @@
 
-function Station(name, color, radiusOuter, posAsPolar)
+function Station(name, color, radiusOuter, factionName, posAsPolar)
 {
 	this.name = name;
 	this.color = color;
 	this.radiusOuter = radiusOuter;
+	this.factionName = factionName;
 	this.posAsPolar = posAsPolar;
 }
 {
+	Station.prototype.faction = function(world)
+	{
+		return world.defns.factions[this.factionName];
+	}
+
 	Station.prototype.toEntity = function(primaryPos)
 	{
 		var pos = primaryPos.clone().add

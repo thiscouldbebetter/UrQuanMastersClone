@@ -75,7 +75,6 @@ function PlaceStarsystem(world, starsystem, playerPos)
 		if (entityOtherName.startsWith("Enemy"))
 		{
 			var shipGroupOther = entityOther.modellable.model;
-			entityPlayer.collidable.ticksUntilCanCollide = 50; // hack
 			var encounter = new Encounter(shipGroupOther, place, entityPlayer.locatable.loc.pos);
 			var placeEncounter = new PlaceEncounter(world, encounter);
 			world.placeNext = placeEncounter;

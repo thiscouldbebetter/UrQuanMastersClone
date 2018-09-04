@@ -1,0 +1,17 @@
+{
+    "name": "EarthStation",
+    "talkNodes": [
+
+{ "defnName": "Display", "parameters": "Are you the resupply ship?"},
+{ "defnName": "Display", "parameters": "I can't tell: our sensors are on the fritz."},
+{ "defnName": "Display", "parameters": "It's not just the sensors, either."},
+{ "defnName": "Display", "parameters": "We are officially out of EVERYTHING,"},
+{ "defnName": "Display", "parameters": "and that includes oxygen, by the way."},
+{ "defnName": "Display", "parameters": "We need refueling, and we need it now."},
+{ "defnName": "Display", "parameters": "I repeat: are you the Empire resupply ship?"},
+{ "defnName": "Display", "parameters": "Where have you guys BEEN all this time?"},
+
+{ "defnName": "Quit" }
+
+    ]
+}

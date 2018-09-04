@@ -6,6 +6,18 @@ function Encounter(shipGroupOther, placeToReturnTo, posToReturnTo)
 	this.posToReturnTo = posToReturnTo;
 }
 {
+	Encounter.create = function(world, place, entityForShipGroup, entityPlayer)
+	{
+		entityForShipGroup.collidable.ticksUntilCanCollide = 50; // hack
+		var shipGroup = entityForShipGroup.modellable.model;
+		var encounter = new Encounter
+		(
+			shipGroup, place, entityPlayer.locatable.loc.pos
+		);
+		var placeEncounter = new PlaceEncounter(world, encounter);
+		world.placeNext = placeEncounter;
+	}
+
 	Encounter.prototype.returnToPlace = function(world)
 	{
 		var placeNext = this.placeToReturnTo;

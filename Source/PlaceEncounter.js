@@ -36,11 +36,23 @@ function PlaceEncounter(world, encounter)
 				var world = universe.world;
 				var placeEncounter = world.place;
 				var encounter = placeEncounter.encounter;
-
+				var shipGroupOther = encounter.shipGroupOther;
+				var faction = shipGroupOther.faction(universe.world);
+				var conversationDefnName = faction.conversationDefnName;
+				var conversationResourceName = "Conversation-" + conversationDefnName;
 				var conversationDefnAsJSON =
-					universe.mediaLibrary.textStringGetByName("Conversation").value;
+					universe.mediaLibrary.textStringGetByName(conversationResourceName).value;
 				var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-				var conversation = new ConversationRun(conversationDefn);
+				var venueToReturnTo = universe.venueCurrent;
+				var conversation = new ConversationRun
+				(
+					conversationDefn,
+					function quit()
+					{
+						encounter.returnToPlace(world);
+						universe.venueNext = venueToReturnTo;
+					}
+				);
 				var conversationSize = universe.display.sizeDefault.clone();
 				var conversationAsControl =
 					conversation.toControl(conversationSize, universe);
@@ -49,7 +61,16 @@ function PlaceEncounter(world, encounter)
 
 				universe.venueNext = venueNext;
 			};
-
+			
+			var factionName = this.encounter.shipGroupOther.factionName;
+			var faction = universe.world.defns.factions[factionName];
+		
+			if (faction.talksImmediately == true)
+			{
+				choiceActionTalk(universe);
+				return; // hack
+			}
+						
 			var choiceActionFight = function(universe)
 			{
 				var world = universe.world;
@@ -62,9 +83,7 @@ function PlaceEncounter(world, encounter)
 			var choiceNames = [ "Talk" ];
 			var choiceActions = [ choiceActionTalk ];
 
-			var factionName = this.encounter.shipGroupOther.factionName;
-			var faction = universe.world.defns.factions[factionName];
-			if (faction.isHostile == true)
+			if (faction.relationsWithPlayer == Faction.RelationsHostile)
 			{
 				choiceNames.push("Fight");
 				choiceActions.push(choiceActionFight);

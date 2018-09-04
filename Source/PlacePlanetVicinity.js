@@ -80,24 +80,8 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
-		var entityOtherModel = entityOther.modellable.model;
-		var entityOtherModelTypeName = entityOtherModel.constructor.name;
-
-		if (entityOtherModelTypeName == "Planet")
-		{
-			world.placeNext = new PlacePlanetOrbit(world, place.planet, place);
-		}
-		else if (entityOtherModelTypeName == "ShipGroup")
-		{
-			var shipGroupOther = entityOtherModel;
-			shipGroupOther.encounter(world, place, entityOther, entityPlayer);
-		}
-		else if (entityOtherModelTypeName == "Station")
-		{
-			var station = entityOther.modellable.model;
-			world.placeNext = new PlaceStation(world, station, place);
-		}
-		else if (entityOtherName.startsWith("Wall"))
+		
+		if (entityOtherName.startsWith("Wall"))
 		{
 			var planet = place.planet;
 			var placeStarsystem = place.placeStarsystem;
@@ -114,11 +98,38 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 				world, starsystem, posNext
 			);
 		}
+		else
+		{
+			var entityOtherModel = entityOther.modellable.model;
+			var entityOtherModelTypeName = entityOtherModel.constructor.name;
+			
+			if (entityOtherModelTypeName == "Planet")
+			{
+				world.placeNext = new PlacePlanetOrbit(world, place.planet, place);
+			}
+			else if (entityOtherModelTypeName == "ShipGroup")
+			{
+				Encounter.create(world, place, entityOther, entityPlayer);
+			}
+			else if (entityOtherModelTypeName == "Station")
+			{
+				var station = entityOther.modellable.model;
+				var faction = station.faction(world);
+				if (faction.relationsWithPlayer == Faction.RelationsAllied)
+				{
+					world.placeNext = new PlaceStation(world, station, place);
+				}
+				else
+				{
+					Encounter.create(world, place, entityOther, entityPlayer);
+				}
+			}
+		}
 	}
 
 	var constraintSpeedMax = new Constraint("SpeedMax", 1);
 	//var constraintFriction = new Constraint("Friction", 0.3);
-	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
+	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
 
 	var playerEntity = new Entity
 	(
@@ -126,7 +137,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 		[
 			new Modellable(world.playerShipGroup),
 			new Locatable(playerLoc),
-			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
+			new Constrainable([constraintSpeedMax, constraintTrimToRange]),
 			new Collidable
 			(
 				playerCollider,
@@ -145,6 +156,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	for (var i = 0; i < shipGroups.length; i++)
 	{
 		var shipGroup = shipGroups[i];
+		var faction = shipGroup.faction(world);
 
 		var damagerColor = "Red";
 		var enemyColor = damagerColor;
@@ -169,7 +181,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 		(
 			new Path(enemyColliderAsFace.vertices), enemyColor
 		);
-
+		
 		var enemyEntity = new Entity
 		(
 			"Enemy",
@@ -181,24 +193,8 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 				new Damager(),
 				new Killable(),
 				new Drawable(enemyVisual),
-				new Talker("AnEveningWithProfessorSurly"),
-				new Actor
-				(
-					function activity(universe, world, place, actor)
-					{
-						var entityToTargetName = "Player";
-						var target = place.entities[entityToTargetName];
-						var actorLoc = actor.locatable.loc;
-
-						actorLoc.vel.overwriteWith
-						(
-							target.locatable.loc.pos
-						).subtract
-						(
-							actorLoc.pos
-						).normalize();
-					}
-				),
+				new Talker("todo"),
+				new Actor(faction.shipGroupActivity),
 			]
 		);
 	}

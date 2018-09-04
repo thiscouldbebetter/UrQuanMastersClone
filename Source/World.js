@@ -36,15 +36,63 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 			ConstraintDefn.Instances.TrimToRange,
 			ConstraintDefn.Instances.WrapToRange
 		];
+		
+		var factionSlaverGuardDrone = new Faction
+		(
+			"SlaverGuardDrone",
+			Faction.RelationsHostile,
+			true, // talksImmediately
+			"SlaverGuardDrone", // conversationDefnName
+			function shipGroupActivity(universe, world, place, entityActor)
+			{
+				var actor = entityActor.actor;
+				
+				var targetPos = actor.targetPos;
+				if (targetPos == null)
+				{
+					var entityToTargetName = "Player";
+					var target = place.entities[entityToTargetName];
+					targetPos = target.locatable.loc.pos;
+					actor.targetPos = targetPos;
+				}
+
+				var actorLoc = entityActor.locatable.loc;
+				var actorPos = actorLoc.pos;
+				var actorVel = actorLoc.vel;
+
+				actorVel.overwriteWith
+				(
+					targetPos
+				).subtract
+				(
+					actorPos
+				);
+				
+				if (actorVel.magnitude() < 1)
+				{
+					actorPos.overwriteWith(targetPos);
+					place.entitiesToRemove.push(entityActor);
+				}
+				else
+				{
+					actorVel.normalize();
+				}
+			}
+		);
+		
+		var factionEarth = new Faction
+		(
+			"EarthStation",
+			Faction.RelationsNeutral,
+			true, // talksImmediately
+			"EarthStation", // conversationDefnName
+			null // shipGroupActivity
+		);
 
 		var factions =
 		[
-			new Faction
-			(
-				"SlaverGuardDrone",
-				null, // shipDefnName
-				true, // talksImmediately
-			)
+			factionEarth,
+			factionSlaverGuardDrone,
 		];
 
 		var shipDefns = ShipDefn.Instances();
