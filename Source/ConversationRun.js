@@ -29,58 +29,8 @@
 			(paneSizeTopAndBottom.y - buttonHeight - marginSize.y * 3)
 		);
 
-		var visualFaceRadius = paneSizeTopAndBottom.y * .3;
-		var visualFaceEyeRadius = visualFaceRadius / 4;
-		var visualFacePupilRadius = visualFaceEyeRadius / 3;
-		var visualFaceColor = "Gray";
-		var visualFaceEyeColor = "White";
-		var visualFacePupilColor = "Black";
-		var visualFace = new VisualGroup
-		([
-			new VisualCircle(visualFaceRadius, visualFaceColor),
-			new VisualOffset
-			(
-				new VisualGroup
-				([
-					new VisualCircle(visualFaceEyeRadius, visualFaceEyeColor),
-					new VisualCircle(visualFacePupilRadius, visualFacePupilColor),
-				]),
-				new Coords(-1, -1).multiplyScalar(1.5 * visualFaceEyeRadius)
-			),
-			new VisualOffset
-			(
-				new VisualGroup
-				([
-					new VisualCircle(visualFaceEyeRadius, visualFaceEyeColor),
-					new VisualCircle(visualFacePupilRadius, visualFacePupilColor),
-				]),
-				new Coords(1, -1).multiplyScalar(1.5 * visualFaceEyeRadius)
-			),
-			new VisualOffset
-			(
-				new VisualRay(visualFaceRadius, visualFaceEyeColor),
-				new Coords(-2, 2).multiplyScalar(visualFaceEyeRadius)
-			),
-		]);
-
-		var visualNonplayer = new VisualGroup
-		([
-			new VisualRectangle(paneSizeTopAndBottom, "Cyan"),
-			new VisualOffset
-			(
-				new VisualRectangle
-				(
-					new Coords
-					(
-						paneSizeTopAndBottom.x,
-						paneSizeTopAndBottom.y / 2
-					),
-					"Green"
-				),
-				new Coords(0, paneSizeTopAndBottom.y / 4)
-			),
-			visualFace
-		])
+		var imageNonplayerName = "Conversation";
+		var visualNonplayer = new VisualImage(imageNonplayerName);
 
 		var controlRoot = new ControlContainer
 		(

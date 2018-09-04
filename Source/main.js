@@ -6,6 +6,7 @@ function main()
 	(
 		// images
 		[
+			new Image("Conversation", "../Content/Images/Conversation.png"),
 			new Image("Title", "../Content/Images/Title.png"),
 		],
 		// sounds
