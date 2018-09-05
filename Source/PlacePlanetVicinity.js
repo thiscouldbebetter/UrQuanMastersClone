@@ -29,7 +29,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 
 	var planetRadius = entityDimension;
 	var planetPos = sizeHalf.clone();
-	var planetColor = planet.color;
+	var planetColor = planet.defn().color;
 	var planetVisual = new VisualCircle(planetRadius, planetColor);
 	var planetCollider = new Sphere(planetPos, planetRadius);
 
@@ -80,7 +80,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
-		
+
 		if (entityOtherName.startsWith("Wall"))
 		{
 			var planet = place.planet;
@@ -102,7 +102,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 		{
 			var entityOtherModel = entityOther.modellable.model;
 			var entityOtherModelTypeName = entityOtherModel.constructor.name;
-			
+
 			if (entityOtherModelTypeName == "Planet")
 			{
 				world.placeNext = new PlacePlanetOrbit(world, place.planet, place);
@@ -181,10 +181,10 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 		(
 			new Path(enemyColliderAsFace.vertices), enemyColor
 		);
-		
+
 		var enemyEntity = new Entity
 		(
-			"Enemy",
+			"Enemy" + i,
 			[
 				new Modellable(shipGroup),
 				new Locatable(enemyLoc),
@@ -197,9 +197,9 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 				new Actor(faction.shipGroupActivity),
 			]
 		);
-	}
 
-	entities.push(enemyEntity);
+		entities.push(enemyEntity);
+	}
 
 	this.camera = new Camera
 	(

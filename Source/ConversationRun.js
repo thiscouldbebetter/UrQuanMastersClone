@@ -1,11 +1,11 @@
 // partial class
 
-	// override 
+	// override
 	ConversationRun.prototype.toControl = function(containerSize, universe)
 	{
 		var conversationRun = this;
 		var conversationDefn = conversationRun.defn;
-	
+
 		var marginWidth = 10;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 		var paneSizeTopAndBottom = new Coords
@@ -64,7 +64,7 @@
 							true, // isTextCentered
 							new DataBinding
 							(
-								conversationRun, 
+								conversationRun,
 								"scopeCurrent.displayTextCurrent"
 							),
 							fontHeight
@@ -130,7 +130,7 @@
 							universe, // context
 							false // canBeHeldDown
 						),
-						
+
 						new ControlButton
 						(
 							"buttonTranscript",
@@ -159,7 +159,7 @@
 							universe, // context
 							false // canBeHeldDown
 						),
-						
+
 						new ControlButton
 						(
 							"buttonLeave",
@@ -197,7 +197,7 @@
 				),
 			]
 		);
-		
+
 		return controlRoot;
-		
+
 	} // end function toControl()

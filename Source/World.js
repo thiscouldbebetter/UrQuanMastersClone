@@ -36,7 +36,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 			ConstraintDefn.Instances.TrimToRange,
 			ConstraintDefn.Instances.WrapToRange
 		];
-		
+
 		var factionSlaverGuardDrone = new Faction
 		(
 			"SlaverGuardDrone",
@@ -46,7 +46,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 			function shipGroupActivity(universe, world, place, entityActor)
 			{
 				var actor = entityActor.actor;
-				
+
 				var targetPos = actor.targetPos;
 				if (targetPos == null)
 				{
@@ -67,7 +67,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 				(
 					actorPos
 				);
-				
+
 				if (actorVel.magnitude() < 1)
 				{
 					actorPos.overwriteWith(targetPos);
@@ -79,7 +79,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 				}
 			}
 		);
-		
+
 		var factionEarth = new Faction
 		(
 			"EarthStation",

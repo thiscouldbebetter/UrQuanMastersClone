@@ -1,8 +1,8 @@
 
-function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups)
+function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups)
 {
 	this.name = name;
-	this.color = color;
+	this.defnName = defnName;
 	this.radiusOuter = radiusOuter;
 	this.posAsPolar = posAsPolar;
 	this.sizeSurface = sizeSurface;
@@ -10,17 +10,12 @@ function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites, s
 	this.shipGroups = (shipGroups == null ? [] : shipGroups);
 }
 {
-	Planet.Colors =
-	[
-		"Brown",
-		"Cyan",
-		"Green",
-		"LightGray",
-		"Orange",
-		"White",
-	];
-
 	// instance methods
+
+	Planet.prototype.defn = function()
+	{
+		return PlanetDefn.Instances()._All[this.defnName];
+	}
 
 	Planet.prototype.toEntity = function(primaryPos)
 	{
@@ -29,6 +24,7 @@ function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites, s
 			this.posAsPolar.toCoords(new Coords())
 		);
 
+		var planetDefn = this.defn();
 		var visual = new VisualGroup
 		([
 			new VisualAnchor
@@ -36,7 +32,7 @@ function Planet(name, color, radiusOuter, posAsPolar, sizeSurface, satellites, s
 				new VisualCircle(this.posAsPolar.radius, null, "Gray"),
 				primaryPos
 			),
-			new VisualCircle(this.radiusOuter, this.color)
+			new VisualCircle(this.radiusOuter, planetDefn.color)
 		]);
 
 		var collider = new Sphere(pos, this.radiusOuter);

@@ -61,16 +61,16 @@ function PlaceEncounter(world, encounter)
 
 				universe.venueNext = venueNext;
 			};
-			
+
 			var factionName = this.encounter.shipGroupOther.factionName;
 			var faction = universe.world.defns.factions[factionName];
-		
+
 			if (faction.talksImmediately == true)
 			{
 				choiceActionTalk(universe);
 				return; // hack
 			}
-						
+
 			var choiceActionFight = function(universe)
 			{
 				var world = universe.world;
