@@ -6,6 +6,8 @@
 		var conversationRun = this;
 		var conversationDefn = conversationRun.defn;
 
+		var venueToReturnTo = universe.venueCurrent;
+
 		var marginWidth = 10;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 		var paneSizeTopAndBottom = new Coords
@@ -176,9 +178,12 @@
 							true, // isEnabled
 							function click()
 							{
+								conversationRun.quit();
+								/*
 								var venueNext = venueToReturnTo;
 								venueNext = new VenueFader(venueNext, universe.venueCurrent);
 								universe.venueNext = venueNext;
+								*/
 							},
 							universe, // context
 							false // canBeHeldDown

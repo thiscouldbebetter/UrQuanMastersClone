@@ -1,4 +1,4 @@
-function World(name, dateCreated, defns, playerShipGroup, hyperspace)
+function World(name, dateCreated, defns, player, hyperspace)
 {
 	this.name = name;
 	this.dateCreated = dateCreated;
@@ -7,7 +7,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 
 	this.defns = defns;
 
-	this.playerShipGroup = playerShipGroup;
+	this.player = player;
 	this.hyperspace = hyperspace;
 
 	var starsystems = hyperspace.starsystems;
@@ -107,6 +107,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 			"Player", // factionName
 			[ playerShip ]
 		);
+		var player = new Player("Player", playerShipGroup);
 
 		/*
 		var hyperspace = Hyperspace.random
@@ -134,7 +135,7 @@ function World(name, dateCreated, defns, playerShipGroup, hyperspace)
 			"World-" + nowAsString,
 			now, // dateCreated
 			defns,
-			playerShipGroup,
+			player,
 			hyperspace
 		);
 		return returnValue;

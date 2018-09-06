@@ -118,7 +118,7 @@ function PlaceCombat(world, combat)
 	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
 
-	var playerShip = world.playerShipGroup.ships[0]; // todo
+	var playerShip = world.player.shipGroup.ships[0]; // todo
 
 	var playerEntity = new Entity
 	(

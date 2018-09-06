@@ -2,6 +2,9 @@
     "name": "EarthStation",
     "talkNodes": [
 
+{ "defnName": "Script", "parameters": "function(cr) { cr.vars['StationVisited'] = cr.uni.world.player.vars['StationVisited']; }" },
+{ "defnName": "JumpIfTrue", "parameters": ["StationVisited", "YoureBack" ] },
+{ "defnName": "Script", "parameters": "function(cr) { cr.uni.world.player.vars['StationVisited'] = false; }" },
 { "defnName": "Display", "parameters": "Are you the resupply ship?"},
 { "defnName": "Display", "parameters": "I can't tell: our sensors are on the fritz."},
 { "defnName": "Display", "parameters": "It's not just the sensors, either."},
@@ -10,8 +13,17 @@
 { "defnName": "Display", "parameters": "We need refueling, and we need it now."},
 { "defnName": "Display", "parameters": "I repeat: are you the Empire resupply ship?"},
 { "defnName": "Display", "parameters": "Where have you guys BEEN all this time?"},
-
+{ "defnName": "Quit" },
+{ "name": "YoureBack", "defnName": "Display", "parameters": "You're back." },
+{ "defnName": "Display", "parameters": "Have you brought the radioactives we need?."},
+{ "defnName": "Option", "parameters": [ "Radioactives.Yes", "Yes." ]},
+{ "defnName": "Option", "parameters": [ "Radioactives.No", "No." ]},
+{ "defnName": "Prompt" },
+{ "name": "Radioactives.Yes", "defnName": "Display", "parameters": "Excellent.  Good doing business with you.."},
+{ "defnName": "Quit" },
+{ "name": "Radioactives.No", "defnName": "Display", "parameters": "Please hurry, we desperately need them."},
 { "defnName": "Quit" }
+
 
     ]
 }

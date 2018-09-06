@@ -70,34 +70,13 @@ function PlaceStarsystem(world, starsystem, playerPos)
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
 		var entityOtherName = entityOther.name;
-		var entityOtherModel = entityOther.modellable.model;
-		var entityOtherModelTypeName = entityOtherModel.constructor.name;
+
 		if (entityOtherName.startsWith("Enemy"))
 		{
 			var shipGroupOther = entityOther.modellable.model;
 			var encounter = new Encounter(shipGroupOther, place, entityPlayer.locatable.loc.pos);
 			var placeEncounter = new PlaceEncounter(world, encounter);
 			world.placeNext = placeEncounter;
-		}
-		else if (entityOtherModelTypeName == "Planet")
-		{
-			var planet = entityOther.modellable.model;
-			var sizeNext = place.size.clone();
-			var heading = entityPlayer.locatable.loc.orientation.headingInTurns();
-			var playerPosNext = new Polar
-			(
-				heading + .5, .4 * sizeNext.y
-			).wrap().toCoords
-			(
-				new Coords()
-			).add
-			(
-				sizeNext.clone().half()
-			);
-			world.placeNext = new PlacePlanetVicinity
-			(
-				world, sizeNext, planet, playerPosNext, place
-			);
 		}
 		else if (entityOtherName.startsWith("Wall"))
 		{
@@ -112,20 +91,46 @@ function PlaceStarsystem(world, starsystem, playerPos)
 				)
 			);
 		}
+		else
+		{
+			var entityOtherModel = entityOther.modellable.model;
+			var entityOtherModelTypeName = entityOtherModel.constructor.name;
+
+			if (entityOtherModelTypeName == "Planet")
+			{
+				var planet = entityOther.modellable.model;
+				var sizeNext = place.size.clone();
+				var heading = entityPlayer.locatable.loc.orientation.headingInTurns();
+				var playerPosNext = new Polar
+				(
+					heading + .5, .4 * sizeNext.y
+				).wrap().toCoords
+				(
+					new Coords()
+				).add
+				(
+					sizeNext.clone().half()
+				);
+				world.placeNext = new PlacePlanetVicinity
+				(
+					world, sizeNext, planet, playerPosNext, place
+				);
+			}
+		}
 	}
 
 	var constraintSpeedMax = new Constraint("SpeedMax", 1);
 	//var constraintFriction = new Constraint("Friction", 0.3);
-	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
+	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
 
-	var playerShipGroup = world.playerShipGroup;
+	var playerShipGroup = world.player.shipGroup;
 
 	var playerEntity = new Entity
 	(
 		"Player",
 		[
 			new Locatable(playerLoc),
-			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
+			new Constrainable([constraintSpeedMax, constraintTrimToRange]),
 			new Collidable
 			(
 				playerCollider,

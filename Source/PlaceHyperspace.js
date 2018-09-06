@@ -138,7 +138,7 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 		}
 	}
 
-	var playerShipGroup = world.playerShipGroup;
+	var playerShipGroup = world.player.shipGroup;
 	var playerShip = playerShipGroup.ships[0];
 	var playerShipDefn = playerShip.defn(world);
 

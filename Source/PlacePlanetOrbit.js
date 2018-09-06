@@ -40,6 +40,23 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				containerDockSize.y - marginSize.y * 3 - titleSize.y
 			);
 
+			var buttonSizeRight = new Coords
+			(
+				containerRightSize.x - marginSize.x * 2, buttonSize.y
+			);
+
+			var buttonScanSize = new Coords
+			(
+				containerRightSize.x - marginSize.x * 4,
+				buttonSize.y
+			);
+
+			var containerScanSize = new Coords
+			(
+				containerRightSize.x - marginSize.x * 2,
+				buttonScanSize.y * 3 + marginSize.y * 4
+			);
+
 			var containerLeftSize = new Coords
 			(
 				containerDockSize.x - marginSize.x * 3 - containerRightSize.x,
@@ -54,7 +71,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 
 			var controlRoot = new ControlContainer
 			(
-				"containerDock",
+				"containerPlanetOrbit",
 				new Coords(0, 0), // pos
 				containerDockSize,
 				[
@@ -111,6 +128,94 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 								"[Surface]",
 								fontHeightShort
 							),
+						]
+					),
+
+					new ControlContainer
+					(
+						"containerRight",
+						new Coords
+						(
+							marginSize.x * 2 + containerLeftSize.x,
+							marginSize.y * 2 + titleSize.y
+						),
+						containerRightSize,
+						// children
+						[
+							new ControlContainer
+							(
+								"containerScan",
+								new Coords
+								(
+									marginSize.x,
+									containerRightSize.y
+										- marginSize.y * 2
+										- buttonSizeRight.y
+										- containerScanSize.y
+								),
+								containerScanSize,
+								[
+									new ControlButton
+									(
+										"buttonScanMineral",
+										new Coords
+										(
+											marginSize.x,
+											marginSize.y
+										),
+										buttonScanSize,
+										"Mineral",
+										fontHeight,
+										true, // hasBorder,
+										true, // isEnabled,
+										function click(universe)
+										{
+											// todo
+										},
+										universe
+									),
+
+									new ControlButton
+									(
+										"buttonScanLife",
+										new Coords
+										(
+											marginSize.x,
+											marginSize.y * 2 + buttonScanSize.y
+										),
+										buttonScanSize,
+										"Life",
+										fontHeight,
+										true, // hasBorder,
+										true, // isEnabled,
+										function click(universe)
+										{
+											// todo
+										},
+										universe
+									),
+
+									new ControlButton
+									(
+										"buttonScanEnergy",
+										new Coords
+										(
+											marginSize.x,
+											marginSize.y * 3 + buttonScanSize.y * 2
+										),
+										buttonScanSize,
+										"Energy",
+										fontHeight,
+										true, // hasBorder,
+										true, // isEnabled,
+										function click(universe)
+										{
+											// todo
+										},
+										universe
+									),
+								]
+							),
 
 							new ControlButton
 							(
@@ -118,9 +223,9 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 								new Coords
 								(
 									marginSize.x,
-									marginSize.y * 2  + labelSize.y
+									containerRightSize.y - marginSize.y - buttonSizeRight.y
 								),
-								new Coords(100, 25),
+								buttonSizeRight,
 								"Land",
 								fontHeight,
 								true, // hasBorder,
@@ -136,19 +241,6 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 								universe
 							),
 						]
-					),
-
-					new ControlContainer
-					(
-						"containerRight",
-						new Coords
-						(
-							marginSize.x * 2 + containerLeftSize.x,
-							marginSize.y * 2 + titleSize.y
-						),
-						containerRightSize,
-						// children
-						[]
 					),
 
 					new ControlButton

@@ -30,7 +30,25 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	var planetRadius = entityDimension;
 	var planetPos = sizeHalf.clone();
 	var planetColor = planet.defn().color;
-	var planetVisual = new VisualCircle(planetRadius, planetColor);
+	var planetOrbitRadius = planet.posAsPolar.radius * 4;
+	var planetOrbitVisual = new VisualAnchor
+	(
+		new VisualCircle(planetOrbitRadius, null, "Gray"),
+		planetPos.clone().add
+		(
+			new Polar
+			(
+				planet.posAsPolar.azimuthInTurns + .5,
+				planetOrbitRadius
+			).wrap().toCoords(new Coords())
+		) // posToAnchorAt
+	);
+
+	var planetVisual = new VisualGroup
+	([
+		planetOrbitVisual,
+		new VisualCircle(planetRadius, planetColor),
+	]);
 	var planetCollider = new Sphere(planetPos, planetRadius);
 
 	var planetEntity = new Entity
@@ -135,7 +153,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	(
 		"Player",
 		[
-			new Modellable(world.playerShipGroup),
+			new Modellable(world.player.shipGroup),
 			new Locatable(playerLoc),
 			new Constrainable([constraintSpeedMax, constraintTrimToRange]),
 			new Collidable

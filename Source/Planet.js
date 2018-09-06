@@ -8,6 +8,9 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 	this.sizeSurface = sizeSurface;
 	this.satellites = satellites;
 	this.shipGroups = (shipGroups == null ? [] : shipGroups);
+
+	var defn = this.defn();
+	this.hasLife = (Math.random() <= defn.lifeChance);
 }
 {
 	// instance methods

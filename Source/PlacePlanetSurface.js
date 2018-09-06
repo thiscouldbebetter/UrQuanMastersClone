@@ -55,61 +55,63 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	var entities = [];
 
-	// enemy
+	// lifeforms
 
-	var damagerColor = "Red";
-	var enemyColor = damagerColor;
-
-	var lifeformActivity = function(universe, world, place, actor)
+	if (planet.hasLife == true)
 	{
-		var actorLoc = actor.locatable.loc;
-		actorLoc.vel.randomize().double().subtract(Coords.Instances.Ones);
-	}
+		var lifeformActivity = function(universe, world, place, actor)
+		{
+			var actorLoc = actor.locatable.loc;
+			actorLoc.vel.randomize().double().subtract(Coords.Instances.Ones);
+		}
 
-	var lifeformColor = "Green";
-	var numberOfLifeforms = 8;
+		var lifeformColor = "Green";
+		var numberOfLifeforms = 8;
 
-	for (var i = 0; i < numberOfLifeforms; i++)
-	{
-		var lifeformPos = new Coords().randomize().multiply(this.size);
-		var lifeformLoc = new Location(lifeformPos);
+		for (var i = 0; i < numberOfLifeforms; i++)
+		{
+			var lifeformPos = new Coords().randomize().multiply(this.size);
+			var lifeformLoc = new Location(lifeformPos);
 
-		var lifeformColliderAsFace = new Face
-		([
-			new Coords(-entityDimension / 2, -entityDimension).half(),
-			new Coords(entityDimension / 2, -entityDimension).half(),
-			new Coords(entityDimension, entityDimension).half(),
-			new Coords(-entityDimension, entityDimension).half(),
-		]);
+			var lifeformColliderAsFace = new Face
+			([
+				new Coords(-1 / 2, -1).multiplyScalar(entityDimension).half(),
+				new Coords(1 / 2, -1).multiplyScalar(entityDimension).half(),
+				new Coords(1, 1).multiplyScalar(entityDimension).half(),
+				new Coords(-1, 1).multiplyScalar(entityDimension).half(),
+			]);
 
-		var lifeformCollider = Mesh.fromFace
-		(
-			lifeformPos, // center
-			lifeformColliderAsFace,
-			1 // thickness
-		);
+			var lifeformCollider = Mesh.fromFace
+			(
+				lifeformPos, // center
+				lifeformColliderAsFace,
+				1 // thickness
+			);
 
-		var lifeformVisual = new VisualPolygon
-		(
-			new Path(lifeformColliderAsFace.vertices), lifeformColor
-		);
+			var lifeformVisual = new VisualPolygon
+			(
+				new Path(lifeformColliderAsFace.vertices), lifeformColor
+			);
 
-		var lifeformEntity = new Entity
-		(
-			"Lifeform",
-			[
-				new Locatable(lifeformLoc),
-				new Constrainable([constraintSpeedMax]),
-				new Collidable(lifeformCollider),
-				new Damager(),
-				new Killable(),
-				new Drawable(lifeformVisual),
-				new Actor(lifeformActivity),
-			]
-		);
+			var lifeformEntity = new Entity
+			(
+				"Lifeform",
+				[
+					new Locatable(lifeformLoc),
+					new Constrainable([constraintSpeedMax]),
+					new Collidable(lifeformCollider),
+					new Damager(),
+					new Killable(),
+					new Drawable(lifeformVisual),
+					new Actor(lifeformActivity),
+				]
+			);
 
-		entities.push(lifeformEntity);
-	}
+			entities.push(lifeformEntity);
+
+		} // end for
+
+	} // end if planet.hasLife
 
 	var numberOfItems = 8;
 	var itemColor = "Blue";
@@ -164,7 +166,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	(
 		"Player",
 		[
-			new Modellable(world.playerShipGroup), // hack
+			new Modellable(world.player.shipGroup), // hack
 			new Locatable(playerLoc),
 			new Constrainable([constraintFriction, constraintSpeedMax, constraintWrapToRange]),
 			new Collidable
@@ -208,7 +210,9 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	{
 		var display = universe.display;
 
-		display.drawBackground("Gray", "DarkGray");
+		var imageBackground = universe.mediaLibrary.imageGetByName("PlanetSurface");
+
+		display.drawImage(imageBackground, Coords.Instances.Zeroes);
 
 		var drawLoc = this.drawLoc;
 		var drawPos = drawLoc.pos;

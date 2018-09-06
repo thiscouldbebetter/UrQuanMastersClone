@@ -51,7 +51,8 @@ function PlaceEncounter(world, encounter)
 					{
 						encounter.returnToPlace(world);
 						universe.venueNext = venueToReturnTo;
-					}
+					},
+					universe
 				);
 				var conversationSize = universe.display.sizeDefault.clone();
 				var conversationAsControl =
