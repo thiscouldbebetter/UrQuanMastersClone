@@ -19,6 +19,7 @@ Screenshots
 ![Planet Surface](/Screenshots/Screenshot-PlanetSurface.png?raw=true "Planet Surface")
 ![Encounter](/Screenshots/Screenshot-Encounter.png?raw=true "Encounter")
 ![Conversation](/Screenshots/Screenshot-Conversation.png?raw=true "Conversation")
+![Conversation Transcript](/Screenshots/Screenshot-ConversationTranscript.png?raw=true "Conversation Transcript")
 ![Combat](/Screenshots/Screenshot-Combat.png?raw=true "Combat")
 ![Station](/Screenshots/Screenshot-Station.png?raw=true "Station")
 ![Station Dock](/Screenshots/Screenshot-StationDock.png?raw=true "Station Dock")
