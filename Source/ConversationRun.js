@@ -100,8 +100,7 @@
 							new DataBinding
 							(
 								null, // context
-								"text(conversationDefn)", // bindingExpression
-								{ "conversationDefn": conversationDefn } // argumentLookup
+								"text" // bindingExpression
 							),
 							fontHeight,
 							new DataBinding
