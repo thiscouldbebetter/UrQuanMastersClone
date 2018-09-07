@@ -108,7 +108,8 @@
 							(
 								conversationRun,
 								"scopeCurrent.talkNodeForOptionSelected"
-							) // bindingForItemSelected
+							), // bindingForItemSelected
+							new DataBinding() // bindingForItemValue
 						),
 
 						new ControlButton
@@ -152,7 +153,7 @@
 								var venueCurrent = universe.venueCurrent;
 								var transcriptAsControl = conversationRun.toControlTranscript
 								(
-									size, universe, venueCurrent
+									containerSize, universe, venueCurrent
 								);
 								var venueNext = new VenueControls(transcriptAsControl);
 								venueNext = new VenueFader(venueNext, universe.venueCurrent);
