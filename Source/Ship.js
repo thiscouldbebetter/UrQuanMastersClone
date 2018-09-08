@@ -188,7 +188,7 @@ function Ship(defnName)
 		entityOrientation.forwardSet(entityForwardNew);
 	}
 
-	Ship.visual = function(dimension, color)
+	Ship.visual = function(dimension, colorFill, colorBorder)
 	{
 		var visualPath = new Path
 		([
@@ -209,7 +209,7 @@ function Ship(defnName)
 			var visualForAngle = new VisualPolygon
 			(
 				visualPath.clone().transform(transformRotate2D),
-				color
+				colorFill, colorBorder
 			);
 
 			visualsForAngles.push(visualForAngle);
@@ -217,7 +217,7 @@ function Ship(defnName)
 
 		var returnValue = new VisualDirectional
 		(
-			new VisualPolygon(visualPath, color),
+			new VisualPolygon(visualPath, colorFill, colorBorder),
 			visualsForAngles
 		);
 

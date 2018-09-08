@@ -91,6 +91,10 @@ function PlaceStarsystem(world, starsystem, playerPos)
 				)
 			);
 		}
+		else if (entityOtherName.startsWith("Sun"))
+		{
+			// Do nothing.
+		}
 		else
 		{
 			var entityOtherModel = entityOther.modellable.model;
@@ -222,7 +226,7 @@ function PlaceStarsystem(world, starsystem, playerPos)
 
 	this.camera = new Camera
 	(
-		this.size.clone(),
+		new Coords(1, 1).multiplyScalar(this.size.y),
 		null, // focalLength
 		new Location
 		(
@@ -268,6 +272,21 @@ function PlaceStarsystem(world, starsystem, playerPos)
 		entities.push(wallEntity);
 	}
 
+	var containerSidebarSize = new Coords(100, 300); // hack
+
+	var containerSidebar = new ControlContainer
+	(
+		"containerSidebar",
+		new Coords(this.starsystem.sizeInner.x, 0), // pos
+		containerSidebarSize,
+		// children
+		[
+			// todo
+		]
+	);
+
+	this.venueControls = new VenueControls(containerSidebar);
+
 	Place.call(this, entities);
 
 	// Helper variables.
@@ -302,5 +321,7 @@ function PlaceStarsystem(world, starsystem, playerPos)
 		);
 
 		this.draw_FromSuperclass(universe, world);
+
+		this.venueControls.draw(universe, world);
 	}
 }

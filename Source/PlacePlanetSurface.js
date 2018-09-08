@@ -10,6 +10,11 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		"Exit",
 		function perform(universe, world, place, actor)
 		{
+			var entityLander = place.entities["Player"];
+			var itemHolderLander = entityLander.itemHolder;
+			var itemHolderPlayer = world.player.itemHolder;
+			itemHolderLander.itemsTransferTo(itemHolderPlayer);
+
 			var placePlanetOrbit = place.placePlanetOrbit;
 			world.placeNext = placePlanetOrbit;
 		}
@@ -113,30 +118,49 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	} // end if planet.hasLife
 
-	var numberOfItems = 8;
-	var itemColor = "Blue";
-	var itemVisual = new VisualRectangle
-	(
-		new Coords(1, 1).multiplyScalar(entityDimension), itemColor
-	);
+	var planetDefn = planet.defn();
+	var resourceDistributions = planetDefn.resourceDistributions;
+	var resourceDefns = ResourceDefn.Instances();
+	var resourceRadiusBase = entityDimension / 2;
 
-	for (var i = 0; i < numberOfItems; i++)
+	for (var i = 0; i < resourceDistributions.length; i++)
 	{
-		var itemPos = new Coords().randomize().multiply(this.size);
-		var itemCollider = new Sphere(itemPos, entityDimension / 2);
+		var resourceDistribution = resourceDistributions[i];
 
-		var itemEntity = new Entity
-		(
-			"Item" + i,
-			[
-				new Item("Item", 1),
-				new Locatable( new Location(itemPos) ),
-				new Collidable(itemCollider),
-				new Drawable(itemVisual)
-			]
-		);
+		var resourceDefnName = resourceDistribution.resourceDefnName;
+		var numberOfDeposits = resourceDistribution.numberOfDeposits;
+		var quantityPerDeposit = resourceDistribution.quantityPerDeposit;
 
-		entities.push(itemEntity);
+		var resourceDefn = resourceDefns[resourceDefnName];
+
+		for (var d = 0; d < numberOfDeposits; d++)
+		{
+			var resourceColor = resourceDefn.color;
+			var resourceGradient = new Gradient
+			([
+				new GradientStop(0, resourceColor), new GradientStop(1, "Black")
+			]);
+			var resourceRadius = resourceRadiusBase * Math.sqrt(quantityPerDeposit);
+			var resourceVisual = new VisualCircleGradient
+			(
+				resourceRadius, resourceGradient
+			);
+			var resourcePos = new Coords().randomize().multiply(this.size);
+			var resourceCollider = new Sphere(resourcePos, resourceRadius);
+
+			var resourceEntity = new Entity
+			(
+				"Resource" + i + "_" + d,
+				[
+					new Item(resourceDefnName, quantityPerDeposit),
+					new Locatable( new Location(resourcePos) ),
+					new Collidable(resourceCollider),
+					new Drawable(resourceVisual)
+				]
+			);
+
+			entities.push(resourceEntity);
+		}
 	}
 
 	// player
@@ -146,7 +170,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
-	var playerVisual = Ship.visual(entityDimension, playerColor);
+	var playerVisual = Ship.visual(entityDimension, playerColor, "Black");
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
@@ -185,7 +209,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	this.camera = new Camera
 	(
-		this.size.clone(),
+		new Coords(300, 300), // hack
 		null, // focalLength
 		new Location
 		(
@@ -193,6 +217,16 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 			Orientation.Instances.ForwardZDownY.clone()
 		)
 	);
+
+	var containerSidebarSize = new Coords(100, 300); // hack
+	var containerSidebar = new ControlContainer
+	(
+		"containerSidebar",
+		new Coords(300, 0), // hack
+		containerSidebarSize,
+		[] // children
+	);
+	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
 
@@ -231,5 +265,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		);
 
 		this.draw_FromSuperclass(universe, world);
+
+		this.venueControls.draw(universe, world);
 	}
 }

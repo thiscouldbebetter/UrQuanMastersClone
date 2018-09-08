@@ -28,12 +28,14 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 
 		var radiusBase = 5;
 
+		var planetDefns = PlanetDefn.Instances();
+
 		this.planets =
 		[
 			new Planet
 			(
 				"Mercury",
-				"Metallic",
+				planetDefns["Metallic"].name,
 				radiusBase,
 				new Polar(Math.random(), 2 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -42,7 +44,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Venus",
-				"Primordial",
+				planetDefns["Primordial"].name,
 				radiusBase,
 				new Polar(Math.random(), 3 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -52,7 +54,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Earth",
-				"Water",
+				planetDefns["Shielded"].name,
 				radiusBase,
 				new Polar(Math.random(), 4 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -91,7 +93,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Mars",
-				"Dust",
+				planetDefns["Dust"].name,
 				radiusBase,
 				new Polar(Math.random(), 5 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -101,7 +103,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Jupiter",
-				"GasGiant",
+				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 6 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -111,7 +113,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Saturn",
-				"GasGiant",
+				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 7 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -121,7 +123,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Uranus",
-				"GasGiant",
+				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 8 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -131,7 +133,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Neptune",
-				"GasGiant",
+				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 9 * distanceBetweenOrbits),
 				this.sizeInner,
@@ -141,7 +143,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			new Planet
 			(
 				"Pluto",
-				"Pellucid",
+				planetDefns["Pellucid"].name,
 				radiusBase,
 				new Polar(Math.random(), 10 * distanceBetweenOrbits),
 				this.sizeInner,

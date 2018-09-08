@@ -23,6 +23,10 @@ function PlaceStationDock(world, placeStation)
 		this.updateForTimerTick_FromSuperclass(universe, world);
 		if (this.venueControls == null)
 		{
+			var player = world.player;
+			var playerItemHolder = player.itemHolder;
+			var playerShipGroup = player.shipGroup;
+
 			var containerDockSize = universe.display.sizeInPixels.clone();
 			var fontHeight = 20;
 			var fontHeightShort = fontHeight / 2;
@@ -150,9 +154,9 @@ function PlaceStationDock(world, placeStation)
 								fontHeightShort
 							),
 
-							new ControlContainer
+							new ControlList
 							(
-								"containerMinerals",
+								"listResources",
 								new Coords
 								(
 									marginSize.x,
@@ -163,8 +167,51 @@ function PlaceStationDock(world, placeStation)
 									containerRightSize.x - marginSize.x * 2,
 									containerRightSize.y - marginSize.y * 3 - labelSize.y
 								), // size
-								[] // todo
+								playerItemHolder.items,
+								new DataBinding(null, "name"), // bindingForItemText
+								fontHeightShort,
+								new DataBinding(), // bindingForItemSelected
+								new DataBinding() // bindingForItemValue
 							),
+
+							new ControlButton
+							(
+								"buttonResourcesSell",
+								new Coords
+								(
+									marginSize.x,
+									marginSize.y * 3 // todo
+								),
+								new Coords
+								(
+									containerRightSize.x - marginSize.x * 2,
+									fontHeightShort * 2
+								),
+								"Sell",
+								fontHeight,
+								true, // hasBorder,
+								true, // isEnabled,
+								function click(universe)
+								{
+									var world = universe.world;
+									var player = world.player;
+									var playerItemHolder = player.itemHolder;
+									var items = playerItemHolder.items;
+									var resourceDefns = ResourceDefn.Instances();
+									var valueSumSoFar = 0;
+									for (var i = 0; i < items.length; i++)
+									{
+										var item = items[i];
+										var itemDefnName = item.defnName;
+										var resourceDefn = resourceDefns[itemDefnName];
+										var resourceValue = resourceDefn.valuePerUnit * item.quantity;
+										valueSumSoFar += resourceValue;
+									}
+									player.credit += valueSumSoFar;
+								},
+								universe // context
+							),
+
 						]
 					),
 

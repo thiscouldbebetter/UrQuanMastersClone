@@ -94,6 +94,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		}
 
 		var starsystems = [];
+		var scaleFactor = 2;
 
 		// Parses the file "plandata.c" from the UQM codebase.
 		var linesFromFile = fileContentsAsString.split("\n");
@@ -115,7 +116,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 				(
 					parseInt(tokens[0]),
 					size.y - parseInt(tokens[1])
-				);
+				).multiplyScalar(scaleFactor);
 
 				var colorName = tokens[4].toTitleCase();
 				var starColor = colorName;
@@ -146,12 +147,11 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		} // end for
 
 		var starsystemFinal = starsystems[starsystems.length - 1];
-		//starsystemFinal.factionName = "todo"; // Spawns "enemy".
 		starsystemFinal.solarSystem();
 
 		var returnValue = new Hyperspace
 		(
-			size,
+			size.clone().multiplyScalar(scaleFactor),
 			starsystemRadiusOuter,
 			starsystems
 		);

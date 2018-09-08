@@ -30,7 +30,8 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 	var planetRadius = entityDimension;
 	var planetPos = sizeHalf.clone();
 	var planetColor = planet.defn().color;
-	var planetOrbitRadius = planet.posAsPolar.radius * 4;
+	var orbitMultiplier = 16;
+	var planetOrbitRadius = planet.posAsPolar.radius * orbitMultiplier;
 	var planetOrbitVisual = new VisualAnchor
 	(
 		new VisualCircle(planetOrbitRadius, null, "Gray"),
@@ -221,7 +222,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 
 	this.camera = new Camera
 	(
-		this.size.clone(),
+		new Coords(300, 300), // hack
 		null, // focalLength
 		new Location
 		(
@@ -267,6 +268,16 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 		entities.push(wallEntity);
 	}
 
+	var containerSidebarSize = new Coords(100, 300); // hack
+	var containerSidebar = new ControlContainer
+	(
+		"containerSidebar",
+		new Coords(300, 0), // hack
+		containerSidebarSize,
+		[] // children
+	);
+	this.venueControls = new VenueControls(containerSidebar);
+
 	Place.call(this, entities);
 
 	// Helper variables.
@@ -302,5 +313,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 		);
 
 		this.draw_FromSuperclass(universe, world);
+
+		this.venueControls.draw(universe, world);
 	}
 }

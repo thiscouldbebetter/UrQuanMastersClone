@@ -126,7 +126,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 		(
 			new Coords(10000, 10000), // size
 			10, // starsystemRadiusOuter
-			new Coords(400, 300), // starsystemSizeInner
+			new Coords(300, 300), // starsystemSizeInner
 			hyperspaceMapAsTextString.value
 		);
 

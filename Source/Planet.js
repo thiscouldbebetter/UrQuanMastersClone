@@ -17,7 +17,7 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 
 	Planet.prototype.defn = function()
 	{
-		return PlanetDefn.Instances()._All[this.defnName];
+		return PlanetDefn.Instances()[this.defnName];
 	}
 
 	Planet.prototype.toEntity = function(primaryPos)

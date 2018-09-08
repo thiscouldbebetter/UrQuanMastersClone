@@ -42,13 +42,14 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 
 			var buttonSizeRight = new Coords
 			(
-				containerRightSize.x - marginSize.x * 2, buttonSize.y
+				containerRightSize.x - marginSize.x * 2,
+				fontHeightShort * 2
 			);
 
 			var buttonScanSize = new Coords
 			(
 				containerRightSize.x - marginSize.x * 4,
-				buttonSize.y
+				fontHeightShort * 2
 			);
 
 			var containerScanSize = new Coords
@@ -165,7 +166,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 										),
 										buttonScanSize,
 										"Mineral",
-										fontHeight,
+										fontHeightShort,
 										true, // hasBorder,
 										true, // isEnabled,
 										function click(universe)
@@ -185,7 +186,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 										),
 										buttonScanSize,
 										"Life",
-										fontHeight,
+										fontHeightShort,
 										true, // hasBorder,
 										true, // isEnabled,
 										function click(universe)
@@ -205,7 +206,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 										),
 										buttonScanSize,
 										"Energy",
-										fontHeight,
+										fontHeightShort,
 										true, // hasBorder,
 										true, // isEnabled,
 										function click(universe)
@@ -227,7 +228,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 								),
 								buttonSizeRight,
 								"Land",
-								fontHeight,
+								fontHeightShort,
 								true, // hasBorder,
 								true, // isEnabled,
 								function click(universe)

@@ -79,7 +79,7 @@ function PlaceCombat(world, combat)
 
 	this.camera = new Camera
 	(
-		this.size.clone(),
+		new Coords(300, 300), // hack
 		null, // focalLength
 		new Location
 		(
@@ -199,6 +199,19 @@ function PlaceCombat(world, combat)
 
 	entities.push(enemyEntity);
 
+	var containerSidebarSize = new Coords(100, 300); // hack
+	var containerSidebar = new ControlContainer
+	(
+		"containerSidebar",
+		new Coords(300, 0),
+		containerSidebarSize,
+		[
+			// todo
+		]
+	);
+
+	this.venueControls = new VenueControls(containerSidebar);
+
 	Place.call(this, entities);
 
 	// Helper variables.
@@ -234,6 +247,8 @@ function PlaceCombat(world, combat)
 		);
 
 		this.draw_FromSuperclass(universe, world);
+
+		this.venueControls.draw(universe, world);
 	}
 
 	PlaceCombat.prototype.updateForTimerTick_FromSuperclass = Place.prototype.updateForTimerTick;

@@ -35,7 +35,7 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 
 	this.camera = new Camera
 	(
-		new Coords(400, 300), // hack
+		new Coords(300, 300), // hack
 		null, // focalLength
 		new Location
 		(
@@ -174,6 +174,22 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 
 	entities.push(playerEntity);
 
+	var starsystemSize = this.hyperspace.starsystems[0].sizeInner;
+	var containerSidebarSize = new Coords(100, 300); // hack
+
+	var containerSidebar = new ControlContainer
+	(
+		"containerSidebar",
+		new Coords(starsystemSize.x, 0), // pos
+		containerSidebarSize,
+		// children
+		[
+			// todo
+		]
+	);
+
+	this.venueControls = new VenueControls(containerSidebar);
+
 	Place.call(this, entities);
 
 	// Helper variables.
@@ -209,5 +225,7 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 		);
 
 		this.draw_FromSuperclass(universe, world);
+
+		this.venueControls.draw(universe, world);
 	}
 }

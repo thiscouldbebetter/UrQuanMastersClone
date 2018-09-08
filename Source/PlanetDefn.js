@@ -1,10 +1,11 @@
 
-function PlanetDefn(name, color, lifeChance, minerals)
+function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 {
 	this.name = name;
 	this.color = color;
+	this.canLand = canLand;
 	this.lifeChance = lifeChance;
-	this.minerals = minerals;
+	this.resourceDistributions = resourceDistributions;
 }
 {
 	// instances
@@ -21,71 +22,106 @@ function PlanetDefn(name, color, lifeChance, minerals)
 
 	function PlanetDefn_Instances()
 	{
+		var colorRed = "Red";
+		var colorOrange = "Orange";
+		var colorYellow = "Yellow";
+		var colorGreen = "Green";
+		var colorCyan = "Cyan";
+		var colorBlue = "Blue"
+		var colorViolet = "Violet";
+		var colorGray = "Gray";
+		var colorWhite = "White";
+
+		var canLand = true;
+		var cannotLand = false;
+
 		var ce = "CommonElements";
 		var co = "Corrosives";
 		var bm = "BaseMetals";
 		var ng = "NobleGases";
 		var pm = "PreciousMetals";
 		var re = "RareEarths";
+		var ra = "Radioactives";
 		var ex = "Exotics";
 		var todo = ce;
 
-		this.Acid = new PlanetDefn("Acid", "Green", .108, [ new Item(ce, 6) ] );
-		this.Alkali = new PlanetDefn("Alkali", "Green", .234, [ new Item(bm, 3) ] );
-		this.Auric = new PlanetDefn("Auric", "Yellow", .358, [ new Item(pm, 3) ] );
-		this.Azure = new PlanetDefn("Azure", "Blue", .270, [ new Item(bm, 3) ] );
-		this.Carbide = new PlanetDefn("Carbide", "Red", .063, [ new Item(ce, 3) ] );
-		this.Chlorine = new PlanetDefn("Chlorine", "Green", .03, [ new Item(bm, 2), new Item(co, 2), new Item(ce, 2) ] );
-		this.Chondrite = new PlanetDefn("Chondrite", "Violet", .02, [ new Item(ce, 2) ] );
-		this.Cimmerian = new PlanetDefn("Cimmerian", "Red", .01, [ new Item(ce, 4) ] );
-		this.Copper = new PlanetDefn("Copper", "Green", .22, [ new Item(bm, 2) ] );
-		this.Crimson = new PlanetDefn("Crimson", "Red", .20, [ new Item(bm, 5) ] );
+		// todo - Resource densities
+		var light = 1;
+		var medium = 2;
+		var heavy = 3;
+		var huge = 4;
+		var rd = function(resourceDefnName, numberOfDeposits, quantityPerDeposit)
+		{
+			return new ResourceDistribution
+			(
+				resourceDefnName, numberOfDeposits, quantityPerDeposit
+			);
+		}
 
-		this.Cyanic = new PlanetDefn("Cyanic", "Blue", 0, [ new Item(ce, 1) ] );
-		this.Dust = new PlanetDefn("Dust", "Orange", 0, [ new Item(ce, 1) ] );
-		this.Emerald = new PlanetDefn("Emerald", "Green", 0, [ new Item(ex, 1) ] );
-		this.Fluorescent = new PlanetDefn("Fluorescent", "Violet", 0, [ new Item(ng, 1) ] );
-		this.GasGiant = new PlanetDefn("GasGiant", "Green", 0, [] );
-		this.Green = new PlanetDefn("Green", "Green", 0, [ new Item(re, 1) ] );
-		this.Halide = new PlanetDefn("Halide", "Green", 0, [ new Item(co, 1) ] );
-		this.Hydrocarbon = new PlanetDefn("Hydrocarbon", "White", 0, [ new Item(ce, 1), new Item(bm, 1) ] );
-		this.Infrared = new PlanetDefn("Infrared", "Red", 0, [ new Item(bm, 1) ] );
-		this.Iodine = new PlanetDefn("Iodine", "Green", 0, [ new Item(co, 1) ] );
-		this.Lanthanide = new PlanetDefn("Lanthanide", "Yellow", 0, [ new Item(re, 1) ] );
-		this.Magma = new PlanetDefn("Magma", "Red", 0, [ new Item(bm, 1) ] );
-		this.Magnetic = new PlanetDefn("Magnetic", "Green", 0, [ new Item(bm, 1), new Item(ex, 1) ] );
-		this.Maroon = new PlanetDefn("Maroon", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Metallic = new PlanetDefn("Metallic", "Orange", 0, [ new Item(todo, 1), ] );
-		this.Noble = new PlanetDefn("Noble", "Blue", 0, [ new Item(todo, 1), ] );
-		this.Oolite = new PlanetDefn("Oolite", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Opalescent = new PlanetDefn("Opalescent", "Cyan", 0, [ new Item(todo, 1), ] );
+		// Special worlds.
+		this.Rainbow 	= new PlanetDefn("Rainbow", colorViolet, 0, [ rd(ex, 6, huge), ] );
+		this.Shielded 	= new PlanetDefn("Shielded", colorRed, 1, cannotLand, [ ] );
 
-		this.Organic = new PlanetDefn("Organic", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Pellucid = new PlanetDefn("Pellucid", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Plutonic = new PlanetDefn("Plutonic", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Primordial = new PlanetDefn("Primordial", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Purple  = new PlanetDefn("Purple", "Violet", 0, [ new Item(todo, 1), ] );
-		this.QuasiDegenerate = new PlanetDefn("QuasiDegenerate", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Radioactive = new PlanetDefn("Radioactive", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Rainbow = new PlanetDefn("Rainbow", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Redux = new PlanetDefn("Redux", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Ruby = new PlanetDefn("Ruby", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Sapphire = new PlanetDefn("Sapphire", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Selenic = new PlanetDefn("Selenic", "Gray", 0, [ new Item(todo, 1), ] );
-		this.Shattered = new PlanetDefn("Shattered", "Violet", 0, [ new Item(todo, 1), ] );
-		this.SuperDense = new PlanetDefn("SuperDense", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Telluric = new PlanetDefn("Telluric", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Treasure = new PlanetDefn("Treasure", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Ultramarine = new PlanetDefn("Ultramarine", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Ultraviolet = new PlanetDefn("Ultraviolet", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Urea = new PlanetDefn("Urea", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Vinylogous = new PlanetDefn("Vinylogous", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Water = new PlanetDefn("Water", "Cyan", 0, [ new Item(todo, 1), ] );
-		this.Xenolithic = new PlanetDefn("Xenolithic", "Violet", 0, [ new Item(todo, 1), ] );
-		this.Yttric = new PlanetDefn("Yttric", "Violet", 0, [ new Item(todo, 1), ] );
+		// Ordinary worlds.
+		this.Acid 		= new PlanetDefn("Acid", 		colorGreen, 	canLand, .108, [ rd(ce, 6, heavy) ] );
+		this.Alkali 	= new PlanetDefn("Alkali", 		colorGreen, 	canLand, .234, [ rd(bm, 3, medium) ] );
+		this.Auric 		= new PlanetDefn("Auric", 		colorYellow, 	canLand, .358, [ rd(pm, 3, huge) ] );
+		this.Azure 		= new PlanetDefn("Azure", 		colorBlue, 		canLand, .270, [ rd(bm, 3, light) ] );
+		this.Carbide 	= new PlanetDefn("Carbide", 	colorRed, 		canLand, .063, [ rd(ce, 3, heavy) ] );
+		this.Chlorine 	= new PlanetDefn("Chlorine", 	colorGreen, 	canLand, .03, [ rd(bm, 2, light), rd(co, 2, heavy), rd(ce, 2, heavy) ] );
+		this.Chondrite 	= new PlanetDefn("Chondrite", 	colorViolet, 	canLand, .02, [ rd(ce, 2, heavy) ] );
+		this.Cimmerian 	= new PlanetDefn("Cimmerian", 	colorRed, 		canLand, .01, [ rd(ce, 4, medium) ] );
+		this.Copper 	= new PlanetDefn("Copper", 		colorGreen, 	canLand, .22, [ rd(bm, 2, huge) ] );
+		this.Crimson 	= new PlanetDefn("Crimson", 	colorRed, 		canLand, .20, [ rd(bm, 5, light) ] );
+
+		this.Cyanic 	= new PlanetDefn("Cyanic", 		colorBlue, 		canLand, 0, [ rd(ce, 1, medium) ] );
+		this.Dust 		= new PlanetDefn("Dust", 		colorOrange, 	canLand, 0, [ rd(ce, 1, medium) ] );
+		this.Emerald 	= new PlanetDefn("Emerald", 	colorGreen, 	canLand, 0, [ rd(ex, 1, medium) ] );
+		this.Fluorescent = new PlanetDefn("Fluorescent", colorViolet, 	canLand, 0, [ rd(ng, 1, medium) ] );
+		this.GasGiant 	= new PlanetDefn("GasGiant", 	colorGreen, 	canLand, 0, [] );
+		this.Green 		= new PlanetDefn("Green", 		colorGreen, 	canLand, 0, [ rd(re, 1, medium) ] );
+		this.Halide 	= new PlanetDefn("Halide", 		colorGreen, 	canLand, 0, [ rd(co, 1, medium) ] );
+		this.Hydrocarbon = new PlanetDefn("Hydrocarbon", colorWhite, 	canLand, 0, [ rd(ce, 1, medium), rd(bm, 1, medium) ] );
+		this.Infrared 	= new PlanetDefn("Infrared", 	colorRed, 		canLand, 0, [ rd(bm, 1, medium) ] );
+		this.Iodine 	= new PlanetDefn("Iodine", 		colorGreen, 	canLand, 0, [ rd(co, 1, medium) ] );
+		this.Lanthanide = new PlanetDefn("Lanthanide", 	colorYellow, 	canLand, 0, [ rd(re, 1, medium) ] );
+		this.Magma 		= new PlanetDefn("Magma", 		colorRed, 		canLand, 0, [ rd(bm, 1, medium) ] );
+		this.Magnetic 	= new PlanetDefn("Magnetic", 	colorGreen, 	canLand, 0, [ rd(bm, 1, medium), rd(ex, 1, medium) ] );
+		this.Maroon 	= new PlanetDefn("Maroon", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Metallic 	= new PlanetDefn("Metallic", 	colorOrange, 	canLand, 0, [ rd(pm, 3, medium), rd(ra, 3, medium)] );
+		this.Noble 		= new PlanetDefn("Noble", 		colorBlue, 		canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Oolite 	= new PlanetDefn("Oolite", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Opalescent = new PlanetDefn("Opalescent", 	colorCyan, 		canLand, 0, [ rd(todo, 1, medium), ] );
+
+		this.Organic 	= new PlanetDefn("Organic", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Pellucid 	= new PlanetDefn("Pellucid", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Plutonic 	= new PlanetDefn("Plutonic", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Primordial = new PlanetDefn("Primordial", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Purple  	= new PlanetDefn("Purple", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.QuasiDegenerate = new PlanetDefn("QuasiDegenerate", colorViolet, canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Radioactive = new PlanetDefn("Radioactive", colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+
+		this.Redux 		= new PlanetDefn("Redux", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Ruby 		= new PlanetDefn("Ruby", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Sapphire 	= new PlanetDefn("Sapphire", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Selenic 	= new PlanetDefn("Selenic", 	colorGray, 		canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Shattered 	= new PlanetDefn("Shattered", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.SuperDense = new PlanetDefn("SuperDense", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Telluric 	= new PlanetDefn("Telluric", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Treasure 	= new PlanetDefn("Treasure", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Ultramarine = new PlanetDefn("Ultramarine", colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Ultraviolet = new PlanetDefn("Ultraviolet", colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Urea 		= new PlanetDefn("Urea", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Vinylogous = new PlanetDefn("Vinylogous", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Water 		= new PlanetDefn("Water", 		colorCyan, 		canLand, .9, [ rd(todo, 1, medium), ] );
+		this.Xenolithic = new PlanetDefn("Xenolithic", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.Yttric 	= new PlanetDefn("Yttric", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 
 		this._All =
 		[
+			//this.Shielded,
+			//this.Rainbow,
+
 			this.Acid,
 			this.Alkali,
 			this.Auric,
