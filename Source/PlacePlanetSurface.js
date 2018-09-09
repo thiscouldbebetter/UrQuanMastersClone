@@ -218,14 +218,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		)
 	);
 
-	var containerSidebarSize = new Coords(100, 300); // hack
-	var containerSidebar = new ControlContainer
-	(
-		"containerSidebar",
-		new Coords(300, 0), // hack
-		containerSidebarSize,
-		[] // children
-	);
+	var containerSidebar = world.player.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);

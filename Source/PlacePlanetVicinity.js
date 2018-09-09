@@ -1,5 +1,5 @@
 
-function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
+function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 {
 	this.size = size;
 	this.planet = planet;
@@ -81,11 +81,6 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 
 	// player
 
-	var playerLoc = new Location(playerPos);
-	playerLoc.orientation.forwardSet
-	(
-		planetPos.clone().subtract(playerPos).normalize()
-	)
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
@@ -124,7 +119,8 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 
 			if (entityOtherModelTypeName == "Planet")
 			{
-				world.placeNext = new PlacePlanetOrbit(world, place.planet, place);
+				var planetToOrbit = entityOtherModel;
+				world.placeNext = new PlacePlanetOrbit(world, planetToOrbit, place);
 			}
 			else if (entityOtherModelTypeName == "ShipGroup")
 			{
@@ -276,14 +272,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 		entities.push(wallEntity);
 	}
 
-	var containerSidebarSize = new Coords(100, 300); // hack
-	var containerSidebar = new ControlContainer
-	(
-		"containerSidebar",
-		new Coords(300, 0), // hack
-		containerSidebarSize,
-		[] // children
-	);
+	var containerSidebar = world.player.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);

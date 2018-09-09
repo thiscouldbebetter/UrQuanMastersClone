@@ -42,9 +42,10 @@ function PlaceStation(world, station, placePlanetVicinity)
 		(
 			new Coords(3, 0).multiplyScalar(10)
 		);
+		var playerLocNext = new Location(playerPosNext);
 		var placeNext = new PlacePlanetVicinity
 		(
-			world, size, planet, playerPosNext, placePrev.placeStarsystem
+			world, size, planet, playerLocNext, placePrev.placeStarsystem
 		);
 		world.placeNext = placeNext;
 	}

@@ -1,6 +1,21 @@
 // partial class
 
-	// override
+	// methods
+
+	ConversationRun.prototype.transcript = function(universe)
+	{
+		var venueCurrent = universe.venueCurrent;
+		var transcriptAsControl = conversationRun.toControlTranscript
+		(
+			containerSize, universe, venueCurrent
+		);
+		var venueNext = new VenueControls(transcriptAsControl);
+		venueNext = new VenueFader(venueNext, universe.venueCurrent);
+		universe.venueNext = venueNext;
+	}
+
+	// overrides
+
 	ConversationRun.prototype.toControl = function(containerSize, universe)
 	{
 		var conversationRun = this;
@@ -17,7 +32,7 @@
 		);
 		var paneSizeTopAndBottomHalf = paneSizeTopAndBottom.clone().half();
 
-		var fontHeight = 10;
+		var fontHeight = 12;
 		var buttonHeight = fontHeight * 2;
 		var buttonSize = new Coords
 		(
@@ -31,8 +46,13 @@
 			(paneSizeTopAndBottom.y - buttonHeight - marginSize.y * 3)
 		);
 
-		var imageNonplayerName = "Conversation";
-		var visualNonplayer = new VisualImage(imageNonplayerName);
+		var imageNonplayerName = this.defn.imageName;
+		var image = universe.mediaLibrary.imageGetByName(imageNonplayerName);
+		if (image == null || image.isLoaded == false)
+		{
+			imageNonplayerName = "Conversation";
+		}
+		var visualNonplayer = new VisualImage(imageNonplayerName, paneSizeTopAndBottom);
 
 		var controlRoot = new ControlContainer
 		(
@@ -149,14 +169,7 @@
 							true, // isEnabled
 							function click(universe)
 							{
-								var venueCurrent = universe.venueCurrent;
-								var transcriptAsControl = conversationRun.toControlTranscript
-								(
-									containerSize, universe, venueCurrent
-								);
-								var venueNext = new VenueControls(transcriptAsControl);
-								venueNext = new VenueFader(venueNext, universe.venueCurrent);
-								universe.venueNext = venueNext;
+								conversationRun.transcript(universe);
 							},
 							universe, // context
 							false // canBeHeldDown
@@ -179,11 +192,6 @@
 							function click()
 							{
 								conversationRun.quit();
-								/*
-								var venueNext = venueToReturnTo;
-								venueNext = new VenueFader(venueNext, universe.venueCurrent);
-								universe.venueNext = venueNext;
-								*/
 							},
 							universe, // context
 							false // canBeHeldDown
@@ -191,15 +199,7 @@
 					]
 				),
 
-				new ControlContainer
-				(
-					"containerSidebar",
-					new Coords(containerSize.y, 0),
-					new Coords(containerSize.x - containerSize.y, containerSize.y),
-					[
-						// todo
-					]
-				),
+				universe.world.player.toControlSidebar()
 			]
 		);
 

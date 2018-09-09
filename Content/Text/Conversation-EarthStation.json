@@ -1,5 +1,6 @@
 {
     "name": "EarthStation",
+    "imageName": "Conversation-EarthStation",
     "talkNodes": [
 
 { "defnName": "VariableLoad", "text": "IsAllied", "next": "(cr.uni.world.defns.factions['EarthStation'].relationsWithPlayer == Faction.RelationsAllied)" },

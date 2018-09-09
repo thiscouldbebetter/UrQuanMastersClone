@@ -1,5 +1,6 @@
 {
     "name": "SlaverGuardDrone",
+    "imageName": "Conversation-Slaver",
     "talkNodes": [
 
 { "defnName": "Display", "text": "This is a recording:"},

@@ -174,20 +174,7 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 
 	entities.push(playerEntity);
 
-	var starsystemSize = this.hyperspace.starsystems[0].sizeInner;
-	var containerSidebarSize = new Coords(100, 300); // hack
-
-	var containerSidebar = new ControlContainer
-	(
-		"containerSidebar",
-		new Coords(starsystemSize.x, 0), // pos
-		containerSidebarSize,
-		// children
-		[
-			// todo
-		]
-	);
-
+	var containerSidebar = world.player.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);

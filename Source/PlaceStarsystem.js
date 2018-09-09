@@ -104,7 +104,8 @@ function PlaceStarsystem(world, starsystem, playerPos)
 			{
 				var planet = entityOther.modellable.model;
 				var sizeNext = place.size.clone();
-				var heading = entityPlayer.locatable.loc.orientation.headingInTurns();
+				var playerOrientation = entityPlayer.locatable.loc.orientation;
+				var heading = playerOrientation.headingInTurns();
 				var playerPosNext = new Polar
 				(
 					heading + .5, .4 * sizeNext.y
@@ -115,9 +116,10 @@ function PlaceStarsystem(world, starsystem, playerPos)
 				(
 					sizeNext.clone().half()
 				);
+				var playerLocNext = new Location(playerPosNext, playerOrientation);
 				world.placeNext = new PlacePlanetVicinity
 				(
-					world, sizeNext, planet, playerPosNext, place
+					world, sizeNext, planet, playerLocNext, place
 				);
 			}
 		}
@@ -280,19 +282,7 @@ function PlaceStarsystem(world, starsystem, playerPos)
 		entities.push(wallEntity);
 	}
 
-	var containerSidebarSize = new Coords(100, 300); // hack
-
-	var containerSidebar = new ControlContainer
-	(
-		"containerSidebar",
-		new Coords(this.starsystem.sizeInner.x, 0), // pos
-		containerSidebarSize,
-		// children
-		[
-			// todo
-		]
-	);
-
+	var containerSidebar = world.player.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);

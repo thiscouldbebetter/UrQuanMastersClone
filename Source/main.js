@@ -7,6 +7,9 @@ function main()
 		// images
 		[
 			new Image("Conversation", "../Content/Images/Conversation.png"),
+			new Image("Conversation-EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
+			new Image("Conversation-Slaver", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
+
 			new Image("PlanetSurface", "../Content/Images/PlanetSurface.png"),
 			new Image("Title", "../Content/Images/Title.png"),
 		],
