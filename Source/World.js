@@ -11,10 +11,10 @@ function World(name, dateCreated, defns, player, hyperspace)
 	this.hyperspace = hyperspace;
 
 	var starsystems = hyperspace.starsystems;
-	var starsystemFinal = starsystems[starsystems.length - 1];
+	var starsystemStart = starsystems["Sol"];
 	this.place = new PlaceStarsystem
 	(
-		this, starsystemFinal, new Coords(.5, .9).multiply(starsystemFinal.sizeInner)
+		this, starsystemStart, new Coords(.5, .9).multiply(starsystemStart.sizeInner)
 	);
 	this.place.entitiesSpawn();
 }
@@ -71,7 +71,8 @@ function World(name, dateCreated, defns, player, hyperspace)
 				if (actorVel.magnitude() < 1)
 				{
 					actorPos.overwriteWith(targetPos);
-					place.entitiesToRemove.push(entityActor);
+					//place.entitiesToRemove.push(entityActor);
+					entityActor.killable.kill(universe, world, place, entityActor);
 				}
 				else
 				{

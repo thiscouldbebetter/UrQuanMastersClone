@@ -2,11 +2,15 @@
     "name": "EarthStation",
     "talkNodes": [
 
-{ "defnName": "Script", "text": "function(cr) { cr.vars['RadioactivesDelivered'] = cr.uni.world.player.vars['RadioactivesDelivered']; }" },
+{ "defnName": "VariableLoad", "text": "IsAllied", "next": "(cr.uni.world.defns.factions['EarthStation'].relationsWithPlayer == Faction.RelationsAllied)" },
+{ "defnName": "JumpIfTrue", "text": "IsAllied", "next": "WhatCanWeDoForYouToday" },
+
+{ "defnName": "VariableLoad", "text": "RadioactivesDelivered", "next": "cr.uni.world.player.vars['RadioactivesDelivered']" },
 { "defnName": "JumpIfTrue", "text": "RadioactivesDelivered", "next": "WhatCanWeDoForYouToday" },
 
-{ "defnName": "Script", "text": "function(cr) { cr.vars['RadioactivesRequested'] = cr.uni.world.player.vars['RadioactivesRequested']; }" },
+{ "defnName": "VariableLoad", "text": "RadioactivesRequested", "next": "cr.uni.world.player.vars['RadioactivesRequested']" },
 { "defnName": "JumpIfTrue", "text": "RadioactivesRequested", "next": "YoureBack" },
+
 { "defnName": "Display", "text": "Are you the resupply ship?"},
 { "defnName": "Display", "text": "I can't tell: our sensors are on the fritz."},
 { "defnName": "Display", "text": "It's not just the sensors, either."},
@@ -30,7 +34,8 @@
 { "defnName": "Display", "text": "bring us some radioactives for our reactor." },
 { "defnName": "Display", "text": "I swear we'll make it worth your while..." },
 { "defnName": "Display", "text": "...somehow or other." },
-{ "defnName": "Script", "text": "function(cr) { cr.uni.world.player.vars['RadioactivesRequested'] = true; }" },
+{ "defnName": "VariableSet", "text": "RadioactivesRequested", "next": "true" },
+{ "defnName": "VariableStore", "text": "RadioactivesRequested", "next": "cr.uni.world.player.vars['RadioactivesRequested']" },
 { "defnName": "Option", "next": "DoesntMatterWhat", "text": "We're leaving now to find the fuel you need." },
 { "defnName": "Option", "next": "DoesntMatterWhat", "text": "We aren't running any errands for beggars." },
 { "defnName": "Prompt", "text": true },
@@ -55,7 +60,8 @@
 { "defnName": "Prompt", "text": true },
 
 { "name": "Radioactives.Transfer", "defnName": "Display", "text": "Excellent.  Good doing business with you." },
-{ "defnName": "Script", "text": "function(cr) { cr.uni.world.player.vars['RadioactivesDelivered'] = true; }" },
+{ "defnName": "VariableSet", "text": "RadioactivesDelivered", "next": "true" },
+{ "defnName": "VariableStore", "text": "RadioactivesDelivered", "next": "cr.uni.world.player.vars['RadioactivesDelivered']" },
 { "defnName": "Display", "text": "Our technicians will load them into the reactor immediately." },
 { "defnName": "Display", "text": "We should be back online in moment or two..." },
 { "defnName": "Display", "text": "..." },
@@ -85,6 +91,7 @@
 
 { "name": "NeverMindWhoIAm", "defnName": "Display", "text": "Well, in any case, I guess we owe you." },
 { "name": "HowCanWeHelp", "defnName": "Display", "text": "What can we do to help?" },
+{ "defnName": "Script", "text": "function(cr) { cr.uni.world.defns.factions['EarthStation'].relationsWithPlayer = Faction.RelationsAllied; }" },
 { "defnName": "Display", "text": "This station has mineral and salvage refineries," },
 { "defnName": "Display", "text": "hyperspace fuel formularies," },
 { "defnName": "Display", "text": "and shipyards and ship component factories." },

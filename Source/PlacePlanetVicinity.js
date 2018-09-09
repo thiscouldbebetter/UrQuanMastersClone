@@ -201,6 +201,14 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 			new Path(enemyColliderAsFace.vertices), enemyColor
 		);
 
+		var enemyKill = function(universe, world, place, entity)
+		{
+			place.entityRemove(entity);
+			var planet = place.planet;
+			var shipGroup = entity.modellable.model;
+			planet.shipGroups.remove(shipGroup);
+		}
+
 		var enemyEntity = new Entity
 		(
 			"Enemy" + i,
@@ -210,7 +218,7 @@ function PlacePlanetVicinity(world, size, planet, playerPos, placeStarsystem)
 				new Constrainable([constraintSpeedMax]),
 				new Collidable(enemyCollider),
 				new Damager(),
-				new Killable(),
+				new Killable(1, enemyKill),
 				new Drawable(enemyVisual),
 				new Talker("todo"),
 				new Actor(faction.shipGroupActivity),

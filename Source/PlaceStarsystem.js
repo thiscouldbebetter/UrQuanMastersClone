@@ -187,6 +187,14 @@ function PlaceStarsystem(world, starsystem, playerPos)
 			[ enemyShip ]
 		);
 
+		var enemyKill = function(universe, world, place, entity)
+		{
+			place.entityRemove(entity);
+			var starsystem = place.starsystem;
+			var shipGroup = entity.modellable.model;
+			starsystem.shipGroups.remove(shipGroup);
+		}
+
 		var enemyEntity = new Entity
 		(
 			"Enemy",
@@ -196,7 +204,7 @@ function PlaceStarsystem(world, starsystem, playerPos)
 				new Constrainable([constraintSpeedMax]),
 				new Collidable(enemyCollider),
 				new Damager(),
-				new Killable(),
+				new Killable(1, enemyKill),
 				new Drawable(enemyVisual),
 				new Actor
 				(

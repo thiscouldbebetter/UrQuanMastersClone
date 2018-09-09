@@ -7,8 +7,55 @@ function PlaceEncounter(world, encounter)
 	Place.call(this, entities);
 }
 {
+	// superclass
+
 	PlaceEncounter.prototype = Object.create(Place.prototype);
 	PlaceEncounter.prototype.constructor = Place;
+
+	// methods
+
+	PlaceEncounter.prototype.fight = function(universe)
+	{
+		var world = universe.world;
+		var placeEncounter = world.place;
+		var encounter = placeEncounter.encounter;
+		var combat = new Combat(size, encounter);
+		world.placeNext = new PlaceCombat(world, combat);
+	}
+
+	PlaceEncounter.prototype.talk = function(universe)
+	{
+		var world = universe.world;
+		var placeEncounter = world.place;
+		var encounter = placeEncounter.encounter;
+		var shipGroupOther = encounter.shipGroupOther;
+		var faction = shipGroupOther.faction(universe.world);
+		var conversationDefnName = faction.conversationDefnName;
+		var conversationResourceName = "Conversation-" + conversationDefnName;
+		var conversationDefnAsJSON =
+			universe.mediaLibrary.textStringGetByName(conversationResourceName).value;
+		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+		var venueToReturnTo = universe.venueCurrent;
+		var conversation = new ConversationRun
+		(
+			conversationDefn,
+			function quit()
+			{
+				encounter.returnToPlace(world);
+				universe.venueNext = venueToReturnTo;
+			},
+			universe
+		);
+		var conversationSize = universe.display.sizeDefault.clone();
+		var conversationAsControl =
+			conversation.toControl(conversationSize, universe);
+
+		var venueNext = new VenueControls(conversationAsControl);
+
+		universe.venueNext = venueNext;
+	}
+
+	// Place
 
 	PlaceEncounter.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlaceEncounter.prototype.draw = function(universe, world)
@@ -31,63 +78,22 @@ function PlaceEncounter(world, encounter)
 
 			var size = new Coords(400, 300); // hack - size
 
-			var choiceActionTalk = function(universe)
-			{
-				var world = universe.world;
-				var placeEncounter = world.place;
-				var encounter = placeEncounter.encounter;
-				var shipGroupOther = encounter.shipGroupOther;
-				var faction = shipGroupOther.faction(universe.world);
-				var conversationDefnName = faction.conversationDefnName;
-				var conversationResourceName = "Conversation-" + conversationDefnName;
-				var conversationDefnAsJSON =
-					universe.mediaLibrary.textStringGetByName(conversationResourceName).value;
-				var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-				var venueToReturnTo = universe.venueCurrent;
-				var conversation = new ConversationRun
-				(
-					conversationDefn,
-					function quit()
-					{
-						encounter.returnToPlace(world);
-						universe.venueNext = venueToReturnTo;
-					},
-					universe
-				);
-				var conversationSize = universe.display.sizeDefault.clone();
-				var conversationAsControl =
-					conversation.toControl(conversationSize, universe);
-
-				var venueNext = new VenueControls(conversationAsControl);
-
-				universe.venueNext = venueNext;
-			};
-
 			var factionName = this.encounter.shipGroupOther.factionName;
 			var faction = universe.world.defns.factions[factionName];
 
 			if (faction.talksImmediately == true)
 			{
-				choiceActionTalk(universe);
+				this.talk(universe);
 				return; // hack
 			}
 
-			var choiceActionFight = function(universe)
-			{
-				var world = universe.world;
-				var placeEncounter = world.place;
-				var encounter = placeEncounter.encounter;
-				var combat = new Combat(size, encounter);
-				world.placeNext = new PlaceCombat(world, combat);
-			}
-
 			var choiceNames = [ "Talk" ];
-			var choiceActions = [ choiceActionTalk ];
+			var choiceActions = [ this.talk ];
 
 			if (faction.relationsWithPlayer == Faction.RelationsHostile)
 			{
 				choiceNames.push("Fight");
-				choiceActions.push(choiceActionFight);
+				choiceActions.push(this.fight);
 			}
 
 			var controlRoot = universe.controlBuilder.choice

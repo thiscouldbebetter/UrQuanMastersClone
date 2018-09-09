@@ -42,7 +42,7 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		var pm = "PreciousMetals";
 		var re = "RareEarths";
 		var ra = "Radioactives";
-		var ex = "Exotics";
+		var ex = "ExoticMaterials";
 		var todo = ce;
 
 		// todo - Resource densities

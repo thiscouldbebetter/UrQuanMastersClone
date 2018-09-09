@@ -3,7 +3,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 {
 	this.size = size;
 	this.starsystemRadiusOuter = starsystemRadiusOuter;
-	this.starsystems = starsystems;
+	this.starsystems = starsystems.addLookups("name");
 }
 {
 	Hyperspace.random = function(size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner)
@@ -53,6 +53,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 				starsystemSizeInner,
 				factionName,
 				[], //planets
+				[] // shipGroups
 			);
 
 			starsystem.contentsRandomize();
@@ -60,9 +61,9 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			starsystems.push(starsystem);
 		}
 
-		var starsystemFinal = starsystems[starsystems.length - 1];
-		starsystemFinal.factionName = "todo"; // Spawns "enemy".
-		starsystemFinal.solarSystem();
+		var starsystemSol = starsystems[starsystems.length - 1];
+		starsystemSol.factionName = "todo"; // Spawns "enemy".
+		starsystemSol.solarSystem();
 
 		var returnValue = new Hyperspace
 		(
@@ -94,7 +95,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		}
 
 		var starsystems = [];
-		var scaleFactor = 2;
+		var scaleFactor = 1;
 
 		// Parses the file "plandata.c" from the UQM codebase.
 		var linesFromFile = fileContentsAsString.split("\n");
@@ -121,8 +122,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 				var colorName = tokens[4].toTitleCase();
 				var starColor = colorName;
 
-				var factionPresentID = tokens[6];
-				factionPresentName = (factionPresentID == 0 ? null : factionPresentID);
+				var specialFlag = tokens[6];
 
 				var orderInConstellation = tokens[7];
 				var constellationIndex = tokens[8];
@@ -135,19 +135,24 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 					starColor,
 					starsystemPos,
 					starsystemSizeInner,
-					factionPresentName,
+					null, // factionPresentName,
 					[], //planets
+					[] // shipGroups
 				);
 
-				starsystem.contentsRandomize();
+				if (specialFlag == 0)
+				{
+					starsystem.contentsRandomize();
+				}
+				else if (specialFlag == "sol_defined")
+				{
+					starsystem.solarSystem();
+				}
 
 				starsystems.push(starsystem);
 			} // end if
 
 		} // end for
-
-		var starsystemFinal = starsystems[starsystems.length - 1];
-		starsystemFinal.solarSystem();
 
 		var returnValue = new Hyperspace
 		(

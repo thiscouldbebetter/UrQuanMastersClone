@@ -8,8 +8,74 @@ function PlaceStation(world, station, placePlanetVicinity)
 	Place.call(this, entities);
 }
 {
+	// superclass
+
 	PlaceStation.prototype = Object.create(Place.prototype);
 	PlaceStation.prototype.constructor = Place;
+
+	// methods
+
+	PlaceStation.prototype.dock = function(universe)
+	{
+		var world = universe.world;
+		var size = universe.display.sizeInPixels;
+		var placeStation = world.place;
+		var placeNext = new PlaceStationDock(world, placeStation);
+		world.placeNext = placeNext;
+	}
+
+	PlaceStation.prototype.leave = function(universe)
+	{
+		var world = universe.world;
+		var place = world.place;
+		var placePrev = place.placePlanetVicinity;
+		var size = placePrev.size;
+		var planet = placePrev.planet;
+		var station = place.station;
+		var playerPosNext = station.posAsPolar.toCoords
+		(
+			new Coords()
+		).add
+		(
+			size.clone().half()
+		).add
+		(
+			new Coords(3, 0).multiplyScalar(10)
+		);
+		var placeNext = new PlacePlanetVicinity
+		(
+			world, size, planet, playerPosNext, placePrev.placeStarsystem
+		);
+		world.placeNext = placeNext;
+	}
+
+	PlaceStation.prototype.talk = function(universe)
+	{
+		var world = universe.world;
+		var size = universe.display.sizeInPixels;
+		var placeStation = world.place;
+		var factionName = this.station.factionName;
+		var faction = world.defns.factions[factionName];
+		var conversationDefnName = faction.conversationDefnName;
+		var conversationResourceName = "Conversation-" + conversationDefnName;
+		var conversationDefnAsJSON =
+			universe.mediaLibrary.textStringGetByName(conversationResourceName).value;
+		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+		var conversation = new ConversationRun
+		(
+			conversationDefn,
+			function quit()
+			{
+				world.place = placeStation.placePlanetVicinity;
+				universe.venueNext = new VenueWorld(world);
+			},
+			universe
+		);
+		var conversationAsControl = conversation.toControl(size, universe);
+		universe.venueNext = new VenueControls(conversationAsControl);
+	}
+
+	// Place
 
 	PlaceStation.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlaceStation.prototype.draw = function(universe, world)
@@ -25,6 +91,7 @@ function PlaceStation(world, station, placePlanetVicinity)
 		if (this.venueControls == null)
 		{
 			var messageToShow = "[Station]";
+			var placeStation = this;
 
 			var controlRoot = universe.controlBuilder.choice
 			(
@@ -35,45 +102,17 @@ function PlaceStation(world, station, placePlanetVicinity)
 				[
 					function talk(universe)
 					{
-						var world = universe.world;
-						var size = new Coords(400, 300); // todo
-						var conversation = Conversation.demo();
-						var placeNext = new PlaceConversation(world, conversation, world.place);
-						world.placeNext = placeNext;
+						placeStation.talk(universe);
 					},
 
 					function dock(universe)
 					{
-						var world = universe.world;
-						var size = new Coords(400, 300); // todo
-						var placeStation = world.place;
-						var placeNext = new PlaceStationDock(world, placeStation);
-						world.placeNext = placeNext;
+						placeStation.dock(universe);
 					},
 
 					function leave(universe)
 					{
-						var world = universe.world;
-						var place = world.place;
-						var placePrev = place.placePlanetVicinity;
-						var size = placePrev.size;
-						var planet = placePrev.planet;
-						var station = place.station;
-						var playerPosNext = station.posAsPolar.toCoords
-						(
-							new Coords()
-						).add
-						(
-							size.clone().half()
-						).add
-						(
-							new Coords(3, 0).multiplyScalar(10)
-						);
-						var placeNext = new PlacePlanetVicinity
-						(
-							world, size, planet, playerPosNext, placePrev.placeStarsystem
-						);
-						world.placeNext = placeNext;
+						placeStation.leave(universe);
 					}
 				]
 			);

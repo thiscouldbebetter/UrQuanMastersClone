@@ -25,7 +25,7 @@ function ResourceDefn(name, color, valuePerUnit)
 		this.RareEarths = new ResourceDefn("NobleGases", "Blue", 5);
 		this.PreciousMetals = new ResourceDefn("PreciousMetals", "Yellow", 6);
 		this.Radioactives = new ResourceDefn("Radioactives", "Orange", 8);
-		this.Exotics = new ResourceDefn("Exotics", "Violet", 25);
+		this.ExoticMaterials = new ResourceDefn("ExoticMaterials", "Violet", 25);
 
 		this._All =
 		[
@@ -36,7 +36,7 @@ function ResourceDefn(name, color, valuePerUnit)
 			this.RareEarths,
 			this.PreciousMetals,
 			this.Radioactives,
-			this.Exotics,
+			this.ExoticMaterials,
 
 		].addLookups("name");
 	}

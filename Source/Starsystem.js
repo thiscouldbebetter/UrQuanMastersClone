@@ -1,5 +1,5 @@
 
-function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, planets)
+function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, planets, shipGroups)
 {
 	this.name = name;
 	this.starColor = starColor;
@@ -7,6 +7,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 	this.sizeInner = sizeInner;
 	this.factionName = factionName;
 	this.planets = planets;
+	this.shipGroups = shipGroups;
 }
 {
 	Starsystem.StarColors =
@@ -21,6 +22,8 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 
 	Starsystem.prototype.solarSystem = function()
 	{
+		this.name = "Sol";
+
 		var numberOfPlanets = 9;
 
 		var distanceBetweenOrbits =

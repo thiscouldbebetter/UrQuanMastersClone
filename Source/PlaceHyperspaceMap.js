@@ -57,8 +57,8 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
 		var playerPos = entityForPlayer.locatable.loc.pos;
-		drawPos.overwriteWith(playerPos).divide(hyperspaceSize).multiply(mapSize);
-		var reticleSize = new Coords(1, 1).multiplyScalar(starRadius * 4);
+		drawPos.overwriteWith(playerPos).divide(hyperspaceSize).multiply(mapSize).add(mapPos);
+		var reticleSize = new Coords(1, 1).multiplyScalar(starRadius * 8);
 		display.drawRectangleCentered(drawPos, reticleSize, null, "Gray");
 
 		/*

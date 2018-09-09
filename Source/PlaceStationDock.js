@@ -7,8 +7,34 @@ function PlaceStationDock(world, placeStation)
 	Place.call(this, entities);
 }
 {
+	// superclass
+
 	PlaceStationDock.prototype = Object.create(Place.prototype);
 	PlaceStationDock.prototype.constructor = Place;
+
+	// method
+
+	PlaceStationDock.prototype.offload = function(universe)
+	{
+		var world = universe.world;
+		var player = world.player;
+		var playerItemHolder = player.itemHolder;
+		var items = playerItemHolder.items;
+		var resourceDefns = ResourceDefn.Instances();
+		var valueSumSoFar = 0;
+		for (var i = 0; i < items.length; i++)
+		{
+			var item = items[i];
+			var itemDefnName = item.defnName;
+			var resourceDefn = resourceDefns[itemDefnName];
+			var resourceValue = resourceDefn.valuePerUnit * item.quantity;
+			valueSumSoFar += resourceValue;
+		}
+		player.credit += valueSumSoFar;
+		items.length = 0;
+	}
+
+	// Place
 
 	PlaceStationDock.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlaceStationDock.prototype.draw = function(universe, world)
@@ -23,6 +49,8 @@ function PlaceStationDock(world, placeStation)
 		this.updateForTimerTick_FromSuperclass(universe, world);
 		if (this.venueControls == null)
 		{
+			var placeStationDock = this;
+
 			var player = world.player;
 			var playerItemHolder = player.itemHolder;
 			var playerShipGroup = player.shipGroup;
@@ -30,7 +58,7 @@ function PlaceStationDock(world, placeStation)
 			var containerDockSize = universe.display.sizeInPixels.clone();
 			var fontHeight = 20;
 			var fontHeightShort = fontHeight / 2;
-			var buttonSize = new Coords(25, 25);
+			var buttonBackSize = new Coords(25, 25);
 			var marginWidth = 10;
 			var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 
@@ -41,6 +69,12 @@ function PlaceStationDock(world, placeStation)
 			(
 				(containerDockSize.x - marginSize.x * 3) / 3,
 				containerDockSize.y - marginSize.y * 3 - titleSize.y
+			);
+
+			var buttonSizeRight = new Coords
+			(
+				containerRightSize.x - marginSize.x * 2,
+				fontHeightShort * 2
 			);
 
 			var containerLeftSize = new Coords
@@ -146,8 +180,21 @@ function PlaceStationDock(world, placeStation)
 						[
 							new ControlLabel
 							(
-								"labelResources",
+								"labelCredit",
 								marginSize,
+								labelSize,
+								false, // isTextCentered
+								"Credit: [n]",
+								fontHeightShort
+							),
+
+							new ControlLabel
+							(
+								"labelResources",
+								new Coords
+								(
+									marginSize.x, marginSize.y * 2 + labelSize.y
+								),
 								labelSize,
 								false, // isTextCentered
 								"Resources:",
@@ -160,15 +207,15 @@ function PlaceStationDock(world, placeStation)
 								new Coords
 								(
 									marginSize.x,
-									marginSize.y * 2 + labelSize.y
+									marginSize.y * 3 + labelSize.y * 2
 								),
 								new Coords
 								(
 									containerRightSize.x - marginSize.x * 2,
-									containerRightSize.y - marginSize.y * 3 - labelSize.y
+									containerRightSize.y - marginSize.y * 5 - labelSize.y * 2 - buttonSizeRight.y
 								), // size
 								playerItemHolder.items,
-								new DataBinding(null, "name"), // bindingForItemText
+								new DataBinding(null, "toString()"), // bindingForItemText
 								fontHeightShort,
 								new DataBinding(), // bindingForItemSelected
 								new DataBinding() // bindingForItemValue
@@ -176,38 +223,20 @@ function PlaceStationDock(world, placeStation)
 
 							new ControlButton
 							(
-								"buttonResourcesSell",
+								"buttonResourcesOffload",
 								new Coords
 								(
 									marginSize.x,
-									marginSize.y * 3 // todo
+									containerRightSize.y - marginSize.y - buttonSizeRight.y // todo
 								),
-								new Coords
-								(
-									containerRightSize.x - marginSize.x * 2,
-									fontHeightShort * 2
-								),
-								"Sell",
-								fontHeight,
+								buttonSizeRight,
+								"Offload",
+								fontHeightShort,
 								true, // hasBorder,
 								true, // isEnabled,
 								function click(universe)
 								{
-									var world = universe.world;
-									var player = world.player;
-									var playerItemHolder = player.itemHolder;
-									var items = playerItemHolder.items;
-									var resourceDefns = ResourceDefn.Instances();
-									var valueSumSoFar = 0;
-									for (var i = 0; i < items.length; i++)
-									{
-										var item = items[i];
-										var itemDefnName = item.defnName;
-										var resourceDefn = resourceDefns[itemDefnName];
-										var resourceValue = resourceDefn.valuePerUnit * item.quantity;
-										valueSumSoFar += resourceValue;
-									}
-									player.credit += valueSumSoFar;
+									placeStationDock.offload(universe);
 								},
 								universe // context
 							),
@@ -219,7 +248,7 @@ function PlaceStationDock(world, placeStation)
 					(
 						"buttonBack",
 						marginSize,
-						buttonSize,
+						buttonBackSize,
 						"<",
 						fontHeight,
 						true, // hasBorder,
