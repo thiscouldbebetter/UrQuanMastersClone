@@ -58,7 +58,7 @@ function main()
 	);
 	universe.initialize();
 
-	if (universe.isDebuggingEnabled == true)
+	if (universe.debuggingMode != null)
 	{
 		debug(universe);
 	}

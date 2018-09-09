@@ -30,10 +30,10 @@ function PlaceCombat(world, combat)
 	this.inputToActionMappings = this.inputToActionMappings.concat
 	(
 		[
-			new InputToActionMapping("Enter", "Fire"),
+			new InputToActionMapping("Enter", "Fire", true),
 			new InputToActionMapping("_x", "Exit"),
 
-			new InputToActionMapping("Gamepad0Button0", "Fire"),
+			new InputToActionMapping("Gamepad0Button0", "Fire", true),
 			new InputToActionMapping("Gamepad0Button1", "Exit"),
 		]
 	);
@@ -64,12 +64,16 @@ function PlaceCombat(world, combat)
 	var sizeHalf = this.size.clone().half();
 
 	var planetRadius = entityDimension;
-	var planetPos = sizeHalf.clone();
+	var planetPos = new Coords(0, 0);//sizeHalf.clone();
 	var planetColor = "Cyan";
-	var planetVisual = new VisualCamera
+	var planetVisual = new VisualWrapped
 	(
-		new VisualCircle(planetRadius, planetColor),
-		this.camera
+		this.size,
+		new VisualCamera
+		(
+			new VisualCircle(planetRadius, planetColor),
+			this.camera
+		)
 	);
 	var planetCollider = new Sphere(planetPos, planetRadius);
 
@@ -87,17 +91,21 @@ function PlaceCombat(world, combat)
 
 	// player
 
-	var playerPos = new Coords(.5, .9).multiply(this.size);
+	var playerPos = new Coords(-.1, 0).multiply(this.size);
 	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
 	var playerVisualBody = Ship.visual(entityDimension, playerColor);
 
-	var playerVisual = new VisualCamera
+	var playerVisual = new VisualWrapped
 	(
-		playerVisualBody,
-		this.camera
+		this.size,
+		new VisualCamera
+		(
+			playerVisualBody,
+			this.camera
+		)
 	);
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
@@ -165,42 +173,54 @@ function PlaceCombat(world, combat)
 		1 // thickness
 	);
 
-	var enemyVisual = new VisualCamera
+	var enemyVisual = new VisualWrapped
 	(
-		new VisualPolygon
+		this.size,
+		new VisualCamera
 		(
-			new Path(enemyColliderAsFace.vertices), enemyColor
-		),
-		this.camera
+			new VisualPolygon
+			(
+				new Path(enemyColliderAsFace.vertices), enemyColor
+			),
+			this.camera
+		)
 	);
+
+	var enemyActivity = function activity(universe, world, place, actor)
+	{
+		var entityToTargetName = "Player";
+		var target = place.entities[entityToTargetName];
+		var targetPos = target.locatable.loc.pos;
+		var actorLoc = actor.locatable.loc;
+		var actorPos = actorLoc.pos;
+		var actorVel = actorLoc.vel;
+		var combat = place.combat;
+
+		var targetDisplacement = combat.displacementOfPointsWrappedToRange
+		(
+			actorVel, // displacementToOverwrite
+			actorPos,
+			targetPos,
+			combat.size
+		);
+
+		actorLoc.vel.overwriteWith
+		(
+			targetDisplacement
+		).normalize();
+	}
 
 	var enemyEntity = new Entity
 	(
 		"Enemy",
 		[
 			new Locatable(enemyLoc),
-			new Constrainable([constraintSpeedMax]),
+			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
 			new Collidable(enemyCollider),
 			new Damager(),
 			new Killable(),
 			new Drawable(enemyVisual),
-			new Actor
-			(
-				function activity(universe, world, place, actor)
-				{
-					var entityToTargetName = "Player";
-					var target = place.entities[entityToTargetName];
-					var actorLoc = actor.locatable.loc;
-
-					actorLoc.vel.overwriteWith
-					(
-						target.locatable.loc.pos
-					).subtract
-					(
-						actorLoc.pos
-					).normalize();
-				}
-			),
+			new Actor(enemyActivity),
 		]
 	);
 
@@ -242,15 +262,26 @@ function PlaceCombat(world, combat)
 
 		var player = this.entities["Player"];
 		var playerLoc = player.locatable.loc;
+		var playerPos = playerLoc.pos;
+
+		var enemy = this.entities["Enemy"];
+		var enemyPos = enemy.locatable.loc.pos;
 
 		var camera = this.camera;
-		camera.loc.pos.overwriteWith
+		var cameraPos = camera.loc.pos;
+
+		var midpointBetweenCombatants =
+			this.combat.midpointOfPointsWrappedToRange
+			(
+				cameraPos, // midpointToOverwrite
+				playerPos,
+				enemyPos,
+				this.size
+			);
+
+		cameraPos.overwriteWith
 		(
-			playerLoc.pos
-		).trimToRangeMinMax
-		(
-			camera.viewSizeHalf,
-			this.size.clone().subtract(camera.viewSizeHalf)
+			midpointBetweenCombatants
 		);
 
 		this.draw_FromSuperclass(universe, world);

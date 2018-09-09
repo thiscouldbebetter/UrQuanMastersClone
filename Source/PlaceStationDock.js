@@ -83,10 +83,16 @@ function PlaceStationDock(world, placeStation)
 				(containerRightSize.y - marginSize.y) / 2
 			);
 
-			var containerLeftInnerSize = new Coords
+			var buttonSizeLeft = new Coords
 			(
 				(containerLeftSize.x - marginSize.x * 3) / 2,
-				(containerLeftSize.y - labelSize.y - marginSize.y * 3)
+				fontHeightShort * 2
+			);
+
+			var containerLeftInnerSize = new Coords
+			(
+				buttonSizeLeft.x,
+				(containerLeftSize.y - labelSize.y - buttonSizeLeft.y - marginSize.y * 4)
 			); // size
 
 			var controlRoot = new ControlContainer
@@ -107,7 +113,7 @@ function PlaceStationDock(world, placeStation)
 
 					new ControlContainer
 					(
-						"containerTop",
+						"containerComponents",
 						new Coords
 						(
 							marginSize.x,
@@ -118,27 +124,113 @@ function PlaceStationDock(world, placeStation)
 						[
 							new ControlLabel
 							(
-								"labelFlagship",
+								"labelComponentsInstalled",
 								marginSize,
 								labelSize,
 								false, // isTextCentered
-								"Flagship:",
+								"Installed:",
 								fontHeightShort
 							),
 
-							new ControlContainer
+							new ControlList
 							(
-								"listComponents",
+								"listComponentsInstalled",
 								new Coords(marginSize.x, marginSize.y * 2 + labelSize.y),
 								containerLeftInnerSize,
-								[] // todo
+								[
+									"Cargo Hold",
+									"Crew Habitat",
+									"Fuel Tank",
+									"Ion Cannon",
+									"Basic Reactor",
+									"Fusion Thruster (4)",
+									"Maneuvering Jets (3)",
+								],
+								new DataBinding(), // bindingForItemText
+								fontHeightShort
+							),
+
+							new ControlButton
+							(
+								"buttonComponentScrap",
+								new Coords
+								(
+									marginSize.x,
+									containerLeftSize.y - marginSize.y - buttonSizeLeft.y
+								),
+								buttonSizeLeft,
+								"Scrap",
+								fontHeightShort,
+								true, // hasBorder,
+								true, // isEnabled,
+								function click(universe)
+								{
+									// todo
+								},
+								universe // context
+							),
+
+							new ControlLabel
+							(
+								"labelComponentsAvailable",
+								new Coords
+								(
+									marginSize.x * 2 + containerLeftInnerSize.x,
+									marginSize.y
+								),
+								labelSize,
+								false, // isTextCentered
+								"Available:",
+								fontHeightShort
+							),
+
+							new ControlList
+							(
+								"listComponents",
+								new Coords
+								(
+									marginSize.x * 2 + containerLeftInnerSize.x,
+									marginSize.y * 2 + labelSize.y
+								),
+								containerLeftInnerSize,
+								[
+									"Cargo Hold",
+									"Crew Habitat",
+									"Fuel Tank",
+									"Ion Cannon",
+									"Basic Reactor",
+									"Fusion Thruster",
+									"Maneuvering Jets",
+								],
+								new DataBinding(), // bindingForItemText
+								fontHeightShort
+							),
+
+							new ControlButton
+							(
+								"buttonComponentBuild",
+								new Coords
+								(
+									marginSize.x * 2 + containerLeftInnerSize.x,
+									containerLeftSize.y - marginSize.y - buttonSizeLeft.y
+								),
+								buttonSizeLeft,
+								"Build",
+								fontHeightShort,
+								true, // hasBorder,
+								true, // isEnabled,
+								function click(universe)
+								{
+									// todo
+								},
+								universe // context
 							),
 						]
 					),
 
 					new ControlContainer
 					(
-						"containerBottom",
+						"containerShips",
 						new Coords
 						(
 							marginSize.x,
@@ -157,12 +249,95 @@ function PlaceStationDock(world, placeStation)
 								fontHeightShort
 							),
 
-							new ControlContainer
+							new ControlList
 							(
-								"listShips",
+								"listShipsInFleet",
 								new Coords(marginSize.x, marginSize.y * 2 + labelSize.y),
 								containerLeftInnerSize,
-								[] // todo
+								[
+									"Terran Cruiser",
+									"Mollusca Runner",
+									"Outsider Batwing",
+									"Elfin Saucer",
+									"Blob Squelcher",
+									"Raptor Aegis",
+									"Silconic Gravitar",
+								],
+								new DataBinding(), // bindingForItemText
+								fontHeightShort
+							),
+
+							new ControlButton
+							(
+								"buttonShipScrap",
+								new Coords
+								(
+									marginSize.x,
+									containerLeftSize.y - marginSize.y - buttonSizeLeft.y
+								),
+								buttonSizeLeft,
+								"Scrap",
+								fontHeightShort,
+								true, // hasBorder,
+								true, // isEnabled,
+								function click(universe)
+								{
+									// todo
+								},
+								universe // context
+							),
+
+							new ControlLabel
+							(
+								"labelShipsAvailable",
+								new Coords
+								(
+									marginSize.x * 2 + containerLeftInnerSize.x,
+									marginSize.y
+								),
+								labelSize,
+								false, // isTextCentered
+								"Available:",
+								fontHeightShort
+							),
+
+							new ControlButton
+							(
+								"buttonShipBuild",
+								new Coords
+								(
+									marginSize.x * 2 + containerLeftInnerSize.x,
+									containerLeftSize.y - marginSize.y - buttonSizeLeft.y
+								),
+								buttonSizeLeft,
+								"Build",
+								fontHeightShort,
+								true, // hasBorder,
+								true, // isEnabled,
+								function click(universe)
+								{
+									// todo
+								},
+								universe // context
+							),
+
+							new ControlList
+							(
+								"listShipPlansAvailable",
+								new Coords
+								(
+									marginSize.x * 2 + containerLeftInnerSize.x,
+									marginSize.y * 2 + labelSize.y
+								),
+								containerLeftInnerSize,
+								[
+									"Terran Cruiser",
+									"Mollusca Runner",
+									"Raptor Aegis",
+								],
+								new DataBinding(), // bindingForItemText
+								fontHeightShort
+
 							),
 						]
 					),

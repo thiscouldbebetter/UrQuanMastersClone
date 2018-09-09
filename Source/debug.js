@@ -1,58 +1,76 @@
 function debug(universe)
 {
-	universe.mediaLibrary.waitForItemsAllToLoad
+	universe.mediaLibrary.waitForItemsAllToLoad(debug_MediaLoaded.bind(null, universe));
+}
+
+function debug_MediaLoaded(universe)
+{
+	var world = World.new(universe);
+	universe.world = world;
+	universe.venueNext = new VenueWorld(world);
+
+	var debuggingMode = universe.debuggingMode;
+
+	if (debuggingMode == "Combat")
+	{
+		combat(universe);
+	}
+	else if (debuggingMode == "Docks")
+	{
+		docks(universe);
+	}
+}
+
+function combat(universe)
+{
+	var displaySize = universe.display.sizeInPixels;
+	var combatSize = new Coords(1, 1).multiplyScalar(displaySize.y * 2);
+	var encounter = null; // todo
+	var combat = new Combat
 	(
-		function()
-		{
-			var world = World.new(universe);
-			universe.world = world;
-			universe.venueNext = new VenueWorld(world);
-
-			//world.defns.factions["EarthStation"].relationsWithPlayer = Faction.RelationsAllied;
-			//var player = world.player;
-			//player.credit = 100;
-			//player.itemHolder.itemAdd(new Item("Radioactives", 1));
-			//player.itemHolder.itemAdd(new Item("ExoticMaterials", 100));
-
-			/*
-			var displaySize = universe.display.sizeInPixels;
-			var combatSize = new Coords(1, 1).multiplyScalar(displaySize.y * 2);
-			var encounter = null; // todo
-			var combat = new Combat
+		combatSize,
+		encounter,
+		// shipGroups
+		[
+			new ShipGroup
 			(
-				combatSize, 
-				encounter, 
-				// shipGroups
+				"Player",
+				null, // factionName
 				[
-					new ShipGroup
-					(
-						"Player", 
-						null, // factionName
-						[
-							new Ship("Default"),
-						] // ships
-					),
-					new ShipGroup
-					(
-						"Other",
-						null, // factionName
-						[
-							new Ship("Default"),	
-						] // ships
-					)
-				]
-			);
-			var controlShipSelect = combat.toControlShipSelect
+					new Ship("Default"),
+				] // ships
+			),
+			new ShipGroup
 			(
-				universe, displaySize
-			);
-			var venueNext = new VenueControls(controlShipSelect);
-			universe.venueNext = venueNext;
-			*/
-
-			var starsystemStart = world.place.starsystem;
-			starsystemStart.factionName = "todo";
-			// todo
-		}
+				"Other",
+				null, // factionName
+				[
+					new Ship("Default"),
+				] // ships
+			)
+		]
 	);
+	var controlShipSelect = combat.toControlShipSelect
+	(
+		universe, displaySize
+	);
+	var venueNext = new VenueControls(controlShipSelect);
+	universe.venueNext = venueNext;
+}
+
+function docks(universe)
+{
+	var world = universe.world;
+	world.defns.factions["EarthStation"].relationsWithPlayer = Faction.RelationsAllied;
+	var player = world.player;
+	player.credit = 100;
+	player.itemHolder.itemAdd(new Item("Radioactives", 1));
+	player.itemHolder.itemAdd(new Item("ExoticMaterials", 100));
+
+	var starsystemSol = world.hyperspace.starsystems["Sol"];
+	var station = starsystemSol.planets[2].satellites[0];
+	var placePlanetVicinity = null;
+	var placeStation = new PlaceStation(world, station, placePlanetVicinity);
+	var placeStationDocks = new PlaceStationDock(world, placeStation);
+	world.place = placeStationDocks;
 }
