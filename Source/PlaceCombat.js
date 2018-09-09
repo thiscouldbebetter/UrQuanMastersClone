@@ -39,6 +39,19 @@ function PlaceCombat(world, combat)
 	);
 	this.inputToActionMappings.addLookups("inputName");
 
+	// camera
+
+	this.camera = new Camera
+	(
+		new Coords(300, 300), // hack
+		null, // focalLength
+		new Location
+		(
+			new Coords(0, 0, 0),
+			Orientation.Instances.ForwardZDownY.clone()
+		)
+	);
+
 	// entities
 
 	var entityDimension = 10;
@@ -53,7 +66,11 @@ function PlaceCombat(world, combat)
 	var planetRadius = entityDimension;
 	var planetPos = sizeHalf.clone();
 	var planetColor = "Cyan";
-	var planetVisual = new VisualCircle(planetRadius, planetColor);
+	var planetVisual = new VisualCamera
+	(
+		new VisualCircle(planetRadius, planetColor),
+		this.camera
+	);
 	var planetCollider = new Sphere(planetPos, planetRadius);
 
 	var planetEntity = new Entity
@@ -77,23 +94,9 @@ function PlaceCombat(world, combat)
 
 	var playerVisualBody = Ship.visual(entityDimension, playerColor);
 
-	this.camera = new Camera
-	(
-		new Coords(300, 300), // hack
-		null, // focalLength
-		new Location
-		(
-			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
-		)
-	);
-
 	var playerVisual = new VisualCamera
 	(
-		new VisualGroup
-		([
-			playerVisualBody,
-		]),
+		playerVisualBody,
 		this.camera
 	);
 
@@ -162,9 +165,13 @@ function PlaceCombat(world, combat)
 		1 // thickness
 	);
 
-	var enemyVisual = new VisualPolygon
+	var enemyVisual = new VisualCamera
 	(
-		new Path(enemyColliderAsFace.vertices), enemyColor
+		new VisualPolygon
+		(
+			new Path(enemyColliderAsFace.vertices), enemyColor
+		),
+		this.camera
 	);
 
 	var enemyEntity = new Entity

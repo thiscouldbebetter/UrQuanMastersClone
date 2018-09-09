@@ -56,10 +56,11 @@ function Ship(defnName)
 
 				var projectileColor = "Yellow";
 				var projectileRadius = 2;
-				var projectileVisual = new VisualGroup
-				([
+				var projectileVisual = new VisualCamera
+				(
 					new VisualCircle(projectileRadius, projectileColor),
-				]);
+					place.camera
+				);
 
 				var actorOrientation = actorLoc.orientation;
 				var actorForward = actorOrientation.forward;

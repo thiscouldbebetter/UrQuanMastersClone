@@ -60,19 +60,7 @@ function main()
 
 	if (universe.isDebuggingEnabled == true)
 	{
-		universe.mediaLibrary.waitForItemsAllToLoad
-		(
-			function()
-			{
-				// Skip the title screens.
-				var world = World.new(universe);
-				universe.venueNext = new VenueWorld(world);
-				//world.defns.factions["EarthStation"].relationsWithPlayer = Faction.RelationsAllied;
-				var player = world.player;
-				player.credit = 100;
-				player.itemHolder.itemAdd(new Item("Radioactives", 1));
-				player.itemHolder.itemAdd(new Item("ExoticMaterials", 100));
-			}
-		);
+		debug(universe);
 	}
 }
+
