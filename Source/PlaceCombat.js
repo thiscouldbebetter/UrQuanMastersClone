@@ -89,15 +89,17 @@ function PlaceCombat(world, combat)
 
 	entities.push(planetEntity);
 
+	var shipsFighting = this.combat.shipsFighting;
+
 	// player
 
 	var playerPos = new Coords(-.1, 0).multiply(this.size);
 	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
-	var playerColor = "Gray";
+	var playerShip = shipsFighting[0];
+	var playerShipDefn = playerShip.defn(world);
 
-	var playerVisualBody = Ship.visual(entityDimension, playerColor);
-
+	var playerVisualBody = playerShipDefn.visual;
 	var playerVisual = new VisualWrapped
 	(
 		this.size,
@@ -125,11 +127,9 @@ function PlaceCombat(world, combat)
 		}
 	}
 
-	var constraintSpeedMax = new Constraint("SpeedMax", 1);
+	//var constraintSpeedMax = new Constraint("SpeedMax", 1);
 	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
-
-	var playerShip = world.player.shipGroup.ships[0]; // todo
 
 	var playerEntity = new Entity
 	(
@@ -137,7 +137,7 @@ function PlaceCombat(world, combat)
 		[
 			new Modellable(playerShip),
 			new Locatable(playerLoc),
-			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
+			new Constrainable([constraintWrapToRange]),
 			new Collidable
 			(
 				playerCollider,
@@ -154,73 +154,35 @@ function PlaceCombat(world, combat)
 
 	// enemy
 
-	var damagerColor = "Red";
-	var enemyColor = damagerColor;
 	var enemyPos = this.size.clone().subtract(playerLoc.pos);
 	var enemyLoc = new Location(enemyPos);
+	var enemyCollider = new Sphere(enemyPos, entityDimension / 2);
 
-	var enemyColliderAsFace = new Face
-	([
-		new Coords(0, -entityDimension).half(),
-		new Coords(entityDimension, entityDimension).half(),
-		new Coords(-entityDimension, entityDimension).half(),
-	]);
-
-	var enemyCollider = Mesh.fromFace
-	(
-		enemyPos, // center
-		enemyColliderAsFace,
-		1 // thickness
-	);
-
+	var enemyShip = shipsFighting[1];
+	var enemyShipDefn = enemyShip.defn(world);
+	var enemyVisualBody = enemyShipDefn.visual;
 	var enemyVisual = new VisualWrapped
 	(
 		this.size,
 		new VisualCamera
 		(
-			new VisualPolygon
-			(
-				new Path(enemyColliderAsFace.vertices), enemyColor
-			),
+			enemyVisualBody,
 			this.camera
 		)
 	);
-
-	var enemyActivity = function activity(universe, world, place, actor)
-	{
-		var entityToTargetName = "Player";
-		var target = place.entities[entityToTargetName];
-		var targetPos = target.locatable.loc.pos;
-		var actorLoc = actor.locatable.loc;
-		var actorPos = actorLoc.pos;
-		var actorVel = actorLoc.vel;
-		var combat = place.combat;
-
-		var targetDisplacement = combat.displacementOfPointsWrappedToRange
-		(
-			actorVel, // displacementToOverwrite
-			actorPos,
-			targetPos,
-			combat.size
-		);
-
-		actorLoc.vel.overwriteWith
-		(
-			targetDisplacement
-		).normalize();
-	}
 
 	var enemyEntity = new Entity
 	(
 		"Enemy",
 		[
+			new Modellable(enemyShip),
 			new Locatable(enemyLoc),
-			new Constrainable([constraintSpeedMax, constraintWrapToRange]),
+			new Constrainable([constraintWrapToRange]),
 			new Collidable(enemyCollider),
 			new Damager(),
 			new Killable(),
 			new Drawable(enemyVisual),
-			new Actor(enemyActivity),
+			new Actor(this.combat.enemyActivity),
 		]
 	);
 
@@ -233,7 +195,8 @@ function PlaceCombat(world, combat)
 		new Coords(300, 0),
 		containerSidebarSize,
 		[
-			// todo
+			shipsFighting[0].toControlSidebar(containerSidebarSize, 0),
+			shipsFighting[1].toControlSidebar(containerSidebarSize, 1),
 		]
 	);
 
@@ -249,6 +212,8 @@ function PlaceCombat(world, combat)
 {
 	PlaceCombat.prototype = Object.create(Place.prototype);
 	PlaceCombat.prototype.constructor = Place;
+
+	// Place overrides
 
 	PlaceCombat.prototype.draw_FromSuperclass = PlaceCombat.prototype.draw;
 	PlaceCombat.prototype.draw = function(universe, world)

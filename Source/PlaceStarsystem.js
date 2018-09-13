@@ -1,5 +1,5 @@
 
-function PlaceStarsystem(world, starsystem, playerPos)
+function PlaceStarsystem(world, starsystem, playerLoc)
 {
 	this.starsystem = starsystem;
 	this.size = this.starsystem.sizeInner;
@@ -56,7 +56,6 @@ function PlaceStarsystem(world, starsystem, playerPos)
 
 	// player
 
-	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
@@ -81,14 +80,20 @@ function PlaceStarsystem(world, starsystem, playerPos)
 		else if (entityOtherName.startsWith("Wall"))
 		{
 			var hyperspace = world.hyperspace;
+			var playerLoc = entityPlayer.locatable.loc;
+			var playerPosNext = place.starsystem.posInHyperspace.clone().add
+			(
+				playerLoc.orientation.forward.clone().multiplyScalar
+				(
+					2 * hyperspace.starsystemRadiusOuter
+				)
+			);
+
 			world.placeNext = new PlaceHyperspace
 			(
 				world,
 				hyperspace,
-				place.starsystem.posInHyperspace.clone().add
-				(
-					new Coords(2, 0).multiplyScalar(hyperspace.starsystemRadiusOuter)
-				)
+				new Location(playerPosNext, playerLoc.orientation.clone())
 			);
 		}
 		else if (entityOtherName.startsWith("Sun"))
@@ -180,7 +185,7 @@ function PlaceStarsystem(world, starsystem, playerPos)
 			new Path(enemyColliderAsFace.vertices), enemyColor
 		);
 
-		var enemyShipDefnName = "Default";
+		var enemyShipDefnName = "Flagship";
 		var enemyShip = new Ship(enemyShipDefnName);
 		var enemyShipGroup = new ShipGroup
 		(

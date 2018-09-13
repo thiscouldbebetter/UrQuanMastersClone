@@ -109,7 +109,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 			);
 			world.placeNext = new PlaceStarsystem
 			(
-				world, starsystem, posNext
+				world, starsystem, new Location(posNext)
 			);
 		}
 		else

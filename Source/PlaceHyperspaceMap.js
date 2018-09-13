@@ -58,8 +58,22 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
 		var playerPos = entityForPlayer.locatable.loc.pos;
 		drawPos.overwriteWith(playerPos).divide(hyperspaceSize).multiply(mapSize).add(mapPos);
-		var reticleSize = new Coords(1, 1).multiplyScalar(starRadius * 8);
-		display.drawRectangleCentered(drawPos, reticleSize, null, "Gray");
+		var locatorDimension = starRadius * 8;
+		var locatorSize = new Coords(1, 1).multiplyScalar(locatorDimension);
+		display.drawRectangleCentered(drawPos, locatorSize, null, "Gray");
+
+		if (this.reticlePos == null)
+		{
+			this.reticlePos = playerPos.clone();
+		}
+
+		var reticleRadius = locatorDimension * 2;
+
+		drawPos.overwriteWith
+		(
+			this.reticlePos
+		).divide(hyperspaceSize).multiply(mapSize).add(mapPos);
+		display.drawCrosshairs(drawPos, reticleRadius, "Gray");
 
 		/*
 		var shipGroup = entityForPlayer.modellable.model;
@@ -74,25 +88,48 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			 * safetyFactor;
 		display.drawCircle(drawPos, fuelRangeRadius, null, "Gray");
 		*/
-	}
 
-	PlaceHyperspaceMap.prototype.updateForTimerTick_FromSuperclass = Place.prototype.draw;
-	PlaceHyperspaceMap.prototype.updateForTimerTick = function(universe, world)
-	{
-		/*
 		var inputHelper = universe.inputHelper;
 		var inputsActive = inputHelper.inputsActive;
 		for (var i = 0; i < inputsActive.length; i++)
 		{
 			var inputActive = inputsActive[i];
-			if (inputActive == "Tab")
+			if (inputActive.startsWith("Arrow"))
 			{
-				inputHelper.inputInactivate(inputActive);
-				world.placeNext = this.placeHyperspaceToReturnTo;
+				var directionToMove;
+				if (inputActive.endsWith("Down"))
+				{
+					directionToMove = new Coords(0, 1);
+				}
+				else if (inputActive.endsWith("Left"))
+				{
+					directionToMove = new Coords(-1, 0);
+				}
+				else if (inputActive.endsWith("Right"))
+				{
+					directionToMove = new Coords(1, 0);
+				}
+				else if (inputActive.endsWith("Up"))
+				{
+					directionToMove = new Coords(0, -1);
+				}
+				directionToMove.multiplyScalar(32);
+				this.reticlePos.add(directionToMove);
+			}
+			else if (inputActive == "PageDown")
+			{
+				// todo
+			}
+			else if (inputActive == "PageUp")
+			{
+				// todo
 			}
 		}
-		*/
+	}
 
+	PlaceHyperspaceMap.prototype.updateForTimerTick_FromSuperclass = Place.prototype.draw;
+	PlaceHyperspaceMap.prototype.updateForTimerTick = function(universe, world)
+	{
 		this.updateForTimerTick_FromSuperclass(universe, world);
 		if (this.venueControls == null)
 		{

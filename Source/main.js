@@ -50,7 +50,7 @@ function main()
 		"Gray", "White" // colorFore, colorBack
 	);
 
-	var timerHelper = new TimerHelper(20);
+	var timerHelper = new TimerHelper(24);
 
 	var universe = Universe.new
 	(

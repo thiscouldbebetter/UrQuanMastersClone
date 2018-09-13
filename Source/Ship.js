@@ -10,23 +10,24 @@ function Ship(defnName)
 
 	// static methods
 
-	Ship.accelerateAtRate = function(world, entity, accelerationPerTick)
-	{
-		var entityLoc = entity.locatable.loc;
-		var entityForward = entityLoc.orientation.forward;
-		entityLoc.accel.overwriteWith(entityForward).multiplyScalar
-		(
-			accelerationPerTick
-		);
-	}
-
 	Ship.accelerate = function(world, entity)
 	{
 		var model = entity.modellable.model;
 		var modelTypeName = model.constructor.name;
 		var ship = (modelTypeName == "ShipGroup" ? model.ships[0]: model);
 		var shipDefn = ship.defn(world);
-		Ship.accelerateAtRate(world, entity, shipDefn.acceleration);
+		var shipLoc = entity.locatable.loc;
+		var shipForward = shipLoc.orientation.forward;
+		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
+		(
+			shipDefn.acceleration
+		);
+		var shipVel = shipLoc.vel;
+		var shipSpeed = shipVel.magnitude();
+		if (shipSpeed > shipDefn.speedMax)
+		{
+			shipVel.normalize().multiplyScalar(shipDefn.speedMax);
+		}
 	}
 
 	Ship.actionAccelerate = function()
@@ -167,6 +168,21 @@ function Ship(defnName)
 		return returnValues;
 	}
 
+	Ship.manyFromDefns = function(defns)
+	{
+		var ships = [];
+
+		for (var i = 0; i < defns.length; i++)
+		{
+			var defn = defns[i];
+			var defnName = defn.name;
+			var ship = new Ship(defnName);
+			ships.push(ship);
+		}
+
+		return ships;
+	}
+
 	Ship.turnInDirection = function
 	(
 		world, entity, direction
@@ -175,7 +191,14 @@ function Ship(defnName)
 		var entityLoc = entity.locatable.loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
-		var turnsPerTick = .01; // hack
+		var shipOrShipGroup = entity.modellable.model;
+		if (shipOrShipGroup.constructor.name == "ShipGroup")
+		{
+			shipOrShipGroup = shipOrShipGroup.ships[0];
+		}
+		var ship = shipOrShipGroup;
+		var shipDefn = ship.defn(world);
+		var turnsPerTick = shipDefn.turnsPerTick;
 		var entityForwardNew = Ship._polar.fromCoords
 		(
 			entityForward
@@ -239,5 +262,34 @@ function Ship(defnName)
 		this.integrity = defn.integrityMax;
 		this.energy = defn.energyMax;
 		this.fuel = defn.fuelMax;
+	}
+
+	Ship.prototype.toControlSidebar = function(containerSidebarSize, indexTopOrBottom)
+	{
+		var marginWidth = containerSidebarSize.x / 10;
+		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
+
+		var containerShipSize = new Coords
+		(
+			containerSidebarSize.x - marginSize.x * 2,
+			(containerSidebarSize.y - marginSize.y * 3) / 2
+		);
+
+		var returnValue = new ControlContainer
+		(
+			"containerShip",
+			new Coords
+			(
+				marginSize.x,
+				marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom
+			),
+			containerShipSize,
+			[
+				// todo
+			]
+		);
+
+		return returnValue;
+
 	}
 }

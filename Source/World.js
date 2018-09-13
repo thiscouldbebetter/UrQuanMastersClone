@@ -14,7 +14,13 @@ function World(name, dateCreated, defns, player, hyperspace)
 	var starsystemStart = starsystems["Sol"];
 	this.place = new PlaceStarsystem
 	(
-		this, starsystemStart, new Coords(.5, .9).multiply(starsystemStart.sizeInner)
+		this,
+		starsystemStart,
+		new Location
+		(
+			new Coords(.5, .95).multiply(starsystemStart.sizeInner),
+			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
+		)
 	);
 	this.place.entitiesSpawn();
 }
@@ -100,13 +106,15 @@ function World(name, dateCreated, defns, player, hyperspace)
 
 		var defns = new Defns(constraintDefns, factions, shipDefns);
 
-		var playerShipDefnName = "Default";
+		var playerShipDefnName = "Flagship";
 		var playerShip = new Ship(playerShipDefnName);
+		var shipDefns = ShipDefn.Instances();
+		var playerShips = Ship.manyFromDefns(shipDefns);
 		var playerShipGroup = new ShipGroup
 		(
 			"Player",
 			"Player", // factionName
-			[ playerShip ]
+			playerShips
 		);
 		var player = new Player("Player", playerShipGroup);
 

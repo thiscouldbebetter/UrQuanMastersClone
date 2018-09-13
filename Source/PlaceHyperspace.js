@@ -1,5 +1,5 @@
 
-function PlaceHyperspace(world, hyperspace, playerPos)
+function PlaceHyperspace(world, hyperspace, playerLoc)
 {
 	this.hyperspace = hyperspace;
 	this.size = this.hyperspace.size;
@@ -110,7 +110,6 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 
 	// player
 
-	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
@@ -131,9 +130,27 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 		if (entityOtherName.startsWith("Star"))
 		{
 			var starsystem = entityOther.modellable.model;
+			var playerLoc = entityPlayer.locatable.loc;
+			var playerOrientation = playerLoc.orientation;
+			var playerPosNextAsPolar = new Polar().fromCoords
+			(
+				playerOrientation.forward
+			).addToAzimuthInTurns(.5).wrap();
+			playerPosNextAsPolar.radius = starsystem.sizeInner.x * .45;
+			var playerPosNext = playerPosNextAsPolar.toCoords(new Coords()).add
+			(
+				starsystem.sizeInner.clone().half()
+			);
+
 			world.placeNext = new PlaceStarsystem
 			(
-				world, starsystem, new Coords(.5, .9).multiply(starsystem.sizeInner)
+				world,
+				starsystem,
+				new Location
+				(
+					playerPosNext,
+					playerOrientation.clone()
+				)
 			);
 		}
 	}
@@ -143,8 +160,8 @@ function PlaceHyperspace(world, hyperspace, playerPos)
 	var playerShipDefn = playerShip.defn(world);
 
 	var constraintSpeedMax = new Constraint("SpeedMax", playerShipDefn.speedMax);
-	var constraintFriction = new Constraint("Friction", 0.1);
-	var constraintStopBelowSpeedMin = new Constraint("StopBelowSpeedMin", 0.02);
+	var constraintFriction = new Constraint("Friction", 0.03);
+	var constraintStopBelowSpeedMin = new Constraint("StopBelowSpeedMin", 0.005);
 	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
 
 	var playerEntity = new Entity

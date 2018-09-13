@@ -86,8 +86,16 @@ function PlaceStationDock(world, placeStation)
 			var buttonSizeLeft = new Coords
 			(
 				(containerLeftSize.x - marginSize.x * 3) / 2,
-				fontHeightShort * 2
+				fontHeightShort * 1.5
 			);
+
+			var buttonSizeLeftSmall = new Coords
+			(
+				(buttonSizeLeft.x - marginSize.x * 2) / 3,
+				buttonSizeLeft.y
+			);
+
+			var buttonSizeSmall = new Coords(1, 1).multiplyScalar(buttonSizeLeft.y);
 
 			var containerLeftInnerSize = new Coords
 			(
@@ -275,10 +283,50 @@ function PlaceStationDock(world, placeStation)
 									marginSize.x,
 									containerLeftSize.y - marginSize.y - buttonSizeLeft.y
 								),
-								buttonSizeLeft,
+								buttonSizeLeftSmall,
 								"Scrap",
 								fontHeightShort,
 								true, // hasBorder,
+								true, // isEnabled,
+								function click(universe)
+								{
+									// todo
+								},
+								universe // context
+							),
+
+							new ControlButton
+							(
+								"buttonShipCrewAdd",
+								new Coords
+								(
+									marginSize.x * 2 + buttonSizeLeftSmall.x,
+									containerLeftSize.y - marginSize.y - buttonSizeLeft.y
+								),
+								buttonSizeLeftSmall,
+								"Crew+",
+								fontHeightShort,
+								true, // hasBorder,
+								true, // isEnabled,
+								function click(universe)
+								{
+									// todo
+								},
+								universe // context
+							),
+
+							new ControlButton
+							(
+								"buttonShipCrewRemove",
+								new Coords
+								(
+									marginSize.x * 3 + buttonSizeLeftSmall.x * 2,
+									containerLeftSize.y - marginSize.y - buttonSizeLeft.y
+								),
+								buttonSizeLeftSmall,
+								"Crew-",
+								fontHeightShort,
+								true, // hasBorder,a
 								true, // isEnabled,
 								function click(universe)
 								{
@@ -355,39 +403,143 @@ function PlaceStationDock(world, placeStation)
 						[
 							new ControlLabel
 							(
-								"labelCredit",
+								"labelResources",
 								marginSize,
 								labelSize,
 								false, // isTextCentered
-								"Credit: [n]",
+								"Resources: [n]",
 								fontHeightShort
 							),
 
 							new ControlLabel
 							(
-								"labelResources",
-								new Coords
-								(
-									marginSize.x, marginSize.y * 2 + labelSize.y
-								),
+								"labelFuel",
+								new Coords(marginSize.x, marginSize.y * 2 + labelSize.y),
 								labelSize,
 								false, // isTextCentered
-								"Resources:",
+								"Fuel: [n]",
 								fontHeightShort
 							),
 
-							new ControlList
+							new ControlButton
 							(
-								"listResources",
+								"buttonFuelAdd",
+								new Coords
+								(
+									containerRightSize.x - marginSize.x * 2 - buttonSizeSmall.x * 2,
+									marginSize.y * 2 + labelSize.y
+								),
+								buttonSizeSmall,
+								"+",
+								fontHeightShort,
+								true, // hasBorder
+								true, // isEnabled
+								function click()
+								{
+									// todo
+								},
+								universe
+							),
+
+							new ControlButton
+							(
+								"buttonFuelRemove",
+								new Coords
+								(
+									containerRightSize.x - marginSize.x - buttonSizeSmall.x,
+									marginSize.y * 2 + labelSize.y
+								),
+								buttonSizeSmall,
+								"-",
+								fontHeightShort,
+								true, // hasBorder
+								true, // isEnabled
+								function click()
+								{
+									// todo
+								},
+								universe
+							),
+
+							new ControlLabel
+							(
+								"labelLanders",
 								new Coords
 								(
 									marginSize.x,
 									marginSize.y * 3 + labelSize.y * 2
 								),
+								labelSize,
+								false, // isTextCentered
+								"Landers: [n]",
+								fontHeightShort
+							),
+
+							new ControlButton
+							(
+								"buttonLanderAdd",
+								new Coords
+								(
+									containerRightSize.x - marginSize.x * 2 - buttonSizeSmall.x * 2,
+									marginSize.y * 3 + labelSize.y * 2
+								),
+								buttonSizeSmall,
+								"+",
+								fontHeightShort,
+								true, // hasBorder
+								true, // isEnabled
+								function click()
+								{
+									// todo
+								},
+								universe
+							),
+
+							new ControlButton
+							(
+								"buttonLanderRemove",
+								new Coords
+								(
+									containerRightSize.x - marginSize.x - buttonSizeSmall.x,
+									marginSize.y * 3 + labelSize.y * 2
+								),
+								buttonSizeSmall,
+								"-",
+								fontHeightShort,
+								true, // hasBorder
+								true, // isEnabled
+								function click()
+								{
+									// todo
+								},
+								universe
+							),
+													
+							new ControlLabel
+							(
+								"labelMinerals",
+								new Coords
+								(
+									marginSize.x, marginSize.y * 4 + labelSize.y * 3
+								),
+								labelSize,
+								false, // isTextCentered
+								"Minerals:",
+								fontHeightShort
+							),
+
+							new ControlList
+							(
+								"listMinerals",
+								new Coords
+								(
+									marginSize.x,
+									marginSize.y * 5 + labelSize.y * 4
+								),
 								new Coords
 								(
 									containerRightSize.x - marginSize.x * 2,
-									containerRightSize.y - marginSize.y * 5 - labelSize.y * 2 - buttonSizeRight.y
+									containerRightSize.y - marginSize.y * 7 - labelSize.y * 4 - buttonSizeRight.y
 								), // size
 								playerItemHolder.items,
 								new DataBinding(null, "toString()"), // bindingForItemText

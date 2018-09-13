@@ -15,11 +15,45 @@ function Combat(size, encounter, shipGroups)
 }
 
 {
-	Combat.prototype.shipSelect = function(universe, shipSelected)
+	Combat.prototype.enemyActivity = function(universe, world, place, actor)
 	{
-		var combat = this;
+		var entityToTargetName = "Player";
+		var target = place.entities[entityToTargetName];
+		var targetPos = target.locatable.loc.pos;
+		var actorLoc = actor.locatable.loc;
+		var actorPos = actorLoc.pos;
+		var actorVel = actorLoc.vel;
+		var combat = place.combat;
+
+		var targetDisplacement = combat.displacementOfPointsWrappedToRange
+		(
+			actorVel, // displacementToOverwrite
+			actorPos,
+			targetPos,
+			combat.size
+		);
+
+		var targetDirection = targetDisplacement.normalize();
+		var headingToTarget = new Polar().fromCoords(targetDirection).azimuthInTurns;
+		var actorHeading = actorLoc.orientation.headingInTurns();
+		var headingDifference = headingToTarget - actorHeading;
+		if (headingDifference != 0)
+		{
+			var directionToTurn = headingDifference / Math.abs(headingDifference);
+			Ship.turnInDirection(world, actor, directionToTurn);
+		}
+
+		Ship.accelerate(world, actor);
+	}
+
+	Combat.prototype.shipSelect = function(universe, ship0, ship1)
+	{
+		this.shipsFighting.length = 0;
+		this.shipsFighting.push(ship0)
+		this.shipsFighting.push(ship1);
+
 		var world = universe.world;
-		world.placeNext = new PlaceCombat(world, combat);
+		world.placeNext = new PlaceCombat(world, this);
 		var venueNext = new VenueWorld(world);
 		universe.venueNext = venueNext;
 	}
@@ -62,17 +96,121 @@ function Combat(size, encounter, shipGroups)
 
 	Combat.prototype.toControlShipSelect = function(universe, size)
 	{
-		var ships = this.shipGroups[0].ships;
+		var combat = this;
+		var shipsYours = this.shipGroups[0].ships;
+		var shipsTheirs = this.shipGroups[1].ships;
 
-		var returnValue = universe.controlBuilder.choiceList
+		// todo - Variable sizes.
+
+		var marginWidth = 10;
+		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
+		var fontHeightTitle = size.x / 20;
+		var fontHeight = fontHeightTitle / 2;
+		var titleSize = new Coords(size.x - marginSize.x * 2, fontHeightTitle);
+		var headingSize = new Coords((size.x - marginSize.x * 3) / 2, fontHeight);
+		var buttonSize = new Coords(titleSize.x, fontHeightTitle * 2);
+		var listSize = new Coords
 		(
-			universe,
+			headingSize.x,
+			size.y - titleSize.y - headingSize.y - buttonSize.y - marginSize.y * 5
+		);
+		var bindingForOptionText = new DataBinding(null, "defnName");
+
+		var listShipsYours = new ControlList
+		(
+			"listShipsYours",
+			new Coords(marginSize.x, titleSize.y + headingSize.y + marginSize.y * 3),
+			listSize,
+			shipsYours,
+			bindingForOptionText,
+			fontHeight,
+			null, // bindingForItemSelected
+			null // bindingForItemValue
+		);
+
+		var listShipsTheirs = new ControlList
+		(
+			"listShipsTheirs",
+			new Coords
+			(
+				marginSize.x * 2 + listSize.x,
+				titleSize.y + headingSize.y + marginSize.y * 3
+			),
+			listSize,
+			shipsTheirs,
+			bindingForOptionText,
+			fontHeight,
+			null, // bindingForItemSelected
+			null // bindingForItemValue
+		);
+
+		var returnValue = new ControlContainer
+		(
+			"containerShipSelect",
+			Coords.Instances.Zeroes,
 			size,
-			"Ship Select",
-			ships,
-			new DataBinding(null, "defnName"),
-			"Fight", // buttonSelectText
-			this.shipSelect.bind(this)
+			[
+				new ControlLabel
+				(
+					"labelTitle",
+					new Coords(size.x / 2, marginSize.y + fontHeightTitle / 2),
+					titleSize,
+					true, // isTextCentered
+					"Ship Select",
+					fontHeightTitle
+				),
+
+				new ControlLabel
+				(
+					"labelYours",
+					new Coords(marginSize.x, titleSize.y + marginSize.y * 2),
+					titleSize,
+					false, // isTextCentered
+					"Yours:",
+					fontHeight
+				),
+
+				listShipsYours,
+
+				new ControlLabel
+				(
+					"labelTheirs",
+					new Coords
+					(
+						listSize.x + marginSize.x * 2,
+						titleSize.y + marginSize.y * 2
+					),
+					titleSize,
+					false, // isTextCentered
+					"Theirs:",
+					fontHeight
+				),
+
+				listShipsTheirs,
+
+				new ControlButton
+				(
+					"buttonFight",
+					new Coords(marginSize.x, size.y - marginSize.y - buttonSize.y),
+					buttonSize,
+					"Fight",
+					fontHeight,
+					true, // hasBorder
+					true, // isEnabled,
+					function click(universe)
+					{
+						var shipYours = listShipsYours.itemSelected();
+						var shipTheirs = listShipsTheirs.itemSelected();
+
+						if (shipYours != null && shipTheirs != null)
+						{
+							combat.shipSelect(universe, shipYours, shipTheirs);
+						}
+					},
+					universe, // context
+					false // canBeHeldDown
+				),
+			]
 		);
 
 		return returnValue;
