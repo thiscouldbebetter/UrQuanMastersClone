@@ -48,7 +48,7 @@ function ShipDefn
 			return Ship.visual(shipDimension, colorMain, colorAccent);
 		}
 
-		var shipDefnDefault = new ShipDefn
+		var shipDefnFlagship = new ShipDefn
 		(
 			"Flagship",
 			"Player", // factionName
@@ -56,6 +56,20 @@ function ShipDefn
 			.5, // accel
 			24, // speedMax
 			.005, // turnsPerTick
+			10, // integrityMax
+			0, // energyPerTick
+			0, // energyMax
+			Ship.visual(shipDimension, "Gray", "Black")
+		);
+
+		var shipDefnLander = new ShipDefn
+		(
+			"Lander",
+			"Player", // factionName
+			1, // mass
+			1, // accel
+			24, // speedMax
+			.01, // turnsPerTick
 			10, // integrityMax
 			0, // energyPerTick
 			0, // energyMax
@@ -81,7 +95,8 @@ function ShipDefn
 
 		this._All =
 		[
-			shipDefnDefault,
+			shipDefnFlagship,
+			shipDefnLander,
 
 			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 	ept, 	eMax, 	visual
 			new sd("Gravitar", 	"Silikonix", 	10, 	1.166, 	35, 	.25 / heads, 42, 	.5,  	42, 	sv("Blue", "Red" ) ),

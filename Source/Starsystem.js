@@ -33,6 +33,8 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 
 		var planetDefns = PlanetDefn.Instances();
 
+		var planetSizeInner = this.sizeInner.clone().multiply(new Coords(2, 1)).double();
+
 		this.planets =
 		[
 			new Planet
@@ -41,7 +43,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["Metallic"].name,
 				radiusBase,
 				new Polar(Math.random(), 2 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] //satellites
 			),
 			new Planet
@@ -50,7 +52,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["Primordial"].name,
 				radiusBase,
 				new Polar(Math.random(), 3 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] //satellites
 			),
 
@@ -60,7 +62,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["Shielded"].name,
 				radiusBase,
 				new Polar(Math.random(), 4 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[
 					new Station
 					(
@@ -77,7 +79,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 						"Selenic",
 						radiusBase,
 						new Polar(Math.random(), distanceBetweenOrbits * 3),
-						this.sizeInner,
+						planetSizeInner,
 						[] // satellites
 					)
 
@@ -99,7 +101,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["Dust"].name,
 				radiusBase,
 				new Polar(Math.random(), 5 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] // satellites
 			),
 
@@ -109,7 +111,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 6 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] // satellites
 			),
 
@@ -119,7 +121,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 7 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] // satellites
 			),
 
@@ -129,7 +131,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 8 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] // satellites
 			),
 
@@ -139,7 +141,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["GasGiant"].name,
 				radiusBase,
 				new Polar(Math.random(), 9 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] // satellites
 			),
 
@@ -149,7 +151,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				planetDefns["Pellucid"].name,
 				radiusBase,
 				new Polar(Math.random(), 10 * distanceBetweenOrbits),
-				this.sizeInner,
+				planetSizeInner,
 				[] // satellites
 			),
 		];
@@ -172,6 +174,8 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 
 		var planetDefns = PlanetDefn.Instances()._All;
 
+		var planetSizeInner = this.sizeInner.clone().multiply(new Coords(2, 1)).double();
+
 		for (var p = 0; p < numberOfPlanets; p++)
 		{
 			var planetName = "Planet" + p;
@@ -193,14 +197,14 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				var moonAsPlanet = new Planet
 				(
 					moonName, moonDefnName, moonRadiusOuter,
-					moonPosAsPolar, this.sizeInner, [] // satellites
+					moonPosAsPolar, planetSizeInner, [] // satellites
 				);
 				satellites.push(moonAsPlanet);
 			}
 			var planet = new Planet
 			(
 				planetName, planetDefnName, planetRadiusOuter,
-				planetPosAsPolar, this.sizeInner, satellites
+				planetPosAsPolar, planetSizeInner, satellites
 			);
 			planets.push(planet);
 		}

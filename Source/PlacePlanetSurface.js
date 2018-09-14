@@ -49,16 +49,42 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	// constraints
 
-	var constraintSpeedMax = new Constraint("SpeedMax", 3);
-	var constraintFriction = new Constraint("Friction", 0.3);
-	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
+	var constraintSpeedMax = new Constraint("SpeedMax", 10);
+	var constraintFriction = new Constraint("Friction", 0.1);
+	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
+
+	this.camera = new Camera
+	(
+		new Coords(300, 300), // hack
+		null, // focalLength
+		new Location
+		(
+			new Coords(0, 0, 0),
+			Orientation.Instances.ForwardZDownY.clone()
+		)
+	);
 
 	// entities
+
+	var entities = [];
 
 	var entityDimension = 10;
 	var entitySize = new Coords(1, 1, 1).multiplyScalar(entityDimension);
 
-	var entities = [];
+	// background
+
+	var visualBackground = new VisualImage("PlanetSurface", this.planet.sizeSurface);
+	visualBackground = new VisualCamera(visualBackground, this.camera);
+	var entityBackground = new Entity
+	(
+		"Background",
+		[
+			new Locatable(new Location( this.planet.sizeSurface.clone().half() )),
+			new Drawable(visualBackground)
+		]
+	);
+
+	entities.push(entityBackground);
 
 	// lifeforms
 
@@ -97,6 +123,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 			(
 				new Path(lifeformColliderAsFace.vertices), lifeformColor
 			);
+			lifeformVisual = new VisualCamera(lifeformVisual, this.camera);
 
 			var lifeformEntity = new Entity
 			(
@@ -118,49 +145,45 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	} // end if planet.hasLife
 
-	var planetDefn = planet.defn();
-	var resourceDistributions = planetDefn.resourceDistributions;
 	var resourceDefns = ResourceDefn.Instances();
 	var resourceRadiusBase = entityDimension / 2;
+	var resources = this.planet.resources;
+	resources = (resources == null ? [] : resources);
 
-	for (var i = 0; i < resourceDistributions.length; i++)
+	for (var i = 0; i < resources.length; i++)
 	{
-		var resourceDistribution = resourceDistributions[i];
-
-		var resourceDefnName = resourceDistribution.resourceDefnName;
-		var numberOfDeposits = resourceDistribution.numberOfDeposits;
-		var quantityPerDeposit = resourceDistribution.quantityPerDeposit;
-
+		var resource = resources[i];
+		var resourceQuantity = resource.quantity;
+		var resourceDefnName = resource.defnName;
 		var resourceDefn = resourceDefns[resourceDefnName];
 
-		for (var d = 0; d < numberOfDeposits; d++)
-		{
-			var resourceColor = resourceDefn.color;
-			var resourceGradient = new Gradient
-			([
-				new GradientStop(0, resourceColor), new GradientStop(1, "Black")
-			]);
-			var resourceRadius = resourceRadiusBase * Math.sqrt(quantityPerDeposit);
-			var resourceVisual = new VisualCircleGradient
-			(
-				resourceRadius, resourceGradient
-			);
-			var resourcePos = new Coords().randomize().multiply(this.size);
-			var resourceCollider = new Sphere(resourcePos, resourceRadius);
+		var resourceColor = resourceDefn.color;
+		var resourceGradient = new Gradient
+		([
+			new GradientStop(0, resourceColor), new GradientStop(1, "Black")
+		]);
+		var resourceRadius = resourceRadiusBase * Math.sqrt(resourceQuantity);
+		var resourceVisual = new VisualCircleGradient
+		(
+			resourceRadius, resourceGradient
+		);
+		resourceVisual = new VisualCamera(resourceVisual, this.camera);
 
-			var resourceEntity = new Entity
-			(
-				"Resource" + i + "_" + d,
-				[
-					new Item(resourceDefnName, quantityPerDeposit),
-					new Locatable( new Location(resourcePos) ),
-					new Collidable(resourceCollider),
-					new Drawable(resourceVisual)
-				]
-			);
+		var resourcePos = resource.pos;
+		var resourceCollider = new Sphere(resourcePos, resourceRadius);
 
-			entities.push(resourceEntity);
-		}
+		var resourceEntity = new Entity
+		(
+			"Resource" + i,
+			[
+				new Item(resourceDefnName, resourceQuantity),
+				new Locatable( new Location(resourcePos) ),
+				new Collidable(resourceCollider),
+				new Drawable(resourceVisual)
+			]
+		);
+
+		entities.push(resourceEntity);
 	}
 
 	// player
@@ -170,7 +193,11 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
-	var playerVisual = Ship.visual(entityDimension, playerColor, "Black");
+	var playerVisual = new VisualCamera
+	(
+		Ship.visual(entityDimension, playerColor, "Black"),
+		this.camera
+	);
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
@@ -186,13 +213,15 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		}
 	}
 
+	var playerShipLander = new Ship("Lander");
+
 	var playerEntity = new Entity
 	(
 		"Player",
 		[
-			new Modellable(world.player.shipGroup), // hack
+			new Modellable(playerShipLander),
 			new Locatable(playerLoc),
-			new Constrainable([constraintFriction, constraintSpeedMax, constraintWrapToRange]),
+			new Constrainable([constraintFriction, constraintSpeedMax, constraintTrimToRange]),
 			new Collidable
 			(
 				playerCollider,
@@ -207,18 +236,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	entities.push(playerEntity);
 
-	this.camera = new Camera
-	(
-		new Coords(300, 300), // hack
-		null, // focalLength
-		new Location
-		(
-			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
-		)
-	);
-
-	var containerSidebar = world.player.toControlSidebar();
+	var containerSidebar = this.planet.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
@@ -237,9 +255,8 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	{
 		var display = universe.display;
 
-		var imageBackground = universe.mediaLibrary.imageGetByName("PlanetSurface");
-
-		display.drawImage(imageBackground, Coords.Instances.Zeroes);
+		//var imageBackground = universe.mediaLibrary.imageGetByName("PlanetSurface");
+		//display.drawImage(imageBackground, Coords.Instances.Zeroes);
 
 		var drawLoc = this.drawLoc;
 		var drawPos = drawLoc.pos;

@@ -14,7 +14,7 @@ function Ship(defnName)
 	{
 		var model = entity.modellable.model;
 		var modelTypeName = model.constructor.name;
-		var ship = (modelTypeName == "ShipGroup" ? model.ships[0]: model);
+		var ship = (modelTypeName == "ShipGroup" ? model.ships[0] : model);
 		var shipDefn = ship.defn(world);
 		var shipLoc = entity.locatable.loc;
 		var shipForward = shipLoc.orientation.forward;

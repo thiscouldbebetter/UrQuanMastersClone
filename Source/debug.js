@@ -19,6 +19,10 @@ function debug_MediaLoaded(universe)
 	{
 		docks(universe);
 	}
+	else if (debuggingMode == "Planet")
+	{
+		planet(universe);
+	}
 }
 
 function combat(universe)
@@ -73,4 +77,14 @@ function docks(universe)
 	var placeStation = new PlaceStation(world, station, placePlanetVicinity);
 	var placeStationDocks = new PlaceStationDock(world, placeStation);
 	world.place = placeStationDocks;
+}
+
+function planet(universe)
+{
+	var world = universe.world;
+	var starsystemSol = world.hyperspace.starsystems["Sol"];
+	var planetMercury = starsystemSol.planets[0];
+	var placePlanetVicinity = null;
+	var placePlanetOrbit = new PlacePlanetOrbit(world, planetMercury, placePlanetVicinity);
+	world.place = placePlanetOrbit;
 }

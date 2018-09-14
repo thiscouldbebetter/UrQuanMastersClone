@@ -514,7 +514,7 @@ function PlaceStationDock(world, placeStation)
 								},
 								universe
 							),
-													
+
 							new ControlLabel
 							(
 								"labelMinerals",

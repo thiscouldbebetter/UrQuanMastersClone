@@ -6,6 +6,8 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 
 	var entities = [];
 	Place.call(this, entities);
+
+	this._drawPos = new Coords();
 }
 {
 	// superclass
@@ -64,6 +66,48 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		);
 	}
 
+	PlacePlanetOrbit.prototype.scanEnergy = function(universe)
+	{
+		this.hasEnergyBeenScanned = true;
+	}
+
+	PlacePlanetOrbit.prototype.scanLife = function(universe)
+	{
+		this.hasLifeBeenScanned = true;
+	}
+
+	PlacePlanetOrbit.prototype.scanMinerals = function(universe)
+	{
+		var planet = this.planet;
+		var resources = planet.resources;
+		if (resources == null)
+		{
+			var resources = [];
+
+			var planetDefn = planet.defn();
+			var planetSize = planet.sizeSurface;
+			var resourceDistributions = planetDefn.resourceDistributions;
+
+			for (var i = 0; i < resourceDistributions.length; i++)
+			{
+				var resourceDistribution = resourceDistributions[i];
+
+				var resourceDefnName = resourceDistribution.resourceDefnName;
+				var numberOfDeposits = resourceDistribution.numberOfDeposits;
+				var quantityPerDeposit = resourceDistribution.quantityPerDeposit;
+
+				for (var d = 0; d < numberOfDeposits; d++)
+				{
+					var resourcePos = new Coords().randomize().multiply(planetSize);
+					var resource = new Resource(resourceDefnName, quantityPerDeposit, resourcePos);
+					resources.push(resource);
+				}
+			}
+
+			planet.resources = resources;
+		}
+	}
+
 
 	// overrides
 
@@ -72,6 +116,39 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 	{
 		this.draw_FromSuperclass(universe, world);
 		this.venueControls.draw(universe, world);
+
+		var controlMap = this.venueControls.controlRoot.children["containerMap"];
+		var mapPos = controlMap.pos;
+		var mapSize = controlMap.size;
+		var surfaceSize = this.planet.sizeSurface;
+		var display = universe.display;
+
+		var resources = this.planet.resources;
+		if (resources != null)
+		{
+			var resourceRadius = 3;
+
+			for (var i = 0; i < resources.length; i++)
+			{
+				var resource = resources[i];
+				var resourceColor = "Cyan";
+				var resourcePos = resource.pos;
+				var drawPos = this._drawPos.overwriteWith
+				(
+					resourcePos
+				).divide
+				(
+					surfaceSize
+				).multiply
+				(
+					mapSize
+				).add
+				(
+					mapPos
+				);
+				display.drawCircle(drawPos, resourceRadius, resourceColor);
+			}
+		}
 	}
 
 	PlacePlanetOrbit.prototype.updateForTimerTick_FromSuperclass = Place.prototype.updateForTimerTick;
@@ -96,7 +173,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var containerDockSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
 		var fontHeightShort = fontHeight / 2;
-		var buttonSize = new Coords(25, 25);
+		var buttonBackSize = new Coords(25, 25);
 		var marginWidth = 10;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 
@@ -112,13 +189,13 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var buttonSizeRight = new Coords
 		(
 			containerRightSize.x - marginSize.x * 2,
-			fontHeightShort * 2
+			fontHeightShort * 1.5
 		);
 
 		var buttonScanSize = new Coords
 		(
 			containerRightSize.x - marginSize.x * 4,
-			fontHeightShort * 2
+			buttonSizeRight.y
 		);
 
 		var containerScanSize = new Coords
@@ -180,7 +257,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 
 				new ControlContainer
 				(
-					"containerBottom",
+					"containerMap",
 					new Coords
 					(
 						marginSize.x,
@@ -189,14 +266,12 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					containerLeftSize,
 					// children
 					[
-						new ControlLabel
+						new ControlVisual
 						(
-							"labelSurface",
-							marginSize,
-							labelSize,
-							false, // isTextCentered
-							"[Surface]",
-							fontHeightShort
+							"visualSurface",
+							Coords.Instances.Zeroes,
+							containerLeftSize,
+							new VisualImage("PlanetSurface", containerLeftSize)
 						),
 					]
 				),
@@ -212,6 +287,23 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					containerRightSize,
 					// children
 					[
+						new ControlLabel
+						(
+							"labelScan",
+							new Coords
+							(
+								marginSize.x,
+								containerRightSize.y
+									- marginSize.y * 3
+									- buttonSizeRight.y
+									- containerScanSize.y
+									- labelSize.y
+							),
+							labelSize,
+							fontHeightShort,
+							"Scan:"
+						),
+
 						new ControlContainer
 						(
 							"containerScan",
@@ -240,7 +332,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 									true, // isEnabled,
 									function click(universe)
 									{
-										// todo
+										placePlanetOrbit.scanMinerals(universe);
 									},
 									universe
 								),
@@ -260,7 +352,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 									true, // isEnabled,
 									function click(universe)
 									{
-										// todo
+										placePlanetOrbit.scanLife(universe);
 									},
 									universe
 								),
@@ -280,7 +372,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 									true, // isEnabled,
 									function click(universe)
 									{
-										// todo
+										placePlanetOrbit.scanEnergy(universe);
 									},
 									universe
 								),
@@ -313,7 +405,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				(
 					"buttonBack",
 					marginSize,
-					buttonSize,
+					buttonBackSize,
 					"<",
 					fontHeight,
 					true, // hasBorder,
