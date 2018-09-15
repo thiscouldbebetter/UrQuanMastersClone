@@ -116,7 +116,24 @@ function World(name, dateCreated, defns, player, hyperspace)
 			"Player", // factionName
 			playerShips
 		);
-		var player = new Player("Player", playerShipGroup);
+		var shipComponentDefns = ShipComponentDefn.Instances();
+		var player = new Player
+		(
+			"Player",
+			0, // credit
+			12, // componentsMax
+			[
+				shipComponentDefns.FusionThruster.name,
+				shipComponentDefns.ManeuveringJets.name,
+				shipComponentDefns.CargoHold.name,
+				shipComponentDefns.FuelTank.name,
+			], // componentNames
+			1, // numberOfLanders
+			0, // fuel
+			[], // items
+			30, // shipsMax
+			playerShipGroup
+		);
 
 		/*
 		var hyperspace = Hyperspace.random

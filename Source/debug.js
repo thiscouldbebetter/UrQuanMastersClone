@@ -67,7 +67,7 @@ function docks(universe)
 	var world = universe.world;
 	world.defns.factions["EarthStation"].relationsWithPlayer = Faction.RelationsAllied;
 	var player = world.player;
-	player.credit = 100;
+	player.credit = 1000;
 	player.itemHolder.itemAdd(new Item("Radioactives", 1));
 	player.itemHolder.itemAdd(new Item("ExoticMaterials", 100));
 

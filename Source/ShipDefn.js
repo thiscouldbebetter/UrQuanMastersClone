@@ -25,6 +25,8 @@ function ShipDefn
 	this.energyPerTick = energyPerTick;
 	this.energyMax = energyMax;
 	this.visual = visual;
+
+	this.cost = 100; // todo
 }
 {
 	// static methods
@@ -135,5 +137,10 @@ function ShipDefn
 	ShipDefn.prototype.faction = function(world)
 	{
 		// todo
+	}
+
+	ShipDefn.prototype.fullName = function()
+	{
+		return this.factionName + " " + this.name;
 	}
 }

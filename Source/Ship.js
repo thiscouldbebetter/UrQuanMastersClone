@@ -2,6 +2,7 @@
 function Ship(defnName)
 {
 	this.defnName = defnName;
+	this.crew = 1;
 }
 {
 	// temporary variables
@@ -253,6 +254,11 @@ function Ship(defnName)
 	Ship.prototype.defn = function(world)
 	{
 		return world.defns.shipDefns[this.defnName];
+	}
+
+	Ship.prototype.fullName = function(world)
+	{
+		return this.defn(world).factionName + " " + this.defnName;
 	}
 
 	Ship.prototype.initialize = function(world)
