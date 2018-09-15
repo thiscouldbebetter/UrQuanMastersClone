@@ -1,21 +1,10 @@
 {
     "name": "SlaverGuardDrone",
     "imageName": "Conversation-Slaver",
+    "contentTextStringName": "Conversation-Slaver-Content",
     "talkNodes": [
 
-{ "defnName": "Display", "text": "This is a recording:"},
-{ "defnName": "Display", "text": "You are trespassing in the territory"},
-{ "defnName": "Display", "text": "of the Slaver Empire.  This planet,"},
-{ "defnName": "Display", "text": "Earth, its denizens, and its environs"},
-{ "defnName": "Display", "text": "are subject to the dominion of the Slavers,"},
-{ "defnName": "Display", "text": "absolutely and in perpetuity."},
-{ "defnName": "Display", "text": "Also, your vessel does not conform"},
-{ "defnName": "Display", "text": "to standard Slaver identification protocols,"},
-{ "defnName": "Display", "text": "which suggests independent operation."},
-{ "defnName": "Display", "text": "This is not permitted."},
-{ "defnName": "Display", "text": "This drone will now report your crimes"},
-{ "defnName": "Display", "text": "to the nearest Slaver authorities."},
-{ "defnName": "Display", "text": "Remain here until their arrival."},
+{ "defnName": "Display", "text": "#(SEND_MESSAGE)"},
 
 { "defnName": "Quit" }
 

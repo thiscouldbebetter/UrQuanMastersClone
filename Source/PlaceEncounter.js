@@ -33,9 +33,16 @@ function PlaceEncounter(world, encounter)
 		var faction = shipGroupOther.faction(universe.world);
 		var conversationDefnName = faction.conversationDefnName;
 		var conversationResourceName = "Conversation-" + conversationDefnName;
+		var mediaLibrary = universe.mediaLibrary;
 		var conversationDefnAsJSON =
-			universe.mediaLibrary.textStringGetByName(conversationResourceName).value;
+			mediaLibrary.textStringGetByName(conversationResourceName).value;
 		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+		var contentTextStringName = conversationDefn.contentTextStringName;
+		if (contentTextStringName != null)
+		{
+			var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
+			conversationDefn.expandFromContentTextString(contentTextString);
+		}
 		var venueToReturnTo = universe.venueCurrent;
 		var conversation = new ConversationRun
 		(
