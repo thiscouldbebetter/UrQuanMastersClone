@@ -33,17 +33,32 @@ function Combat(size, encounter, shipGroups)
 			combat.size
 		);
 
-		var targetDirection = targetDisplacement.normalize();
-		var headingToTarget = new Polar().fromCoords(targetDirection).azimuthInTurns;
-		var actorHeading = actorLoc.orientation.headingInTurns();
-		var headingDifference = headingToTarget - actorHeading;
-		if (headingDifference != 0)
+		var forwardAsPolar = new Polar().fromCoords(actorLoc.orientation.forward);
+		var angleForward = forwardAsPolar.azimuthInTurns;
+
+		var targetDisplacementAsPolar = new Polar().fromCoords(targetDisplacement);
+		var angleToTarget = targetDisplacementAsPolar.azimuthInTurns;
+
+		var angleTargetMinusForward =
+			angleToTarget.subtractWrappedToRangeMax(angleForward, 1);
+
+		if (angleTargetMinusForward != 0)
 		{
-			var directionToTurn = headingDifference / Math.abs(headingDifference);
+			var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
 			Ship.turnInDirection(world, actor, directionToTurn);
 		}
 
 		Ship.accelerate(world, actor);
+	}
+
+	Combat.prototype.initialize = function(world)
+	{
+		for (var i = 0; i < this.shipGroups.length; i++)
+		{
+			var shipGroup = this.shipGroups[i];
+			shipGroup.initialize(world);
+		}
+		return this;
 	}
 
 	Combat.prototype.shipSelect = function(universe, ship0, ship1)
@@ -97,6 +112,7 @@ function Combat(size, encounter, shipGroups)
 	Combat.prototype.toControlShipSelect = function(universe, size)
 	{
 		var combat = this;
+		var world = universe.world;
 		var shipsYours = this.shipGroups[0].ships;
 		var shipsTheirs = this.shipGroups[1].ships;
 
@@ -114,7 +130,9 @@ function Combat(size, encounter, shipGroups)
 			headingSize.x,
 			size.y - titleSize.y - headingSize.y - buttonSize.y - marginSize.y * 5
 		);
-		var bindingForOptionText = new DataBinding(null, "defnName");
+		var bindingForOptionText =
+			new DataBinding(null, "fullNameAndCrew(world)", { "world": world } );
+
 
 		var listShipsYours = new ControlList
 		(

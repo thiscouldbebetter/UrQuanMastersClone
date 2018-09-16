@@ -2,6 +2,7 @@
 function PlaceCombat(world, combat)
 {
 	this.combat = combat;
+
 	this.size = this.combat.size;
 
 	var actionExit = new Action
@@ -64,7 +65,8 @@ function PlaceCombat(world, combat)
 	var sizeHalf = this.size.clone().half();
 
 	var planetRadius = entityDimension;
-	var planetPos = new Coords(0, 0);//sizeHalf.clone();
+	//var planetPos = sizeHalf.clone();
+	var planetPos = sizeHalf.clone();
 	var planetColor = "Cyan";
 	var planetVisual = new VisualWrapped
 	(
@@ -77,23 +79,78 @@ function PlaceCombat(world, combat)
 	);
 	var planetCollider = new Sphere(planetPos, planetRadius);
 
+	var planetCollide = function(universe, world, place, entityPlanet, entityOther)
+	{
+		var planetPos = entityPlanet.locatable.loc.pos;
+
+		var otherLoc = entityOther.locatable.loc;
+		var otherPos = otherLoc.pos;
+		var displacement = otherPos.clone().subtract(planetPos);
+		var distance = displacement.magnitude();
+		var direction = displacement.divideScalar(distance);
+		var planetCollider = entityPlanet.collidable.collider;
+		var planetRadius = planetCollider.radius;
+		var otherCollider = entityOther.collidable.collider;
+		var sumOfRadii = planetRadius + otherCollider.radius;
+		if (distance < sumOfRadii)
+		{
+			var impulse = direction.multiplyScalar(sumOfRadii - distance);
+			otherLoc.vel.add(impulse.double());
+		}
+	}
+
+	var planetActivityGravitate = function(universe, world, place, actor)
+	{
+		var planet = actor;
+		var planetPos = planet.locatable.loc.pos;
+
+		var combatSize = place.combat.size;
+
+		var shipEntityPlayer = entities["Player"];
+		var shipEntityEnemy = entities["Enemy"];
+		var shipEntities = [ shipEntityPlayer, shipEntityEnemy ];
+		for (var i = 0; i < shipEntities.length; i++)
+		{
+			var ship = shipEntities[i];
+			var shipLoc = ship.locatable.loc;
+			var shipPos = shipLoc.pos;
+			var displacement = shipPos.clone().subtractWrappedToRangeMax(planetPos, combatSize);
+			var distance = displacement.magnitude();
+			if (distance > 0)
+			{
+				var direction = displacement.divideScalar(distance);
+				var graviticConstant = -100;
+				var accelerationMagnitude = graviticConstant / (distance * distance);
+				var accelToAdd = direction.multiplyScalar(accelerationMagnitude);
+				shipLoc.accel.add(accelToAdd);
+			}
+		}
+	};
+
 	var planetEntity = new Entity
 	(
 		"Planet",
 		[
 			new Locatable( new Location(planetPos) ),
-			new Collidable(planetCollider),
-			new Drawable(planetVisual)
+			new Collidable
+			(
+				planetCollider,
+				[ "collidable" ], // entityPropertyNamesToCollideWith
+				planetCollide
+			),
+			new Drawable(planetVisual),
+			new Actor(planetActivityGravitate),
 		]
 	);
 
 	entities.push(planetEntity);
+	entities[planetEntity.name] = planetEntity;
 
 	var shipsFighting = this.combat.shipsFighting;
 
 	// player
 
-	var playerPos = new Coords(-.1, 0).multiply(this.size);
+	var playerPos = new Coords(-.1, 0).multiply(this.size).add(planetPos);
 	var playerLoc = new Location(playerPos);
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerShip = shipsFighting[0];
@@ -151,10 +208,11 @@ function PlaceCombat(world, combat)
 	);
 
 	entities.push(playerEntity);
+	entities[playerEntity.name] = playerEntity;
 
 	// enemy
 
-	var enemyPos = this.size.clone().subtract(playerLoc.pos);
+	var enemyPos = new Coords(.1, 0).multiply(this.size).add(planetPos);
 	var enemyLoc = new Location(enemyPos);
 	var enemyCollider = new Sphere(enemyPos, entityDimension / 2);
 
@@ -187,6 +245,7 @@ function PlaceCombat(world, combat)
 	);
 
 	entities.push(enemyEntity);
+	entities[enemyEntity.name] = enemyEntity;
 
 	var containerSidebarSize = new Coords(100, 300); // hack
 	var containerSidebar = new ControlContainer
@@ -195,8 +254,8 @@ function PlaceCombat(world, combat)
 		new Coords(300, 0),
 		containerSidebarSize,
 		[
-			shipsFighting[0].toControlSidebar(containerSidebarSize, 0),
-			shipsFighting[1].toControlSidebar(containerSidebarSize, 1),
+			shipsFighting[0].toControlSidebar(containerSidebarSize, 0, world),
+			shipsFighting[1].toControlSidebar(containerSidebarSize, 1, world),
 		]
 	);
 

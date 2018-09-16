@@ -10,4 +10,13 @@ function ShipGroup(name, factionName, ships)
 	{
 		return world.defns.factions[this.factionName]
 	}
+
+	ShipGroup.prototype.initialize = function(world)
+	{
+		for (var i = 0; i < this.ships.length; i++)
+		{
+			var ship = this.ships[i];
+			ship.initialize(world);
+		}
+	}
 }

@@ -53,7 +53,7 @@ function combat(universe)
 				enemyShips
 			)
 		]
-	);
+	).initialize(universe.world);
 	var controlShipSelect = combat.toControlShipSelect
 	(
 		universe, displaySize

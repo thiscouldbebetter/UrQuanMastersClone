@@ -19,7 +19,7 @@ function PlaceEncounter(world, encounter)
 		var world = universe.world;
 		var placeEncounter = world.place;
 		var encounter = placeEncounter.encounter;
-		var combat = new Combat(size, encounter);
+		var combat = new Combat(size, encounter).initialize(world);
 		var shipSelect = combat.toControlShipSelect(universe, universe.display.sizeInPixels);
 		universe.venueNext = new VenueControls();
 	}

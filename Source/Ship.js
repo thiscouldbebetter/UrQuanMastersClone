@@ -2,7 +2,6 @@
 function Ship(defnName)
 {
 	this.defnName = defnName;
-	this.crew = 1;
 }
 {
 	// temporary variables
@@ -251,9 +250,19 @@ function Ship(defnName)
 
 	// instance methods
 
+	Ship.prototype.crewCurrentOverMax = function(world)
+	{
+		return this.crew + "/" + this.defn(world).crewMax;
+	}
+
 	Ship.prototype.defn = function(world)
 	{
 		return world.defns.shipDefns[this.defnName];
+	}
+
+	Ship.prototype.energyCurrentOverMax = function(world)
+	{
+		return this.energy + "/" + this.defn(world).energyMax;
 	}
 
 	Ship.prototype.fullName = function(world)
@@ -261,17 +270,24 @@ function Ship(defnName)
 		return this.defn(world).factionName + " " + this.defnName;
 	}
 
+	Ship.prototype.fullNameAndCrew = function(world)
+	{
+		return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
+	}
+
 	Ship.prototype.initialize = function(world)
 	{
 		var defn = this.defn(world);
 
-		this.integrity = defn.integrityMax;
+		this.crew = defn.crewMax;
 		this.energy = defn.energyMax;
 		this.fuel = defn.fuelMax;
 	}
 
-	Ship.prototype.toControlSidebar = function(containerSidebarSize, indexTopOrBottom)
+	Ship.prototype.toControlSidebar = function(containerSidebarSize, indexTopOrBottom, world)
 	{
+		var ship = this;
+
 		var marginWidth = containerSidebarSize.x / 10;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 
@@ -280,6 +296,13 @@ function Ship(defnName)
 			containerSidebarSize.x - marginSize.x * 2,
 			(containerSidebarSize.y - marginSize.y * 3) / 2
 		);
+
+		var fontHeight = 20;
+
+		var fontHeightShort = fontHeight / 2;
+		var labelSizeShort = new Coords(containerShipSize.x / 2, fontHeightShort);
+
+		var defn = this.defn(world);
 
 		var returnValue = new ControlContainer
 		(
@@ -291,7 +314,71 @@ function Ship(defnName)
 			),
 			containerShipSize,
 			[
-				// todo
+				new ControlLabel
+				(
+					"labelName",
+					new Coords
+					(
+						containerShipSize.x / 2,
+						marginSize.y + labelSizeShort.y / 2
+					), // pos
+					labelSizeShort,
+					true, // isTextCentered
+					defn.factionName,
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelCrew",
+					new Coords
+					(
+						marginSize.x,
+						marginSize.y * 2 + labelSizeShort.y
+					), // pos
+					labelSizeShort,
+					false, // isTextCentered
+					"Crew:",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"infoCrew",
+					new Coords
+					(
+						marginSize.x / 2 + labelSizeShort.x,
+						marginSize.y * 2 + labelSizeShort.y
+					), // pos
+					labelSizeShort,
+					false, // isTextCentered
+					new DataBinding(ship, "crewCurrentOverMax(world)", { "world": world }),
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelEnergy",
+					new Coords(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
+					labelSizeShort,
+					false, // isTextCentered
+					"Energy:",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"infoEnergy",
+					new Coords
+					(
+						marginSize.x / 2 + labelSizeShort.x,
+						marginSize.y * 3 + labelSizeShort.y * 2
+					), // pos
+					labelSizeShort,
+					false, // isTextCentered
+					new DataBinding(ship, "energyCurrentOverMax(world)", { "world": world }),
+					fontHeightShort
+				),
 			]
 		);
 
