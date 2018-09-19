@@ -1,4 +1,4 @@
-function Player(name, credit, flagshipComponentsMax, flagshipComponentNames, numberOfLanders, fuel, items, shipsMax, shipGroup)
+function Player(name, credit, flagshipComponentsMax, flagshipComponentNames, numberOfLanders, fuel, items, shipsMax, factionsKnownNames, shipGroup)
 {
 	this.name = name;
 	this.credit = credit;
@@ -8,6 +8,7 @@ function Player(name, credit, flagshipComponentsMax, flagshipComponentNames, num
 	this.fuel = fuel;
 	this.itemHolder = new ItemHolder(items);
 	this.shipsMax = shipsMax;
+	this.factionsKnownNames = factionsKnownNames;
 	this.shipGroup = shipGroup;
 
 	this.variableLookup = {};

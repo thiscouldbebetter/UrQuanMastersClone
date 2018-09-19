@@ -43,63 +43,148 @@ function World(name, dateCreated, defns, player, hyperspace)
 			ConstraintDefn.Instances.WrapToRange
 		];
 
-		var factionSlaverGuardDrone = new Faction
-		(
-			"SlaverGuardDrone",
-			Faction.RelationsHostile,
-			true, // talksImmediately
-			"SlaverGuardDrone", // conversationDefnName
-			function shipGroupActivity(universe, world, place, entityActor)
+		var hyperspaceSize = new Coords(1, 1).multiplyScalar(10000);
+
+		var shipGroupActivityApproach = function(universe, world, place, entityActor)
+		{
+			var actor = entityActor.actor;
+
+			var targetPos = actor.targetPos;
+			if (targetPos == null)
 			{
-				var actor = entityActor.actor;
-
-				var targetPos = actor.targetPos;
-				if (targetPos == null)
-				{
-					var entityToTargetName = "Player";
-					var target = place.entities[entityToTargetName];
-					targetPos = target.locatable.loc.pos;
-					actor.targetPos = targetPos;
-				}
-
-				var actorLoc = entityActor.locatable.loc;
-				var actorPos = actorLoc.pos;
-				var actorVel = actorLoc.vel;
-
-				actorVel.overwriteWith
-				(
-					targetPos
-				).subtract
-				(
-					actorPos
-				);
-
-				if (actorVel.magnitude() < 1)
-				{
-					actorPos.overwriteWith(targetPos);
-					//place.entitiesToRemove.push(entityActor);
-					entityActor.killable.kill(universe, world, place, entityActor);
-				}
-				else
-				{
-					actorVel.normalize();
-				}
+				var entityToTargetName = "Player";
+				var target = place.entities[entityToTargetName];
+				targetPos = target.locatable.loc.pos;
+				actor.targetPos = targetPos;
 			}
-		);
 
-		var factionEarth = new Faction
+			var actorLoc = entityActor.locatable.loc;
+			var actorPos = actorLoc.pos;
+			var actorVel = actorLoc.vel;
+
+			actorVel.overwriteWith
+			(
+				targetPos
+			).subtract
+			(
+				actorPos
+			);
+
+			if (actorVel.magnitude() < 1)
+			{
+				actorPos.overwriteWith(targetPos);
+				//place.entitiesToRemove.push(entityActor);
+				entityActor.killable.kill(universe, world, place, entityActor);
+			}
+			else
+			{
+				actorVel.normalize();
+			}
+		}
+
+		// special
+
+		var factionTerran = new Faction
 		(
-			"EarthStation",
+			"Terran",
+			null, // color
 			Faction.RelationsNeutral,
 			true, // talksImmediately
 			"EarthStation", // conversationDefnName
+			null, // sphereOfInfluence
 			null // shipGroupActivity
 		);
 
+		var factionSlaverGuardDrone = new Faction
+		(
+			"SlaverGuardDrone",
+			null, // color
+			Faction.RelationsHostile,
+			true, // talksImmediately
+			"SlaverGuardDrone", // conversationDefnName
+			null, // sphereOfInfluence
+			shipGroupActivityApproach
+		);
+
+		// normal
+
+		var f = function(name, color, sphereOfInfluence, relations)
+		{
+			var talksImmediately = (sphereOfInfluence == null);
+
+			return new Faction
+			(
+				name,
+				color,
+				relations,
+				talksImmediately,
+				name, // conversationDefnName
+				sphereOfInfluence,
+				shipGroupActivityApproach
+			);
+		}
+
+		var soi = function(centerX, centerY, radius)
+		{
+			return new Sphere
+			(
+				new Coords(centerX, 1000 - centerY).multiplyScalar(10),
+				radius * hyperspaceSize.x
+			);
+		}
+
+		var hostile = Faction.RelationsHostile;
+		var neutral = Faction.RelationsNeutral;
+
+		var factionAmorfus 		= f("Amorfus", 		"Violet", 	soi(197.8, 596.8, .1), 	hostile);
+		var factionAraknoid 	= f("Araknoid", 	"Purple", 	soi(22.9, 366.6, .15), 	hostile);
+		var factionDaskapital 	= f("Daskapital", 	"Red", 		soi(946.9, 280.6, .1), 	neutral);
+		var factionEllfyn		= f("Ellfyn", 		"Blue", 	soi(100, 500, .05), 	neutral);
+		var factionHyphae 		= f("Hyphae", 		"Purple", 	soi(629.1, 220.8, .12), hostile);
+		var factionMauluska 	= f("Mauluska", 	"Brown", 	soi(241.6, 368.7, .12), neutral);
+		var factionMoroz 		= f("Moroz", 		"Cyan", 	soi(863.0, 869.3, .1), 	neutral);
+		var factionMuuncaf 		= f("Muuncaf", 		"Cyan", 	soi(52.2, 52.5, .1), 	neutral);
+		var factionMazonae		= f("Mazonae", 		null, 		null, 					neutral);
+		var factionMurch 		= f("Murch", 		null, 		null, 					neutral);
+		var factionOutsider 	= f("Outsider", 	"Purple", 	soi(371.3, 253.7, .1), 	neutral);
+		var factionRaptor 		= f("Raptor", 		"Violet", 	soi(492.3, 029.4, .1), 	neutral);
+		var factionRaptor 		= f("RaptorRebel", 	"Mauve", 	soi(492.3, 029.4, .1), 	neutral);
+		var factionRaptor 		= f("RaptorRoyalists","Violet", soi(492.3, 029.4, .1), 	neutral);
+		var factionSilikonix 	= f("Silikonix", 	null, 		null, 					neutral);
+		var factionSlaver 		= f("Slaver",		"Green",	soi(590, 590, .25), 	hostile);
+		var factionSupial		= f("Supial", 		null, 		null, 					hostile);
+		var factionTempestrial 	= f("Tempestrial", 	null, 		null, 					neutral);
+		var factionTriunion		= f("Triunion", 	"Red", 		soi(400, 543.7, .067), 	neutral);
+		var factionTwyggan 		= f("Twyggan", 		"Brown", 	soi(741.4, 912.4, .1), 	neutral);
+		var factionUgglegruj 	= f("Ugglegruj", 	"Blue", 	soi(433.3, 168.7, .12), hostile);
+		var factionXenofobi 	= f("Xenofobi", 	"Gray", 	soi(610, 610, .25), 	hostile);
+		var factionWarpig		= f("Warpig", 		"Cyan", 	soi(253.5, 835.8, .1), 	hostile);
+
 		var factions =
 		[
-			factionEarth,
+			factionAmorfus,
+			factionAraknoid,
+			factionDaskapital,
+			factionEllfyn,
+			factionHyphae,
+			factionMauluska,
+			factionMoroz,
+			factionMuuncaf,
+			factionMazonae,
+			factionMurch,
+			factionOutsider,
+			factionRaptor,
+			factionSilikonix,
+			factionSupial,
+			factionTempestrial,
+			factionTerran,
+			factionSlaver,
 			factionSlaverGuardDrone,
+			factionTriunion,
+			factionTwyggan,
+			factionUgglegruj,
+			factionXenofobi,
+			factionWarpig,
 		];
 
 		var shipDefns = ShipDefn.Instances();
@@ -117,6 +202,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 			playerShips
 		);
 		var shipComponentDefns = ShipComponentDefn.Instances();
+		//var factionNamesAll = factions.elementProperties("name");
 		var player = new Player
 		(
 			"Player",
@@ -132,6 +218,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 			0, // fuel
 			[], // items
 			30, // shipsMax
+			[], // factionsKnownNames
 			playerShipGroup
 		);
 
@@ -150,7 +237,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 
 		var hyperspace = Hyperspace.fromFileContentsAsString
 		(
-			new Coords(10000, 10000), // size
+			hyperspaceSize,
 			10, // starsystemRadiusOuter
 			new Coords(300, 300), // starsystemSizeInner
 			hyperspaceMapAsTextString.value

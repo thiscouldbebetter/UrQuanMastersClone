@@ -103,7 +103,7 @@ function ShipDefn
 		var slaverGuardDrone = new ShipDefn
 		(
 			"SlaverGuardDrone",
-			"Slavers", // factionName
+			"Slaver", // factionName
 			.1, // accel
 			2, // speedMax
 			.01, // turnsPerTick
@@ -141,7 +141,7 @@ function ShipDefn
 			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 		e/tick,	eMax, 	visual,		attackDefn
 			new sd("Gravitar", 	"Silikonix", 	10, 	1.166, 	35, 	.25 / heads, 42, 42,	.5,  	42, 	sv(b, r ), 	adTodo ),
 			new sd("Infernus", 	"Araknoid", 	17,		5, 		25, 	.33 / heads, 22, 22, 	.8,  	16, 	sv(v, y ), 	adTodo ),
-			new sd("Efflorescence", "Twygg", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	sv(g, o ), 	adTodo ),
+			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	sv(g, o ), 	adTodo ),
 			new sd("Starshard", "Xtalik", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv(w, c), 	adTodo ),
 			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	sv(a, ad),	adTodo ),
 			new sd("Carrier", 	"Slaver", 		10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv(g, r),	adTodo ),

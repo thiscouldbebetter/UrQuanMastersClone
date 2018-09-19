@@ -54,6 +54,64 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			display.drawCircle(drawPos, starRadius, starColor);
 		}
 
+		var factionsKnownNames = world.player.factionsKnownNames;
+		var factions = world.defns.factions;
+		for (var i = 0; i < factionsKnownNames.length; i++)
+		{
+			var factionName = factionsKnownNames[i];
+			var faction = factions[factionName];
+			var factionZone = faction.sphereOfInfluence;
+
+			if (factionZone != null)
+			{
+
+				drawPos.overwriteWith
+				(
+					factionZone.center
+				).divide
+				(
+					hyperspaceSize
+				).multiply
+				(
+					mapSize
+				).add
+				(
+					mapPos
+				);
+
+				var factionZoneRadiusScaled = factionZone.radius / hyperspaceSize.x * mapSize.x;
+
+				var factionColor = faction.color;
+				display.drawCircle(drawPos, factionZoneRadiusScaled, null, factionColor);
+
+				display.drawText
+				(
+					faction.name,
+					10, //fontHeightInPixels,
+					drawPos,
+					factionColor,
+					"Gray",
+					false, // areColorsReversed,
+					true, // isCentered,
+					null, // widthMaxInPixels
+				);
+			}
+		}
+
+		/*
+		var shipGroup = entityForPlayer.modellable.model;
+		var ship = shipGroup.ships[0];
+		var shipDefn = ship.defn(world);
+		var safetyFactor = .9;
+		var fuelRangeRadius =
+			(shipGroup.fuel / shipGroup.fuelPerTick)
+			 * shipDefn.speedMax
+			 / hyperspace.size.x
+			 * mapSize.x
+			 * safetyFactor;
+		display.drawCircle(drawPos, fuelRangeRadius, null, "Gray");
+		*/
+
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
 		var playerPos = entityForPlayer.locatable.loc.pos;
@@ -75,56 +133,6 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		).divide(hyperspaceSize).multiply(mapSize).add(mapPos);
 		display.drawCrosshairs(drawPos, reticleRadius, "Gray");
 
-		/*
-		var shipGroup = entityForPlayer.modellable.model;
-		var ship = shipGroup.ships[0];
-		var shipDefn = ship.defn(world);
-		var safetyFactor = .9;
-		var fuelRangeRadius =
-			(shipGroup.fuel / shipGroup.fuelPerTick)
-			 * shipDefn.speedMax
-			 / hyperspace.size.x
-			 * mapSize.x
-			 * safetyFactor;
-		display.drawCircle(drawPos, fuelRangeRadius, null, "Gray");
-		*/
-
-		var inputHelper = universe.inputHelper;
-		var inputsActive = inputHelper.inputsActive;
-		for (var i = 0; i < inputsActive.length; i++)
-		{
-			var inputActive = inputsActive[i];
-			if (inputActive.startsWith("Arrow"))
-			{
-				var directionToMove;
-				if (inputActive.endsWith("Down"))
-				{
-					directionToMove = new Coords(0, 1);
-				}
-				else if (inputActive.endsWith("Left"))
-				{
-					directionToMove = new Coords(-1, 0);
-				}
-				else if (inputActive.endsWith("Right"))
-				{
-					directionToMove = new Coords(1, 0);
-				}
-				else if (inputActive.endsWith("Up"))
-				{
-					directionToMove = new Coords(0, -1);
-				}
-				directionToMove.multiplyScalar(32);
-				this.reticlePos.add(directionToMove);
-			}
-			else if (inputActive == "PageDown")
-			{
-				// todo
-			}
-			else if (inputActive == "PageUp")
-			{
-				// todo
-			}
-		}
 	}
 
 	PlaceHyperspaceMap.prototype.updateForTimerTick_FromSuperclass = Place.prototype.draw;
@@ -228,5 +236,42 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		}
 
 		this.venueControls.updateForTimerTick(universe, world);
+
+		var inputHelper = universe.inputHelper;
+		var inputsActive = inputHelper.inputsActive;
+		for (var i = 0; i < inputsActive.length; i++)
+		{
+			var inputActive = inputsActive[i];
+			if (inputActive.startsWith("Arrow"))
+			{
+				var directionToMove;
+				if (inputActive.endsWith("Down"))
+				{
+					directionToMove = new Coords(0, 1);
+				}
+				else if (inputActive.endsWith("Left"))
+				{
+					directionToMove = new Coords(-1, 0);
+				}
+				else if (inputActive.endsWith("Right"))
+				{
+					directionToMove = new Coords(1, 0);
+				}
+				else if (inputActive.endsWith("Up"))
+				{
+					directionToMove = new Coords(0, -1);
+				}
+				directionToMove.multiplyScalar(32);
+				this.reticlePos.add(directionToMove);
+			}
+			else if (inputActive == "PageDown")
+			{
+				// todo
+			}
+			else if (inputActive == "PageUp")
+			{
+				// todo
+			}
+		}
 	}
 }

@@ -65,7 +65,7 @@ function combat(universe)
 function docks(universe)
 {
 	var world = universe.world;
-	world.defns.factions["EarthStation"].relationsWithPlayer = Faction.RelationsAllied;
+	world.defns.factions["Terran"].relationsWithPlayer = Faction.RelationsAllied;
 	var player = world.player;
 	player.credit = 1000;
 	player.itemHolder.itemAdd(new Item("Radioactives", 1));

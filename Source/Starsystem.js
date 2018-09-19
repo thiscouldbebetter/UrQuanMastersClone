@@ -69,7 +69,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 						"Station",
 						"Gray", // color
 						radiusBase,
-						"EarthStation", // factionName
+						"Terran", // factionName
 						new Polar(Math.random(), distanceBetweenOrbits * 2)
 					),
 
@@ -223,7 +223,7 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 			"Station",
 			"Gray", // color
 			10, // radius
-			"EarthStation", // factionName
+			"Terran", // factionName
 			new Polar(Math.random(), distanceBetweenPlanetOrbits),
 		);
 		var satellites = planetWithStation.satellites;
