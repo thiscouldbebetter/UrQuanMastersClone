@@ -219,7 +219,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	(
 		"Player",
 		[
-			new Modellable(playerShipLander),
+			playerShipLander,
 			new Locatable(playerLoc),
 			new Constrainable([constraintFriction, constraintSpeedMax, constraintTrimToRange]),
 			new Collidable

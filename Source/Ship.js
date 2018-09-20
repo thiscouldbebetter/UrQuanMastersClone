@@ -12,9 +12,7 @@ function Ship(defnName)
 
 	Ship.accelerate = function(world, entity)
 	{
-		var model = entity.modellable.model;
-		var modelTypeName = model.constructor.name;
-		var ship = (modelTypeName == "ShipGroup" ? model.ships[0] : model);
+		var ship = (entity.shipGroup != null ? entity.shipGroup.ships[0] : entity.ship);
 		var shipDefn = ship.defn(world);
 		var shipLoc = entity.locatable.loc;
 		var shipForward = shipLoc.orientation.forward;
@@ -49,9 +47,6 @@ function Ship(defnName)
 			"Fire",
 			function perform(universe, world, place, actor)
 			{
-				var itemWeapon = new Item("Weapon", 1);
-				var actorHasWeapon = actor.itemHolder.hasItems(itemWeapon);
-
 				var actorLoc = actor.locatable.loc;
 				var actorPos = actorLoc.pos;
 
@@ -76,11 +71,20 @@ function Ship(defnName)
 				var projectileCollider =
 					new Sphere(projectilePos, projectileRadius);
 
-				var projectileCollide = function(universe, world, place, entityPlayer, entityOther)
+				var projectileDamagePerHit = 1;
+
+				var projectileCollide = function(universe, world, place, entityProjectile, entityOther)
 				{
+					entityProjectile.killable.integrity = 0;
+
 					if (entityOther.killable != null)
 					{
-						place.entitiesToRemove.push(entityOther);
+						var killable = entityOther.killable;
+						killable.integrity -= projectileDamagePerHit;
+						if (entityOther.ship != null)
+						{
+							entityOther.ship.crew = killable.integrity;
+						}
 					}
 				}
 
@@ -97,7 +101,8 @@ function Ship(defnName)
 							[ "killable" ],
 							projectileCollide
 						),
-						new Drawable(projectileVisual)
+						new Drawable(projectileVisual),
+						new Killable(1),
 					]
 				);
 
@@ -191,12 +196,7 @@ function Ship(defnName)
 		var entityLoc = entity.locatable.loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
-		var shipOrShipGroup = entity.modellable.model;
-		if (shipOrShipGroup.constructor.name == "ShipGroup")
-		{
-			shipOrShipGroup = shipOrShipGroup.ships[0];
-		}
-		var ship = shipOrShipGroup;
+		var ship = (entity.ship == null ? entity.shipGroup.ships[0] : entity.ship);
 		var shipDefn = ship.defn(world);
 		var turnsPerTick = shipDefn.turnsPerTick;
 		var entityForwardNew = Ship._polar.fromCoords
@@ -279,9 +279,11 @@ function Ship(defnName)
 	{
 		var defn = this.defn(world);
 
-		this.crew = defn.crewMax;
-		this.energy = defn.energyMax;
-		this.fuel = defn.fuelMax;
+		if (this.crew == null)
+		{
+			this.crew = defn.crewMax;
+			this.energy = defn.energyMax;
+		}
 	}
 
 	Ship.prototype.toControlSidebar = function(containerSidebarSize, indexTopOrBottom, world)

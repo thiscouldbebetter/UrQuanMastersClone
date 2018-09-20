@@ -72,7 +72,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 
 		if (entityOtherName.startsWith("Enemy"))
 		{
-			var shipGroupOther = entityOther.modellable.model;
+			var shipGroupOther = entityOther.shipGroup;
 			var encounter = new Encounter(shipGroupOther, place, entityPlayer.locatable.loc.pos);
 			var placeEncounter = new PlaceEncounter(world, encounter);
 			world.placeNext = placeEncounter;
@@ -102,12 +102,9 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		}
 		else
 		{
-			var entityOtherModel = entityOther.modellable.model;
-			var entityOtherModelTypeName = entityOtherModel.constructor.name;
-
-			if (entityOtherModelTypeName == "Planet")
+			if (entityOther.planet != null)
 			{
-				var planet = entityOther.modellable.model;
+				var planet = entityOther.planet;
 				var sizeNext = place.size.clone();
 				var playerOrientation = entityPlayer.locatable.loc.orientation;
 				var heading = playerOrientation.headingInTurns();
@@ -151,7 +148,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			new Drawable(playerVisual),
 			new ItemHolder(),
 			new Playable(),
-			new Modellable(playerShipGroup),
+			playerShipGroup,
 		]
 	);
 
@@ -198,7 +195,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		{
 			place.entityRemove(entity);
 			var starsystem = place.starsystem;
-			var shipGroup = entity.modellable.model;
+			var shipGroup = entity.shipGroup;
 			starsystem.shipGroups.remove(shipGroup);
 		}
 
@@ -206,7 +203,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		(
 			"Enemy",
 			[
-				new Modellable(enemyShipGroup),
+				enemyShipGroup,
 				new Locatable(enemyLoc),
 				new Constrainable([constraintSpeedMax]),
 				new Collidable(enemyCollider),

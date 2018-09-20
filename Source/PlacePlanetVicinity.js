@@ -56,7 +56,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 	(
 		"Planet",
 		[
-			new Modellable(planet),
+			planet,
 			new Locatable( new Location(planetPos) ),
 			new Collidable(planetCollider),
 			new Drawable(planetVisual)
@@ -114,21 +114,18 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		}
 		else
 		{
-			var entityOtherModel = entityOther.modellable.model;
-			var entityOtherModelTypeName = entityOtherModel.constructor.name;
-
-			if (entityOtherModelTypeName == "Planet")
+			if (entityOther.planet != null)
 			{
-				var planetToOrbit = entityOtherModel;
+				var planetToOrbit = entityOther.planet;
 				world.placeNext = new PlacePlanetOrbit(world, planetToOrbit, place);
 			}
-			else if (entityOtherModelTypeName == "ShipGroup")
+			else if (entityOther.shipGroup != null)
 			{
 				Encounter.create(world, place, entityOther, entityPlayer);
 			}
-			else if (entityOtherModelTypeName == "Station")
+			else if (entityOther.station != null)
 			{
-				var station = entityOther.modellable.model;
+				var station = entityOther.station;
 				var faction = station.faction(world);
 				if (faction.relationsWithPlayer == Faction.RelationsAllied)
 				{
@@ -150,7 +147,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 	(
 		"Player",
 		[
-			new Modellable(world.player.shipGroup),
+			world.player.shipGroup,
 			new Locatable(playerLoc),
 			new Constrainable([constraintSpeedMax, constraintTrimToRange]),
 			new Collidable
@@ -201,7 +198,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		{
 			place.entityRemove(entity);
 			var planet = place.planet;
-			var shipGroup = entity.modellable.model;
+			var shipGroup = entity.shipGroup;
 			planet.shipGroups.remove(shipGroup);
 		}
 
@@ -209,7 +206,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		(
 			"Enemy" + i,
 			[
-				new Modellable(shipGroup),
+				shipGroup,
 				new Locatable(enemyLoc),
 				new Constrainable([constraintSpeedMax]),
 				new Collidable(enemyCollider),

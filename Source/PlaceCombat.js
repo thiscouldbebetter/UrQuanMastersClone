@@ -65,7 +65,6 @@ function PlaceCombat(world, combat)
 	var sizeHalf = this.size.clone().half();
 
 	var planetRadius = entityDimension;
-	//var planetPos = sizeHalf.clone();
 	var planetPos = sizeHalf.clone();
 	var planetColor = "Cyan";
 	var planetVisual = new VisualWrapped
@@ -104,11 +103,10 @@ function PlaceCombat(world, combat)
 		var planet = actor;
 		var planetPos = planet.locatable.loc.pos;
 
-		var combatSize = place.combat.size;
+		var combat = place.combat;
+		var combatSize = combat.size;
+		var shipEntities = place.shipEntities();
 
-		var shipEntityPlayer = entities["Player"];
-		var shipEntityEnemy = entities["Enemy"];
-		var shipEntities = [ shipEntityPlayer, shipEntityEnemy ];
 		for (var i = 0; i < shipEntities.length; i++)
 		{
 			var ship = shipEntities[i];
@@ -148,104 +146,74 @@ function PlaceCombat(world, combat)
 
 	var shipsFighting = this.combat.shipsFighting;
 
-	// player
-
-	var playerPos = new Coords(-.1, 0).multiply(this.size).add(planetPos);
-	var playerLoc = new Location(playerPos);
-	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
-	var playerShip = shipsFighting[0];
-	var playerShipDefn = playerShip.defn(world);
-
-	var playerVisualBody = playerShipDefn.visual;
-	var playerVisual = new VisualWrapped
-	(
-		this.size,
-		new VisualCamera
-		(
-			playerVisualBody,
-			this.camera
-		)
-	);
-
-	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
+	var shipCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
-		var entityOtherName = entityOther.name;
-		if (entityOtherName.startsWith("Enemy"))
-		{
-			// todo
-		}
-		else if (entityOtherName.startsWith("Planet"))
-		{
-			// todo
-		}
-		else if (entityOtherName.startsWith("Projectile"))
-		{
-			// todo
-		}
+		// todo
 	}
 
-	//var constraintSpeedMax = new Constraint("SpeedMax", 1);
-	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintWrapToRange = new Constraint("WrapToRange", this.size);
 
-	var playerEntity = new Entity
-	(
-		"Player",
+	for (var i = 0; i < shipsFighting.length; i++)
+	{
+		var ship = shipsFighting[i];
+
+		var shipPos = new Coords(.1 * (i == 0 ? -1 : 1), 0).multiply(this.size).add(planetPos);
+		var shipLoc = new Location(shipPos);
+		var shipCollider = new Sphere(shipLoc.pos, entityDimension / 2);
+
+		var shipDefn = ship.defn(world);
+		var shipVisualBody = shipDefn.visual;
+		var shipVisual = new VisualWrapped
+		(
+			this.size,
+			new VisualCamera
+			(
+				shipVisualBody,
+				this.camera
+			)
+		);
+
+		var shipEntityProperties =
 		[
-			new Modellable(playerShip),
-			new Locatable(playerLoc),
+			ship,
+			new Locatable(shipLoc),
 			new Constrainable([constraintWrapToRange]),
 			new Collidable
 			(
-				playerCollider,
+				shipCollider,
 				[ "collidable" ], // entityPropertyNamesToCollideWith
-				playerCollide
+				shipCollide
 			),
-			new Drawable(playerVisual),
+			new Drawable(shipVisual),
 			new ItemHolder(),
 			new Playable(),
-		]
-	);
+			new Killable
+			(
+				ship.crew,
+				function kill() { /* todo */ }
+			)
+		];
 
-	entities.push(playerEntity);
-	entities[playerEntity.name] = playerEntity;
+		if (i == 0)
+		{
+			shipEntityProperties.push(new Playable());
+		}
+		else
+		{
+			shipEntityProperties.push(new Actor(this.combat.enemyActivity));
+		}
 
-	// enemy
-
-	var enemyPos = new Coords(.1, 0).multiply(this.size).add(planetPos);
-	var enemyLoc = new Location(enemyPos);
-	var enemyCollider = new Sphere(enemyPos, entityDimension / 2);
-
-	var enemyShip = shipsFighting[1];
-	var enemyShipDefn = enemyShip.defn(world);
-	var enemyVisualBody = enemyShipDefn.visual;
-	var enemyVisual = new VisualWrapped
-	(
-		this.size,
-		new VisualCamera
+		var shipEntity = new Entity
 		(
-			enemyVisualBody,
-			this.camera
-		)
-	);
+			"Ship" + i,
+			shipEntityProperties
+		);
 
-	var enemyEntity = new Entity
-	(
-		"Enemy",
-		[
-			new Modellable(enemyShip),
-			new Locatable(enemyLoc),
-			new Constrainable([constraintWrapToRange]),
-			new Collidable(enemyCollider),
-			new Damager(),
-			new Killable(),
-			new Drawable(enemyVisual),
-			new Actor(this.combat.enemyActivity),
-		]
-	);
+		entities.push(shipEntity);
+		entities[shipEntity.name] = shipEntity;
+	}
 
-	entities.push(enemyEntity);
-	entities[enemyEntity.name] = enemyEntity;
+	// controls
 
 	var containerSidebarSize = new Coords(100, 300); // hack
 	var containerSidebar = new ControlContainer
@@ -272,6 +240,13 @@ function PlaceCombat(world, combat)
 	PlaceCombat.prototype = Object.create(Place.prototype);
 	PlaceCombat.prototype.constructor = Place;
 
+	// methods
+
+	PlaceCombat.prototype.shipEntities = function()
+	{
+		return this.entitiesByPropertyName("ship");
+	}
+
 	// Place overrides
 
 	PlaceCombat.prototype.draw_FromSuperclass = PlaceCombat.prototype.draw;
@@ -284,29 +259,30 @@ function PlaceCombat(world, combat)
 		var drawLoc = this.drawLoc;
 		var drawPos = drawLoc.pos;
 
-		var player = this.entities["Player"];
-		var playerLoc = player.locatable.loc;
-		var playerPos = playerLoc.pos;
-
-		var enemy = this.entities["Enemy"];
-		var enemyPos = enemy.locatable.loc.pos;
+		var ships = this.shipEntities();
 
 		var camera = this.camera;
 		var cameraPos = camera.loc.pos;
 
-		var midpointBetweenCombatants =
-			this.combat.midpointOfPointsWrappedToRange
-			(
-				cameraPos, // midpointToOverwrite
-				playerPos,
-				enemyPos,
-				this.size
-			);
+		var midpointBetweenCombatants;
 
-		cameraPos.overwriteWith
-		(
-			midpointBetweenCombatants
-		);
+		if (ships.length == 1)
+		{
+			midpointBetweenCombatants = ships[0].locatable.loc.pos;
+		}
+		else // if ships.length == 2
+		{
+			midpointBetweenCombatants =
+				this.combat.midpointOfPointsWrappedToRange
+				(
+					cameraPos, // midpointToOverwrite
+					ships[0].locatable.loc.pos,
+					ships[1].locatable.loc.pos,
+					this.size
+				);
+		}
+
+		cameraPos.overwriteWith(midpointBetweenCombatants);
 
 		this.draw_FromSuperclass(universe, world);
 
@@ -317,15 +293,33 @@ function PlaceCombat(world, combat)
 	PlaceCombat.prototype.updateForTimerTick = function(universe, world)
 	{
 		this.updateForTimerTick_FromSuperclass(universe, world);
-		var enemyName = "Enemy"; // todo
-		var entityEnemy = this.entities[enemyName];
-		if (entityEnemy == null)
+
+		var shipEntities = this.shipEntities();
+
+		if (shipEntities.length < 2)
 		{
-			var encounter = this.combat.encounter;
-			var placeNext = encounter.placeToReturnTo;
-			var enemyFromPlaceNext = placeNext.entities[enemyName];
-			placeNext.entitiesToRemove.push(enemyFromPlaceNext);
-			encounter.returnToPlace(world);
+			var combat = this.combat;
+			var shipGroups = combat.shipGroups;
+
+			if (shipGroups[0].ships.length == 0)
+			{
+				throw "todo"; // Game over?
+			}
+			else if (shipGroups[1].ships.length == 0)
+			{
+				var encounter = combat.encounter;
+				var placeNext = encounter.placeToReturnTo;
+				var enemyFromPlaceNext = placeNext.entities[enemyName];
+				placeNext.entitiesToRemove.push(enemyFromPlaceNext);
+				encounter.returnToPlace(world);
+			}
+			else
+			{
+				var controlShipSelect =
+					combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+				var venueNext = new VenueControls(controlShipSelect);
+				universe.venueNext = venueNext;
+			}
 		}
 	}
 }

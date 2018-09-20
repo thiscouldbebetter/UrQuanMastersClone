@@ -189,7 +189,9 @@ function World(name, dateCreated, defns, player, hyperspace)
 
 		var shipDefns = ShipDefn.Instances();
 
-		var defns = new Defns(constraintDefns, factions, shipDefns);
+		var lifeformDefns = LifeformDefn.Instances();
+
+		var defns = new Defns(constraintDefns, factions, shipDefns, lifeformDefns);
 
 		var playerShipDefnName = "Flagship";
 		var playerShip = new Ship(playerShipDefnName);

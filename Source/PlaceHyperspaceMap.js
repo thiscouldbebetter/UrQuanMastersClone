@@ -99,7 +99,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		}
 
 		/*
-		var shipGroup = entityForPlayer.modellable.model;
+		var shipGroup = entityForPlayer.shipGroup;
 		var ship = shipGroup.ships[0];
 		var shipDefn = ship.defn(world);
 		var safetyFactor = .9;

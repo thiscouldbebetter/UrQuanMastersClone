@@ -9,7 +9,7 @@ function Encounter(shipGroupOther, placeToReturnTo, posToReturnTo)
 	Encounter.create = function(world, place, entityForShipGroup, entityPlayer)
 	{
 		entityForShipGroup.collidable.ticksUntilCanCollide = 50; // hack
-		var shipGroup = entityForShipGroup.modellable.model;
+		var shipGroup = entityForShipGroup.shipGroup;
 		var encounter = new Encounter
 		(
 			shipGroup, place, entityPlayer.locatable.loc.pos

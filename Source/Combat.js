@@ -17,8 +17,8 @@ function Combat(size, encounter, shipGroups)
 {
 	Combat.prototype.enemyActivity = function(universe, world, place, actor)
 	{
-		var entityToTargetName = "Player";
-		var target = place.entities[entityToTargetName];
+		var shipEntities = place.shipEntities();
+		var target = (shipEntities[0] == actor ? shipEntities[1] : shipEntities[0]);
 		var targetPos = target.locatable.loc.pos;
 		var actorLoc = actor.locatable.loc;
 		var actorPos = actorLoc.pos;

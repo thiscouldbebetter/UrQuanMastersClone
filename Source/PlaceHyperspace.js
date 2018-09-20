@@ -98,7 +98,7 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 		(
 			"Star" + i,
 			[
-				new Modellable(starsystem),
+				starsystem,
 				new Locatable( new Location(starPos) ),
 				new Collidable(starCollider),
 				new Drawable(starVisual)
@@ -129,7 +129,7 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 		var entityOtherName = entityOther.name;
 		if (entityOtherName.startsWith("Star"))
 		{
-			var starsystem = entityOther.modellable.model;
+			var starsystem = entityOther.starsystem;
 			var playerLoc = entityPlayer.locatable.loc;
 			var playerOrientation = playerLoc.orientation;
 			var playerPosNextAsPolar = new Polar().fromCoords
@@ -185,7 +185,7 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 			new Drawable(playerVisual),
 			new ItemHolder(),
 			new Playable(),
-			new Modellable(playerShipGroup),
+			playerShipGroup,
 		]
 	);
 

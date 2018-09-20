@@ -45,7 +45,7 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		(
 			this.name,
 			[
-				new Modellable(this),
+				this, // planet
 				new Locatable( new Location(pos) ),
 				new Collidable(collider),
 				new Drawable(visual)

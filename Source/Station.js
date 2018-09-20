@@ -36,7 +36,7 @@ function Station(name, color, radiusOuter, factionName, posAsPolar)
 		(
 			this.name,
 			[
-				new Modellable(this),
+				this,
 				new Locatable( new Location(pos) ),
 				new Collidable(collider),
 				new Drawable(visual)
