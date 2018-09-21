@@ -164,19 +164,30 @@ function ShipDefn
 			1, // energyToUse
 			function effect(universe, world, place, actor)
 			{
-				actor.ship.isCloaked = true;
+				var isCloaked = actor.ship.isCloaked;
+				isCloaked = (isCloaked == null ? false : isCloaked);
+				actor.ship.isCloaked = (isCloaked == false);
 			}
 		);
 
 		var visualInfernusBase = new sv(v, y);
 		var visualInfernusCloaked = new sv(k, k);
-
 		var visualInfernus = new VisualDynamic
 		(
-			function(universe, world, drawable)
+			function(universe, world, drawable, entity)
 			{
-				var isCloaked = false;
+				var isCloaked = entity.ship.isCloaked;
 				return (isCloaked == true ? visualInfernusCloaked : visualInfernusBase);
+			}
+		);
+
+		var specialLeech = new ShipSpecialDefn
+		(
+			"Leech",
+			1, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				// todo
 			}
 		);
 
@@ -187,9 +198,9 @@ function ShipDefn
 
 			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 		e/tick,	eMax, 	visual,			attack, special
 			new sd("Gravitar", 	"Silikonix", 	10, 	1.166, 	35, 	.25 / heads, 42, 42,	.5,  	42, 	sv(b, r ), 		adTodo, specialTractorBeam ),
-			new sd("Infernus", 	"Araknoid", 	17,		5, 		25, 	.33 / heads, 22, 22, 	.8,  	16, 	visualInfernus, adTodo,	adTodo ),
+			new sd("Infernus", 	"Araknoid", 	17,		5, 		25, 	.33 / heads, 22, 22, 	.8,  	16, 	visualInfernus, adTodo,	specialCloak ),
 			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	sv(g, o ), 		adTodo,	adTodo ),
-			new sd("Starshard", "Xtalik", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv(w, c), 		adTodo,	adTodo ),
+			new sd("Starshard", "Xtalik", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv(w, c), 		adTodo,	specialLeech ),
 			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	sv(a, ad),		adTodo,	adTodo ),
 			new sd("Carrier", 	"Slaver", 		10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv(g, r),		adTodo,	adTodo ),
 			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	sv(g, y), 		adTodo,	adTodo ),
