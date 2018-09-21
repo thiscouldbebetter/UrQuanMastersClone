@@ -38,7 +38,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	(
 		[
 			new InputToActionMapping("Enter", "Fire"),
-			new InputToActionMapping("_x", "Exit"),
+			new InputToActionMapping("_", "Exit"),
 
 			new InputToActionMapping("Gamepad0Button0", "Fire"),
 			new InputToActionMapping("Gamepad0Button1", "Exit"),

@@ -47,66 +47,94 @@ function Ship(defnName)
 			"Fire",
 			function perform(universe, world, place, actor)
 			{
-				var actorLoc = actor.locatable.loc;
-				var actorPos = actorLoc.pos;
-
-				var projectileColor = "Yellow";
-				var projectileRadius = 2;
-				var projectileVisual = new VisualCamera
-				(
-					new VisualCircle(projectileRadius, projectileColor),
-					place.camera
-				);
-
-				var actorOrientation = actorLoc.orientation;
-				var actorForward = actorOrientation.forward;
-				var actorRadius = actor.collidable.collider.radius;
-				var projectilePos = actorPos.clone().add
-				(
-					actorForward.clone().multiplyScalar(actorRadius).double()
-				);
-				var projectileLoc = new Location(projectilePos);
-				projectileLoc.vel.overwriteWith(actorForward).double().double();
-
-				var projectileCollider =
-					new Sphere(projectilePos, projectileRadius);
-
-				var projectileDamagePerHit = 1;
-
-				var projectileCollide = function(universe, world, place, entityProjectile, entityOther)
+				var ship = actor.ship;
+				var shipDefn = ship.defn(world);
+				var attackDefn = shipDefn.attackDefn;
+				if (ship.energy >= attackDefn.energyToUse)
 				{
-					entityProjectile.killable.integrity = 0;
+					ship.energy -= attackDefn.energyToUse;
 
-					if (entityOther.killable != null)
+					var actorLoc = actor.locatable.loc;
+					var actorPos = actorLoc.pos;
+
+					var projectileVisual = new VisualCamera
+					(
+						attackDefn.visualProjectile,
+						place.camera
+					);
+
+					var actorOrientation = actorLoc.orientation;
+					var actorForward = actorOrientation.forward;
+					var actorRadius = actor.collidable.collider.radius;
+					var projectilePos = actorPos.clone().add
+					(
+						actorForward.clone().multiplyScalar(actorRadius).double()
+					);
+					var projectileLoc = new Location(projectilePos);
+					projectileLoc.vel.overwriteWith(actorForward).double().double();
+
+					var projectileCollider =
+						new Sphere(projectilePos, attackDefn.projectileRadius);
+
+					var projectileDamagePerHit = 1;
+
+					var projectileCollide = function(universe, world, place, entityProjectile, entityOther)
 					{
-						var killable = entityOther.killable;
-						killable.integrity -= projectileDamagePerHit;
-						if (entityOther.ship != null)
+						entityProjectile.killable.integrity = 0;
+
+						if (entityOther.killable != null)
 						{
-							entityOther.ship.crew = killable.integrity;
+							var killable = entityOther.killable;
+							killable.integrity -= projectileDamagePerHit;
+							if (entityOther.ship != null)
+							{
+								entityOther.ship.crew = killable.integrity;
+							}
 						}
 					}
+
+					var projectileEntity = new Entity
+					(
+						"Projectile",
+						[
+							new Damager(),
+							new Ephemeral(32),
+							new Locatable( projectileLoc ),
+							new Collidable
+							(
+								projectileCollider,
+								[ "killable" ],
+								projectileCollide
+							),
+							new Drawable(projectileVisual),
+							new Killable(1),
+						]
+					);
+
+					place.entitiesToSpawn.push(projectileEntity);
+
 				}
+			}
+		);
 
-				var projectileEntity = new Entity
-				(
-					"Projectile",
-					[
-						new Damager(),
-						new Ephemeral(32),
-						new Locatable( projectileLoc ),
-						new Collidable
-						(
-							projectileCollider,
-							[ "killable" ],
-							projectileCollide
-						),
-						new Drawable(projectileVisual),
-						new Killable(1),
-					]
-				);
+		return returnValue;
+	}
 
-				place.entitiesToSpawn.push(projectileEntity);
+	Ship.actionSpecial = function()
+	{
+		var returnValue = new Action
+		(
+			"Special",
+			function perform(universe, world, place, actor)
+			{
+				var ship = actor.ship;
+				var shipDefn = ship.defn(world);
+				var specialDefn = shipDefn.specialDefn;
+				if (ship.energy >= specialDefn.energyToUse)
+				{
+					ship.energy -= specialDefn.energyToUse;
+					specialDefn.effectWhenInvoked(universe, world, place, actor);
+				}
 			}
 		);
 
@@ -262,7 +290,7 @@ function Ship(defnName)
 
 	Ship.prototype.energyCurrentOverMax = function(world)
 	{
-		return this.energy + "/" + this.defn(world).energyMax;
+		return Math.floor(this.energy) + "/" + this.defn(world).energyMax;
 	}
 
 	Ship.prototype.fullName = function(world)
@@ -285,6 +313,19 @@ function Ship(defnName)
 			this.energy = defn.energyMax;
 		}
 	}
+
+	Ship.prototype.updateForTimerTick = function(universe, world, place, entityShip)
+	{
+		var ship = entityShip.ship;
+		var shipDefn = ship.defn(world);
+		ship.energy += shipDefn.energyPerTick;
+		if (ship.energy > shipDefn.energyMax)
+		{
+			ship.energy = shipDefn.energyMax;
+		}
+	}
+
+	// controls
 
 	Ship.prototype.toControlSidebar = function(containerSidebarSize, indexTopOrBottom, world)
 	{

@@ -15,15 +15,14 @@ function PlaceCombat(world, combat)
 		}
 	);
 
-	var actionFire = Ship.actionFire();
-
 	this.actions =
 	[
 		Ship.actionShowMenu(),
 		Ship.actionAccelerate(),
 		Ship.actionTurnLeft(),
 		Ship.actionTurnRight(),
-		actionFire,
+		Ship.actionFire(),
+		Ship.actionSpecial(),
 		actionExit,
 	].addLookups("name");
 
@@ -32,10 +31,12 @@ function PlaceCombat(world, combat)
 	(
 		[
 			new InputToActionMapping("Enter", "Fire", true),
-			new InputToActionMapping("_x", "Exit"),
+			new InputToActionMapping("_", "Special", true),
+			new InputToActionMapping("Escape", "Exit"),
 
 			new InputToActionMapping("Gamepad0Button0", "Fire", true),
-			new InputToActionMapping("Gamepad0Button1", "Exit"),
+			new InputToActionMapping("Gamepad0Button1", "Special", true),
+			new InputToActionMapping("Gamepad0Button2", "Exit"),
 		]
 	);
 	this.inputToActionMappings.addLookups("inputName");
@@ -186,7 +187,6 @@ function PlaceCombat(world, combat)
 			),
 			new Drawable(shipVisual),
 			new ItemHolder(),
-			new Playable(),
 			new Killable
 			(
 				ship.crew,
@@ -230,6 +230,7 @@ function PlaceCombat(world, combat)
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
+	this.propertyNamesToProcess.push("ship");
 
 	// Helper variables.
 

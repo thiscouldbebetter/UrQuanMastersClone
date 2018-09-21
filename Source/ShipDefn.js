@@ -12,7 +12,8 @@ function ShipDefn
 	energyPerTick,
 	energyMax,
 	visual,
-	attackDefnStandard
+	attackDefn,
+	specialDefn
 )
 {
 	var speedDivisor = 32; // Trial and error.
@@ -28,7 +29,8 @@ function ShipDefn
 	this.energyPerTick = energyPerTick;
 	this.energyMax = energyMax;
 	this.visual = visual;
-	this.attackDefnStandard = attackDefnStandard;
+	this.attackDefn = attackDefn;
+	this.specialDefn = specialDefn;
 
 	this.cost = 100; // todo
 }
@@ -58,15 +60,16 @@ function ShipDefn
 		(
 			"todo",
 			4, // energyToUse
-			0, // heading
+			2, // projectileRadius
 			8, // speed
-			128, // range
+			16, // ticksToLive
 			1, // damage
-			new VisualCircle(3, "Yellow"), // visualProjectile
+			new VisualCircle(2, "Yellow"), // visualProjectile
 			new VisualCircle(6, "Yellow", "Red"), // visualImpact
-			function effectWhenInvoked() {},
-			function effectOnImpact() {},
+			function effectWhenInvoked(universe, world, place, actor) {},
+			function effectOnImpact(universe, world, place, actor, target) {},
 		);
+
 
 		var shipDefnFlagship = new ShipDefn
 		(
@@ -116,6 +119,7 @@ function ShipDefn
 		);
 
 		var sd = ShipDefn;
+		var spec = ShipSpecialDefn;
 
 		var r = "Red";
 		var o = "Orange";
@@ -129,42 +133,85 @@ function ShipDefn
 		var al = "LightGray";
 		var c = "Cyan";
 		var n = "Brown";
+		var k = "Black";
 		var adTodo = attackDefnTodo;
 
 		var heads = 16;
+
+		var specialTractorBeam = new ShipSpecialDefn
+		(
+			"TractorBeam",
+			1, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				var combat = place.combat;
+				var ships = place.shipEntities();
+				var target = ships[1 - ships.indexOf(actor)];
+				var actorLoc = actor.locatable.loc;
+				var actorPos = actorLoc.pos;
+				var targetLoc = target.locatable.loc;
+				var targetPos = targetLoc.pos;
+				var displacement = targetPos.clone().subtract(actorPos);
+				var direction = displacement.normalize();
+				var gravityMagnitude = 10;
+				targetLoc.accel.subtract(direction.multiplyScalar(gravityMagnitude));
+			}
+		);
+
+		var specialCloak = new ShipSpecialDefn
+		(
+			"Cloak",
+			1, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				actor.ship.isCloaked = true;
+			}
+		);
+
+		var visualInfernusBase = new sv(v, y);
+		var visualInfernusCloaked = new sv(k, k);
+
+		var visualInfernus = new VisualDynamic
+		(
+			function(universe, world, drawable)
+			{
+				var isCloaked = false;
+				return (isCloaked == true ? visualInfernusCloaked : visualInfernusBase);
+			}
+		);
 
 		this._All =
 		[
 			shipDefnFlagship,
 			shipDefnLander,
 
-			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 		e/tick,	eMax, 	visual,		attackDefn
-			new sd("Gravitar", 	"Silikonix", 	10, 	1.166, 	35, 	.25 / heads, 42, 42,	.5,  	42, 	sv(b, r ), 	adTodo ),
-			new sd("Infernus", 	"Araknoid", 	17,		5, 		25, 	.33 / heads, 22, 22, 	.8,  	16, 	sv(v, y ), 	adTodo ),
-			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	sv(g, o ), 	adTodo ),
-			new sd("Starshard", "Xtalik", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv(w, c), 	adTodo ),
-			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	sv(a, ad),	adTodo ),
-			new sd("Carrier", 	"Slaver", 		10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv(g, r),	adTodo ),
-			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	sv(g, y), 	adTodo ),
-			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	sv(r, b), 	adTodo ),
-			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	sv(c, v), 	adTodo ),
-			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	sv(b, v), 	adTodo ),
-			new sd("Encumbrance","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	sv(v, g), 	adTodo ),
-			new sd("Bulletsponge","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	sv(r, a), 	adTodo ),
-			new sd("Silencer",	"Xenofobi",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	sv(ad, r), 	adTodo ),
-			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	sv(w, r), 	adTodo ),
-			new sd("Batwing",	"Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	sv(c, r), 	adTodo ),
-			new sd("Eylsian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	sv(r, y), 	adTodo ),
-			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	sv(n, v), 	adTodo ),
-			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	sv(r, b), 	adTodo ),
-			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		sv(a, b), 	adTodo ),
-			new sd("Discus",	"Ellfyn",		1,		40,		40,		.5 / heads,  6, 6,		.142,	20, 	sv(c, y), 	adTodo ),
-			new sd("Bugbite",	"Triunion",		5,		10,		40,		.5 / heads,  10, 10,	.2,		10, 	sv(c, b), 	adTodo ),
-			new sd("Aegis",		"Raptor",		3,		2,		30,		.33 / heads, 20, 20,	.29,	10, 	sv(b, y), 	adTodo ),
-			new sd("Afterburner","Warpig",		7,		7,		28,		.5 / heads,  8, 8,		.142,	24, 	sv(a, r), 	adTodo ),
-			new sd("Indemnity", "Murch",		7,		1.2,	36,		.2 / heads,  20, 20,	.2,		42, 	sv(a, al), 	adTodo ),
-			new sd("MetamorphA", "Consonance",	3,		2.5,	20,		.33 / heads,  20, 20,	.29,	10, 	sv(a, y), 	adTodo ),
-			new sd("MetamorphB", "Consonance",	3,		10,		50,		.07 / heads,  20, 20,	.14,	10, 	sv(a, y), 	adTodo ),
+			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 		e/tick,	eMax, 	visual,			attack, special
+			new sd("Gravitar", 	"Silikonix", 	10, 	1.166, 	35, 	.25 / heads, 42, 42,	.5,  	42, 	sv(b, r ), 		adTodo, specialTractorBeam ),
+			new sd("Infernus", 	"Araknoid", 	17,		5, 		25, 	.33 / heads, 22, 22, 	.8,  	16, 	visualInfernus, adTodo,	adTodo ),
+			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	sv(g, o ), 		adTodo,	adTodo ),
+			new sd("Starshard", "Xtalik", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv(w, c), 		adTodo,	adTodo ),
+			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	sv(a, ad),		adTodo,	adTodo ),
+			new sd("Carrier", 	"Slaver", 		10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv(g, r),		adTodo,	adTodo ),
+			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	sv(g, y), 		adTodo,	adTodo ),
+			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	sv(r, b), 		adTodo,	adTodo ),
+			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	sv(c, v), 		adTodo,	adTodo ),
+			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	sv(b, v), 		adTodo,	adTodo ),
+			new sd("Encumbrance","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	sv(v, g), 		adTodo,	adTodo ),
+			new sd("Bulletsponge","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	sv(r, a), 		adTodo,	adTodo ),
+			new sd("Silencer",	"Xenofobi",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	sv(ad, r), 		adTodo,	adTodo ),
+			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	sv(w, r), 		adTodo,	adTodo ),
+			new sd("Batwing",	"Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	sv(c, r), 		adTodo,	adTodo ),
+			new sd("Eylsian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	sv(r, y), 		adTodo,	adTodo ),
+			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	sv(n, v), 		adTodo,	adTodo ),
+			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	sv(r, b), 		adTodo,	adTodo ),
+			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		sv(a, b), 		adTodo,	adTodo ),
+			new sd("Discus",	"Ellfyn",		1,		40,		40,		.5 / heads,  6, 6,		.142,	20, 	sv(c, y), 		adTodo,	adTodo ),
+			new sd("Bugbite",	"Triunion",		5,		10,		40,		.5 / heads,  10, 10,	.2,		10, 	sv(c, b), 		adTodo,	adTodo ),
+			new sd("Aegis",		"Raptor",		3,		2,		30,		.33 / heads, 20, 20,	.29,	10, 	sv(b, y), 		adTodo,	adTodo ),
+			new sd("Afterburner","Warpig",		7,		7,		28,		.5 / heads,  8, 8,		.142,	24, 	sv(a, r), 		adTodo,	adTodo ),
+			new sd("Indemnity", "Murch",		7,		1.2,	36,		.2 / heads,  20, 20,	.2,		42, 	sv(a, al), 		adTodo,	adTodo ),
+			new sd("MetamorphA", "Consonance",	3,		2.5,	20,		.33 / heads,  20, 20,	.29,	10, 	sv(a, y), 		adTodo,	adTodo ),
+			new sd("MetamorphB", "Consonance",	3,		10,		50,		.07 / heads,  20, 20,	.14,	10, 	sv(a, y), 		adTodo,	adTodo ),
 		];
 
 		return this._All.addLookups("name");
