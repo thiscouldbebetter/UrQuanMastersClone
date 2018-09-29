@@ -30,7 +30,7 @@ function combat(universe)
 	var displaySize = universe.display.sizeInPixels;
 	var combatSize = new Coords(1, 1).multiplyScalar(displaySize.y * 2);
 	var encounter = null; // todo
-	var shipDefnsAll = ShipDefn.Instances();
+	var shipDefnsAll = ShipDefn.Instances(universe);
 	var playerShips = Ship.manyFromDefns(shipDefnsAll);
 	var enemyShips = Ship.manyFromDefns(shipDefnsAll);
 

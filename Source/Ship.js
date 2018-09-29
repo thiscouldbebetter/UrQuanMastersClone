@@ -181,42 +181,6 @@ function Ship(defnName)
 		entityOrientation.forwardSet(entityForwardNew);
 	}
 
-	Ship.visual = function(dimension, colorFill, colorBorder)
-	{
-		var visualPath = new Path
-		([
-			new Coords(1.2, 0).multiplyScalar(dimension).half(),
-			new Coords(-.8, .8).multiplyScalar(dimension).half(),
-			new Coords(-.8, -.8).multiplyScalar(dimension).half(),
-		]);
-
-		var visualsPerTurn = 32;
-		var turnsPerPlayerVisual = 1 / visualsPerTurn;
-		var visualsForAngles = [];
-		var transformRotate2D = new Transform_Rotate2D();
-
-		for (var i = 0; i < visualsPerTurn; i++)
-		{
-			transformRotate2D.turnsToRotate = i * turnsPerPlayerVisual;
-
-			var visualForAngle = new VisualPolygon
-			(
-				visualPath.clone().transform(transformRotate2D),
-				colorFill, colorBorder
-			);
-
-			visualsForAngles.push(visualForAngle);
-		}
-
-		var returnValue = new VisualDirectional
-		(
-			new VisualPolygon(visualPath, colorFill, colorBorder),
-			visualsForAngles
-		);
-
-		return returnValue;
-	}
-
 	// instance methods
 
 	Ship.prototype.crewCurrentOverMax = function(world)

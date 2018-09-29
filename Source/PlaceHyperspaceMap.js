@@ -238,37 +238,42 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		this.venueControls.updateForTimerTick(universe, world);
 
 		var inputHelper = universe.inputHelper;
-		var inputsActive = inputHelper.inputsActive;
-		for (var i = 0; i < inputsActive.length; i++)
+		var inputsPressed = inputHelper.inputsPressed;
+		for (var i = 0; i < inputsPressed.length; i++)
 		{
-			var inputActive = inputsActive[i];
-			if (inputActive.startsWith("Arrow"))
+			var inputPressed = inputsPressed[i];
+			var inputPressedName = inputPressed.name;
+			if (inputPressed.isActive == false)
+			{
+				// Do nothing.
+			}
+			else if (inputPressedName.startsWith("Arrow"))
 			{
 				var directionToMove;
-				if (inputActive.endsWith("Down"))
+				if (inputPressedName.endsWith("Down"))
 				{
 					directionToMove = new Coords(0, 1);
 				}
-				else if (inputActive.endsWith("Left"))
+				else if (inputPressedName.endsWith("Left"))
 				{
 					directionToMove = new Coords(-1, 0);
 				}
-				else if (inputActive.endsWith("Right"))
+				else if (inputPressedName.endsWith("Right"))
 				{
 					directionToMove = new Coords(1, 0);
 				}
-				else if (inputActive.endsWith("Up"))
+				else if (inputPressedName.endsWith("Up"))
 				{
 					directionToMove = new Coords(0, -1);
 				}
 				directionToMove.multiplyScalar(32);
 				this.reticlePos.add(directionToMove);
 			}
-			else if (inputActive == "PageDown")
+			else if (inputPressedName == "PageDown")
 			{
 				// todo
 			}
-			else if (inputActive == "PageUp")
+			else if (inputPressedName == "PageUp")
 			{
 				// todo
 			}

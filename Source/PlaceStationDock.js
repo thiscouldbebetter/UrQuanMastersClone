@@ -251,7 +251,7 @@ function PlaceStationDock(world, placeStation)
 
 		var shipsInFleet = playerShipGroup.ships;
 
-		var shipPlansAvailable = ShipDefn.Instances();
+		var shipPlansAvailable = ShipDefn.Instances(universe);
 
 		var containerShips = new ControlContainer
 		(

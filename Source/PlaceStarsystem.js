@@ -59,7 +59,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
 	var playerColor = "Gray";
 
-	var playerVisualBody = Ship.visual(entityDimension, playerColor);
+	var playerVisualBody = ShipDefn.visual(entityDimension, playerColor);
 
 	var playerVisual = new VisualGroup
 	([

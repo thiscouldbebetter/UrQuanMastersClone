@@ -187,7 +187,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 			factionWarpig,
 		];
 
-		var shipDefns = ShipDefn.Instances();
+		var shipDefns = ShipDefn.Instances(universe);
 
 		var lifeformDefns = LifeformDefn.Instances();
 
@@ -195,7 +195,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 
 		var playerShipDefnName = "Flagship";
 		var playerShip = new Ship(playerShipDefnName);
-		var shipDefns = ShipDefn.Instances();
+		var shipDefns = ShipDefn.Instances(universe);
 		var playerShips = Ship.manyFromDefns(shipDefns);
 		var playerShipGroup = new ShipGroup
 		(

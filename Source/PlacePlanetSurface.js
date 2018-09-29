@@ -195,7 +195,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	var playerVisual = new VisualCamera
 	(
-		Ship.visual(entityDimension, playerColor, "Black"),
+		ShipDefn.visual(entityDimension, playerColor, "Black"),
 		this.camera
 	);
 
