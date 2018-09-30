@@ -149,11 +149,11 @@ function World(name, dateCreated, defns, player, hyperspace)
 		var factionOutsider 	= f("Outsider", 	"Purple", 	soi(371.3, 253.7, .1), 	neutral);
 		var factionRaptor 		= f("Raptor", 		"Violet", 	soi(492.3, 029.4, .1), 	neutral);
 		var factionRaptor 		= f("RaptorRebel", 	"Mauve", 	soi(492.3, 029.4, .1), 	neutral);
-		var factionRaptor 		= f("RaptorRoyalists","Violet", soi(492.3, 029.4, .1), 	neutral);
+		var factionRaptor 		= f("RaptorRoyalist","Violet", soi(492.3, 029.4, .1), 	neutral);
 		var factionSilikonix 	= f("Silikonix", 	null, 		null, 					neutral);
 		var factionSlaver 		= f("Slaver",		"Green",	soi(590, 590, .25), 	hostile);
 		var factionSupial		= f("Supial", 		null, 		null, 					hostile);
-		var factionTempestrial 	= f("Tempestrial", 	null, 		null, 					neutral);
+		var factionTempestrial 	= f("Tempestrial", 	null, 		soi(500, 500, 1000), 	hostile);
 		var factionTriunion		= f("Triunion", 	"Red", 		soi(400, 543.7, .067), 	neutral);
 		var factionTwyggan 		= f("Twyggan", 		"Brown", 	soi(741.4, 912.4, .1), 	neutral);
 		var factionUgglegruj 	= f("Ugglegruj", 	"Blue", 	soi(433.3, 168.7, .12), hostile);
@@ -204,22 +204,30 @@ function World(name, dateCreated, defns, player, hyperspace)
 			playerShips
 		);
 		var shipComponentDefns = ShipComponentDefn.Instances();
-		//var factionNamesAll = factions.elementProperties("name");
-		var player = new Player
+
+		var playerFlagship = new Flagship
 		(
-			"Player",
-			0, // credit
+			"Flagship",
 			12, // componentsMax
 			[
+				shipComponentDefns.AttitudeJets.name,
 				shipComponentDefns.FusionThruster.name,
-				shipComponentDefns.ManeuveringJets.name,
 				shipComponentDefns.CargoHold.name,
 				shipComponentDefns.FuelTank.name,
 			], // componentNames
 			1, // numberOfLanders
-			0, // fuel
+			100, // fuel
 			[], // items
-			30, // shipsMax
+			30 // shipsMax
+		);
+
+		//var factionNamesAll = factions.elementProperties("name");
+
+		var player = new Player
+		(
+			"Player",
+			0, // credit
+			playerFlagship,
 			[], // factionsKnownNames
 			playerShipGroup
 		);

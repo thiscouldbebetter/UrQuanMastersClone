@@ -1,13 +1,8 @@
-function Player(name, credit, flagshipComponentsMax, flagshipComponentNames, numberOfLanders, fuel, items, shipsMax, factionsKnownNames, shipGroup)
+function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 {
 	this.name = name;
 	this.credit = credit;
-	this.flagshipComponentsMax = flagshipComponentsMax;
-	this.flagshipComponentNames = flagshipComponentNames;
-	this.numberOfLanders = numberOfLanders;
-	this.fuel = fuel;
-	this.itemHolder = new ItemHolder(items);
-	this.shipsMax = shipsMax;
+	this.flagship = flagship;
 	this.factionsKnownNames = factionsKnownNames;
 	this.shipGroup = shipGroup;
 
@@ -26,27 +21,7 @@ function Player(name, credit, flagshipComponentsMax, flagshipComponentNames, num
 
 	Player.prototype.componentsCurrentOverMax = function()
 	{
-		return this.flagshipComponentNames.length + "/" + this.flagshipComponentsMax;
-	}
-
-	Player.prototype.flagshipComponents = function()
-	{
-		if (this._flagshipComponents == null)
-		{
-			this._flagshipComponents = [];
-
-			var componentDefns = ShipComponentDefn.Instances()._All;
-
-			var componentNames = this.flagshipComponentNames;
-			for (var i = 0; i < componentNames.length; i++)
-			{
-				var componentName = componentNames[i];
-				var component = componentDefns[componentName];
-				this._flagshipComponents.push(component);
-			}
-		}
-
-		return this._flagshipComponents;
+		return this.flagship.componentNames.length + "/" + this.flagship.componentsMax;
 	}
 
 	Player.prototype.fuelCurrentOverMax = function()
@@ -59,7 +34,7 @@ function Player(name, credit, flagshipComponentsMax, flagshipComponentNames, num
 		if (this._fuelMax == null)
 		{
 			this._fuelMax = 0;
-			var components = this.flagshipComponents();
+			var components = this.flagship.components();
 			for (var i = 0; i < components.length; i++)
 			{
 				var component = components[i];

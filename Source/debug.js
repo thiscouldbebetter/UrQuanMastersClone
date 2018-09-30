@@ -68,8 +68,10 @@ function docks(universe)
 	world.defns.factions["Terran"].relationsWithPlayer = Faction.RelationsAllied;
 	var player = world.player;
 	player.credit = 1000;
-	player.itemHolder.itemAdd(new Item("Radioactives", 1));
-	player.itemHolder.itemAdd(new Item("ExoticMaterials", 100));
+	var resourceDefns = ResourceDefn.Instances();
+	var playerItemHolder = player.flagship.itemHolder;
+	playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
+	playerItemHolder.itemAdd(new Item(resourceDefns.Exotics.name, 100));
 
 	var starsystemSol = world.hyperspace.starsystems["Sol"];
 	var station = starsystemSol.planets[2].satellites[0];

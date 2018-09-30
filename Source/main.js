@@ -4,6 +4,8 @@ function main()
 
 	var contentPathPrefixComms = "../Content/Import/sc2/content/base/comm/"
 
+	var conversationPlaceholderPath = "../Content/Text/Conversation-Placeholder.json";
+
 	var mediaLibrary = new MediaLibrary
 	(
 		// images
@@ -32,9 +34,34 @@ function main()
 		[
 			//new TextString("Instructions", "../Content/Text/Instructions.txt"),
 			new TextString("HyperspaceMap", "../Content/Import/sc2/src/uqm/plandata.c"),
+
 			new TextString("Conversation-SlaverGuardDrone", "../Content/Text/Conversation-SlaverGuardDrone.json"),
 			new TextString("Conversation-Slaver-Content", contentPathPrefixComms + "urquan/urquan.txt"),
 			new TextString("Conversation-EarthStation", "../Content/Text/Conversation-EarthStation.json"),
+
+			new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation-Placeholder-Content.txt"),
+
+			new TextString("Conversation-Amorfus", conversationPlaceholderPath),
+			new TextString("Conversation-Araknoid", conversationPlaceholderPath),
+			new TextString("Conversation-Daskapital", conversationPlaceholderPath),
+			new TextString("Conversation-Ellfyn", conversationPlaceholderPath),
+			new TextString("Conversation-Hyphae", conversationPlaceholderPath),
+			new TextString("Conversation-Mauluska", conversationPlaceholderPath),
+			new TextString("Conversation-Moroz", conversationPlaceholderPath),
+			new TextString("Conversation-Muuncaf", conversationPlaceholderPath),
+			new TextString("Conversation-Mazonae", conversationPlaceholderPath),
+			new TextString("Conversation-Murch", conversationPlaceholderPath),
+			new TextString("Conversation-Outsider", conversationPlaceholderPath),
+			new TextString("Conversation-Raptor", conversationPlaceholderPath),
+			new TextString("Conversation-Silikonix", conversationPlaceholderPath),
+			new TextString("Conversation-Supial", conversationPlaceholderPath),
+			new TextString("Conversation-Tempestrial", conversationPlaceholderPath),
+			new TextString("Conversation-Slaver", conversationPlaceholderPath),
+			new TextString("Conversation-Triunion", conversationPlaceholderPath),
+			new TextString("Conversation-Twyggan", conversationPlaceholderPath),
+			new TextString("Conversation-Ugglegruj", conversationPlaceholderPath),
+			new TextString("Conversation-Xenofobi", conversationPlaceholderPath),
+			new TextString("Conversation-Warpig", conversationPlaceholderPath),
 		]
 	);
 

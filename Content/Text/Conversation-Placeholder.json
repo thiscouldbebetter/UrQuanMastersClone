@@ -1,0 +1,12 @@
+{
+    "name": "Placeholder",
+    "imageName": "Conversation",
+    "contentTextStringName": "Conversation-Placeholder-Content",
+    "talkNodes": [
+
+{ "defnName": "Display", "text": "#(PLACEHOLDER)"},
+
+{ "defnName": "Quit" }
+
+    ]
+}

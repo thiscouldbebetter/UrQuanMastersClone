@@ -108,6 +108,27 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 		entities.push(starEntity);
 	}
 
+	// factions
+
+	var factions = world.defns.factions;
+	for (var i = 0; i < factions.length; i++)
+	{
+		var faction = factions[i];
+		var factionCollider = faction.sphereOfInfluence;
+		if (factionCollider != null)
+		{
+			var factionEntity = new Entity
+			(
+				"Faction" + faction.name,
+				[
+					new Collidable(factionCollider),
+					faction
+				]
+			);
+			entities.push(factionEntity);
+		}
+	}
+
 	// player
 
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
@@ -152,6 +173,72 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 					playerOrientation.clone()
 				)
 			);
+		}
+		else if (entityOtherName.startsWith("ShipGroup"))
+		{
+			var shipGroupOther = entityOther.shipGroup;
+			var encounter = new Encounter(shipGroupOther, place, entityPlayer.locatable.loc.pos);
+			var placeEncounter = new PlaceEncounter(world, encounter);
+			world.placeNext = placeEncounter;
+		}
+		else if (entityOtherName.startsWith("Faction"))
+		{
+			var faction = entityOther.faction;
+			var factionName = faction.name;
+
+			var numberOfShipGroupsExistingForFaction = 0;
+			var entitiesShipGroupsAll = place.entitiesShipGroups();
+			for (var i = 0; i < entitiesShipGroupsAll.length; i++)
+			{
+				var entityShipGroup = entitiesShipGroupsAll[i];
+				if (entityShipGroup.shipGroup.factionName == factionName)
+				{
+					numberOfShipGroupsExistingForFaction++;
+				}
+			}
+
+			var shipGroupsPerFaction = 1;
+			if (numberOfShipGroupsExistingForFaction < shipGroupsPerFaction)
+			{
+				var shipDefnName = faction.shipDefnName; // todo
+				var shipGroup = new ShipGroup
+				(
+					factionName + Math.random(),
+					factionName,
+					[
+						new Ship(shipDefnName)
+					]
+				);
+
+				var shipPos = entityPlayer.locatable.loc.pos.clone().add
+				(
+					new Coords(50, 0)
+				);
+
+				var entityShipGroup = new Entity
+				(
+					"ShipGroup" + faction.name,
+					[
+						faction,
+						shipGroup,
+						new Locatable(new Location(shipPos)),
+						new Collidable(new Sphere(shipPos, 5)),
+						new Drawable
+						(
+							new VisualCamera
+							(
+								new VisualGroup([
+									new VisualCircle(10, null, "Red"),
+									new VisualText(factionName, "White", "Red"),
+								]),
+								place.camera
+							)
+						),
+					]
+				);
+
+				place.entitiesToSpawn.push(entityShipGroup);
+			}
 		}
 	}
 
@@ -202,8 +289,17 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 	this._polar = new Polar();
 }
 {
+	// superclass
+
 	PlaceHyperspace.prototype = Object.create(Place.prototype);
 	PlaceHyperspace.prototype.constructor = Place;
+
+	PlaceHyperspace.prototype.entitiesShipGroups = function()
+	{
+		return this.entitiesByPropertyName("shipGroup");
+	}
+
+	// Place overrides
 
 	PlaceHyperspace.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlaceHyperspace.prototype.draw = function(universe, world)

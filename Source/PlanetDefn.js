@@ -35,14 +35,15 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		var canLand = true;
 		var cannotLand = false;
 
-		var ce = "CommonElements";
-		var co = "Corrosives";
-		var bm = "BaseMetals";
-		var ng = "NobleGases";
-		var pm = "PreciousMetals";
-		var re = "RareEarths";
-		var ra = "Radioactives";
-		var ex = "ExoticMaterials";
+		var resourceDefns = ResourceDefn.Instances();
+		var ce = resourceDefns.CommonElements.name;
+		var co = resourceDefns.Corrosives.name;
+		var bm = resourceDefns.BaseMetals.name;
+		var ng = resourceDefns.NobleGases.name;
+		var pm = resourceDefns.PreciousMetals.name;
+		var re = resourceDefns.RareEarths.name;
+		var ra = resourceDefns.Radioactives.name;
+		var ex = resourceDefns.Exotics.name;
 		var todo = ce;
 
 		// todo - Resource densities

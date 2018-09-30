@@ -1,8 +1,8 @@
 
-function ShipComponentDefn(name, cost, applyToPlayer)
+function ShipComponentDefn(name, value, applyToPlayer)
 {
 	this.name = name;
-	this.cost = cost;
+	this.value = value;
 	this.applyToPlayer = applyToPlayer;
 }
 {
@@ -25,24 +25,31 @@ function ShipComponentDefn(name, cost, applyToPlayer)
 		this.FuelTank = new ShipComponentDefn
 		(
 			"Fuel Tank",
-			100, // cost
+			100, // value
 			function applyToPlayer(player) { player._fuelMax += 100; }
 		);
 		this.IonCannon = new ShipComponentDefn("Ion Cannon", 100, noEffect);
 		this.FusionThruster = new ShipComponentDefn("Fusion Thruster", 100, noEffect);
-		this.ManeuveringJets = new ShipComponentDefn("Maneuvering Jets", 100, noEffect);
+		this.AttitudeJets = new ShipComponentDefn("Attitude Jets", 100, noEffect);
 		this.PowerPlant = new ShipComponentDefn("Power Plant", 100, noEffect);
 
 		this._All =
 		[
+			this.AttitudeJets,
 			this.CargoHold,
 			this.CrewHabitat,
 			this.FuelTank,
 			this.IonCannon,
 			this.FusionThruster,
-			this.ManeuveringJets,
 			this.PowerPlant,
 
 		].addLookups("name");
+	}
+
+	// instance methods
+
+	ShipComponentDefn.prototype.nameAndValue = function()
+	{
+		return this.name + "(" + this.value + ")";
 	}
 }
