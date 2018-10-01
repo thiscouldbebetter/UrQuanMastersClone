@@ -36,7 +36,7 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		var cannotLand = false;
 
 		var resourceDefns = ResourceDefn.Instances();
-		var ce = resourceDefns.CommonElements.name;
+		var ce = resourceDefns.Commons.name;
 		var co = resourceDefns.Corrosives.name;
 		var bm = resourceDefns.BaseMetals.name;
 		var ng = resourceDefns.NobleGases.name;

@@ -208,7 +208,7 @@ function Ship(defnName)
 		return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
 	}
 
-	Ship.prototype.initialize = function(world)
+	Ship.prototype.initialize = function(universe, world, place, entityShip)
 	{
 		var defn = this.defn(world);
 

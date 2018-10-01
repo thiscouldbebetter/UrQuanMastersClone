@@ -21,6 +21,25 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		return PlanetDefn.Instances()[this.defnName];
 	}
 
+	Planet.prototype.lifeformsGenerate = function()
+	{
+		this.lifeforms = [];
+
+		if (this.hasLife == true)
+		{
+			var numberOfLifeforms = 8; // todo
+			for (var i = 0; i < numberOfLifeforms; i++)
+			{
+				var lifeformPos =
+					new Coords().randomize().multiply(this.sizeSurface);
+				var lifeform = new Lifeform("BiteyMouse", lifeformPos);
+				this.lifeforms.push(lifeform);
+			}
+		}
+
+		return this.lifeforms;
+	}
+
 	Planet.prototype.toEntity = function(primaryPos)
 	{
 		var pos = primaryPos.clone().add
@@ -85,14 +104,21 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 					fontHeight
 				),
 
+
 				new ControlContainer
 				(
-					"containerPlanetMap",
+					"containerMap",
 					new Coords(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
 					minimapSize,
 					[
-						// todo
-					]// children
+						new ControlVisual
+						(
+							"visualMap",
+							new Coords(0, 0),
+							minimapSize,
+							new VisualRectangle(minimapSize, "Gray")
+						)
+					]
 				),
 
 				new ControlLabel

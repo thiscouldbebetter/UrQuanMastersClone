@@ -22,7 +22,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
 		)
 	);
-	this.place.entitiesSpawn();
+	//this.place.entitiesSpawn(null, this);
 }
 
 {
@@ -92,6 +92,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 			true, // talksImmediately
 			"EarthStation", // conversationDefnName
 			null, // sphereOfInfluence
+			null, // shipDefnName
 			null // shipGroupActivity
 		);
 
@@ -103,12 +104,13 @@ function World(name, dateCreated, defns, player, hyperspace)
 			true, // talksImmediately
 			"SlaverGuardDrone", // conversationDefnName
 			null, // sphereOfInfluence
+			null, // shipDefnName
 			shipGroupActivityApproach
 		);
 
 		// normal
 
-		var f = function(name, color, sphereOfInfluence, relations)
+		var f = function(name, color, sphereOfInfluence, relations, shipDefnName)
 		{
 			var talksImmediately = (sphereOfInfluence == null);
 
@@ -120,6 +122,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 				talksImmediately,
 				name, // conversationDefnName
 				sphereOfInfluence,
+				shipDefnName,
 				shipGroupActivityApproach
 			);
 		}
@@ -136,29 +139,29 @@ function World(name, dateCreated, defns, player, hyperspace)
 		var hostile = Faction.RelationsHostile;
 		var neutral = Faction.RelationsNeutral;
 
-		var factionAmorfus 		= f("Amorfus", 		"Violet", 	soi(197.8, 596.8, .1), 	hostile);
-		var factionAraknoid 	= f("Araknoid", 	"Purple", 	soi(22.9, 366.6, .15), 	hostile);
-		var factionDaskapital 	= f("Daskapital", 	"Red", 		soi(946.9, 280.6, .1), 	neutral);
-		var factionEllfyn		= f("Ellfyn", 		"Blue", 	soi(100, 500, .05), 	neutral);
-		var factionHyphae 		= f("Hyphae", 		"Purple", 	soi(629.1, 220.8, .12), hostile);
-		var factionMauluska 	= f("Mauluska", 	"Brown", 	soi(241.6, 368.7, .12), neutral);
-		var factionMoroz 		= f("Moroz", 		"Cyan", 	soi(863.0, 869.3, .1), 	neutral);
-		var factionMuuncaf 		= f("Muuncaf", 		"Cyan", 	soi(52.2, 52.5, .1), 	neutral);
-		var factionMazonae		= f("Mazonae", 		null, 		null, 					neutral);
-		var factionMurch 		= f("Murch", 		null, 		null, 					neutral);
-		var factionOutsider 	= f("Outsider", 	"Purple", 	soi(371.3, 253.7, .1), 	neutral);
-		var factionRaptor 		= f("Raptor", 		"Violet", 	soi(492.3, 029.4, .1), 	neutral);
-		var factionRaptor 		= f("RaptorRebel", 	"Mauve", 	soi(492.3, 029.4, .1), 	neutral);
-		var factionRaptor 		= f("RaptorRoyalist","Violet", soi(492.3, 029.4, .1), 	neutral);
-		var factionSilikonix 	= f("Silikonix", 	null, 		null, 					neutral);
-		var factionSlaver 		= f("Slaver",		"Green",	soi(590, 590, .25), 	hostile);
-		var factionSupial		= f("Supial", 		null, 		null, 					hostile);
-		var factionTempestrial 	= f("Tempestrial", 	null, 		soi(500, 500, 1000), 	hostile);
-		var factionTriunion		= f("Triunion", 	"Red", 		soi(400, 543.7, .067), 	neutral);
-		var factionTwyggan 		= f("Twyggan", 		"Brown", 	soi(741.4, 912.4, .1), 	neutral);
-		var factionUgglegruj 	= f("Ugglegruj", 	"Blue", 	soi(433.3, 168.7, .12), hostile);
-		var factionXenofobi 	= f("Xenofobi", 	"Gray", 	soi(610, 610, .25), 	hostile);
-		var factionWarpig		= f("Warpig", 		"Cyan", 	soi(253.5, 835.8, .1), 	hostile);
+		var factionAmorfus 		= f("Amorfus", 		"Violet", 	soi(197.8, 596.8, .1), 	hostile, "Pustule");
+		var factionAraknoid 	= f("Araknoid", 	"Purple", 	soi(22.9, 366.6, .15), 	hostile, "Infernus");
+		var factionDaskapital 	= f("Daskapital", 	"Red", 		soi(946.9, 280.6, .1), 	neutral, "?");
+		var factionEllfyn		= f("Ellfyn", 		"Blue", 	soi(100, 500, .05), 	neutral, "Discus");
+		var factionHyphae 		= f("Hyphae", 		"Purple", 	soi(629.1, 220.8, .12), hostile, "?");
+		var factionMauluska 	= f("Mauluska", 	"Brown", 	soi(241.6, 368.7, .12), neutral, "Scuttler");
+		var factionMoroz 		= f("Moroz", 		"Cyan", 	soi(863.0, 869.3, .1), 	neutral, "Punishponj");
+		var factionMuuncaf 		= f("Muuncaf", 		"Cyan", 	soi(52.2, 52.5, .1), 	neutral, "Fireblossom");
+		var factionMazonae		= f("Mazonae", 		null, 		null, 					neutral, "?");
+		var factionMurch 		= f("Murch", 		null, 		null, 					neutral, "Indemnity");
+		var factionOutsider 	= f("Outsider", 	"Purple", 	soi(371.3, 253.7, .1), 	neutral, "Batwing");
+		var factionRaptor 		= f("Raptor", 		"Violet", 	soi(492.3, 029.4, .1), 	neutral, "?");
+		var factionRaptorRebel 	= f("RaptorRebel", 	"Mauve", 	soi(492.3, 029.4, .1), 	neutral, "?");
+		var factionRaptorRoyalist= f("RaptorRoyalist","Violet", soi(492.3, 029.4, .1), 	neutral, "?");
+		var factionSilikonix 	= f("Silikonix", 	null, 		null, 					neutral, "?");
+		var factionSlaver 		= f("Slaver",		"Green",	soi(590, 590, .25), 	hostile, "Carrier");
+		var factionSupial		= f("Supial", 		null, 		null, 					hostile, "Starbright");
+		var factionTempestrial 	= f("Tempestrial", 	null, 		soi(500, 500, 1000), 	hostile, "Tumbler");
+		var factionTriunion		= f("Triunion", 	"Red", 		soi(400, 543.7, .067), 	neutral, "Bugbite");
+		var factionTwyggan 		= f("Twyggan", 		"Brown", 	soi(741.4, 912.4, .1), 	neutral, "Efflorescence");
+		var factionUgglegruj 	= f("Ugglegruj", 	"Blue", 	soi(433.3, 168.7, .12), hostile, "?");
+		var factionXenofobi 	= f("Xenofobi", 	"Gray", 	soi(610, 610, .25), 	hostile, "Silencer");
+		var factionWarpig		= f("Warpig", 		"Cyan", 	soi(253.5, 835.8, .1), 	hostile, "Afterburner");
 
 		var factions =
 		[

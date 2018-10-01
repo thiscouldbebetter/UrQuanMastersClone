@@ -294,8 +294,12 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 	this._drawLoc = new Location(new Coords());
 }
 {
+	// superclass
+
 	PlaceStarsystem.prototype = Object.create(Place.prototype);
 	PlaceStarsystem.prototype.constructor = Place;
+	
+	// Place overrides
 
 	PlaceStarsystem.prototype.draw_FromSuperclass = PlaceStarsystem.prototype.draw;
 	PlaceStarsystem.prototype.draw = function(universe, world)
@@ -308,6 +312,10 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		var drawPos = drawLoc.pos;
 
 		var player = this.entities["Player"];
+		if (player == null)
+		{
+			return; // hack
+		}
 		var playerLoc = player.locatable.loc;
 
 		var camera = this.camera;

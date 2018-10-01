@@ -87,13 +87,13 @@ function ShipDefn
 			"Lander",
 			"Player", // factionName
 			1, // mass
-			1, // accel
-			24, // speedMax
+			2, // accel
+			48, // speedMax
 			.01, // turnsPerTick
 			12, // crewInitial
 			12, // crewMax
-			0, // energyPerTick
-			0, // energyMax
+			1, // energyPerTick
+			4, // energyMax
 			ShipDefn.visual(shipDimension, "Gray", "Black"),
 			attackDefnTodo
 		);
@@ -234,7 +234,7 @@ function ShipDefn
 			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	adTodo ),
 			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	sv("Collapsar", "androsynth/guardian"),	adTodo,	adTodo ),
 			new sd("Encumbrance","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	sv("Encumbrance", "vux/intruder"), 	adTodo,	adTodo ),
-			new sd("Punishponge","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
+			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
 			new sd("Silencer",	"Xenofobi",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	sv("Silencer", "kohrah/marauder"), 	adTodo,	adTodo ),
 			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	sv("Kickback", "druuge/mauler"), 	adTodo,	adTodo ),
 			new sd("Batwing",	"Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	sv("Batwing", "orz/nemesis"), 		adTodo,	adTodo ),

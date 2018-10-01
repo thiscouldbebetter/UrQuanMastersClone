@@ -1,5 +1,5 @@
 
-function Faction(name, color, relationsWithPlayer, talksImmediately, conversationDefnName, sphereOfInfluence, shipGroupActivity)
+function Faction(name, color, relationsWithPlayer, talksImmediately, conversationDefnName, sphereOfInfluence, shipDefnName, shipGroupActivity)
 {
 	this.name = name;
 	this.color = color;
@@ -7,6 +7,7 @@ function Faction(name, color, relationsWithPlayer, talksImmediately, conversatio
 	this.talksImmediately = talksImmediately;
 	this.conversationDefnName = conversationDefnName;
 	this.sphereOfInfluence = sphereOfInfluence;
+	this.shipDefnName = shipDefnName;
 	this.shipGroupActivity = shipGroupActivity;
 }
 {

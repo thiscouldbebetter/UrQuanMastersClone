@@ -57,10 +57,16 @@ function LifeformDefn
 		var c = "Cyan";
 		var p = "Pink";
 
-		var activityAvoid = function() {};
-		var activityNone = function() {};
-		var activityPursue = function() {};
-		var activityWander = function() {};
+		var lifeformActivityTodo = function(universe, world, place, actor)
+		{
+			var actorLoc = actor.locatable.loc;
+			actorLoc.vel.randomize().double().subtract(Coords.Instances.Ones).clearZ();
+		}
+
+		var activityAvoid = lifeformActivityTodo;
+		var activityNone = lifeformActivityTodo;
+		var activityPursue = lifeformActivityTodo;
+		var activityWander = lifeformActivityTodo;
 
 		this._All =
 		[

@@ -12,7 +12,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		{
 			var entityLander = place.entities["Player"];
 			var itemHolderLander = entityLander.itemHolder;
-			var itemHolderPlayer = world.player.itemHolder;
+			var itemHolderPlayer = world.player.flagship.itemHolder;
 			itemHolderLander.itemsTransferTo(itemHolderPlayer);
 
 			var placePlanetOrbit = place.placePlanetOrbit;
@@ -30,19 +30,17 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		Ship.actionTurnRight(),
 		actionFire,
 		actionExit,
-
 	].addLookups("name");
 
 	this.inputToActionMappings = Ship.inputToActionMappings();
 	this.inputToActionMappings = this.inputToActionMappings.concat
 	(
 		[
-			new InputToActionMapping("Enter", "Fire"),
+			new InputToActionMapping("Enter", "Fire", true),
 			new InputToActionMapping("_", "Exit"),
 
 			new InputToActionMapping("Gamepad0Button0", "Fire"),
 			new InputToActionMapping("Gamepad0Button1", "Exit"),
-
 		]
 	);
 	this.inputToActionMappings.addLookups("inputName");
@@ -90,58 +88,13 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	if (planet.hasLife == true)
 	{
-		var lifeformActivity = function(universe, world, place, actor)
+		var lifeforms = planet.lifeforms;
+		for (var i = 0; i < lifeforms.length; i++)
 		{
-			var actorLoc = actor.locatable.loc;
-			actorLoc.vel.randomize().double().subtract(Coords.Instances.Ones);
-		}
-
-		var lifeformColor = "Green";
-		var numberOfLifeforms = 8;
-
-		for (var i = 0; i < numberOfLifeforms; i++)
-		{
-			var lifeformPos = new Coords().randomize().multiply(this.size);
-			var lifeformLoc = new Location(lifeformPos);
-
-			var lifeformColliderAsFace = new Face
-			([
-				new Coords(-1 / 2, -1).multiplyScalar(entityDimension).half(),
-				new Coords(1 / 2, -1).multiplyScalar(entityDimension).half(),
-				new Coords(1, 1).multiplyScalar(entityDimension).half(),
-				new Coords(-1, 1).multiplyScalar(entityDimension).half(),
-			]);
-
-			var lifeformCollider = Mesh.fromFace
-			(
-				lifeformPos, // center
-				lifeformColliderAsFace,
-				1 // thickness
-			);
-
-			var lifeformVisual = new VisualPolygon
-			(
-				new Path(lifeformColliderAsFace.vertices), lifeformColor
-			);
-			lifeformVisual = new VisualCamera(lifeformVisual, this.camera);
-
-			var lifeformEntity = new Entity
-			(
-				"Lifeform",
-				[
-					new Locatable(lifeformLoc),
-					new Constrainable([constraintSpeedMax]),
-					new Collidable(lifeformCollider),
-					new Damager(),
-					new Killable(),
-					new Drawable(lifeformVisual),
-					new Actor(lifeformActivity),
-				]
-			);
-
+			var lifeform = lifeforms[i];
+			var lifeformEntity = lifeform.toEntity(world, this);
 			entities.push(lifeformEntity);
-
-		} // end for
+		}
 
 	} // end if planet.hasLife
 
@@ -153,37 +106,8 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	for (var i = 0; i < resources.length; i++)
 	{
 		var resource = resources[i];
-		var resourceQuantity = resource.quantity;
-		var resourceDefnName = resource.defnName;
-		var resourceDefn = resourceDefns[resourceDefnName];
-
-		var resourceColor = resourceDefn.color;
-		var resourceGradient = new Gradient
-		([
-			new GradientStop(0, resourceColor), new GradientStop(1, "Black")
-		]);
-		var resourceRadius = resourceRadiusBase * Math.sqrt(resourceQuantity);
-		var resourceVisual = new VisualCircleGradient
-		(
-			resourceRadius, resourceGradient
-		);
-		resourceVisual = new VisualCamera(resourceVisual, this.camera);
-
-		var resourcePos = resource.pos;
-		var resourceCollider = new Sphere(resourcePos, resourceRadius);
-
-		var resourceEntity = new Entity
-		(
-			"Resource" + i,
-			[
-				new Item(resourceDefnName, resourceQuantity),
-				new Locatable( new Location(resourcePos) ),
-				new Collidable(resourceCollider),
-				new Drawable(resourceVisual)
-			]
-		);
-
-		entities.push(resourceEntity);
+		var entityResource = resource.toEntity(world, place, resourceRadiusBase);
+		entities.push(entityResource);
 	}
 
 	// player
@@ -240,6 +164,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
+	this.propertyNamesToProcess.push("ship");
 
 	// Helper variables.
 
@@ -247,8 +172,12 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	this.drawLoc = new Location(this.drawPos);
 }
 {
+	// superclass
+
 	PlacePlanetSurface.prototype = Object.create(Place.prototype);
 	PlacePlanetSurface.prototype.constructor = Place;
+
+	// Place overrides
 
 	PlacePlanetSurface.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlacePlanetSurface.prototype.draw = function(universe, world)

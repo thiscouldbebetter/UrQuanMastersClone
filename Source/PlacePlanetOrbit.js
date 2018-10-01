@@ -74,6 +74,9 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 	PlacePlanetOrbit.prototype.scanLife = function(universe)
 	{
 		this.hasLifeBeenScanned = true;
+		var planet = this.planet;
+		var world = universe.world;
+		planet.lifeformsGenerate(world);
 	}
 
 	PlacePlanetOrbit.prototype.scanMinerals = function(universe)
@@ -123,30 +126,41 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var surfaceSize = this.planet.sizeSurface;
 		var display = universe.display;
 
-		var resources = this.planet.resources;
-		if (resources != null)
-		{
-			var resourceRadius = 3;
+		var scanContacts = [ this.planet.resources, this.planet.lifeforms ];
+		var contactVisuals = [ new VisualCircle(3, "Red"), new VisualCircle(3, "LightGreen") ];
+		var contactDrawable = new Drawable();
+		contactDrawable.loc = new Location(new Coords());
 
-			for (var i = 0; i < resources.length; i++)
+		for (var t = 0; t < scanContacts.length; t++)
+		{
+			var contactsOfType = scanContacts[t];
+			var contactVisual = contactVisuals[t];
+			contactDrawable.visual = contactVisual;
+
+			if (contactsOfType != null)
 			{
-				var resource = resources[i];
-				var resourceColor = "Cyan";
-				var resourcePos = resource.pos;
-				var drawPos = this._drawPos.overwriteWith
-				(
-					resourcePos
-				).divide
-				(
-					surfaceSize
-				).multiply
-				(
-					mapSize
-				).add
-				(
-					mapPos
-				);
-				display.drawCircle(drawPos, resourceRadius, resourceColor);
+				for (var i = 0; i < contactsOfType.length; i++)
+				{
+					var contact = contactsOfType[i];
+
+					var contactPos = contact.pos;
+					var drawPos = this._drawPos.overwriteWith
+					(
+						contactPos
+					).divide
+					(
+						surfaceSize
+					).multiply
+					(
+						mapSize
+					).add
+					(
+						mapPos
+					);
+
+					contactDrawable.loc.pos.overwriteWith(drawPos);
+					contactVisual.draw(universe, world, display, contactDrawable, contact)
+				}
 			}
 		}
 	}
@@ -170,20 +184,20 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 	{
 		var placePlanetOrbit = this;
 
-		var containerDockSize = universe.display.sizeInPixels.clone();
+		var containerMainSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
 		var fontHeightShort = fontHeight / 2;
 		var buttonBackSize = new Coords(25, 25);
 		var marginWidth = 10;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 
-		var titleSize = new Coords(containerDockSize.x, 25);
-		var labelSize = new Coords(100, 10);
+		var titleSize = new Coords(containerMainSize.x, 25);
+		var labelSize = new Coords(200, 10);
 
 		var containerRightSize = new Coords
 		(
-			(containerDockSize.x - marginSize.x * 3) / 3,
-			containerDockSize.y - marginSize.y * 3 - titleSize.y
+			(containerMainSize.x - marginSize.x * 3) / 4,
+			containerMainSize.y - marginSize.y * 3 - titleSize.y
 		);
 
 		var buttonSizeRight = new Coords
@@ -204,56 +218,300 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 			buttonScanSize.y * 3 + marginSize.y * 4
 		);
 
-		var containerLeftSize = new Coords
+		var containerMapSize = new Coords
 		(
-			containerDockSize.x - marginSize.x * 3 - containerRightSize.x,
+			containerMainSize.x - marginSize.x * 3 - containerRightSize.x,
 			(containerRightSize.y - marginSize.y) / 2
 		);
 
-		var containerLeftInnerSize = new Coords
+		var containerInfoSize = new Coords
 		(
-			(containerLeftSize.x - marginSize.x * 3) / 2,
-			(containerLeftSize.y - labelSize.y - marginSize.y * 3)
-		); // size
+			(containerMapSize.x - marginSize.x) / 2,
+			containerMapSize.y
+		);
+
+		var containerInfo = new ControlContainer
+		(
+			"containerInfo",
+			new Coords
+			(
+				marginSize.x,
+				marginSize.y * 2 + titleSize.y
+			),
+			containerInfoSize,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelName",
+					new Coords(marginSize.x, marginSize.y),
+					labelSize,
+					false, // isTextCentered
+					"Name: Tau Ceti 3",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelMass",
+					new Coords(marginSize.x, marginSize.y * 2),
+					labelSize,
+					false, // isTextCentered
+					"Mass: 6.0 x 10^24 kg",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelRadius",
+					new Coords(marginSize.x, marginSize.y * 3),
+					labelSize,
+					false, // isTextCentered
+					"Radius: 6.3 x 10^3 km",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelGravity",
+					new Coords(marginSize.x, marginSize.y * 4),
+					labelSize,
+					false, // isTextCentered
+					"Surface Gravity: 1g",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelOrbitDistance",
+					new Coords(marginSize.x, marginSize.y * 5),
+					labelSize,
+					false, // isTextCentered
+					"Orbit: 1.5 x 10^8 km",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelRotationPeriod",
+					new Coords(marginSize.x, marginSize.y * 6),
+					labelSize,
+					false, // isTextCentered
+					"Day: 1.0 days",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelOrbitPeriod",
+					new Coords(marginSize.x, marginSize.y * 7),
+					labelSize,
+					false,
+					"Year: 1.0 years",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelTemperature",
+					new Coords(marginSize.x, marginSize.y * 8),
+					labelSize,
+					false,
+					"Temperature: 72C",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelWeather",
+					new Coords(marginSize.x, marginSize.y * 9),
+					labelSize,
+					false,
+					"Weather: Class 1",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelTectonics",
+					new Coords(marginSize.x, marginSize.y * 10),
+					labelSize,
+					false,
+					"Tectonics: Class 1",
+					fontHeightShort
+				),
+			]
+		);
+
+		var containerGlobe = new ControlContainer
+		(
+			"containerGlobe",
+			new Coords
+			(
+				marginSize.x * 2 + containerInfoSize.x,
+				marginSize.y * 2 + titleSize.y
+			),
+			containerInfoSize,
+			// children
+			[
+				new ControlVisual
+				(
+					"visualGlobe",
+					new Coords(0, 0),
+					containerInfoSize,
+					new VisualGroup
+					([
+						new VisualRectangle(containerInfoSize, "Black"),
+						new VisualCircle(containerInfoSize.y * .4, "Gray"),
+					])
+				)
+			]
+		);
+
+		var containerRight = new ControlContainer
+		(
+			"containerRight",
+			new Coords
+			(
+				marginSize.x * 2 + containerMapSize.x,
+				marginSize.y * 2 + titleSize.y
+			),
+			containerRightSize,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelScan",
+					new Coords
+					(
+						marginSize.x,
+						containerRightSize.y
+							- marginSize.y * 3
+							- buttonSizeRight.y
+							- containerScanSize.y
+							- labelSize.y
+					),
+					labelSize,
+					fontHeightShort,
+					"Scan:"
+				),
+
+				new ControlContainer
+				(
+					"containerScan",
+					new Coords
+					(
+						marginSize.x,
+						containerRightSize.y
+							- marginSize.y * 2
+							- buttonSizeRight.y
+							- containerScanSize.y
+					),
+					containerScanSize,
+					[
+						new ControlButton
+						(
+							"buttonScanMineral",
+							new Coords
+							(
+								marginSize.x,
+								marginSize.y
+							),
+							buttonScanSize,
+							"Mineral",
+							fontHeightShort,
+							true, // hasBorder,
+							true, // isEnabled,
+							function click(universe)
+							{
+								placePlanetOrbit.scanMinerals(universe);
+							},
+							universe
+						),
+
+						new ControlButton
+						(
+							"buttonScanLife",
+							new Coords
+							(
+								marginSize.x,
+								marginSize.y * 2 + buttonScanSize.y
+							),
+							buttonScanSize,
+							"Life",
+							fontHeightShort,
+							true, // hasBorder,
+							true, // isEnabled,
+							function click(universe)
+							{
+								placePlanetOrbit.scanLife(universe);
+							},
+							universe
+						),
+
+						new ControlButton
+						(
+							"buttonScanEnergy",
+							new Coords
+							(
+								marginSize.x,
+								marginSize.y * 3 + buttonScanSize.y * 2
+							),
+							buttonScanSize,
+							"Energy",
+							fontHeightShort,
+							true, // hasBorder,
+							true, // isEnabled,
+							function click(universe)
+							{
+								placePlanetOrbit.scanEnergy(universe);
+							},
+							universe
+						),
+					]
+				),
+
+				new ControlButton
+				(
+					"buttonLand",
+					new Coords
+					(
+						marginSize.x,
+						containerRightSize.y - marginSize.y - buttonSizeRight.y
+					),
+					buttonSizeRight,
+					"Land",
+					fontHeightShort,
+					true, // hasBorder,
+					true, // isEnabled,
+					function click(universe)
+					{
+						placePlanetOrbit.land(universe);
+					},
+					universe
+				),
+			]
+		);
 
 		var controlRoot = new ControlContainer
 		(
 			"containerPlanetOrbit",
 			new Coords(0, 0), // pos
-			containerDockSize,
+			containerMainSize,
 			[
 				new ControlLabel
 				(
 					"labelOrbit",
-					new Coords(containerDockSize.x / 2, marginSize.y + titleSize.y / 2),
+					new Coords(containerMainSize.x / 2, marginSize.y + titleSize.y / 2),
 					titleSize,
 					true, // isTextCentered
 					"Orbit",
 					fontHeight
 				),
 
-				new ControlContainer
-				(
-					"containerTop",
-					new Coords
-					(
-						marginSize.x,
-						marginSize.y * 2 + titleSize.y
-					),
-					containerLeftSize,
-					// children
-					[
-						new ControlLabel
-						(
-							"labelInfo",
-							marginSize,
-							labelSize,
-							false, // isTextCentered
-							"[Info]",
-							fontHeightShort
-						),
-					]
-				),
+				containerInfo,
+
+				containerGlobe,
 
 				new ControlContainer
 				(
@@ -261,145 +519,22 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords
 					(
 						marginSize.x,
-						marginSize.y * 3 + titleSize.y + containerLeftSize.y
+						marginSize.y * 3 + titleSize.y + containerMapSize.y
 					),
-					containerLeftSize,
+					containerMapSize,
 					// children
 					[
 						new ControlVisual
 						(
 							"visualSurface",
 							Coords.Instances.Zeroes,
-							containerLeftSize,
-							new VisualImage("PlanetSurface", containerLeftSize)
+							containerMapSize,
+							new VisualImage("PlanetSurface", containerMapSize)
 						),
 					]
 				),
 
-				new ControlContainer
-				(
-					"containerRight",
-					new Coords
-					(
-						marginSize.x * 2 + containerLeftSize.x,
-						marginSize.y * 2 + titleSize.y
-					),
-					containerRightSize,
-					// children
-					[
-						new ControlLabel
-						(
-							"labelScan",
-							new Coords
-							(
-								marginSize.x,
-								containerRightSize.y
-									- marginSize.y * 3
-									- buttonSizeRight.y
-									- containerScanSize.y
-									- labelSize.y
-							),
-							labelSize,
-							fontHeightShort,
-							"Scan:"
-						),
-
-						new ControlContainer
-						(
-							"containerScan",
-							new Coords
-							(
-								marginSize.x,
-								containerRightSize.y
-									- marginSize.y * 2
-									- buttonSizeRight.y
-									- containerScanSize.y
-							),
-							containerScanSize,
-							[
-								new ControlButton
-								(
-									"buttonScanMineral",
-									new Coords
-									(
-										marginSize.x,
-										marginSize.y
-									),
-									buttonScanSize,
-									"Mineral",
-									fontHeightShort,
-									true, // hasBorder,
-									true, // isEnabled,
-									function click(universe)
-									{
-										placePlanetOrbit.scanMinerals(universe);
-									},
-									universe
-								),
-
-								new ControlButton
-								(
-									"buttonScanLife",
-									new Coords
-									(
-										marginSize.x,
-										marginSize.y * 2 + buttonScanSize.y
-									),
-									buttonScanSize,
-									"Life",
-									fontHeightShort,
-									true, // hasBorder,
-									true, // isEnabled,
-									function click(universe)
-									{
-										placePlanetOrbit.scanLife(universe);
-									},
-									universe
-								),
-
-								new ControlButton
-								(
-									"buttonScanEnergy",
-									new Coords
-									(
-										marginSize.x,
-										marginSize.y * 3 + buttonScanSize.y * 2
-									),
-									buttonScanSize,
-									"Energy",
-									fontHeightShort,
-									true, // hasBorder,
-									true, // isEnabled,
-									function click(universe)
-									{
-										placePlanetOrbit.scanEnergy(universe);
-									},
-									universe
-								),
-							]
-						),
-
-						new ControlButton
-						(
-							"buttonLand",
-							new Coords
-							(
-								marginSize.x,
-								containerRightSize.y - marginSize.y - buttonSizeRight.y
-							),
-							buttonSizeRight,
-							"Land",
-							fontHeightShort,
-							true, // hasBorder,
-							true, // isEnabled,
-							function click(universe)
-							{
-								placePlanetOrbit.land(universe);
-							},
-							universe
-						),
-					]
-				),
+				containerRight,
 
 				new ControlButton
 				(
