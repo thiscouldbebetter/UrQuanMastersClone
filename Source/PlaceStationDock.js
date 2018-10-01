@@ -128,7 +128,7 @@ function PlaceStationDock(world, placeStation)
 			(containerLeftSize.y - labelSize.y - buttonSizeShips.y - marginSize.y * 4)
 		); // size
 
-		var shipComponentsInstalled = player.flagshipComponents();
+		var shipComponentsInstalled = player.flagship.components();
 
 		var shipComponentDefnsAvailable = ShipComponentDefn.Instances()._All;
 
@@ -586,7 +586,7 @@ function PlaceStationDock(world, placeStation)
 					new Coords(marginSize.x * 3.5, marginSize.y * 2 + labelSize.y),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player, "fuelCurrentOverMax()"),
+					new DataBinding(player, "flagship.fuelCurrentOverMax()"),
 					fontHeightShort
 				),
 

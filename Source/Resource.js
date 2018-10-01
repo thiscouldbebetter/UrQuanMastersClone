@@ -40,7 +40,7 @@ function Resource(defnName, quantity, pos)
 				new Drawable(resourceVisual)
 			]
 		);
-		
+
 		return resourceEntity;
 	}
 }

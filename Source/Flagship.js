@@ -29,4 +29,24 @@ function Flagship(name, componentsMax, componentNames, numberOfLanders, fuel, it
 
 		return this._components;
 	}
+
+	Flagship.prototype.fuelCurrentOverMax = function()
+	{
+		return this.fuel + "/" + this.fuelMax();
+	}
+
+	Flagship.prototype.fuelMax = function()
+	{
+		if (this._fuelMax == null)
+		{
+			this._fuelMax = 0;
+			var components = this.components();
+			for (var i = 0; i < components.length; i++)
+			{
+				var component = components[i];
+				component.applyToFlagship(this);
+			}
+		}
+		return this._fuelMax;
+	}
 }

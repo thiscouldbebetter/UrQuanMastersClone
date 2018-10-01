@@ -106,7 +106,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	for (var i = 0; i < resources.length; i++)
 	{
 		var resource = resources[i];
-		var entityResource = resource.toEntity(world, place, resourceRadiusBase);
+		var entityResource = resource.toEntity(world, this, resourceRadiusBase);
 		entities.push(entityResource);
 	}
 

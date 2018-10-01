@@ -1,9 +1,9 @@
 
-function ShipComponentDefn(name, value, applyToPlayer)
+function ShipComponentDefn(name, value, applyToFlagship)
 {
 	this.name = name;
 	this.value = value;
-	this.applyToPlayer = applyToPlayer;
+	this.applyToFlagship = applyToFlagship;
 }
 {
 	ShipComponentDefn.Instances = function()
@@ -18,7 +18,7 @@ function ShipComponentDefn(name, value, applyToPlayer)
 
 	function ShipComponentDefn_Instances()
 	{
-		var noEffect = function applyToPlayer(player) {};
+		var noEffect = function applyToFlagship(player) {};
 
 		this.CargoHold = new ShipComponentDefn("Cargo Hold", 100, noEffect);
 		this.CrewHabitat = new ShipComponentDefn("Crew Habitat", 100, noEffect);
@@ -26,7 +26,7 @@ function ShipComponentDefn(name, value, applyToPlayer)
 		(
 			"Fuel Tank",
 			100, // value
-			function applyToPlayer(player) { player._fuelMax += 100; }
+			function applyToFlagship(player) { player._fuelMax += 100; }
 		);
 		this.IonCannon = new ShipComponentDefn("Ion Cannon", 100, noEffect);
 		this.FusionThruster = new ShipComponentDefn("Fusion Thruster", 100, noEffect);

@@ -56,7 +56,7 @@ function Combat(size, encounter, shipGroups)
 		for (var i = 0; i < this.shipGroups.length; i++)
 		{
 			var shipGroup = this.shipGroups[i];
-			shipGroup.initialize(world);
+			shipGroup.initialize(null, world);
 		}
 		return this;
 	}

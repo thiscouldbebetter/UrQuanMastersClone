@@ -298,7 +298,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 
 	PlaceStarsystem.prototype = Object.create(Place.prototype);
 	PlaceStarsystem.prototype.constructor = Place;
-	
+
 	// Place overrides
 
 	PlaceStarsystem.prototype.draw_FromSuperclass = PlaceStarsystem.prototype.draw;

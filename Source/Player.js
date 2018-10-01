@@ -24,26 +24,6 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		return this.flagship.componentNames.length + "/" + this.flagship.componentsMax;
 	}
 
-	Player.prototype.fuelCurrentOverMax = function()
-	{
-		return this.fuel + "/" + this.fuelMax();
-	}
-
-	Player.prototype.fuelMax = function()
-	{
-		if (this._fuelMax == null)
-		{
-			this._fuelMax = 0;
-			var components = this.flagship.components();
-			for (var i = 0; i < components.length; i++)
-			{
-				var component = components[i];
-				component.applyToPlayer(this);
-			}
-		}
-		return this._fuelMax;
-	}
-
 	Player.prototype.shipsCurrentOverMax = function()
 	{
 		return this.shipGroup.ships.length + "/" + this.shipsMax;
