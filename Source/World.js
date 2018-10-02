@@ -213,10 +213,10 @@ function World(name, dateCreated, defns, player, hyperspace)
 			"Flagship",
 			12, // componentsMax
 			[
-				shipComponentDefns.AttitudeJets.name,
 				shipComponentDefns.FusionThruster.name,
 				shipComponentDefns.CargoHold.name,
 				shipComponentDefns.FuelTank.name,
+				shipComponentDefns.TurningJets.name,
 			], // componentNames
 			1, // numberOfLanders
 			100, // fuel

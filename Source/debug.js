@@ -31,8 +31,17 @@ function combat(universe)
 	var combatSize = new Coords(1, 1).multiplyScalar(displaySize.y * 2);
 	var encounter = null; // todo
 	var shipDefnsAll = ShipDefn.Instances(universe);
-	var playerShips = Ship.manyFromDefns(shipDefnsAll);
-	var enemyShips = Ship.manyFromDefns(shipDefnsAll);
+	var playerShipDefns =
+	[
+		shipDefnsAll["Efflorescence"],
+	];
+	var enemyShipDefns =
+	[
+		shipDefnsAll["Starshard"],
+		shipDefnsAll["Starshard"]
+	];
+	var playerShips = Ship.manyFromDefns(playerShipDefns);
+	var enemyShips = Ship.manyFromDefns(enemyShipDefns);
 
 	var combat = new Combat
 	(

@@ -25,7 +25,7 @@ function Lifeform(defnName, pos)
 				new Killable
 				(
 					lifeformDefn.durability,
-					function kill(universe, world, place, entity)
+					function die(universe, world, place, entity)
 					{
 						var planet = place.planet;
 						var resource = new Resource("Biodata", 1, entity.locatable.loc.pos);

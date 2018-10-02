@@ -71,8 +71,8 @@ function PlaceStationDock(world, placeStation)
 		var containerDockSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
 		var fontHeightShort = fontHeight / 2;
-		var buttonBackSize = new Coords(25, 25);
-		var marginWidth = 10;
+		var buttonBackSize = new Coords(1, 1).multiplyScalar(fontHeightShort * 1.6);
+		var marginWidth = 8;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 
 		var titleSize = new Coords(containerDockSize.x, 25);
@@ -81,7 +81,7 @@ function PlaceStationDock(world, placeStation)
 		var containerRightSize = new Coords
 		(
 			(containerDockSize.x - marginSize.x * 3) * .3,
-			containerDockSize.y - marginSize.y * 3 - titleSize.y
+			containerDockSize.y - marginSize.y * 2 - titleSize.y
 		);
 
 		var buttonSizeRight = new Coords
@@ -119,7 +119,7 @@ function PlaceStationDock(world, placeStation)
 		var listComponentsSize = new Coords
 		(
 			buttonSizeComponents.x,
-			(containerLeftSize.y - labelSize.y - buttonSizeShips.y - marginSize.y * 4)
+			(containerLeftSize.y - labelSize.y * 2 - buttonSizeShips.y - marginSize.y * 5)
 		); // size
 
 		var listShipsSize = new Coords
@@ -128,9 +128,10 @@ function PlaceStationDock(world, placeStation)
 			(containerLeftSize.y - labelSize.y - buttonSizeShips.y - marginSize.y * 4)
 		); // size
 
-		var shipComponentsInstalled = player.flagship.components();
+		var shipComponentsInstalled = player.flagship.componentsBackbone();
 
-		var shipComponentDefnsAvailable = ShipComponentDefn.Instances()._All;
+		var shipComponentDefnsAvailable =
+			ShipComponentDefn.Instances()._AllBackbone;
 
 		var containerComponents = new ControlContainer
 		(
@@ -138,7 +139,7 @@ function PlaceStationDock(world, placeStation)
 			new Coords
 			(
 				marginSize.x,
-				marginSize.y * 2 + titleSize.y
+				marginSize.y + titleSize.y
 			),
 			containerLeftSize,
 			// children
@@ -179,7 +180,7 @@ function PlaceStationDock(world, placeStation)
 					new Coords
 					(
 						marginSize.x,
-						containerLeftSize.y - marginSize.y - buttonSizeComponents.y
+						marginSize.y * 3 + labelSize.y + listComponentsSize.y
 					),
 					buttonSizeComponents,
 					"Build",
@@ -221,7 +222,7 @@ function PlaceStationDock(world, placeStation)
 					"infoComponentsInstalled",
 					new Coords
 					(
-						marginSize.x * 7 + listComponentsSize.x,
+						marginSize.x * 8 + listComponentsSize.x,
 						marginSize.y
 					),
 					labelSize,
@@ -252,7 +253,7 @@ function PlaceStationDock(world, placeStation)
 					new Coords
 					(
 						marginSize.x * 2 + listComponentsSize.x,
-						containerLeftSize.y - marginSize.y - buttonSizeComponents.y
+						marginSize.y * 3 + labelSize.y + listComponentsSize.y
 					),
 					buttonSizeComponents,
 					"Scrap",
@@ -308,7 +309,7 @@ function PlaceStationDock(world, placeStation)
 					new Coords
 					(
 						marginSize.x * 3 + listComponentsSize.x * 2,
-						containerLeftSize.y - marginSize.y - buttonSizeComponents.y
+						marginSize.y * 3 + labelSize.y + listComponentsSize.y
 					),
 					buttonSizeComponents,
 					"Up",
@@ -328,6 +329,114 @@ function PlaceStationDock(world, placeStation)
 					universe // context
 				),
 
+				new ControlLabel
+				(
+					"labelThrusters",
+					new Coords
+					(
+						marginSize.x,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					labelSize,
+					false, // isTextCentered
+					"Thrusters: nn/mm",
+					fontHeightShort
+				),
+
+				new ControlButton
+				(
+					"buttonThrusterAdd",
+					new Coords
+					(
+						containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 2,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					buttonSizeSmall,
+					"+",
+					fontHeightShort,
+					true, // hasBorder
+					true, // isEnabled
+					function click()
+					{
+						// todo
+					},
+					universe
+				),
+
+				new ControlButton
+				(
+					"buttonThrusterRemove",
+					new Coords
+					(
+						containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 1,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					buttonSizeSmall,
+					"-",
+					fontHeightShort,
+					true, // hasBorder
+					true, // isEnabled
+					function click()
+					{
+						// todo
+					},
+					universe
+				),
+
+				new ControlLabel
+				(
+					"labelTurningJets",
+					new Coords
+					(
+						containerLeftSize.x / 2 + marginSize.x,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					labelSize,
+					false, // isTextCentered
+					"Turning Jets: nn/mm",
+					fontHeightShort
+				),
+
+				new ControlButton
+				(
+					"buttonTurningJetAdd",
+					new Coords
+					(
+						containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					buttonSizeSmall,
+					"+",
+					fontHeightShort,
+					true, // hasBorder
+					true, // isEnabled
+					function click()
+					{
+						// todo
+					},
+					universe
+				),
+
+				new ControlButton
+				(
+					"buttonTurningJetRemove",
+					new Coords
+					(
+						containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					buttonSizeSmall,
+					"-",
+					fontHeightShort,
+					true, // hasBorder
+					true, // isEnabled
+					function click()
+					{
+						// todo
+					},
+					universe
+				),
+
 			]
 		);
 
@@ -341,7 +450,7 @@ function PlaceStationDock(world, placeStation)
 			new Coords
 			(
 				marginSize.x,
-				marginSize.y * 3 + titleSize.y + containerLeftSize.y
+				marginSize.y * 2 + titleSize.y + containerLeftSize.y
 			),
 			containerLeftSize,
 			// children
@@ -430,7 +539,7 @@ function PlaceStationDock(world, placeStation)
 					"infoFleet",
 					new Coords
 					(
-						marginSize.x * 5 + listShipsSize.x,
+						marginSize.x * 6 + listShipsSize.x,
 						marginSize.y
 					),
 					labelSize,
@@ -541,11 +650,11 @@ function PlaceStationDock(world, placeStation)
 
 		var containerResources = new ControlContainer
 		(
-			"containerRight",
+			"containerResources",
 			new Coords
 			(
 				marginSize.x * 2 + containerLeftSize.x,
-				marginSize.y * 2 + titleSize.y
+				marginSize.y + titleSize.y
 			),
 			containerRightSize,
 			// children
@@ -563,7 +672,7 @@ function PlaceStationDock(world, placeStation)
 				new ControlLabel
 				(
 					"infoResources",
-					new Coords(marginSize.x * 6, marginSize.y),
+					new Coords(marginSize.x * 7, marginSize.y),
 					labelSize,
 					false, // isTextCentered
 					new DataBinding(player, "credit"),
@@ -583,7 +692,7 @@ function PlaceStationDock(world, placeStation)
 				new ControlLabel
 				(
 					"infoFuel",
-					new Coords(marginSize.x * 3.5, marginSize.y * 2 + labelSize.y),
+					new Coords(marginSize.x * 4, marginSize.y * 2 + labelSize.y),
 					labelSize,
 					false, // isTextCentered
 					new DataBinding(player, "flagship.fuelCurrentOverMax()"),
@@ -775,7 +884,6 @@ function PlaceStationDock(world, placeStation)
 			]
 		);
 
-
 		var controlRoot = new ControlContainer
 		(
 			"containerDock",
@@ -785,7 +893,7 @@ function PlaceStationDock(world, placeStation)
 				new ControlLabel
 				(
 					"labelDock",
-					new Coords(containerDockSize.x / 2, marginSize.y + titleSize.y / 2),
+					new Coords(containerDockSize.x / 2, titleSize.y / 2),
 					titleSize,
 					true, // isTextCentered
 					"Dock",
@@ -804,7 +912,7 @@ function PlaceStationDock(world, placeStation)
 					marginSize,
 					buttonBackSize,
 					"<",
-					fontHeight,
+					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
 					function click(universe)

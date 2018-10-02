@@ -26,7 +26,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 
 	Player.prototype.shipsCurrentOverMax = function()
 	{
-		return this.shipGroup.ships.length + "/" + this.shipsMax;
+		return this.shipGroup.ships.length + "/" + this.flagship.shipsMax;
 	}
 
 	Player.prototype.toControlSidebar = function()

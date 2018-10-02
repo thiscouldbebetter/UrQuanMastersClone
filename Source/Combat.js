@@ -51,6 +51,11 @@ function Combat(size, encounter, shipGroups)
 		Ship.accelerate(world, actor);
 	}
 
+	Combat.prototype.exit = function(universe, world, place, entity)
+	{
+		alert("todo");
+	}
+
 	Combat.prototype.initialize = function(world)
 	{
 		for (var i = 0; i < this.shipGroups.length; i++)
@@ -108,6 +113,16 @@ function Combat(size, encounter, shipGroups)
 	}
 
 	// controls
+
+
+	Combat.prototype.toControlDebriefing = function(universe, size)
+	{
+		var returnValue = universe.controlBuilder.message
+		(
+			universe, size, "Combat complete.", this.exit
+		);
+		return returnValue;
+	}
 
 	Combat.prototype.toControlShipSelect = function(universe, size)
 	{

@@ -59,9 +59,13 @@ function ShipDefn
 			2, // projectileRadius
 			8, // speed
 			16, // ticksToLive
-			1, // damage
+			20, // damage
 			new VisualCircle(2, "Yellow"), // visualProjectile
-			new VisualCircle(6, "Yellow", "Red"), // visualImpact
+			new VisualGroup
+			([
+				new VisualSound("Sound"),
+				new VisualCircle(6, "Red")
+			]), // visualImpact
 			function effectWhenInvoked(universe, world, place, actor) {},
 			function effectOnImpact(universe, world, place, actor, target) {},
 		);

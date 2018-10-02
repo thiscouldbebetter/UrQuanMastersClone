@@ -187,11 +187,7 @@ function PlaceCombat(world, combat)
 			),
 			new Drawable(shipVisual),
 			new ItemHolder(),
-			new Killable
-			(
-				ship.crew,
-				function kill() { /* todo */ }
-			)
+			new Killable(ship.crew, this.shipDie)
 		];
 
 		if (i == 0)
@@ -242,6 +238,64 @@ function PlaceCombat(world, combat)
 	PlaceCombat.prototype.constructor = Place;
 
 	// methods
+
+	PlaceCombat.prototype.roundOver = function(universe, world, place, entity)
+	{
+		var combat = place.combat;
+		var shipGroups = combat.shipGroups;
+
+		if (shipGroups[0].ships.length == 0)
+		{
+			throw "todo"; // Game over.
+		}
+		else if (shipGroups[1].ships.length > 0)
+		{
+			var controlShipSelect =
+				combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+			var venueNext = new VenueControls(controlShipSelect);
+			universe.venueNext = venueNext;
+		}
+		else
+		{
+			var controlCombatDebriefing =
+				combat.toControlDebriefing(universe, universe.display.sizeInPixels);
+			var venueNext = new VenueControls(controlCombatDebriefing);
+			universe.venueNext = venueNext;
+		}
+	}
+
+	PlaceCombat.prototype.shipDie = function(universe, world, place, entityShipToDie)
+	{
+		var ship = entityShipToDie.ship;
+		var combat = place.combat;
+		var shipGroups = combat.shipGroups;
+
+		for (var g = 0; g < shipGroups.length; g++)
+		{
+			var shipGroup = shipGroups[g];
+			if (shipGroup.ships.contains(ship))
+			{
+				shipGroup.ships.remove(ship);
+			}
+		}
+
+		var visualToRecycle = entityShipToDie.drawable.visual;
+		visualToRecycle.child.child = new VisualCircle(32, "Red");
+
+		entityShipToDie.locatable.loc.vel.clear();
+
+		var entityExplosion = new Entity
+		(
+			"Explosion",
+			[
+				new Ephemeral(64, place.roundOver),
+				new Drawable(visualToRecycle),
+				entityShipToDie.locatable,
+			]
+		);
+
+		place.entitiesToSpawn.push(entityExplosion);
+	}
 
 	PlaceCombat.prototype.shipEntities = function()
 	{
@@ -294,33 +348,5 @@ function PlaceCombat(world, combat)
 	PlaceCombat.prototype.updateForTimerTick = function(universe, world)
 	{
 		this.updateForTimerTick_FromSuperclass(universe, world);
-
-		var shipEntities = this.shipEntities();
-
-		if (shipEntities.length < 2)
-		{
-			var combat = this.combat;
-			var shipGroups = combat.shipGroups;
-
-			if (shipGroups[0].ships.length == 0)
-			{
-				throw "todo"; // Game over?
-			}
-			else if (shipGroups[1].ships.length == 0)
-			{
-				var encounter = combat.encounter;
-				var placeNext = encounter.placeToReturnTo;
-				var enemyFromPlaceNext = placeNext.entities[enemyName];
-				placeNext.entitiesToRemove.push(enemyFromPlaceNext);
-				encounter.returnToPlace(world);
-			}
-			else
-			{
-				var controlShipSelect =
-					combat.toControlShipSelect(universe, universe.display.sizeInPixels);
-				var venueNext = new VenueControls(controlShipSelect);
-				universe.venueNext = venueNext;
-			}
-		}
 	}
 }
