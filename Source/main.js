@@ -6,16 +6,23 @@ function main()
 
 	var conversationPlaceholderPath = "../Content/Text/Conversation-Placeholder.json";
 
+	var imageDirectory = "../Content/Images/";
+
 	var mediaLibrary = new MediaLibrary
 	(
 		// images
 		[
-			new Image("Conversation", "../Content/Images/Conversation.png"),
+			new Image("Conversation", imageDirectory + "Conversation.png"),
 			new Image("Conversation-EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
 			new Image("Conversation-Slaver", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
 
-			new Image("PlanetSurface", "../Content/Images/PlanetSurface.png"),
-			new Image("Title", "../Content/Images/Title.png"),
+			new Image("PlanetSurface", imageDirectory + "PlanetSurface.png"),
+			new Image("Title", imageDirectory + "Title.png"),
+
+			// slides
+			new Image("Black", imageDirectory + "/Slides/Black-1x1px.png"),
+			new Image("Red", imageDirectory + "Slides/Red-1x1px.png"),
+			new Image("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
 		],
 		// sounds
 		[
@@ -87,6 +94,23 @@ function main()
 		"SpaceAdventureClone", timerHelper, display, mediaLibrary, null
 	);
 	universe.initialize();
+	universe.venueNext = new VenueControls
+	(
+		universe.controlBuilder.slideshow
+		(
+			universe, 
+			displaySizeInPixelsDefault, 
+			[ 
+				[ "Black", "At first, it was black." ],
+				[ "Red", "Then, it turned red." ],
+				[ "Cyan", "Then it turned, I want to say, cyan?" ],
+				[ "Black", "Then it was black again." ],
+				[ "Black", "Whew!  That was quite a ride." ],
+				[ "Black", "Anyway, here's a game." ],
+			],
+			universe.venueNext
+		)
+	);
 
 	if (universe.debuggingMode != null)
 	{
