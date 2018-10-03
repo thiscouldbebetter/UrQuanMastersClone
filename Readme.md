@@ -10,6 +10,7 @@ To minimize the possibility of legal entanglements, this repository will not con
 Screenshots
 -----------
 
+![Introduction](/Screenshots/Screenshot-Introduction.png?raw=true "Introduction")
 ![Title](/Screenshots/Screenshot-Title.png?raw=true "Title")
 ![Hyperspace](/Screenshots/Screenshot-Hyperspace.png?raw=true "Hyperspace")
 ![Hyperspace Map](/Screenshots/Screenshot-HyperspaceMap.png?raw=true "Hyperspace Map")
