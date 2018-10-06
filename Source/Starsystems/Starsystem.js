@@ -35,128 +35,31 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 
 		var planetSizeInner = this.sizeInner.clone().multiply(new Coords(2, 1)).double();
 
-		this.planets =
-		[
-			new Planet
-			(
-				"Mercury",
-				planetDefns["Metallic"].name,
-				radiusBase,
-				new Polar(Math.random(), 2 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] //satellites
-			),
-			new Planet
-			(
-				"Venus",
-				planetDefns["Primordial"].name,
-				radiusBase,
-				new Polar(Math.random(), 3 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] //satellites
-			),
+		var planetEarth = this.planets[2];
 
-			new Planet
-			(
-				"Earth",
-				planetDefns["Shielded"].name,
-				radiusBase,
-				new Polar(Math.random(), 4 * distanceBetweenOrbits),
-				planetSizeInner,
-				[
-					new Station
-					(
-						"Station",
-						"Gray", // color
-						radiusBase,
-						"Terran", // factionName
-						new Polar(Math.random(), distanceBetweenOrbits * 2)
-					),
+		var moon = planetEarth.satellites[0];
 
-					new Planet
-					(
-						"The Moon",
-						"Selenic",
-						radiusBase,
-						new Polar(Math.random(), distanceBetweenOrbits * 3),
-						planetSizeInner,
-						[] // satellites
-					)
+		var station = new Station
+		(
+			"Station",
+			"Gray", // color
+			radiusBase,
+			"Terran", // factionName
+			new Polar(Math.random(), moon.posAsPolar.radius / 2)
+		);
 
-				], //satellites
-				// shipGroups
-				[
-					new ShipGroup
-					(
-						"LahkemupGuardDrone",
-						"LahkemupGuardDrone", // factionName
-						[
-							new Ship("LahkemupGuardDrone")
-						]
-					)
-				]
-			),
+		planetEarth.satellites.splice(0, 0, station);
 
-			new Planet
-			(
-				"Mars",
-				planetDefns["Dust"].name,
-				radiusBase,
-				new Polar(Math.random(), 5 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] // satellites
-			),
+		var enemyShipDefnName = "LahkemupGuardDrone";
+		var enemyShip = new Ship(enemyShipDefnName);
+		var enemyShipGroup = new ShipGroup
+		(
+			"Enemy",
+			"LahkemupGuardDrone", // factionName
+			[ enemyShip ]
+		);
 
-			new Planet
-			(
-				"Jupiter",
-				planetDefns["GasGiant"].name,
-				radiusBase,
-				new Polar(Math.random(), 6 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] // satellites
-			),
-
-			new Planet
-			(
-				"Saturn",
-				planetDefns["GasGiant"].name,
-				radiusBase,
-				new Polar(Math.random(), 7 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] // satellites
-			),
-
-			new Planet
-			(
-				"Uranus",
-				planetDefns["GasGiant"].name,
-				radiusBase,
-				new Polar(Math.random(), 8 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] // satellites
-			),
-
-			new Planet
-			(
-				"Neptune",
-				planetDefns["GasGiant"].name,
-				radiusBase,
-				new Polar(Math.random(), 9 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] // satellites
-			),
-
-			new Planet
-			(
-				"Pluto",
-				planetDefns["Pellucid"].name,
-				radiusBase,
-				new Polar(Math.random(), 10 * distanceBetweenOrbits),
-				planetSizeInner,
-				[] // satellites
-			),
-		];
+		planetEarth.shipGroups.push(enemyShipGroup);
 	}
 
 	Starsystem.prototype.contentsRandomize = function()

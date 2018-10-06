@@ -12,13 +12,14 @@ function World(name, dateCreated, defns, player, hyperspace)
 
 	var starsystems = hyperspace.starsystems;
 	var starsystemStart = starsystems["Sol"];
+	starsystemStart.solarSystem();
 	this.place = new PlaceStarsystem
 	(
 		this,
 		starsystemStart,
 		new Location
 		(
-			new Coords(.5, .95).multiply(starsystemStart.sizeInner),
+			new Coords(.5, .99).multiply(starsystemStart.sizeInner),
 			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
 		)
 	);
@@ -87,6 +88,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 		var factionTerran = new Faction
 		(
 			"Terran",
+			null, // nameOriginal
 			null, // color
 			Faction.RelationsNeutral,
 			true, // talksImmediately
@@ -99,6 +101,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 		var factionLahkemupGuardDrone = new Faction
 		(
 			"LahkemupGuardDrone",
+			null, // nameOriginal
 			null, // color
 			Faction.RelationsHostile,
 			true, // talksImmediately
@@ -110,13 +113,14 @@ function World(name, dateCreated, defns, player, hyperspace)
 
 		// normal
 
-		var f = function(name, color, sphereOfInfluence, relations, shipDefnName)
+		var f = function(name, nameOriginal, color, sphereOfInfluence, relations, shipDefnName)
 		{
 			var talksImmediately = (sphereOfInfluence == null);
 
 			return new Faction
 			(
 				name,
+				nameOriginal,
 				color,
 				relations,
 				talksImmediately,
@@ -139,29 +143,29 @@ function World(name, dateCreated, defns, player, hyperspace)
 		var hostile = Faction.RelationsHostile;
 		var neutral = Faction.RelationsNeutral;
 
-		var factionAmorfus 		= f("Amorfus", 		"Violet", 	soi(197.8, 596.8, .1), 	hostile, "Pustule");
-		var factionAraknoid 	= f("Araknoid", 	"Purple", 	soi(22.9, 366.6, .15), 	hostile, "Infernus");
-		var factionDaskapital 	= f("Daskapital", 	"Red", 		soi(946.9, 280.6, .1), 	neutral, "Kickback");
-		var factionEllfyn		= f("Ellfyn", 		"Blue", 	soi(100, 500, .05), 	neutral, "Discus");
-		var factionHyphae 		= f("Hyphae", 		"Purple", 	soi(629.1, 220.8, .12), hostile, "Sporsac");
-		var factionKehlemal 	= f("Kehlemal", 	"Gray", 	soi(610, 610, .25), 	hostile, "Silencer");
-		var factionLahkemup 	= f("Lahkemup",		"Green",	soi(590, 590, .25), 	hostile, "Shackler");		
-		var factionSilikonix 	= f("Konstalyxz", 	null, 		null, 					neutral, "Gravitar");
-		var factionMauluska 	= f("Mauluska", 	"Brown", 	soi(241.6, 368.7, .12), neutral, "Scuttler");
-		var factionMoroz 		= f("Moroz", 		"Cyan", 	soi(863.0, 869.3, .1), 	neutral, "Punishponj");
-		var factionMuuncaf 		= f("Muuncaf", 		"Cyan", 	soi(52.2, 52.5, .1), 	neutral, "Fireblossom");
-		var factionMazonae		= f("Mazonae", 		null, 		null, 					neutral, "Elysian");	
-		var factionMurch 		= f("Murch", 		null, 		null, 					neutral, "Indemnity");
-		var factionOutsider 	= f("Outsider", 	"Purple", 	soi(371.3, 253.7, .1), 	neutral, "Wingshadow");
-		var factionRaptor 		= f("Raptor", 		"Violet", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
-		var factionRaptorRebel 	= f("RaptorRebel", 	"Mauve", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
-		var factionRaptorRoyalist= f("RaptorRoyalist","Violet", soi(492.3, 029.4, .1), 	neutral, "Aegis");
-		var factionSupial		= f("Supial", 		null, 		null, 					hostile, "Starbright");
-		var factionTempestrial 	= f("Tempestrial", 	null, 		soi(500, 500, 1000), 	hostile, "Tumbler");
-		var factionTriunion		= f("Triunion", 	"Red", 		soi(400, 543.7, .067), 	neutral, "Nitpiknik");
-		var factionTwyggan 		= f("Twyggan", 		"Brown", 	soi(741.4, 912.4, .1), 	neutral, "Efflorescence");
-		var factionUgglegruj 	= f("Ugglegruj", 	"Blue", 	soi(433.3, 168.7, .12), hostile, "Encumbrator");
-		var factionWarpig		= f("Warpig", 		"Cyan", 	soi(253.5, 835.8, .1), 	hostile, "Afterburner");
+		var factionAmorfus 		= f("Amorfus", 		"Umgah", 	"Violet", 	soi(197.8, 596.8, .1), 	hostile, "Pustule");
+		var factionAraknoid 	= f("Araknoid", 	"Ilwrath", 	"Purple", 	soi(22.9, 366.6, .15), 	hostile, "Infernus");
+		var factionDaskapital 	= f("Daskapital", 	"Druuge", 	"Red", 		soi(946.9, 280.6, .1), 	neutral, "Kickback");
+		var factionEllfyn		= f("Ellfyn", 		"Arilou", 	"Blue", 	soi(100, 500, .05), 	neutral, "Discus");
+		var factionHyphae 		= f("Hyphae", 		"Mycon", 	"Purple", 	soi(629.1, 220.8, .12), hostile, "Sporsac");
+		var factionKehlemal 	= f("Kehlemal", 	"Kohrah", 	"Gray", 	soi(610, 610, .25), 	hostile, "Silencer");
+		var factionLahkemup 	= f("Lahkemup",		"Urquan", 	"Green",	soi(590, 590, .25), 	hostile, "Shackler");
+		var factionSilikonix 	= f("Konstalyxz", 	"Chmmr", 	null, 		null, 					neutral, "Gravitar");
+		var factionMauluska 	= f("Mauluska", 	"Spathi", 	"Brown", 	soi(241.6, 368.7, .12), neutral, "Scuttler");
+		var factionMoroz 		= f("Moroz", 		"Utwig", 	"Cyan", 	soi(863.0, 869.3, .1), 	neutral, "Punishponj");
+		var factionMuuncaf 		= f("Muuncaf", 		"Pkunk", 	"Cyan", 	soi(52.2, 52.5, .1), 	neutral, "Fireblossom");
+		var factionMazonae		= f("Mazonae", 		"Syreen", 	null, 		null, 					neutral, "Elysian");
+		var factionMurch 		= f("Murch", 		"Melnorme", null, 		null, 					neutral, "Indemnity");
+		var factionOutsider 	= f("Outsider", 	"Orz", 		"Purple", 	soi(371.3, 253.7, .1), 	neutral, "Wingshadow");
+		var factionRaptor 		= f("Raptor", 		"Yehat", 	"Violet", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
+		var factionRaptorRebel 	= f("RaptorRebel", 	"Yehat", 	"Mauve", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
+		var factionRaptorRoyalist= f("RaptorRoyalist","Yehat", 	"Violet", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
+		var factionSupial		= f("Supial", 		"Shofixti",	null,		null, 					hostile, "Starbright");
+		var factionTempestrial 	= f("Tempestrial", 	"Slylandro",null, 		soi(500, 500, 1000), 	hostile, "Tumbler");
+		var factionTriunion		= f("Triunion", 	"Zoqfotpik","Red", 		soi(400, 543.7, .067), 	neutral, "Nitpiknik");
+		var factionTwyggan 		= f("Twyggan", 		"Supox", 	"Brown", 	soi(741.4, 912.4, .1), 	neutral, "Efflorescence");
+		var factionUgglegruj 	= f("Ugglegruj", 	"VUX", 		"Blue", 	soi(433.3, 168.7, .12), hostile, "Encumbrator");
+		var factionWarpig		= f("Warpig", 		"Thraddash","Cyan", 	soi(253.5, 835.8, .1), 	hostile, "Afterburner");
 
 		var factions =
 		[
@@ -245,15 +249,18 @@ function World(name, dateCreated, defns, player, hyperspace)
 		);
 		*/
 
-		var hyperspaceMapAsTextString =
-			universe.mediaLibrary.textStringGetByName("HyperspaceMap");
+		var mediaLibrary = universe.mediaLibrary;
+
+		var starsAndPlanetsAsStringCSVCompressed =
+			mediaLibrary.textStringGetByName("StarsAndPlanets").value;
 
 		var hyperspace = Hyperspace.fromFileContentsAsString
 		(
 			hyperspaceSize,
 			10, // starsystemRadiusOuter
-			new Coords(300, 300), // starsystemSizeInner
-			hyperspaceMapAsTextString.value
+			new Coords(300, 300),
+			factions,
+			starsAndPlanetsAsStringCSVCompressed
 		);
 
 		var returnValue = new World

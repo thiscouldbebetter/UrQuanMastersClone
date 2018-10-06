@@ -23,6 +23,10 @@ function debug_MediaLoaded(universe)
 	{
 		planet(universe);
 	}
+	else if (debuggingMode == "Start")
+	{
+		start(universe);
+	}
 }
 
 function combat(universe)
@@ -98,5 +102,20 @@ function planet(universe)
 	planetMercury.hasLife = true; // Sure, why not?
 	var placePlanetVicinity = null;
 	var placePlanetOrbit = new PlacePlanetOrbit(world, planetMercury, placePlanetVicinity);
+	world.place = placePlanetOrbit;
+}
+
+function start(universe)
+{
+	var world = universe.world;
+	var starsystemSol = world.hyperspace.starsystems["Sol"];
+	var starsystemSize = starsystemSol.sizeInner;
+	var playerPos = new Coords(.5, .95).multiply(starsystemSize);
+	var playerLoc = new Location
+	(
+		playerPos,
+		new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
+	);
+	var placePlanetOrbit = new PlaceStarsystem(world, starsystemSol, playerLoc);
 	world.place = placePlanetOrbit;
 }

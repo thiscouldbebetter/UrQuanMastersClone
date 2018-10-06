@@ -13,7 +13,7 @@ function PlaceEncounter(world, encounter)
 	PlaceEncounter.prototype.constructor = Place;
 
 	// methods
-	
+
 	PlaceEncounter.prototype.fight = function(universe)
 	{
 		var world = universe.world;

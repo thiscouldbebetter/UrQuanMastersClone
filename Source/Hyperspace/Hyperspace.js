@@ -75,93 +75,121 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		return returnValue;
 	}
 
+
 	Hyperspace.fromFileContentsAsString = function
 	(
 		size,
 		starsystemRadiusOuter,
 		starsystemSizeInner,
-		fileContentsAsString,
+		factions,
+		fileContentsAsString
 	)
 	{
-		if (fileContentsAsString == null)
+		var starsAndPlanetsAsStringCSV = new CsvCompressor().decompress
+		(
+			fileContentsAsString
+		);
+		var starsAndPlanetsAsStringsCSV = starsAndPlanetsAsStringCSV.split("\n");
+
+		var iOffset = 0;
+		while (starsAndPlanetsAsStringsCSV[iOffset].startsWith("Cluster") == false)
 		{
-			return Hyperspace.random
-			(
-				size,
-				512, // numberOfStarsystems
-				10, // starsystemRadiusOuter
-				starsystemSizeInner
-			);
+			iOffset++;
 		}
+		iOffset++;
+
+		var factionOriginalToNewLookup = factions.slice(0).addLookups("nameOriginal");
 
 		var starsystems = [];
-		var scaleFactor = 1;
-
-		// Parses the file "plandata.c" from the UQM codebase.
-		var linesFromFile = fileContentsAsString.split("\n");
-		for (var i = 0; i < linesFromFile.length; i++)
+		var starsystem = null;
+		var starsystemNamePrev = null;
+		var orbitOrdinalSymbolToIndexLookup =
 		{
-			var line = linesFromFile[i];
-			line = line.trim().toLowerCase();
-			line = line.replaceAll(" ", "");
-			line = line.replaceAll("}", "");
-			line = line.replaceAll("(", ",");
-			line = line.replaceAll("_body", "");
+			"I": 0, "II": 1, "III": 2, "IV": 3, "V": 4,
+			"VI": 5, "VII": 6, "VIII": 7, "IX": 8, "X": 9,
+			"a": 0, "b": 1, "c": 2, "d": 3
+		};
+		var planetSize = starsystemSizeInner.clone().multiply(new Coords(2, 1)).double();
+		var orbitSpacing = (starsystemSizeInner.x / 12) / 2;
+		var planetRadius = orbitSpacing / 3;
 
-			if (line.startsWith("{{") == true && line.indexOf("_star") >= 0)
+		for (var i = iOffset; i < starsAndPlanetsAsStringsCSV.length; i++)
+		{
+			var planetAsCSV = starsAndPlanetsAsStringsCSV[i];
+			var planetAsValues = planetAsCSV.split(",");
+			var starsystemOrdinal = planetAsValues[1];
+			var starsystemPrefix = (starsystemOrdinal == "Prime" ? "" : starsystemOrdinal + " ");
+			var starsystemName =  starsystemPrefix + planetAsValues[0];
+			if (starsystemName != starsystemNamePrev)
 			{
-				line = line.replaceAll("{", "");
-
-				var tokens = line.split(",");
+				var starColor = planetAsValues[5].toTitleCase();
 				var starsystemPos = new Coords
 				(
-					parseInt(tokens[0]),
-					size.y - parseInt(tokens[1])
-				).multiplyScalar(scaleFactor);
+					parseFloat(planetAsValues[2]),
+					parseFloat(planetAsValues[3])
+				).multiplyScalar(10);
+				starsystemPos.y = size.y - starsystemPos.y;
+				var factionNameOriginal = planetAsValues[7];
+				var faction = factionOriginalToNewLookup[factionNameOriginal];
+				var factionName = (faction == null ? null : faction.name);
 
-				var colorName = tokens[4].toTitleCase();
-				var starColor = colorName;
-
-				var specialFlag = tokens[6];
-
-				var orderInConstellation = tokens[7];
-				var constellationIndex = tokens[8];
-
-				var starName = "Star_" + constellationIndex + "_" + orderInConstellation;
-
-				var starsystem = new Starsystem
+				starsystem = new Starsystem
 				(
-					starName,
-					starColor,
-					starsystemPos,
-					starsystemSizeInner,
-					null, // factionPresentName,
-					[], //planets
+					starsystemName, starColor, starsystemPos, starsystemSizeInner,
+					factionName,
+					[], // planets
 					[] // shipGroups
 				);
 
-				if (specialFlag == 0)
-				{
-					starsystem.contentsRandomize();
-				}
-				else if (specialFlag == "sol_defined")
-				{
-					starsystem.solarSystem();
-				}
-
 				starsystems.push(starsystem);
-			} // end if
 
-		} // end for
+				starsystemNamePrev = starsystemName;
+			}
+			var orbitOrdinal = planetAsValues[8];
+			var orbitOrdinalParts = orbitOrdinal.split("-");
+			var orbitOrdinalSymbol = orbitOrdinalParts[orbitOrdinalParts.length - 1];
+			var orbitIndex = orbitOrdinalSymbolToIndexLookup[orbitOrdinalSymbol];
+			var planetName;
+			if (orbitIndex == null)
+			{
+				orbitIndex = starsystem.planets.length;
+				planetName = orbitOrdinal;
+			}
+			else
+			{
+				planetName = starsystem.name + " " + orbitOrdinal;
+			}
 
-		var returnValue = new Hyperspace
-		(
-			size.clone().multiplyScalar(scaleFactor),
-			starsystemRadiusOuter,
-			starsystems
-		);
+			var planetDefnName = planetAsValues[9].replaceAll(" ", "");
+			var posAsPolar = new Polar(Math.random(), (orbitIndex + 2) * orbitSpacing);
+			var hasLife = (parseInt(planetAsValues[14]) > 1);
+			var planet = new Planet
+			(
+				planetName, planetDefnName, planetRadius, posAsPolar, planetSize,
+				[], // satellites
+				[], // shipGroups,
+				0, 0, 0, // tectonics, weather, temperature - todo
+				[], // resources
+				hasLife
+			);
 
-		return returnValue;
+			var isMoon = (orbitOrdinalParts.length > 1);
+			var bodyListToAddTo;
+			if (isMoon == true)
+			{
+				bodyListToAddTo = planetCurrent.satellites;
+			}
+			else
+			{
+				bodyListToAddTo = starsystem.planets;
+				planetCurrent = planet;
+			}
+
+			bodyListToAddTo.push(planet);
+		}
+
+		var hyperspace = new Hyperspace(size, starsystemRadiusOuter, starsystems);
+
+		return hyperspace;
 	}
-
 }

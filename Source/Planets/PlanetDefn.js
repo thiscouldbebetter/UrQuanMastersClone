@@ -91,7 +91,7 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		this.Magma 		= new pd("Magma", 		colorRed, 		canLand, 0, [ rd(bm, 1, medium) ] );
 		this.Magnetic 	= new pd("Magnetic", 	colorGreen, 	canLand, 0, [ rd(bm, 1, medium), rd(ex, 1, medium) ] );
 		this.Maroon 	= new pd("Maroon", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
-		this.Metallic 	= new pd("Metallic", 	colorOrange, 	canLand, 0, [ rd(pm, 3, medium), rd(ra, 3, medium)] );
+		this.Metal 		= new pd("Metal", 		colorOrange, 	canLand, 0, [ rd(pm, 3, medium), rd(ra, 3, medium)] );
 		this.Noble 		= new pd("Noble", 		colorBlue, 		canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Oolite 	= new pd("Oolite", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Opalescent = new pd("Opalescent", 	colorCyan, 		canLand, 0, [ rd(todo, 1, medium), ] );
@@ -149,7 +149,7 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 			this.Magma,
 			this.Magnetic,
 			this.Maroon,
-			this.Metallic,
+			this.Metal,
 			this.Noble,
 			this.Oolite,
 			this.Opalescent,

@@ -128,7 +128,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 					shipGroup.factionName, shipGroup, place, entityPlayer.locatable.loc.pos
 				);
 				var placeEncounter = new PlaceEncounter(world, encounter);
-				world.placeNext = placeEncounter;				
+				world.placeNext = placeEncounter;
 			}
 			else if (entityOther.station != null)
 			{
@@ -146,7 +146,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 						station.factionName, null, place, entityPlayer.locatable.loc.pos
 					);
 					var placeEncounter = new PlaceEncounter(world, encounter);
-					world.placeNext = placeEncounter;				
+					world.placeNext = placeEncounter;
 				}
 			}
 		}

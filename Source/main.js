@@ -40,7 +40,7 @@ function main()
 		// textStrings
 		[
 			//new TextString("Instructions", "../Content/Text/Instructions.txt"),
-			new TextString("HyperspaceMap", "../Content/Import/sc2/src/uqm/plandata.c"),
+			new TextString("StarsAndPlanets", "../Content/Text/PlanetDatabase.csv"),
 
 			new TextString("Conversation-LahkemupGuardDrone", "../Content/Text/Conversation-LahkemupGuardDrone.json"),
 			new TextString("Conversation-Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
@@ -98,9 +98,9 @@ function main()
 	(
 		universe.controlBuilder.slideshow
 		(
-			universe, 
-			displaySizeInPixelsDefault, 
-			[ 
+			universe,
+			displaySizeInPixelsDefault,
+			[
 				[ "Black", "At first, it was black." ],
 				[ "Red", "Then, it turned red." ],
 				[ "Cyan", "Then it turned, I want to say, cyan?" ],

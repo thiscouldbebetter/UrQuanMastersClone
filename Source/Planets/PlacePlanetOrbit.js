@@ -317,7 +317,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 8),
 					labelSize,
 					false,
-					"Temperature: 72C",
+					"Temperature: 22C",
 					fontHeightShort
 				),
 
