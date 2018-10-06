@@ -177,7 +177,10 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 		else if (entityOtherName.startsWith("ShipGroup"))
 		{
 			var shipGroupOther = entityOther.shipGroup;
-			var encounter = new Encounter(shipGroupOther, place, entityPlayer.locatable.loc.pos);
+			var encounter = new Encounter
+			(
+				shipGroupOther.factionName, shipGroupOther, place, entityPlayer.locatable.loc.pos
+			);
 			var placeEncounter = new PlaceEncounter(world, encounter);
 			world.placeNext = placeEncounter;
 		}

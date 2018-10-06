@@ -1,9 +1,8 @@
 
-function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
+function PlaceStarsystem(world, starsystem, playerLoc)
 {
-	this.size = size;
-	this.planet = planet;
-	this.placeStarsystem = placeStarsystem;
+	this.starsystem = starsystem;
+	this.size = this.starsystem.sizeInner;
 
 	this.actions =
 	[
@@ -23,60 +22,36 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 
 	var entities = [];
 
-	// planet
+	// sun
 
 	var sizeHalf = this.size.clone().half();
 
-	var planetRadius = entityDimension;
-	var planetPos = sizeHalf.clone();
-	var planetColor = planet.defn().color;
-	var orbitMultiplier = 16;
-	var planetOrbitRadius = planet.posAsPolar.radius * orbitMultiplier;
-	var planetOrbitVisual = new VisualAnchor
-	(
-		new VisualCircle(planetOrbitRadius, null, "Gray"),
-		planetPos.clone().add
-		(
-			new Polar
-			(
-				planet.posAsPolar.azimuthInTurns + .5,
-				planetOrbitRadius
-			).wrap().toCoords(new Coords())
-		) // posToAnchorAt
-	);
+	var sunRadius = entityDimension * 1.5;
+	var sunPos = sizeHalf.clone();
+	var sunColor = starsystem.starColor;
+	var sunVisual = new VisualCircle(sunRadius, sunColor);
+	var sunCollider = new Sphere(sunPos, sunRadius);
 
-	var planetVisual = new VisualGroup
-	([
-		planetOrbitVisual,
-		new VisualCircle(planetRadius, planetColor),
-	]);
-	var planetCollider = new Sphere(planetPos, planetRadius);
-
-	var planetEntity = new Entity
+	var sunEntity = new Entity
 	(
-		"Planet",
+		"Sun",
 		[
-			planet,
-			new Locatable( new Location(planetPos) ),
-			new Collidable(planetCollider),
-			new Drawable(planetVisual)
+			new Locatable( new Location(sunPos) ),
+			new Collidable(sunCollider),
+			new Drawable(sunVisual)
 		]
 	);
 
-	entities.push(planetEntity);
+	entities.push(sunEntity);
 
-	// satellites
+	// planets
 
-	var orbitColor = "LightGray";
-	var satellites = planet.satellites;
-	var numberOfMoons = satellites.length;
-	for (var i = 0; i < satellites.length; i++)
+	var planets = starsystem.planets;
+	for (var i = 0; i < planets.length; i++)
 	{
-		var satellite = satellites[i];
-
-		var satelliteEntity = satellite.toEntity(planetPos);
-
-		entities.push(satelliteEntity);
+		var planet = planets[i];
+		var planetEntity = planet.toEntity(sunPos);
+		entities.push(planetEntity);
 	}
 
 	// player
@@ -95,46 +70,62 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 	{
 		var entityOtherName = entityOther.name;
 
-		if (entityOtherName.startsWith("Wall"))
+		if (entityOtherName.startsWith("Enemy"))
 		{
-			var planet = place.planet;
-			var placeStarsystem = place.placeStarsystem;
-			var starsystem = placeStarsystem.starsystem;
-			var posNext = planet.posAsPolar.toCoords(new Coords()).add
+			var shipGroupOther = entityOther.shipGroup;
+			var encounter = new Encounter
 			(
-				starsystem.sizeInner.clone().half()
-			).add
-			(
-				new Coords(3, 0).multiplyScalar(planet.radiusOuter)
+				shipGroupOther.factionName, shipGroupOther, place, entityPlayer.locatable.loc.pos
 			);
-			world.placeNext = new PlaceStarsystem
+			var placeEncounter = new PlaceEncounter(world, encounter);
+			world.placeNext = placeEncounter;
+		}
+		else if (entityOtherName.startsWith("Wall"))
+		{
+			var hyperspace = world.hyperspace;
+			var playerLoc = entityPlayer.locatable.loc;
+			var playerPosNext = place.starsystem.posInHyperspace.clone().add
 			(
-				world, starsystem, new Location(posNext)
+				playerLoc.orientation.forward.clone().multiplyScalar
+				(
+					2 * hyperspace.starsystemRadiusOuter
+				)
 			);
+
+			world.placeNext = new PlaceHyperspace
+			(
+				world,
+				hyperspace,
+				new Location(playerPosNext, playerLoc.orientation.clone())
+			);
+		}
+		else if (entityOtherName.startsWith("Sun"))
+		{
+			// Do nothing.
 		}
 		else
 		{
 			if (entityOther.planet != null)
 			{
-				var planetToOrbit = entityOther.planet;
-				world.placeNext = new PlacePlanetOrbit(world, planetToOrbit, place);
-			}
-			else if (entityOther.shipGroup != null)
-			{
-				Encounter.create(world, place, entityOther, entityPlayer);
-			}
-			else if (entityOther.station != null)
-			{
-				var station = entityOther.station;
-				var faction = station.faction(world);
-				if (faction.relationsWithPlayer == Faction.RelationsAllied)
-				{
-					world.placeNext = new PlaceStation(world, station, place);
-				}
-				else
-				{
-					Encounter.create(world, place, entityOther, entityPlayer);
-				}
+				var planet = entityOther.planet;
+				var sizeNext = place.size.clone();
+				var playerOrientation = entityPlayer.locatable.loc.orientation;
+				var heading = playerOrientation.headingInTurns();
+				var playerPosNext = new Polar
+				(
+					heading + .5, .4 * sizeNext.y
+				).wrap().toCoords
+				(
+					new Coords()
+				).add
+				(
+					sizeNext.clone().half()
+				);
+				var playerLocNext = new Location(playerPosNext, playerOrientation);
+				world.placeNext = new PlacePlanetVicinity
+				(
+					world, sizeNext, planet, playerLocNext, place
+				);
 			}
 		}
 	}
@@ -143,11 +134,12 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
 
+	var playerShipGroup = world.player.shipGroup;
+
 	var playerEntity = new Entity
 	(
 		"Player",
 		[
-			world.player.shipGroup,
 			new Locatable(playerLoc),
 			new Constrainable([constraintSpeedMax, constraintTrimToRange]),
 			new Collidable
@@ -159,16 +151,15 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 			new Drawable(playerVisual),
 			new ItemHolder(),
 			new Playable(),
+			playerShipGroup,
 		]
 	);
 
 	entities.push(playerEntity);
 
-	var shipGroups = this.planet.shipGroups;
-	for (var i = 0; i < shipGroups.length; i++)
+	if (starsystem.factionName != null)
 	{
-		var shipGroup = shipGroups[i];
-		var faction = shipGroup.faction(world);
+		// enemy
 
 		var damagerColor = "Red";
 		var enemyColor = damagerColor;
@@ -194,27 +185,54 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 			new Path(enemyColliderAsFace.vertices), enemyColor
 		);
 
+		var enemyShipDefnName = "Flagship";
+		var enemyShip = new Ship(enemyShipDefnName);
+		var enemyShipGroup = new ShipGroup
+		(
+			"Enemy",
+			"Enemy", // factionName
+			[ enemyShip ]
+		);
+
 		var enemyKill = function(universe, world, place, entity)
 		{
 			place.entityRemove(entity);
-			var planet = place.planet;
+			var starsystem = place.starsystem;
 			var shipGroup = entity.shipGroup;
-			planet.shipGroups.remove(shipGroup);
+			starsystem.shipGroups.remove(shipGroup);
 		}
 
 		var enemyEntity = new Entity
 		(
-			"Enemy" + i,
+			"Enemy",
 			[
-				shipGroup,
+				enemyShipGroup,
 				new Locatable(enemyLoc),
 				new Constrainable([constraintSpeedMax]),
 				new Collidable(enemyCollider),
 				new Damager(),
 				new Killable(1, enemyKill),
 				new Drawable(enemyVisual),
-				new Talker("todo"),
-				new Actor(faction.shipGroupActivity),
+				new Actor
+				(
+					function activity(universe, world, place, actor)
+					{
+						var entityToTargetName = "Player";
+						var target = place.entities[entityToTargetName];
+						var actorLoc = actor.locatable.loc;
+
+						actorLoc.vel.overwriteWith
+						(
+							target.locatable.loc.pos
+						).subtract
+						(
+							actorLoc.pos
+						).normalize().multiplyScalar
+						(
+							.5 // hack - speed
+						);
+					}
+				),
 			]
 		);
 
@@ -223,7 +241,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 
 	this.camera = new Camera
 	(
-		new Coords(300, 300), // hack
+		new Coords(1, 1).multiplyScalar(this.size.y),
 		null, // focalLength
 		new Location
 		(
@@ -241,17 +259,17 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		var wallSize;
 		if (i % 2 == 0)
 		{
-			wallSize = new Coords(size.x, wallThickness, 1);
+			wallSize = new Coords(this.size.x, wallThickness, 1);
 		}
 		else
 		{
-			wallSize = new Coords(wallThickness, size.y, 1);
+			wallSize = new Coords(wallThickness, this.size.y, 1);
 		}
 
 		var wallPos = wallSize.clone().half().clearZ();
 		if (i >= 2)
 		{
-			wallPos.invert().add(size);
+			wallPos.invert().add(this.size);
 		}
 
 		var wallLoc = new Location(wallPos);
@@ -276,24 +294,31 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 
 	// Helper variables.
 
-	this.drawPos = new Coords();
-	this.drawLoc = new Location(this.drawPos);
+	this._drawLoc = new Location(new Coords());
 }
 {
-	PlacePlanetVicinity.prototype = Object.create(Place.prototype);
-	PlacePlanetVicinity.prototype.constructor = Place;
+	// superclass
 
-	PlacePlanetVicinity.prototype.draw_FromSuperclass = PlacePlanetVicinity.prototype.draw;
-	PlacePlanetVicinity.prototype.draw = function(universe, world)
+	PlaceStarsystem.prototype = Object.create(Place.prototype);
+	PlaceStarsystem.prototype.constructor = Place;
+
+	// Place overrides
+
+	PlaceStarsystem.prototype.draw_FromSuperclass = PlaceStarsystem.prototype.draw;
+	PlaceStarsystem.prototype.draw = function(universe, world)
 	{
 		var display = universe.display;
 
 		display.drawBackground("Gray", "Black");
 
-		var drawLoc = this.drawLoc;
+		var drawLoc = this._drawLoc;
 		var drawPos = drawLoc.pos;
 
 		var player = this.entities["Player"];
+		if (player == null)
+		{
+			return; // hack
+		}
 		var playerLoc = player.locatable.loc;
 
 		var camera = this.camera;

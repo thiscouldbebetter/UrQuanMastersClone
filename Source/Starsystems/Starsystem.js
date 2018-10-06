@@ -88,9 +88,11 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 				[
 					new ShipGroup
 					(
-						"SlaverGuardDrone",
-						"SlaverGuardDrone", // factionName
-						null // ships
+						"LahkemupGuardDrone",
+						"LahkemupGuardDrone", // factionName
+						[
+							new Ship("LahkemupGuardDrone")
+						]
 					)
 				]
 			),

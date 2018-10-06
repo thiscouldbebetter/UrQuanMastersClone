@@ -1,21 +1,15 @@
 
-function Encounter(shipGroupOther, placeToReturnTo, posToReturnTo)
+function Encounter(factionName, shipGroupOther, placeToReturnTo, posToReturnTo)
 {
+	this.factionName = factionName;
 	this.shipGroupOther = shipGroupOther;
 	this.placeToReturnTo = placeToReturnTo;
 	this.posToReturnTo = posToReturnTo;
 }
 {
-	Encounter.create = function(world, place, entityForShipGroup, entityPlayer)
+	Encounter.prototype.faction = function(world)
 	{
-		entityForShipGroup.collidable.ticksUntilCanCollide = 50; // hack
-		var shipGroup = entityForShipGroup.shipGroup;
-		var encounter = new Encounter
-		(
-			shipGroup, place, entityPlayer.locatable.loc.pos
-		);
-		var placeEncounter = new PlaceEncounter(world, encounter);
-		world.placeNext = placeEncounter;
+		return world.defns.factions[this.factionName];
 	}
 
 	Encounter.prototype.returnToPlace = function(world)

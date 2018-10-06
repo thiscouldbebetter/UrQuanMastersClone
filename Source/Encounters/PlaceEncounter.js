@@ -13,7 +13,7 @@ function PlaceEncounter(world, encounter)
 	PlaceEncounter.prototype.constructor = Place;
 
 	// methods
-
+	
 	PlaceEncounter.prototype.fight = function(universe)
 	{
 		var world = universe.world;
@@ -29,8 +29,7 @@ function PlaceEncounter(world, encounter)
 		var world = universe.world;
 		var placeEncounter = world.place;
 		var encounter = placeEncounter.encounter;
-		var shipGroupOther = encounter.shipGroupOther;
-		var faction = shipGroupOther.faction(universe.world);
+		var faction = this.encounter.faction(universe.world);
 		var conversationDefnName = faction.conversationDefnName;
 		var conversationResourceName = "Conversation-" + conversationDefnName;
 		var mediaLibrary = universe.mediaLibrary;
@@ -86,7 +85,7 @@ function PlaceEncounter(world, encounter)
 
 			var size = new Coords(400, 300); // hack - size
 
-			var factionName = this.encounter.shipGroupOther.factionName;
+			var factionName = this.encounter.factionName;
 			var faction = universe.world.defns.factions[factionName];
 
 			if (faction.talksImmediately == true)

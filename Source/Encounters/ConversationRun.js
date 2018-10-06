@@ -5,9 +5,9 @@
 	ConversationRun.prototype.transcript = function(universe)
 	{
 		var venueCurrent = universe.venueCurrent;
-		var transcriptAsControl = conversationRun.toControlTranscript
+		var transcriptAsControl = this.toControlTranscript
 		(
-			containerSize, universe, venueCurrent
+			universe.display.sizeDefault.clone(), universe, venueCurrent
 		);
 		var venueNext = new VenueControls(transcriptAsControl);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);

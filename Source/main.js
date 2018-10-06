@@ -14,7 +14,7 @@ function main()
 		[
 			new Image("Conversation", imageDirectory + "Conversation.png"),
 			new Image("Conversation-EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
-			new Image("Conversation-Slaver", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
+			new Image("Conversation-Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
 
 			new Image("PlanetSurface", imageDirectory + "PlanetSurface.png"),
 			new Image("Title", imageDirectory + "Title.png"),
@@ -42,8 +42,8 @@ function main()
 			//new TextString("Instructions", "../Content/Text/Instructions.txt"),
 			new TextString("HyperspaceMap", "../Content/Import/sc2/src/uqm/plandata.c"),
 
-			new TextString("Conversation-SlaverGuardDrone", "../Content/Text/Conversation-SlaverGuardDrone.json"),
-			new TextString("Conversation-Slaver-Content", contentPathPrefixComms + "urquan/urquan.txt"),
+			new TextString("Conversation-LahkemupGuardDrone", "../Content/Text/Conversation-LahkemupGuardDrone.json"),
+			new TextString("Conversation-Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
 			new TextString("Conversation-EarthStation", "../Content/Text/Conversation-EarthStation.json"),
 
 			new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation-Placeholder-Content.txt"),
@@ -53,6 +53,8 @@ function main()
 			new TextString("Conversation-Daskapital", conversationPlaceholderPath),
 			new TextString("Conversation-Ellfyn", conversationPlaceholderPath),
 			new TextString("Conversation-Hyphae", conversationPlaceholderPath),
+			new TextString("Conversation-Kehlemal", conversationPlaceholderPath),
+			new TextString("Conversation-Lahkemup", conversationPlaceholderPath),
 			new TextString("Conversation-Mauluska", conversationPlaceholderPath),
 			new TextString("Conversation-Moroz", conversationPlaceholderPath),
 			new TextString("Conversation-Muuncaf", conversationPlaceholderPath),
@@ -63,11 +65,9 @@ function main()
 			new TextString("Conversation-Silikonix", conversationPlaceholderPath),
 			new TextString("Conversation-Supial", conversationPlaceholderPath),
 			new TextString("Conversation-Tempestrial", conversationPlaceholderPath),
-			new TextString("Conversation-Slaver", conversationPlaceholderPath),
 			new TextString("Conversation-Triunion", conversationPlaceholderPath),
 			new TextString("Conversation-Twyggan", conversationPlaceholderPath),
 			new TextString("Conversation-Ugglegruj", conversationPlaceholderPath),
-			new TextString("Conversation-Xenofobi", conversationPlaceholderPath),
 			new TextString("Conversation-Warpig", conversationPlaceholderPath),
 		]
 	);

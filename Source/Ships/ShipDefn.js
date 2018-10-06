@@ -102,10 +102,10 @@ function ShipDefn
 			attackDefnTodo
 		);
 
-		var slaverGuardDrone = new ShipDefn
+		var shipDefnLahkemupGuardDrone = new ShipDefn
 		(
-			"SlaverGuardDrone",
-			"Slaver", // factionName
+			"LahkemupGuardDrone",
+			"Lahkemup", // factionName
 			.1, // accel
 			2, // speedMax
 			.01, // turnsPerTick
@@ -125,6 +125,40 @@ function ShipDefn
 		var heads = 16;
 
 		var shipImagesDirectory = "../Content/Import/sc2/content/base/ships/";
+
+		var sv = function(shipName, shipImageFilePrefix)
+		{
+			var imagesForHeadings = [];
+			var visualsForHeadings = [];
+			for (var i = 0; i < heads; i++)
+			{
+				var imageName = shipName + i;
+				var imageIndex = (i + heads / 4) % heads;
+				var imagePath =
+					shipImagesDirectory
+					+ shipImageFilePrefix
+					+ "-big-0"
+					+ ("" + imageIndex).padLeft(2, "0")
+					+ ".png";
+
+				var imageForHeading = new Image
+				(
+					imageName, imagePath
+				);
+				imagesForHeadings.push(imageForHeading);
+				var visualForHeading = new VisualImage(imageName, shipSize);
+				visualsForHeadings.push(visualForHeading);
+			}
+			universe.mediaLibrary.imagesAdd(imagesForHeadings);
+
+			var shipVisual = new VisualDirectional
+			(
+				null, // no direction
+				visualsForHeadings
+			);
+
+			return shipVisual;
+		}
 
 		// gravitar
 
@@ -162,40 +196,6 @@ function ShipDefn
 			}
 		);
 
-		var sv = function(shipName, shipImageFilePrefix)
-		{
-			var imagesForHeadings = [];
-			var visualsForHeadings = [];
-			for (var i = 0; i < heads; i++)
-			{
-				var imageName = shipName + i;
-				var imageIndex = (i + heads / 4) % heads;
-				var imagePath =
-					shipImagesDirectory
-					+ shipImageFilePrefix
-					+ "-big-0"
-					+ ("" + imageIndex).padLeft(2, "0")
-					+ ".png";
-
-				var imageForHeading = new Image
-				(
-					imageName, imagePath
-				);
-				imagesForHeadings.push(imageForHeading);
-				var visualForHeading = new VisualImage(imageName, shipSize);
-				visualsForHeadings.push(visualForHeading);
-			}
-			universe.mediaLibrary.imagesAdd(imagesForHeadings);
-
-			var shipVisual = new VisualDirectional
-			(
-				null, // no direction
-				visualsForHeadings
-			);
-
-			return shipVisual;
-		}
-
 		// infernus
 
 		var shipInfernusVisualBase = sv("Infernus", "ilwrath/avenger");
@@ -225,6 +225,7 @@ function ShipDefn
 		[
 			shipDefnFlagship,
 			shipDefnLander,
+			shipDefnLahkemupGuardDrone,
 
 			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 		e/tick,	eMax, 	visual,								attack, special
 			new sd("Gravitar", 	"Konstalyxz", 	10, 	1.166, 	35, 	.25 / heads, 42, 42,	.5,  	42, 	sv("Gravitar", "chmmr/avatar"), 	adTodo, shipGravitarSpecialTractorBeam ),
@@ -232,22 +233,22 @@ function ShipDefn
 			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	sv("Efflorescence", "supox/blade"), adTodo,	adTodo ),
 			new sd("Starshard", "Xtalix", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv("Starshard", "chenjesu/broodhome"), adTodo,	shipStarshardSpecialLeech ),
 			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	sv("Broadsider", "human/cruiser"),	adTodo,	adTodo ),
-			new sd("Carrier", 	"Slaver", 		10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv("Carrier", "urquan/dreadnought"),adTodo,	adTodo ),
+			new sd("Shackler", 	"Lahkemup", 	10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv("Shackler", "urquan/dreadnought"),adTodo,	adTodo ),
 			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	sv("Pustule", "umgah/drone"), 		adTodo,	adTodo ),
 			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	sv("Scuttler", "spathi/eluder"), 	adTodo,	adTodo ),
 			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	adTodo ),
 			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	sv("Collapsar", "androsynth/guardian"),	adTodo,	adTodo ),
-			new sd("Encumbrance","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	sv("Encumbrance", "vux/intruder"), 	adTodo,	adTodo ),
+			new sd("Encumbrator","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	sv("Encumbrator", "vux/intruder"), 	adTodo,	adTodo ),
 			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
-			new sd("Silencer",	"Xenofobi",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	sv("Silencer", "kohrah/marauder"), 	adTodo,	adTodo ),
+			new sd("Silencer",	"Kehlemal",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	sv("Silencer", "kohrah/marauder"), 	adTodo,	adTodo ),
 			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	sv("Kickback", "druuge/mauler"), 	adTodo,	adTodo ),
-			new sd("Batwing",	"Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	sv("Batwing", "orz/nemesis"), 		adTodo,	adTodo ),
+			new sd("Wingshadow","Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	sv("Wingshadow", "orz/nemesis"), 	adTodo,	adTodo ),
 			new sd("Elysian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	sv("Elysian", "syreen/penetrator"),	adTodo,	adTodo ),
 			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	sv("Sporsac", "mycon/podship"), 	adTodo,	adTodo ),
 			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	sv("Tumbler", "slylandro/probe"),	adTodo,	adTodo ),
 			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		sv("Sunbright", "shofixti/scout"),	adTodo,	adTodo ),
 			new sd("Discus",	"Ellfyn",		1,		40,		40,		.5 / heads,  6, 6,		.142,	20, 	sv("Discus", "arilou/skiff"), 		adTodo,	adTodo ),
-			new sd("Bugbite",	"Triunion",		5,		10,		40,		.5 / heads,  10, 10,	.2,		10, 	sv("Bugbite", "zoqfotpik/stinger"), adTodo,	adTodo ),
+			new sd("Nitpiknik",	"Triunion",		5,		10,		40,		.5 / heads,  10, 10,	.2,		10, 	sv("Nitpiknik", "zoqfotpik/stinger"), adTodo,	adTodo ),
 			new sd("Aegis",		"Raptor",		3,		2,		30,		.33 / heads, 20, 20,	.29,	10, 	sv("Aegis", "yehat/terminator"), 	adTodo,	adTodo ),
 			new sd("Afterburner","Warpig",		7,		7,		28,		.5 / heads,  8, 8,		.142,	24, 	sv("Afterburner", "thraddash/torch"), adTodo,	adTodo ),
 			new sd("Indemnity", "Murch",		7,		1.2,	36,		.2 / heads,  20, 20,	.2,		42, 	sv("Indemnity", "melnorme/trader"),	adTodo,	adTodo ),

@@ -1,14 +1,14 @@
 #(SEND_MESSAGE)	Nonexistent.ogg
 This is a recording:
 You are trespassing in the territory
-of the Slaver Empire.  This planet,
+of the Lahk-emup Empire.  This planet,
 Earth, its denizens, and its environs
-are subject to the dominion of the Slavers,
+are under the dominion of the Lahk-emup,
 absolutely and in perpetuity.
 Also, your vessel does not conform
-to standard Slaver identification protocols,
+to standard Lahk-emup identification protocols,
 which suggests independent operation.
 This is not permitted.
 This drone will now report your crimes
-to the nearest Slaver authorities.
+to the nearest Lahk-emup authorities.
 Remain here until their arrival.
