@@ -19,11 +19,6 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		this._flagshipComponents = null;
 	}
 
-	Player.prototype.componentsCurrentOverMax = function()
-	{
-		return this.flagship.componentNames.length + "/" + this.flagship.componentsMax;
-	}
-
 	Player.prototype.shipsCurrentOverMax = function()
 	{
 		return this.shipGroup.ships.length + "/" + this.flagship.shipsMax;

@@ -216,6 +216,8 @@ function World(name, dateCreated, defns, player, hyperspace)
 		(
 			"Flagship",
 			12, // componentsMax
+			10, // thrustersMax
+			10, // turningJetsMax
 			[
 				shipComponentDefns.FusionThruster.name,
 				shipComponentDefns.CargoHold.name,

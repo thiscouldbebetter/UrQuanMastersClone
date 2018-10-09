@@ -104,7 +104,7 @@ function ShipDefn
 
 		var shipDefnLahkemupGuardDrone = new ShipDefn
 		(
-			"LahkemupGuardDrone",
+			"GuardDrone",
 			"Lahkemup", // factionName
 			.1, // accel
 			2, // speedMax

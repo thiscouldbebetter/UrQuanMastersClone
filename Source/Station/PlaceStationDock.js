@@ -14,6 +14,90 @@ function PlaceStationDock(world, placeStation)
 
 	// method
 
+	PlaceStationDock.prototype.componentBackboneBuild = function(universe)
+	{
+		this.componentBuild(universe, this.componentToBuild);
+	}
+
+	PlaceStationDock.prototype.componentBackboneScrap = function(universe)
+	{
+		this.componentScrap(universe, this.componentToScrap);
+	}
+
+	PlaceStationDock.prototype.componentThrusterBuild = function(universe)
+	{
+		var componentToBuild = "todo";
+		this.componentBuild(universe, componentToBuild);
+	}
+
+	PlaceStationDock.prototype.componentThrusterScrap = function(universe)
+	{
+		var componentToScrap = "todo";
+		this.componentScrap(universe, componentToScrap);
+	}
+
+	PlaceStationDock.prototype.componentTurningJetsBuild = function(universe)
+	{
+		var componentToBuild = "todo";
+		this.componentBuild(universe, componentToBuild);
+	}
+
+	PlaceStationDock.prototype.componentTurningJetsScrap = function(universe)
+	{
+		var componentToScrap = "todo";
+		this.componentScrap(universe, componentToScrap);
+	}
+
+	PlaceStationDock.prototype.componentBuild = function(universe, componentToBuild)
+	{
+		if (componentToBuild != null)
+		{
+			var player = universe.world.player;
+			if (player.credit >= componentToBuild.value)
+			{
+				player.credit -= componentToBuild.value;
+				player.flagshipComponentNames.push(componentToBuild.name);
+				player.cachesInvalidate();
+			}
+		}
+	}
+
+	PlaceStationDock.prototype.componentScrap = function(universe, componentToScrap)
+	{
+		if (componentToScrap != null)
+		{
+			var player = universe.world.player;
+			player.flagshipComponentNames.remove(componentToScrap.name);
+			player.credit += componentToScrap.value;
+			player.cachesInvalidate();
+		}
+	}
+
+	PlaceStationDock.prototype.crewAdd = function(universe)
+	{
+		var ship = placeStationDock.shipInFleetSelected;
+		if (ship.crew < ship.defn(world).crewMax)
+		{
+			var player = universe.world.player;
+			if (player.credit >= crewValuePerUnit)
+			{
+				player.credit -= crewValuePerUnit;
+				ship.crew++;
+			}
+		}
+	}
+
+	PlaceStationDock.prototype.crewRemove = function(universe)
+	{
+		var ship = this.shipInFleetSelected;
+		if (ship.crew > 1)
+		{
+			var player = universe.world.player;
+			player.credit += crewValuePerUnit;
+			ship.crew--;
+		}
+	}
+
 	PlaceStationDock.prototype.offload = function(universe)
 	{
 		var world = universe.world;
@@ -32,6 +116,40 @@ function PlaceStationDock(world, placeStation)
 		}
 		player.credit += valueSumSoFar;
 		items.length = 0;
+	}
+
+	PlaceStationDock.shipBuild = function(universe)
+	{
+		var shipDefnToBuild = this.shipDefnToBuild;
+		if (shipDefnToBuild != null)
+		{
+			var player = universe.world.player;
+			if (player.shipGroups.ships.length < player.shipsMax)
+			{
+				var shipValue = shipDefnToBuild.value + 1 * crewValuePerUnit;
+				if (player.credit >= shipValue)
+				{
+					player.credit -= shipValue;
+					var ship = new Ship(shipDefnToBuild.name);
+					player.shipGroup.ships.push(ship);
+				}
+			}
+		}
+	}
+
+	PlaceStationDock.prototype.shipScrap = function(universe)
+	{
+		var shipToScrap = this.shipInFleetSelected;
+		if (shipToScrap != null)
+		{
+			var shipToScrapDefn = shipToScrap.defn(world);
+			var shipValue =
+				shipToScrapDefn.value
+				+ shipToScrap.crew * crewValuePerUnit;
+			var player = universe.world.player;
+			player.credit += shipValue;
+			player.shipGroup.ships.remove(shipToScrap);
+		}
 	}
 
 	// Place
@@ -55,6 +173,8 @@ function PlaceStationDock(world, placeStation)
 
 		this.venueControls.updateForTimerTick(universe, world);
 	}
+
+	// controls
 
 	PlaceStationDock.prototype.toControl = function(universe, world)
 	{
@@ -187,19 +307,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
-					{
-						var componentToBuild = placeStationDock.componentToBuild;
-						if (componentToBuild != null)
-						{
-							if (player.credit >= componentToBuild.value)
-							{
-								player.credit -= componentToBuild.value;
-								player.flagshipComponentNames.push(componentToBuild.name);
-								player.cachesInvalidate();
-							}
-						}
-					},
+					this.componentBackboneBuild,
 					universe // context
 				),
 
@@ -227,7 +335,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player, "componentsCurrentOverMax()"),
+					new DataBinding(player.flagship, "componentsCurrentOverMax()"),
 					fontHeightShort
 				),
 
@@ -260,16 +368,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
-					{
-						var componentToScrap = placeStationDock.componentToScrap;
-						if (componentToScrap != null)
-						{
-							player.flagshipComponentNames.remove(componentToScrap.name);
-							player.credit += componentToScrap.value;
-							player.cachesInvalidate();
-						}
-					},
+					this.componentBackboneScrap,
 					universe // context
 				),
 
@@ -318,13 +417,7 @@ function PlaceStationDock(world, placeStation)
 					true, // isEnabled,
 					function click(universe)
 					{
-						var componentToScrap = placeStationDock.componentToScrap;
-						if (componentToScrap != null)
-						{
-							player.flagshipComponentNames.remove(componentToScrap.name);
-							player.credit += componentToScrap.value;
-							player.cachesInvalidate();
-						}
+						// todo
 					},
 					universe // context
 				),
@@ -339,7 +432,21 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					"Thrusters: nn/mm",
+					"Thrusters:",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"infoThrusters",
+					new Coords
+					(
+						marginSize.x * 8,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					labelSize,
+					false, // isTextCentered
+					new DataBinding(player.flagship, "thrustersCurrentOverMax()"),
 					fontHeightShort
 				),
 
@@ -356,10 +463,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						// todo
-					},
+					this.componentThrusterBuild,
 					universe
 				),
 
@@ -376,10 +480,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						// todo
-					},
+					this.componentThrusterScrap,
 					universe
 				),
 
@@ -393,7 +494,21 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					"Turning Jets: nn/mm",
+					"Turning Jets:",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"infoTurningJets",
+					new Coords
+					(
+						containerLeftSize.x / 2 + marginSize.x * 9,
+						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
+					),
+					labelSize,
+					false, // isTextCentered
+					new DataBinding(player.flagship, "turningJetsCurrentOverMax()"),
 					fontHeightShort
 				),
 
@@ -410,10 +525,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						// todo
-					},
+					this.componentTurningJetBuild,
 					universe
 				),
 
@@ -430,10 +542,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						// todo
-					},
+					this.componentTurningJetScrap,
 					universe
 				),
 
@@ -498,25 +607,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
-					{
-						var shipDefnToBuild = placeStationDock.shipDefnToBuild;
-						if (shipDefnToBuild != null)
-						{
-							if (player.shipGroups.ships.length < player.shipsMax)
-							{
-								var shipValue =
-									shipDefnToBuild.value
-									+ 1 * crewValuePerUnit;
-								if (player.credit >= shipValue)
-								{
-									player.credit -= shipValue;
-									var ship = new Ship(shipDefnToBuild.name);
-									player.shipGroup.ships.push(ship);
-								}
-							}
-						}
-					},
+					this.shipBuild,
 					universe // context
 				),
 
@@ -577,19 +668,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
-					{
-						var shipToScrap = placeStationDock.shipInFleetSelected;
-						if (shipToScrap != null)
-						{
-							var shipToScrapDefn = shipToScrap.defn(world);
-							var shipValue =
-								shipToScrapDefn.value
-								+ shipToScrap.crew * crewValuePerUnit;
-							player.credit += shipValue;
-							player.shipGroup.ships.remove(shipToScrap);
-						}
-					},
+					this.shipScrap,
 					universe // context
 				),
 
@@ -606,18 +685,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
-					{
-						var ship = placeStationDock.shipInFleetSelected;
-						if (ship.crew < ship.defn(world).crewMax)
-						{
-							if (player.credit >= crewValuePerUnit)
-							{
-								player.credit -= crewValuePerUnit;
-								ship.crew++;
-							}
-						}
-					},
+					this.crewAdd,
 					universe // context
 				),
 
@@ -634,15 +702,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,a
 					true, // isEnabled,
-					function click(universe)
-					{
-						var ship = placeStationDock.shipInFleetSelected;
-						if (ship.crew > 1)
-						{
-							player.credit += crewValuePerUnit;
-							ship.crew--;
-						}
-					},
+					this.crewRemove,
 					universe // context
 				),
 			]

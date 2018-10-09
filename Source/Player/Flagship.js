@@ -1,7 +1,9 @@
 
-function Flagship(name, componentsMax, componentNames, numberOfLanders, fuel, items, shipsMax)
+function Flagship(name, thrustersMax, turningJetsMax, componentsMax, componentNames, numberOfLanders, fuel, items, shipsMax)
 {
 	this.name = name;
+	this.thrustersMax = thrustersMax;
+	this.turningJetsMax = turningJetsMax;
 	this.componentsMax = componentsMax;
 	this.componentNames = componentNames;
 	this.numberOfLanders = numberOfLanders;
@@ -58,6 +60,11 @@ function Flagship(name, componentsMax, componentNames, numberOfLanders, fuel, it
 		return components;
 	}
 
+	Flagship.prototype.componentsCurrentOverMax = function()
+	{
+		return this.componentNames.length + "/" + this.componentsMax;
+	}
+
 	Flagship.prototype.componentsWeapon = function()
 	{
 		if (this._componentsWeapon == null)
@@ -87,5 +94,15 @@ function Flagship(name, componentsMax, componentNames, numberOfLanders, fuel, it
 			}
 		}
 		return this._fuelMax;
+	}
+
+	Flagship.prototype.thrustersCurrentOverMax = function()
+	{
+		return "nn/" + this.thrustersMax;
+	}
+
+	Flagship.prototype.turningJetsCurrentOverMax = function()
+	{
+		return "nn/" + this.turningJetsMax;
 	}
 }
