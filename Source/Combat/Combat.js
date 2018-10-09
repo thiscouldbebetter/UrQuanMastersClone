@@ -66,12 +66,23 @@ function Combat(size, encounter, shipGroups)
 		return this;
 	}
 
-	Combat.prototype.shipSelect = function(universe, ship0, ship1)
+	Combat.prototype.ship0HasNotBeenSelected = function()
 	{
-		this.shipsFighting.length = 0;
-		this.shipsFighting.push(ship0)
-		this.shipsFighting.push(ship1);
+		return (this.shipsFighting[0] == null);
+	}
 
+	Combat.prototype.ship1HasNotBeenSelected = function()
+	{
+		return (this.shipsFighting[1] == null);
+	}
+
+	Combat.prototype.shipsHaveBeenSelected = function()
+	{
+		return ( this.shipsFighting[0] != null && this.shipsFighting[1] != null );
+	}
+
+	Combat.prototype.start = function(universe, ship0, ship1)
+	{
 		var world = universe.world;
 		world.placeNext = new PlaceCombat(world, this);
 		var venueNext = new VenueWorld(world);
@@ -139,15 +150,16 @@ function Combat(size, encounter, shipGroups)
 		var fontHeight = fontHeightTitle / 2;
 		var titleSize = new Coords(size.x - marginSize.x * 2, fontHeightTitle);
 		var headingSize = new Coords((size.x - marginSize.x * 3) / 2, fontHeight);
-		var buttonSize = new Coords(titleSize.x, fontHeightTitle * 2);
+		var buttonHeight = fontHeightTitle;
+		var buttonSizeSelect = new Coords((titleSize.x - marginSize.x * 3) / 4, buttonHeight);
+		var buttonSizeFight = new Coords(titleSize.x, buttonHeight);
 		var listSize = new Coords
 		(
 			headingSize.x,
-			size.y - titleSize.y - headingSize.y - buttonSize.y - marginSize.y * 5
+			size.y - titleSize.y - headingSize.y - buttonHeight * 2 - marginSize.y * 6
 		);
 		var bindingForOptionText =
 			new DataBinding(null, "fullNameAndCrew(world)", { "world": world } );
-
 
 		var listShipsYours = new ControlList
 		(
@@ -158,7 +170,8 @@ function Combat(size, encounter, shipGroups)
 			bindingForOptionText,
 			fontHeight,
 			null, // bindingForItemSelected
-			null // bindingForItemValue
+			null, // bindingForItemValue
+			new DataBinding(combat, "ship0HasNotBeenSelected()") // isEnabled
 		);
 
 		var listShipsTheirs = new ControlList
@@ -174,7 +187,8 @@ function Combat(size, encounter, shipGroups)
 			bindingForOptionText,
 			fontHeight,
 			null, // bindingForItemSelected
-			null // bindingForItemValue
+			null, // bindingForItemValue
+			new DataBinding(combat, "ship1HasNotBeenSelected()") // isEnabled
 		);
 
 		var returnValue = new ControlContainer
@@ -199,11 +213,57 @@ function Combat(size, encounter, shipGroups)
 					new Coords(marginSize.x, titleSize.y + marginSize.y * 2),
 					titleSize,
 					false, // isTextCentered
-					"Yours:",
+					this.shipGroups[0].name + ":",
 					fontHeight
 				),
 
 				listShipsYours,
+
+				new ControlButton
+				(
+					"buttonSelectYours",
+					new Coords
+					(
+						marginSize.x,
+						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
+					),
+					buttonSizeSelect,
+					"Select",
+					fontHeight,
+					true, // hasBorder
+					new DataBinding(combat, "ship0HasNotBeenSelected()"), // isEnabled,
+					function click(universe)
+					{
+						var shipYours = listShipsYours.itemSelected();
+						combat.shipsFighting[0] = shipYours;
+					},
+					universe, // context
+					false // canBeHeldDown
+				),
+
+				new ControlButton
+				(
+					"buttonRandomYours",
+					new Coords
+					(
+						marginSize.x * 2 + buttonSizeSelect.x,
+						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
+					),
+					buttonSizeSelect,
+					"Random",
+					fontHeight,
+					true, // hasBorder
+					new DataBinding(combat, "ship0HasNotBeenSelected()"), // isEnabled,
+					function click(universe)
+					{
+						var shipGroupIndex = 0;
+						var ship = combat.shipGroups[shipGroupIndex].ships.random();
+						combat.shipsFighting[shipGroupIndex] = ship;
+						listShipsYours._itemSelected = null;
+					},
+					universe, // context
+					false // canBeHeldDown
+				),
 
 				new ControlLabel
 				(
@@ -215,7 +275,7 @@ function Combat(size, encounter, shipGroups)
 					),
 					titleSize,
 					false, // isTextCentered
-					"Theirs:",
+					this.shipGroups[1].name + ":",
 					fontHeight
 				),
 
@@ -223,21 +283,67 @@ function Combat(size, encounter, shipGroups)
 
 				new ControlButton
 				(
+					"buttonSelectTheirs",
+					new Coords
+					(
+						marginSize.x * 2 + listSize.x,
+						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
+					),
+					buttonSizeSelect,
+					"Select",
+					fontHeight,
+					true, // hasBorder
+					new DataBinding(combat, "ship1HasNotBeenSelected()"), // isEnabled,
+					function click(universe)
+					{
+						var shipTheirs = listShipsTheirs.itemSelected();
+						combat.shipsFighting[1] = shipTheirs;
+					},
+					universe, // context
+					false // canBeHeldDown
+				),
+
+				new ControlButton
+				(
+					"buttonRandomTheirs",
+					new Coords
+					(
+						marginSize.x * 4 + buttonSizeSelect.x * 3,
+						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
+					),
+					buttonSizeSelect,
+					"Random",
+					fontHeight,
+					true, // hasBorder
+					new DataBinding(combat, "ship1HasNotBeenSelected()"), // isEnabled,
+					function click(universe)
+					{
+						var shipGroupIndex = 1;
+						var ship = combat.shipGroups[shipGroupIndex].ships.random();
+						combat.shipsFighting[shipGroupIndex] = ship;
+						listShipsTheirs._itemSelected = null;
+					},
+					universe, // context
+					false // canBeHeldDown
+				),
+
+				new ControlButton
+				(
 					"buttonFight",
-					new Coords(marginSize.x, size.y - marginSize.y - buttonSize.y),
-					buttonSize,
+					new Coords(marginSize.x, size.y - marginSize.y - buttonSizeFight.y),
+					buttonSizeFight,
 					"Fight",
 					fontHeight,
 					true, // hasBorder
-					true, // isEnabled,
+					new DataBinding(combat, "shipsHaveBeenSelected()"), // isEnabled,
 					function click(universe)
 					{
-						var shipYours = listShipsYours.itemSelected();
-						var shipTheirs = listShipsTheirs.itemSelected();
+						var shipYours = combat.shipsFighting[0];
+						var shipTheirs = combat.shipsFighting[1];
 
 						if (shipYours != null && shipTheirs != null)
 						{
-							combat.shipSelect(universe, shipYours, shipTheirs);
+							combat.start(universe);
 						}
 					},
 					universe, // context

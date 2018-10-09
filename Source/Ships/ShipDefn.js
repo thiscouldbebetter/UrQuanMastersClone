@@ -160,6 +160,18 @@ function ShipDefn
 			return shipVisual;
 		}
 
+		// fireblossom
+
+		var shipFireblossomSpecialRefuel = new ShipSpecialDefn
+		(
+			"Refuel",
+			-2, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				// Do nothing.
+			}
+		);
+
 		// gravitar
 
 		var shipGravitarSpecialTractorBeam = new ShipSpecialDefn
@@ -196,8 +208,6 @@ function ShipDefn
 			}
 		);
 
-		// infernus
-
 		var shipInfernusVisualBase = sv("Infernus", "ilwrath/avenger");
 		var shipInfernusVisualCloaked = ShipDefn.visual(shipDimension, "Black", "Black");
 		var shipInfernusVisual = new VisualDynamic
@@ -206,6 +216,35 @@ function ShipDefn
 			{
 				var isCloaked = entity.ship.isCloaked;
 				return (isCloaked == true ? shipInfernusVisualCloaked : shipInfernusVisualBase);
+			}
+		);
+
+		// pustule
+
+		var shipPustuleSpecialRetrodrive = new ShipSpecialDefn
+		(
+			"Retrodrive",
+			1, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				var actorLoc = actor.locatable.loc;
+				var actorPos = actorLoc.pos;
+				var thrust = 10;
+				var direction = actorLoc.orientation.forward.clone();
+				var displacement = direction.invert().multiply(thrust);
+				actorPos.add(displacement);
+			}
+		);
+
+		// sporsac
+
+		var shipSporsacSpecialRegenerate = new ShipSpecialDefn
+		(
+			"Regenerate",
+			40, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				// todo
 			}
 		);
 
@@ -234,9 +273,9 @@ function ShipDefn
 			new sd("Starshard", "Xtalix", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv("Starshard", "chenjesu/broodhome"), adTodo,	shipStarshardSpecialLeech ),
 			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	sv("Broadsider", "human/cruiser"),	adTodo,	adTodo ),
 			new sd("Shackler", 	"Lahkemup", 	10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv("Shackler", "urquan/dreadnought"),adTodo,	adTodo ),
-			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	sv("Pustule", "umgah/drone"), 		adTodo,	adTodo ),
+			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	sv("Pustule", "umgah/drone"), 		adTodo,	shipPustuleSpecialRetrodrive ),
 			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	sv("Scuttler", "spathi/eluder"), 	adTodo,	adTodo ),
-			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	adTodo ),
+			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	shipFireblossomSpecialRefuel ),
 			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	sv("Collapsar", "androsynth/guardian"),	adTodo,	adTodo ),
 			new sd("Encumbrator","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	sv("Encumbrator", "vux/intruder"), 	adTodo,	adTodo ),
 			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
@@ -244,7 +283,7 @@ function ShipDefn
 			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	sv("Kickback", "druuge/mauler"), 	adTodo,	adTodo ),
 			new sd("Wingshadow","Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	sv("Wingshadow", "orz/nemesis"), 	adTodo,	adTodo ),
 			new sd("Elysian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	sv("Elysian", "syreen/penetrator"),	adTodo,	adTodo ),
-			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	sv("Sporsac", "mycon/podship"), 	adTodo,	adTodo ),
+			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	sv("Sporsac", "mycon/podship"), 	adTodo,	shipSporsacSpecialRegenerate ),
 			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	sv("Tumbler", "slylandro/probe"),	adTodo,	adTodo ),
 			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		sv("Sunbright", "shofixti/scout"),	adTodo,	adTodo ),
 			new sd("Discus",	"Ellfyn",		1,		40,		40,		.5 / heads,  6, 6,		.142,	20, 	sv("Discus", "arilou/skiff"), 		adTodo,	adTodo ),

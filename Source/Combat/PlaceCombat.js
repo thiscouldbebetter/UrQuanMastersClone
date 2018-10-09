@@ -268,6 +268,7 @@ function PlaceCombat(world, combat)
 	{
 		var ship = entityShipToDie.ship;
 		var combat = place.combat;
+		combat.shipsFighting.remove(ship);
 		var shipGroups = combat.shipGroups;
 
 		for (var g = 0; g < shipGroups.length; g++)

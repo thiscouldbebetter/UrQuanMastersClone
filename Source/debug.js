@@ -37,12 +37,15 @@ function combat(universe)
 	var shipDefnsAll = ShipDefn.Instances(universe);
 	var playerShipDefns =
 	[
+		shipDefnsAll["Fireblossom"],
 		shipDefnsAll["Efflorescence"],
+		shipDefnsAll["Scuttler"],
 	];
 	var enemyShipDefns =
 	[
+		shipDefnsAll["Kickback"],
 		shipDefnsAll["Starshard"],
-		shipDefnsAll["Starshard"]
+		shipDefnsAll["Sporsac"],
 	];
 	var playerShips = Ship.manyFromDefns(playerShipDefns);
 	var enemyShips = Ship.manyFromDefns(enemyShipDefns);
