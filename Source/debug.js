@@ -101,10 +101,10 @@ function planet(universe)
 {
 	var world = universe.world;
 	var starsystemSol = world.hyperspace.starsystems["Sol"];
-	var planetMercury = starsystemSol.planets[0];
-	planetMercury.hasLife = true; // Sure, why not?
+	var planet = starsystemSol.planets[2];
+	planet.hasLife = true; // Sure, why not?
 	var placePlanetVicinity = null;
-	var placePlanetOrbit = new PlacePlanetOrbit(world, planetMercury, placePlanetVicinity);
+	var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
 	world.place = placePlanetOrbit;
 }
 

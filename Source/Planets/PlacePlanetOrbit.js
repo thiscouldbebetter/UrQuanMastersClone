@@ -183,6 +183,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 	PlacePlanetOrbit.prototype.toControl = function(universe, world)
 	{
 		var placePlanetOrbit = this;
+		var planet = this.planet;
 
 		var containerMainSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
@@ -247,7 +248,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y),
 					labelSize,
 					false, // isTextCentered
-					"Name: Tau Ceti 3",
+					"Name: " + planet.name,
 					fontHeightShort
 				),
 
@@ -257,7 +258,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 2),
 					labelSize,
 					false, // isTextCentered
-					"Mass: 6.0 x 10^24 kg",
+					"Mass: " + planet.mass.toExponential().substr(0, 5) + "kg",
 					fontHeightShort
 				),
 
@@ -267,7 +268,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 3),
 					labelSize,
 					false, // isTextCentered
-					"Radius: 6.3 x 10^3 km",
+					"Radius: " + planet.radius + "km",
 					fontHeightShort
 				),
 
@@ -277,7 +278,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 4),
 					labelSize,
 					false, // isTextCentered
-					"Surface Gravity: 1g",
+					"Surface Gravity: " + planet.gravity + "g",
 					fontHeightShort
 				),
 
@@ -287,7 +288,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 5),
 					labelSize,
 					false, // isTextCentered
-					"Orbit: 1.5 x 10^8 km",
+					"Orbit: " + planet.orbit.toExponential() + "km",
 					fontHeightShort
 				),
 
@@ -297,7 +298,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 6),
 					labelSize,
 					false, // isTextCentered
-					"Day: 1.0 days",
+					"Day: " + planet.day + " hours",
 					fontHeightShort
 				),
 
@@ -307,7 +308,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 7),
 					labelSize,
 					false,
-					"Year: 1.0 years",
+					"Year: " + planet.year + " Earth days",
 					fontHeightShort
 				),
 
@@ -317,7 +318,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 8),
 					labelSize,
 					false,
-					"Temperature: 22C",
+					"Temperature: " + planet.temperature + "C",
 					fontHeightShort
 				),
 
@@ -327,7 +328,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 9),
 					labelSize,
 					false,
-					"Weather: Class 1",
+					"Weather: Class " + planet.weather,
 					fontHeightShort
 				),
 
@@ -337,7 +338,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 10),
 					labelSize,
 					false,
-					"Tectonics: Class 1",
+					"Tectonics: Class " + planet.tectonics,
 					fontHeightShort
 				),
 			]

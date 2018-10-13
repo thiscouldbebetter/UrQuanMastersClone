@@ -113,6 +113,10 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		var orbitSpacing = (starsystemSizeInner.x / 12) / 2;
 		var planetRadius = orbitSpacing / 3;
 
+		var earthDensityInGramsPerCubicCm = 5.514;
+		var earthRadiusInKm = 6371;
+		var earthOrbitRadiusInKm = 150000000;
+
 		for (var i = iOffset; i < starsAndPlanetsAsStringsCSV.length; i++)
 		{
 			var planetAsCSV = starsAndPlanetsAsStringsCSV[i];
@@ -161,14 +165,39 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			}
 
 			var planetDefnName = planetAsValues[9].replaceAll(" ", "");
+
+			var distanceFromStar = parseFloat(planetAsValues[27]);
 			var posAsPolar = new Polar(Math.random(), (orbitIndex + 2) * orbitSpacing);
+
+			var radiusAsFractionOfEarth = parseFloat(planetAsValues[20]) / 100;
+			var gravityAsFractionOfEarth = parseFloat(planetAsValues[22]) / 100;
+			var orbitRelativeToEarth = planetAsValues[27] / 512;
+			var dayInHours = parseFloat(planetAsValues[24]) / 10;
+			var year = 365; // todo
+
+			var radiusInKm = radiusAsFractionOfEarth * earthRadiusInKm;
+			var orbitInKm = orbitRelativeToEarth * earthOrbitRadiusInKm;
+
+			var densityAsFractionOfEarth = parseFloat(planetAsValues[20]) / 100;
+			var densityInGramsPerCubicCm =
+				densityAsFractionOfEarth * earthDensityInGramsPerCubicCm;
+			var radiusInCm = radiusInKm * 100000;
+			var volumeInCubicCm = Math.PI * 4 / 3 * Math.pow(radiusInCm, 3);
+			var massInKg =
+				densityInGramsPerCubicCm * volumeInCubicCm;
+
+			var tectonics = parseInt(planetAsValues[11]);
+			var weather = parseInt(planetAsValues[12]);
+			var temperature = parseInt(planetAsValues[23]);
+
 			var hasLife = (parseInt(planetAsValues[14]) > 1);
 			var planet = new Planet
 			(
 				planetName, planetDefnName, planetRadius, posAsPolar, planetSize,
 				[], // satellites
 				[], // shipGroups,
-				0, 0, 0, // tectonics, weather, temperature - todo
+				massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, year,
+				tectonics, weather, temperature,
 				[], // resources
 				hasLife
 			);

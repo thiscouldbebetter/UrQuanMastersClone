@@ -1,5 +1,5 @@
 
-function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, tectonics, weather, temperature, resources, hasLife)
+function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, resources, hasLife)
 {
 	this.name = name;
 	this.defnName = defnName;
@@ -8,9 +8,17 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 	this.sizeSurface = sizeSurface;
 	this.satellites = satellites;
 	this.shipGroups = (shipGroups == null ? [] : shipGroups);
+
+	this.mass = mass;
+	this.radius = radius;
+	this.gravity = gravity;
+	this.orbit = orbit;
+	this.day = day;
+	this.year = year;
 	this.tectonics = tectonics;
 	this.weather = weather;
 	this.temperature = temperature;
+
 	this.resources = resources;
 	this.hasLife = hasLife;
 }
