@@ -14,11 +14,13 @@ function Lifeform(defnName, pos)
 	{
 		var lifeformDefn = this.defn(world);
 		var lifeformVisual = new VisualCamera(lifeformDefn.visual, place.camera);
+		lifeformVisual = new VisualWrapped(place.size, lifeformVisual);
 		var lifeformCollider = new Sphere(this.pos, 5);
 		var returnValue = new Entity
 		(
 			"Lifeform" + this.defnName + Math.random(),
 			[
+				this,
 				new Actor(lifeformDefn.activity),
 				new Collidable(lifeformCollider),
 				new Drawable(lifeformVisual),

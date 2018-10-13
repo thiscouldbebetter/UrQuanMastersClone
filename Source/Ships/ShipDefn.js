@@ -92,8 +92,8 @@ function ShipDefn
 			"Lander",
 			"Player", // factionName
 			1, // mass
-			2, // accel
-			48, // speedMax
+			4, // accel
+			128, // speedMax
 			.01, // turnsPerTick
 			12, // crewInitial
 			12, // crewMax

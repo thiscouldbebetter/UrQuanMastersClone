@@ -190,7 +190,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			var weather = parseInt(planetAsValues[12]);
 			var temperature = parseInt(planetAsValues[23]);
 
-			var hasLife = (parseInt(planetAsValues[14]) > 1);
+			var hasLife = (parseInt(planetAsValues[15]) > 0);
 			var planet = new Planet
 			(
 				planetName, planetDefnName, planetRadius, posAsPolar, planetSize,
@@ -198,7 +198,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 				[], // shipGroups,
 				massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, year,
 				tectonics, weather, temperature,
-				[], // resources
+				null, // resources
 				hasLife
 			);
 

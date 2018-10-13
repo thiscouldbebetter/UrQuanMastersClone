@@ -100,9 +100,8 @@ function docks(universe)
 function planet(universe)
 {
 	var world = universe.world;
-	var starsystemSol = world.hyperspace.starsystems["Sol"];
-	var planet = starsystemSol.planets[2];
-	planet.hasLife = true; // Sure, why not?
+	var starsystem = world.hyperspace.starsystems[1]; // Eta Giclas
+	var planet = starsystem.planets[4]; // E Giclas V
 	var placePlanetVicinity = null;
 	var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
 	world.place = placePlanetOrbit;

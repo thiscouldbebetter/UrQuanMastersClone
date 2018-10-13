@@ -62,8 +62,8 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		var pd = PlanetDefn;
 
 		// Special worlds.
-		this.Rainbow 	= new pd("Rainbow", colorViolet, 0, [ rd(ex, 6, huge), ] );
-		this.Shielded 	= new pd("Shielded", colorRed, 1, cannotLand, [ ] );
+		this.Rainbow 	= new pd("Rainbow", 	colorViolet, 	canLand, 	0, [ rd(ex, 6, huge), ] );
+		this.Shielded 	= new pd("Shielded", 	colorRed, 		cannotLand, 0, [ ] );
 
 		// Ordinary worlds.
 		this.Acid 		= new pd("Acid", 		colorGreen, 	canLand, .108, [ rd(ce, 6, heavy) ] );
@@ -101,7 +101,7 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		this.Plutonic 	= new pd("Plutonic", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Primordial = new pd("Primordial", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Purple  	= new pd("Purple", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
-		this.QuasiDegenerate = new pd("QuasiDegenerate", colorViolet, canLand, 0, [ rd(todo, 1, medium), ] );
+		this.QuasiDegenerate = new pd("Quasi-Degenerate", colorViolet, canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Radioactive = new pd("Radioactive", colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 
 		this.Redux 		= new pd("Redux", 		colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
@@ -109,7 +109,7 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		this.Sapphire 	= new pd("Sapphire", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Selenic 	= new pd("Selenic", 	colorGray, 		canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Shattered 	= new pd("Shattered", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
-		this.SuperDense = new pd("SuperDense", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
+		this.SuperDense = new pd("Super-Dense", colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Telluric 	= new pd("Telluric", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Treasure 	= new pd("Treasure", 	colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );
 		this.Ultramarine = new pd("Ultramarine", colorViolet, 	canLand, 0, [ rd(todo, 1, medium), ] );

@@ -56,7 +56,6 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, speed, ticksToLive,
 		var actorPos = actorLoc.pos;
 		var actorVisual = actor.drawable.visual;
 
-
 		var projectileVisual = new VisualWrapped
 		(
 			actorVisual.sizeToWrapTo,

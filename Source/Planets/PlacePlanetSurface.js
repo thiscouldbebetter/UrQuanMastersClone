@@ -8,16 +8,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	var actionExit = new Action
 	(
 		"Exit",
-		function perform(universe, world, place, actor)
-		{
-			var entityLander = place.entities["Player"];
-			var itemHolderLander = entityLander.itemHolder;
-			var itemHolderPlayer = world.player.flagship.itemHolder;
-			itemHolderLander.itemsTransferTo(itemHolderPlayer);
-
-			var placePlanetOrbit = place.placePlanetOrbit;
-			world.placeNext = placePlanetOrbit;
-		}
+		this.exit.bind(this)
 	);
 
 	var actionFire = Ship.actionFire();
@@ -49,7 +40,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	var constraintSpeedMax = new Constraint("SpeedMax", 10);
 	var constraintFriction = new Constraint("Friction", 0.1);
-	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
+	var constraintWrapXTrimY = new Constraint("WrapXTrimY", this.size);
 
 	this.camera = new Camera
 	(
@@ -73,6 +64,8 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	var visualBackground = new VisualImage("PlanetSurface", this.planet.sizeSurface);
 	visualBackground = new VisualCamera(visualBackground, this.camera);
+	visualBackground = new VisualWrapped(this.planet.sizeSurface, visualBackground);
+
 	var entityBackground = new Entity
 	(
 		"Background",
@@ -122,6 +115,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		ShipDefn.visual(entityDimension, playerColor, "Black"),
 		this.camera
 	);
+	playerVisual = new VisualWrapped(this.size, playerVisual);
 
 	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
@@ -133,7 +127,16 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		}
 		else if (entityOther.name.startsWith("Lifeform") == true)
 		{
-			place.entitiesToRemove.push(entityOther); // todo
+			var lifeformDefn = entityOther.lifeform.defn(world);
+			var damage = lifeformDefn.damagePerAttack;
+			if (damage > 0)
+			{
+				var chanceOfDamagePerTick = .05;
+				if (Math.random() < chanceOfDamagePerTick)
+				{
+					entityPlayer.killable.integrity -= damage;
+				}
+			}
 		}
 	}
 
@@ -145,7 +148,10 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		[
 			playerShipLander,
 			new Locatable(playerLoc),
-			new Constrainable([constraintFriction, constraintSpeedMax, constraintTrimToRange]),
+			new Constrainable
+			([
+				constraintFriction, constraintSpeedMax, constraintWrapXTrimY
+			]),
 			new Collidable
 			(
 				playerCollider,
@@ -155,6 +161,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 			new Drawable(playerVisual),
 			new ItemHolder(),
 			new Playable(),
+			new Killable(1, this.playerDie.bind(this))
 		]
 	);
 
@@ -168,14 +175,31 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	// Helper variables.
 
-	this.drawPos = new Coords();
-	this.drawLoc = new Location(this.drawPos);
+	this._drawPos = new Coords();
 }
 {
 	// superclass
 
 	PlacePlanetSurface.prototype = Object.create(Place.prototype);
 	PlacePlanetSurface.prototype.constructor = Place;
+
+	// methods
+
+	PlacePlanetSurface.prototype.exit = function(universe, world, place, actor)
+	{
+		var entityLander = place.entities["Player"];
+		var itemHolderLander = entityLander.itemHolder;
+		var itemHolderPlayer = world.player.flagship.itemHolder;
+		itemHolderLander.itemsTransferTo(itemHolderPlayer);
+
+		var placePlanetOrbit = place.placePlanetOrbit;
+		world.placeNext = placePlanetOrbit;
+	}
+
+	PlacePlanetSurface.prototype.playerDie = function(universe, world, place, entityPlayer)
+	{
+		this.exit(universe, world, place, entityPlayer);
+	}
 
 	// Place overrides
 
@@ -184,11 +208,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	{
 		var display = universe.display;
 
-		//var imageBackground = universe.mediaLibrary.imageGetByName("PlanetSurface");
-		//display.drawImage(imageBackground, Coords.Instances.Zeroes);
-
-		var drawLoc = this.drawLoc;
-		var drawPos = drawLoc.pos;
+		var drawPos = this._drawPos;
 
 		var player = this.entities["Player"];
 		var playerLoc = player.locatable.loc;
@@ -199,12 +219,73 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 			playerLoc.pos
 		).trimToRangeMinMax
 		(
-			camera.viewSizeHalf,
-			this.size.clone().subtract(camera.viewSizeHalf)
+			new Coords(0, camera.viewSizeHalf.y),
+			new Coords(this.size.x, this.size.y - camera.viewSizeHalf.y)
 		);
 
 		this.draw_FromSuperclass(universe, world);
 
 		this.venueControls.draw(universe, world);
+
+		this.drawMap(universe, world);
+	}
+
+	PlacePlanetSurface.prototype.drawMap = function(universe, world)
+	{
+		var containerSidebar = this.venueControls.controlRoot;
+		var controlMap = containerSidebar.children["containerMap"];
+		var mapPos = containerSidebar.pos.clone().add(controlMap.pos);
+		var mapSize = controlMap.size;
+		var surfaceSize = this.planet.sizeSurface;
+		var display = universe.display;
+
+		var scanContacts = [];
+		var contactVisuals = [];
+
+		scanContacts.push(this.planet.resources);
+		contactVisuals.push(new VisualCircle(1, "Red"));
+
+		scanContacts.push(this.planet.lifeforms);
+		contactVisuals.push(new VisualCircle(1, "LightGreen"));
+
+		var entityLander = this.entities["Player"];
+		scanContacts.push([entityLander.locatable.loc]);
+		contactVisuals.push(new VisualCircle(3, null, "Cyan"));
+
+		var contactDrawable = new Drawable();
+		contactDrawable.loc = new Location(new Coords());
+
+		for (var t = 0; t < scanContacts.length; t++)
+		{
+			var contactsOfType = scanContacts[t];
+			var contactVisual = contactVisuals[t];
+			contactDrawable.visual = contactVisual;
+
+			if (contactsOfType != null)
+			{
+				for (var i = 0; i < contactsOfType.length; i++)
+				{
+					var contact = contactsOfType[i];
+
+					var contactPos = contact.pos;
+					var drawPos = this._drawPos.overwriteWith
+					(
+						contactPos
+					).divide
+					(
+						surfaceSize
+					).multiply
+					(
+						mapSize
+					).add
+					(
+						mapPos
+					);
+
+					contactDrawable.loc.pos.overwriteWith(drawPos);
+					contactVisual.draw(universe, world, display, contactDrawable, contact)
+				}
+			}
+		}
 	}
 }

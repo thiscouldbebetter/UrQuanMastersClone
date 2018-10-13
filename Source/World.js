@@ -41,7 +41,8 @@ function World(name, dateCreated, defns, player, hyperspace)
 			ConstraintDefn.Instances.SpeedMax,
 			ConstraintDefn.Instances.StopBelowSpeedMin,
 			ConstraintDefn.Instances.TrimToRange,
-			ConstraintDefn.Instances.WrapToRange
+			ConstraintDefn.Instances.WrapToRange,
+			ConstraintDefn.Instances.WrapXTrimY
 		];
 
 		var hyperspaceSize = new Coords(1, 1).multiplyScalar(10000);

@@ -74,43 +74,12 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 	PlacePlanetOrbit.prototype.scanLife = function(universe)
 	{
 		this.hasLifeBeenScanned = true;
-		var planet = this.planet;
-		var world = universe.world;
-		planet.lifeformsGenerate(world);
 	}
 
 	PlacePlanetOrbit.prototype.scanMinerals = function(universe)
 	{
-		var planet = this.planet;
-		var resources = planet.resources;
-		if (resources == null)
-		{
-			var resources = [];
-
-			var planetDefn = planet.defn();
-			var planetSize = planet.sizeSurface;
-			var resourceDistributions = planetDefn.resourceDistributions;
-
-			for (var i = 0; i < resourceDistributions.length; i++)
-			{
-				var resourceDistribution = resourceDistributions[i];
-
-				var resourceDefnName = resourceDistribution.resourceDefnName;
-				var numberOfDeposits = resourceDistribution.numberOfDeposits;
-				var quantityPerDeposit = resourceDistribution.quantityPerDeposit;
-
-				for (var d = 0; d < numberOfDeposits; d++)
-				{
-					var resourcePos = new Coords().randomize().multiply(planetSize);
-					var resource = new Resource(resourceDefnName, quantityPerDeposit, resourcePos);
-					resources.push(resource);
-				}
-			}
-
-			planet.resources = resources;
-		}
+		this.haveMineralsBeenScanned = true;
 	}
-
 
 	// overrides
 
@@ -126,8 +95,21 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var surfaceSize = this.planet.sizeSurface;
 		var display = universe.display;
 
-		var scanContacts = [ this.planet.resources, this.planet.lifeforms ];
-		var contactVisuals = [ new VisualCircle(3, "Red"), new VisualCircle(3, "LightGreen") ];
+		var scanContacts = [];
+		var contactVisuals = [];
+
+		if (this.haveMineralsBeenScanned)
+		{
+			scanContacts.push(this.planet.resources);
+			contactVisuals.push(new VisualCircle(3, "Red"));
+		}
+
+		if (this.hasLifeBeenScanned)
+		{
+			scanContacts.push(this.planet.lifeforms);
+			contactVisuals.push(new VisualCircle(3, "LightGreen"));
+		}
+
 		var contactDrawable = new Drawable();
 		contactDrawable.loc = new Location(new Coords());
 
@@ -258,7 +240,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 2),
 					labelSize,
 					false, // isTextCentered
-					"Mass: " + planet.mass.toExponential().substr(0, 5) + "kg",
+					"Mass: " + planet.mass.toExponential(3).replace("e", " x 10^").replace("+", "") + " kg",
 					fontHeightShort
 				),
 
@@ -268,7 +250,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 3),
 					labelSize,
 					false, // isTextCentered
-					"Radius: " + planet.radius + "km",
+					"Radius: " + planet.radius + " km",
 					fontHeightShort
 				),
 
@@ -288,7 +270,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 5),
 					labelSize,
 					false, // isTextCentered
-					"Orbit: " + planet.orbit.toExponential() + "km",
+					"Orbit: " + planet.orbit.toExponential(3).replace("e", " x 10^").replace("+", "") + " km",
 					fontHeightShort
 				),
 
@@ -318,7 +300,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					new Coords(marginSize.x, marginSize.y * 8),
 					labelSize,
 					false,
-					"Temperature: " + planet.temperature + "C",
+					"Temperature: " + planet.temperature + " C",
 					fontHeightShort
 				),
 

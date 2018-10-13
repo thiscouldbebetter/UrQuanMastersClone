@@ -21,13 +21,16 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 
 	this.resources = resources;
 	this.hasLife = hasLife;
+
+	this.mineralsGenerate();
+	this.lifeformsGenerate();
 }
 {
 	// instance methods
 
 	Planet.prototype.defn = function()
 	{
-		return PlanetDefn.Instances()[this.defnName];
+		return PlanetDefn.Instances()._All[this.defnName];
 	}
 
 	Planet.prototype.lifeformsGenerate = function()
@@ -47,6 +50,38 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		}
 
 		return this.lifeforms;
+	}
+
+	Planet.prototype.mineralsGenerate = function()
+	{
+		var planet = this;
+		var resources = planet.resources;
+		if (resources == null)
+		{
+			var resources = [];
+
+			var planetDefn = planet.defn();
+			var planetSize = planet.sizeSurface;
+			var resourceDistributions = planetDefn.resourceDistributions;
+
+			for (var i = 0; i < resourceDistributions.length; i++)
+			{
+				var resourceDistribution = resourceDistributions[i];
+
+				var resourceDefnName = resourceDistribution.resourceDefnName;
+				var numberOfDeposits = resourceDistribution.numberOfDeposits;
+				var quantityPerDeposit = resourceDistribution.quantityPerDeposit;
+
+				for (var d = 0; d < numberOfDeposits; d++)
+				{
+					var resourcePos = new Coords().randomize().multiply(planetSize);
+					var resource = new Resource(resourceDefnName, quantityPerDeposit, resourcePos);
+					resources.push(resource);
+				}
+			}
+
+			planet.resources = resources;
+		}
 	}
 
 	Planet.prototype.toEntity = function(primaryPos)
