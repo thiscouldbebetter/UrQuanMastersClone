@@ -26,25 +26,33 @@ function PlaceStationDock(world, placeStation)
 
 	PlaceStationDock.prototype.componentThrusterBuild = function(universe)
 	{
-		var componentToBuild = "todo";
+		var player = universe.world.player;
+		var componentDefns = player.shipComponentDefnsKnown(universe.world);
+		var componentName = "Fusion Thruster"; // todo
+		var componentToBuild = componentDefns[componentName];
 		this.componentBuild(universe, componentToBuild);
 	}
 
 	PlaceStationDock.prototype.componentThrusterScrap = function(universe)
 	{
-		var componentToScrap = "todo";
+		var player = universe.world.player;
+		var componentToScrap = player.flagship.componentsThruster()[0];
 		this.componentScrap(universe, componentToScrap);
 	}
 
 	PlaceStationDock.prototype.componentTurningJetsBuild = function(universe)
 	{
-		var componentToBuild = "todo";
+		var player = universe.world.player;
+		var componentDefns = player.shipComponentDefnsKnown(universe.world);
+		var componentName = "Turning Jets"; // todo
+		var componentToBuild = componentDefns[componentName];
 		this.componentBuild(universe, componentToBuild);
 	}
 
 	PlaceStationDock.prototype.componentTurningJetsScrap = function(universe)
 	{
-		var componentToScrap = "todo";
+		var player = universe.world.player;
+		var componentToScrap = player.flagship.componentsTurningJets()[0];
 		this.componentScrap(universe, componentToScrap);
 	}
 
@@ -56,7 +64,7 @@ function PlaceStationDock(world, placeStation)
 			if (player.credit >= componentToBuild.value)
 			{
 				player.credit -= componentToBuild.value;
-				player.flagshipComponentNames.push(componentToBuild.name);
+				player.flagship.componentNames.push(componentToBuild.name);
 				player.cachesInvalidate();
 			}
 		}
@@ -67,7 +75,7 @@ function PlaceStationDock(world, placeStation)
 		if (componentToScrap != null)
 		{
 			var player = universe.world.player;
-			player.flagshipComponentNames.remove(componentToScrap.name);
+			player.flagship.componentNames.remove(componentToScrap.name);
 			player.credit += componentToScrap.value;
 			player.cachesInvalidate();
 		}
@@ -161,6 +169,13 @@ function PlaceStationDock(world, placeStation)
 		this.venueControls.draw(universe, world);
 	}
 
+	PlaceStationDock.prototype.initialize_FromSuperclass = Place.prototype.initialize;
+	PlaceStationDock.prototype.initialize = function(universe, world)
+	{
+		this.initialize_FromSuperclass(universe, world);
+		universe.world.player.initialize(universe, world);
+	}
+
 	PlaceStationDock.prototype.updateForTimerTick_FromSuperclass = Place.prototype.updateForTimerTick;
 	PlaceStationDock.prototype.updateForTimerTick = function(universe, world)
 	{
@@ -250,8 +265,7 @@ function PlaceStationDock(world, placeStation)
 
 		var shipComponentsInstalled = player.flagship.componentsBackbone();
 
-		var shipComponentDefnsAvailable =
-			ShipComponentDefn.Instances()._AllBackbone;
+		var shipComponentDefnsKnownBackbone = player.shipComponentDefnsKnownBackbone();
 
 		var containerComponents = new ControlContainer
 		(
@@ -287,7 +301,7 @@ function PlaceStationDock(world, placeStation)
 						marginSize.y * 2 + labelSize.y
 					),
 					listComponentsSize,
-					shipComponentDefnsAvailable,
+					shipComponentDefnsKnownBackbone,
 					new DataBinding(null, "name"), // bindingForItemText
 					fontHeightShort,
 					new DataBinding(placeStationDock, "componentToBuild"), // bindingForItemSelected
@@ -463,7 +477,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					this.componentThrusterBuild,
+					this.componentThrusterBuild.bind(this),
 					universe
 				),
 
@@ -480,7 +494,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					this.componentThrusterScrap,
+					this.componentThrusterScrap.bind(this),
 					universe
 				),
 
@@ -525,7 +539,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					this.componentTurningJetBuild,
+					this.componentTurningJetsBuild.bind(this),
 					universe
 				),
 
@@ -542,7 +556,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					this.componentTurningJetScrap,
+					this.componentTurningJetsScrap.bind(this),
 					universe
 				),
 
@@ -551,7 +565,7 @@ function PlaceStationDock(world, placeStation)
 
 		var shipsInFleet = playerShipGroup.ships;
 
-		var shipPlansAvailable = ShipDefn.Instances(universe);
+		var shipPlansAvailable = player.shipDefnsAvailable(universe);
 
 		var containerShips = new ControlContainer
 		(
@@ -649,7 +663,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					listShipsSize,
 					shipsInFleet,
-					new DataBinding(null, "fullName(world)", { "world" : world } ), // bindingForItemText
+					new DataBinding(null, "fullNameAndCrew(world)", { "world" : world } ), // bindingForItemText
 					fontHeightShort,
 					new DataBinding(placeStationDock, "shipInFleetSelected"),
 					new DataBinding()

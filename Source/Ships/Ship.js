@@ -10,24 +10,6 @@ function Ship(defnName)
 
 	// static methods
 
-	Ship.accelerate = function(world, entity)
-	{
-		var ship = (entity.shipGroup != null ? entity.shipGroup.ships[0] : entity.ship);
-		var shipDefn = ship.defn(world);
-		var shipLoc = entity.locatable.loc;
-		var shipForward = shipLoc.orientation.forward;
-		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
-		(
-			shipDefn.acceleration
-		);
-		var shipVel = shipLoc.vel;
-		var shipSpeed = shipVel.magnitude();
-		if (shipSpeed > shipDefn.speedMax)
-		{
-			shipVel.normalize().multiplyScalar(shipDefn.speedMax);
-		}
-	}
-
 	Ship.actionAccelerate = function()
 	{
 		return new Action
@@ -35,7 +17,7 @@ function Ship(defnName)
 			"Accelerate",
 			function perform(universe, world, place, actor)
 			{
-				Ship.accelerate(world, actor);
+				actor.ship.accelerate(world, actor);
 			}
 		);
 	}
@@ -106,7 +88,7 @@ function Ship(defnName)
 			"TurnLeft",
 			function perform(universe, world, place, actor)
 			{
-				Ship.turnInDirection(world, actor, -1);
+				actor.ship.turnLeft(world, actor);
 			}
 		);
 	}
@@ -118,7 +100,7 @@ function Ship(defnName)
 			"TurnRight",
 			function perform(universe, world, place, actor)
 			{
-				Ship.turnInDirection(world, actor, 1);
+				actor.ship.turnRight(world, actor);
 			}
 		);
 	}
@@ -155,30 +137,6 @@ function Ship(defnName)
 		}
 
 		return ships;
-	}
-
-	Ship.turnInDirection = function
-	(
-		world, entity, direction
-	)
-	{
-		var entityLoc = entity.locatable.loc;
-		var entityOrientation = entityLoc.orientation;
-		var entityForward = entityOrientation.forward;
-		var ship = (entity.ship == null ? entity.shipGroup.ships[0] : entity.ship);
-		var shipDefn = ship.defn(world);
-		var turnsPerTick = shipDefn.turnsPerTick;
-		var entityForwardNew = Ship._polar.fromCoords
-		(
-			entityForward
-		).addToAzimuthInTurns
-		(
-			turnsPerTick * direction
-		).wrap().toCoords
-		(
-			entityForward
-		);
-		entityOrientation.forwardSet(entityForwardNew);
 	}
 
 	// instance methods
@@ -228,6 +186,57 @@ function Ship(defnName)
 		{
 			ship.energy = shipDefn.energyMax;
 		}
+	}
+
+	// movement
+
+	Ship.prototype.accelerate = function(world, entity)
+	{
+		var ship = (entity.shipGroup != null ? entity.shipGroup.ships[0] : entity.ship);
+		var shipDefn = ship.defn(world);
+		var shipLoc = entity.locatable.loc;
+		var shipForward = shipLoc.orientation.forward;
+		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
+		(
+			shipDefn.acceleration
+		);
+		var shipVel = shipLoc.vel;
+		var shipSpeed = shipVel.magnitude();
+		if (shipSpeed > shipDefn.speedMax)
+		{
+			shipVel.normalize().multiplyScalar(shipDefn.speedMax);
+		}
+	}
+
+	Ship.prototype.turnInDirection = function(world, entity, direction)
+	{
+		var entityLoc = entity.locatable.loc;
+		var entityOrientation = entityLoc.orientation;
+		var entityForward = entityOrientation.forward;
+		var ship = (entity.ship == null ? entity.shipGroup.ships[0] : entity.ship);
+		var shipDefn = ship.defn(world);
+		var turnsPerTick = shipDefn.turnsPerTick;
+		var entityForwardNew = Ship._polar.fromCoords
+		(
+			entityForward
+		).addToAzimuthInTurns
+		(
+			turnsPerTick * direction
+		).wrap().toCoords
+		(
+			entityForward
+		);
+		entityOrientation.forwardSet(entityForwardNew);
+	}
+
+	Ship.prototype.turnLeft = function(world, entity)
+	{
+		this.turnInDirection(world, entity, -1);
+	}
+
+	Ship.prototype.turnRight = function(world, entity)
+	{
+		this.turnInDirection(world, entity, 1);
 	}
 
 	// controls
@@ -331,6 +340,5 @@ function Ship(defnName)
 		);
 
 		return returnValue;
-
 	}
 }

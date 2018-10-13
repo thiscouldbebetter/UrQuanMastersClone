@@ -276,6 +276,7 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 			new ItemHolder(),
 			new Playable(),
 			playerShipGroup,
+			playerShipGroup.ships[0]
 		]
 	);
 

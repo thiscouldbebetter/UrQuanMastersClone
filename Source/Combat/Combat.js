@@ -48,7 +48,7 @@ function Combat(size, encounter, shipGroups)
 			Ship.turnInDirection(world, actor, directionToTurn);
 		}
 
-		Ship.accelerate(world, actor);
+		actor.ship.accelerate(world, actor);
 	}
 
 	Combat.prototype.exit = function(universe, world, place, entity)

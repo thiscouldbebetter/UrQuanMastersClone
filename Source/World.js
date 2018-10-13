@@ -90,11 +90,11 @@ function World(name, dateCreated, defns, player, hyperspace)
 			"Terran",
 			null, // nameOriginal
 			null, // color
-			Faction.RelationsNeutral,
+			Faction.RelationsAllied, // todo
 			true, // talksImmediately
 			"EarthStation", // conversationDefnName
 			null, // sphereOfInfluence
-			null, // shipDefnName
+			"Broadsider", // shipDefnName
 			null // shipGroupActivity
 		);
 
@@ -203,7 +203,11 @@ function World(name, dateCreated, defns, player, hyperspace)
 		var playerShipDefnName = "Flagship";
 		var playerShip = new Ship(playerShipDefnName);
 		var shipDefns = ShipDefn.Instances(universe);
-		var playerShips = Ship.manyFromDefns(shipDefns);
+		var playerShips =
+		[
+			playerShip,
+			new Ship("Broadsider")
+		];
 		var playerShipGroup = new ShipGroup
 		(
 			"Player",
@@ -237,7 +241,9 @@ function World(name, dateCreated, defns, player, hyperspace)
 			"Player",
 			0, // credit
 			playerFlagship,
-			[], // factionsKnownNames
+			[
+				"Terran"
+			], // factionsKnownNames
 			playerShipGroup
 		);
 

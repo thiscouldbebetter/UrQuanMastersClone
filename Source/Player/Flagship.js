@@ -12,6 +12,13 @@ function Flagship(name, thrustersMax, turningJetsMax, componentsMax, componentNa
 	this.shipsMax = shipsMax;
 }
 {
+	Flagship.prototype.cachesInvalidate = function()
+	{
+		this._components = null;
+		this._componentsThruster = null;
+		this._componentsTurningJets = null;
+	}
+
 	Flagship.prototype.components = function()
 	{
 		if (this._components == null)
@@ -65,6 +72,26 @@ function Flagship(name, thrustersMax, turningJetsMax, componentsMax, componentNa
 		return this.componentNames.length + "/" + this.componentsMax;
 	}
 
+	Flagship.prototype.componentsThruster = function()
+	{
+		if (this._componentsThruster == null)
+		{
+			this._componentsThruster =
+				this.componentsByCategories( [ ShipComponentDefn.Categories().Thruster ] );
+		}
+		return this._componentsThruster;
+	}
+
+	Flagship.prototype.componentsTurningJets = function()
+	{
+		if (this._componentsTurningJets == null)
+		{
+			this._componentsTurningJets =
+				this.componentsByCategories( [ ShipComponentDefn.Categories().TurningJets ] );
+		}
+		return this._componentsTurningJets;
+	}
+
 	Flagship.prototype.componentsWeapon = function()
 	{
 		if (this._componentsWeapon == null)
@@ -96,13 +123,23 @@ function Flagship(name, thrustersMax, turningJetsMax, componentsMax, componentNa
 		return this._fuelMax;
 	}
 
+	Flagship.prototype.thrustersCurrent = function()
+	{
+		return this.componentsThruster().length;
+	}
+
 	Flagship.prototype.thrustersCurrentOverMax = function()
 	{
-		return "nn/" + this.thrustersMax;
+		return this.thrustersCurrent() + "/" + this.thrustersMax;
+	}
+
+	Flagship.prototype.turningJetsCurrent = function()
+	{
+		return this.componentsTurningJets().length;
 	}
 
 	Flagship.prototype.turningJetsCurrentOverMax = function()
 	{
-		return "nn/" + this.turningJetsMax;
+		return this.turningJetsCurrent() + "/" + this.turningJetsMax;
 	}
 }

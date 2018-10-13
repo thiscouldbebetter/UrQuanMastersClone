@@ -152,6 +152,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			new ItemHolder(),
 			new Playable(),
 			playerShipGroup,
+			playerShipGroup.ships[0]
 		]
 	);
 
