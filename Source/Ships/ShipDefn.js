@@ -11,6 +11,7 @@ function ShipDefn
 	crewMax,
 	energyPerTick,
 	energyMax,
+	value,
 	visual,
 	attackDefn,
 	specialDefn
@@ -28,11 +29,10 @@ function ShipDefn
 	this.crewMax = crewMax;
 	this.energyPerTick = energyPerTick;
 	this.energyMax = energyMax;
+	this.value = value;
 	this.visual = visual;
 	this.attackDefn = attackDefn;
 	this.specialDefn = specialDefn;
-
-	this.cost = 100; // todo
 }
 {
 	// instances
@@ -82,6 +82,7 @@ function ShipDefn
 			10, // crewMax
 			0, // energyPerTick
 			0, // energyMax
+			0, // value
 			ShipDefn.visual(shipDimension, "Gray", "Black"),
 			attackDefnTodo
 		);
@@ -98,6 +99,7 @@ function ShipDefn
 			12, // crewMax
 			1, // energyPerTick
 			4, // energyMax
+			1000, // value
 			ShipDefn.visual(shipDimension, "Gray", "Black"),
 			attackDefnTodo
 		);
@@ -113,6 +115,7 @@ function ShipDefn
 			1, // crewMax
 			0, // energyPerTick
 			0, // energyMax
+			0, // value
 			ShipDefn.visual(shipDimension, "DarkGreen", "Red"),
 			attackDefnTodo
 		);
@@ -266,33 +269,33 @@ function ShipDefn
 			shipDefnLander,
 			shipDefnLahkemupGuardDrone,
 
-			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 		e/tick,	eMax, 	visual,								attack, special
-			new sd("Gravitar", 	"Konstalyxz", 	10, 	1.166, 	35, 	.25 / heads, 42, 42,	.5,  	42, 	sv("Gravitar", "chmmr/avatar"), 	adTodo, shipGravitarSpecialTractorBeam ),
-			new sd("Infernus", 	"Araknoid", 	17,		5, 		25, 	.33 / heads, 22, 22, 	.8,  	16, 	shipInfernusVisual, 				adTodo,	shipInfernusSpecialCloak ),
-			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	sv("Efflorescence", "supox/blade"), adTodo,	adTodo ),
-			new sd("Starshard", "Xtalix", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	sv("Starshard", "chenjesu/broodhome"), adTodo,	shipStarshardSpecialLeech ),
-			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	sv("Broadsider", "human/cruiser"),	adTodo,	adTodo ),
-			new sd("Shackler", 	"Lahkemup", 	10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	sv("Shackler", "urquan/dreadnought"),adTodo,	adTodo ),
-			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	sv("Pustule", "umgah/drone"), 		adTodo,	shipPustuleSpecialRetrodrive ),
-			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	sv("Scuttler", "spathi/eluder"), 	adTodo,	adTodo ),
-			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	shipFireblossomSpecialRefuel ),
-			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	sv("Collapsar", "androsynth/guardian"),	adTodo,	adTodo ),
-			new sd("Encumbrator","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	sv("Encumbrator", "vux/intruder"), 	adTodo,	adTodo ),
-			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
-			new sd("Silencer",	"Kehlemal",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	sv("Silencer", "kohrah/marauder"), 	adTodo,	adTodo ),
-			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	sv("Kickback", "druuge/mauler"), 	adTodo,	adTodo ),
-			new sd("Wingshadow","Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	sv("Wingshadow", "orz/nemesis"), 	adTodo,	adTodo ),
-			new sd("Elysian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	sv("Elysian", "syreen/penetrator"),	adTodo,	adTodo ),
-			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	sv("Sporsac", "mycon/podship"), 	adTodo,	shipSporsacSpecialRegenerate ),
-			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	sv("Tumbler", "slylandro/probe"),	adTodo,	adTodo ),
-			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		sv("Sunbright", "shofixti/scout"),	adTodo,	adTodo ),
-			new sd("Discus",	"Ellfyn",		1,		40,		40,		.5 / heads,  6, 6,		.142,	20, 	sv("Discus", "arilou/skiff"), 		adTodo,	adTodo ),
-			new sd("Nitpiknik",	"Triunion",		5,		10,		40,		.5 / heads,  10, 10,	.2,		10, 	sv("Nitpiknik", "zoqfotpik/stinger"), adTodo,	adTodo ),
-			new sd("Aegis",		"Raptor",		3,		2,		30,		.33 / heads, 20, 20,	.29,	10, 	sv("Aegis", "yehat/terminator"), 	adTodo,	adTodo ),
-			new sd("Afterburner","Warpig",		7,		7,		28,		.5 / heads,  8, 8,		.142,	24, 	sv("Afterburner", "thraddash/torch"), adTodo,	adTodo ),
-			new sd("Indemnity", "Murch",		7,		1.2,	36,		.2 / heads,  20, 20,	.2,		42, 	sv("Indemnity", "melnorme/trader"),	adTodo,	adTodo ),
-			new sd("MetamorphA", "Knsnynz",		3,		2.5,	20,		.33 / heads,  20, 20,	.29,	10, 	sv("MetamorphA", "mmrnmhrm/xform"), adTodo,	adTodo ),
-			new sd("MetamorphB", "Knsnynz",		3,		10,		50,		.07 / heads,  20, 20,	.14,	10, 	sv("MetamorphB", "mmrnmhrm/xform"), adTodo,	adTodo ),
+			//		name, 		factionName, 	mass, 	accel, 	speedMax,turnsPT, 	 crew, 		e/tick,	eMax, 	value, 	visual,								attack, special
+			new sd("Gravitar", 	"Konstalyxz", 	10, 	1.166, 	35, 	.25 / heads, 42, 42,	.5,  	42,		1000, 	sv("Gravitar", "chmmr/avatar"), 	adTodo, shipGravitarSpecialTractorBeam ),
+			new sd("Infernus", 	"Araknoid", 	17,		5, 		25, 	.33 / heads, 22, 22, 	.8,  	16, 	1000, 	shipInfernusVisual, 				adTodo,	shipInfernusSpecialCloak ),
+			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	1000, 	sv("Efflorescence", "supox/blade"), adTodo,	adTodo ),
+			new sd("Starshard", "Xtalix", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	1000, 	sv("Starshard", "chenjesu/broodhome"), adTodo,	shipStarshardSpecialLeech ),
+			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	1000, 	sv("Broadsider", "human/cruiser"),	adTodo,	adTodo ),
+			new sd("Shackler", 	"Lahkemup", 	10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	1000, 	sv("Shackler", "urquan/dreadnought"),adTodo,	adTodo ),
+			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	1000, 	sv("Pustule", "umgah/drone"), 		adTodo,	shipPustuleSpecialRetrodrive ),
+			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	1000, 	sv("Scuttler", "spathi/eluder"), 	adTodo,	adTodo ),
+			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	1000, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	shipFireblossomSpecialRefuel ),
+			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	1000, 	sv("Collapsar", "androsynth/guardian"),	adTodo,	adTodo ),
+			new sd("Encumbrator","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	1000, 	sv("Encumbrator", "vux/intruder"), 	adTodo,	adTodo ),
+			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	1000, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
+			new sd("Silencer",	"Kehlemal",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	1000, 	sv("Silencer", "kohrah/marauder"), 	adTodo,	adTodo ),
+			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	1000, 	sv("Kickback", "druuge/mauler"), 	adTodo,	adTodo ),
+			new sd("Wingshadow","Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	1000, 	sv("Wingshadow", "orz/nemesis"), 	adTodo,	adTodo ),
+			new sd("Elysian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	1000, 	sv("Elysian", "syreen/penetrator"),	adTodo,	adTodo ),
+			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	1000, 	sv("Sporsac", "mycon/podship"), 	adTodo,	shipSporsacSpecialRegenerate ),
+			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	1000, 	sv("Tumbler", "slylandro/probe"),	adTodo,	adTodo ),
+			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		1000, 	sv("Sunbright", "shofixti/scout"),	adTodo,	adTodo ),
+			new sd("Discus",	"Ellfyn",		1,		40,		40,		.5 / heads,  6, 6,		.142,	20, 	1000, 	sv("Discus", "arilou/skiff"), 		adTodo,	adTodo ),
+			new sd("Nitpiknik",	"Triunion",		5,		10,		40,		.5 / heads,  10, 10,	.2,		10, 	1000, 	sv("Nitpiknik", "zoqfotpik/stinger"), adTodo,	adTodo ),
+			new sd("Aegis",		"Raptor",		3,		2,		30,		.33 / heads, 20, 20,	.29,	10, 	1000, 	sv("Aegis", "yehat/terminator"), 	adTodo,	adTodo ),
+			new sd("Afterburner","Warpig",		7,		7,		28,		.5 / heads,  8, 8,		.142,	24, 	1000, 	sv("Afterburner", "thraddash/torch"), adTodo,	adTodo ),
+			new sd("Indemnity", "Murch",		7,		1.2,	36,		.2 / heads,  20, 20,	.2,		42, 	1000, 	sv("Indemnity", "melnorme/trader"),	adTodo,	adTodo ),
+			new sd("MetamorphA", "Knsnynz",		3,		2.5,	20,		.33 / heads,  20, 20,	.29,	10, 	1000, 	sv("MetamorphA", "mmrnmhrm/xform"), adTodo,	adTodo ),
+			new sd("MetamorphB", "Knsnynz",		3,		10,		50,		.07 / heads,  20, 20,	.14,	10, 	1000, 	sv("MetamorphB", "mmrnmhrm/xform"), adTodo,	adTodo ),
 		];
 
 		return this._All.addLookups("name");
@@ -346,5 +349,10 @@ function ShipDefn
 	ShipDefn.prototype.fullName = function()
 	{
 		return this.factionName + " " + this.name;
+	}
+
+	ShipDefn.prototype.fullNameAndValue = function()
+	{
+		return this.fullName() + "(" + this.value + ")";
 	}
 }

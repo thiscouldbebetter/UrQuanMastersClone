@@ -3,6 +3,10 @@ function PlaceStationDock(world, placeStation)
 {
 	this.placeStation = placeStation;
 
+	this.crewValuePerUnit = 3;
+	this.fuelValuePerUnit = 20;
+	this.landerValue = 100;
+
 	var entities = [];
 	Place.call(this, entities);
 }
@@ -16,7 +20,13 @@ function PlaceStationDock(world, placeStation)
 
 	PlaceStationDock.prototype.componentBackboneBuild = function(universe)
 	{
-		this.componentBuild(universe, this.componentToBuild);
+		var player = universe.world.player;
+		var flagship = player.flagship;
+		var componentsBackboneInstalled = flagship.componentsBackbone();
+		if (componentsBackboneInstalled.length < flagship.componentsBackboneMax)
+		{
+			this.componentBuild(universe, this.componentToBuild);
+		}
 	}
 
 	PlaceStationDock.prototype.componentBackboneScrap = function(universe)
@@ -27,32 +37,44 @@ function PlaceStationDock(world, placeStation)
 	PlaceStationDock.prototype.componentThrusterBuild = function(universe)
 	{
 		var player = universe.world.player;
-		var componentDefns = player.shipComponentDefnsKnown(universe.world);
-		var componentName = "Fusion Thruster"; // todo
-		var componentToBuild = componentDefns[componentName];
-		this.componentBuild(universe, componentToBuild);
+		var flagship = player.flagship;
+		var thrustersInstalled = flagship.componentsThruster();
+		if (thrustersInstalled.length < flagship.thrustersMax)
+		{
+			var componentDefns = player.shipComponentDefnsKnown(universe.world);
+			var componentName = thrustersInstalled[0].name;
+			var componentToBuild = componentDefns[componentName];
+			this.componentBuild(universe, componentToBuild);
+		}
 	}
 
 	PlaceStationDock.prototype.componentThrusterScrap = function(universe)
 	{
 		var player = universe.world.player;
-		var componentToScrap = player.flagship.componentsThruster()[0];
+		var thrustersInstalled = player.flagship.componentsThruster();
+		var componentToScrap = thrustersInstalled[1]; // Cannot remove last.
 		this.componentScrap(universe, componentToScrap);
 	}
 
 	PlaceStationDock.prototype.componentTurningJetsBuild = function(universe)
 	{
 		var player = universe.world.player;
-		var componentDefns = player.shipComponentDefnsKnown(universe.world);
-		var componentName = "Turning Jets"; // todo
-		var componentToBuild = componentDefns[componentName];
-		this.componentBuild(universe, componentToBuild);
+		var flagship = player.flagship;
+		var turningJetsInstalled = flagship.componentsTurningJets();
+		if (turningJetsInstalled.length < flagship.turningJetsMax)
+		{
+			var componentDefns = player.shipComponentDefnsKnown(universe.world);
+			var componentName = turningJetsInstalled[0].name;
+			var componentToBuild = componentDefns[componentName];
+			this.componentBuild(universe, componentToBuild);
+		}
 	}
 
 	PlaceStationDock.prototype.componentTurningJetsScrap = function(universe)
 	{
 		var player = universe.world.player;
-		var componentToScrap = player.flagship.componentsTurningJets()[0];
+		var turningJetsInstalled = player.flagship.componentsTurningJets();
+		var componentToScrap = turningJetsInstalled[1]; // Cannot remove last.
 		this.componentScrap(universe, componentToScrap);
 	}
 
@@ -83,11 +105,11 @@ function PlaceStationDock(world, placeStation)
 
 	PlaceStationDock.prototype.crewAdd = function(universe)
 	{
-		var ship = placeStationDock.shipInFleetSelected;
-		if (ship.crew < ship.defn(world).crewMax)
+		var ship = this.shipInFleetSelected;
+		if (ship.crew < ship.defn(universe.world).crewMax)
 		{
 			var player = universe.world.player;
-			if (player.credit >= crewValuePerUnit)
+			if (player.credit >= this.crewValuePerUnit)
 			{
 				player.credit -= crewValuePerUnit;
 				ship.crew++;
@@ -101,8 +123,64 @@ function PlaceStationDock(world, placeStation)
 		if (ship.crew > 1)
 		{
 			var player = universe.world.player;
-			player.credit += crewValuePerUnit;
+			player.credit += this.crewValuePerUnit;
 			ship.crew--;
+		}
+	}
+
+	PlaceStationDock.prototype.fuelAdd = function(universe)
+	{
+		var player = universe.world.player;
+		var flagship = player.flagship;
+		var fuelMax = flagship.fuelMax();
+		if (player.credit >= this.fuelValuePerUnit && flagship.fuel < fuelMax)
+		{
+			var fuelUnitsToBuy = 1;
+			if (flagship.fuel + fuelUnitsToBuy > fuelMax)
+			{
+				fuelUnitsToBuy = fuelMax + flagship.fuel;
+			}
+			var fuelValue = Math.ceil(this.fuelValuePerUnit * fuelUnitsToBuy);
+			player.credit -= fuelValue;
+			flagship.fuel += fuelUnitsToBuy;
+		}
+	}
+
+	PlaceStationDock.prototype.fuelRemove = function(universe)
+	{
+		var player = universe.world.player;
+		var flagship = player.flagship;
+		if (flagship.fuel > 0)
+		{
+			var fuelUnitsToSell = 1;
+			if (flagship.fuel < fuelUnitsToSell)
+			{
+				fuelUnitsToSell = player.fuel;
+			}
+			var fuelValue = Math.floor(fuelUnitsToSell * this.fuelValuePerUnit);
+			player.credit += fuelValue;
+			flagship.fuel -= fuelUnitsToSell;
+		}
+	}
+
+	PlaceStationDock.prototype.landerAdd = function(universe)
+	{
+		var player = universe.world.player;
+		if (player.credit >= this.landerValue)
+		{
+			player.credit -= this.landerValue;
+			player.flagship.numberOfLanders++;
+		}
+	}
+
+	PlaceStationDock.prototype.landerRemove = function(universe)
+	{
+		var player = universe.world.player;
+		var flagship = player.flagship;
+		if (flagship.numberOfLanders > 0)
+		{
+			flagship.numberOfLanders--;
+			player.credit += this.landerValue;
 		}
 	}
 
@@ -126,19 +204,20 @@ function PlaceStationDock(world, placeStation)
 		items.length = 0;
 	}
 
-	PlaceStationDock.shipBuild = function(universe)
+	PlaceStationDock.prototype.shipBuild = function(universe)
 	{
 		var shipDefnToBuild = this.shipDefnToBuild;
 		if (shipDefnToBuild != null)
 		{
 			var player = universe.world.player;
-			if (player.shipGroups.ships.length < player.shipsMax)
+			if (player.shipGroup.ships.length < player.flagship.shipsMax)
 			{
-				var shipValue = shipDefnToBuild.value + 1 * crewValuePerUnit;
+				var shipValue = shipDefnToBuild.value;
 				if (player.credit >= shipValue)
 				{
 					player.credit -= shipValue;
 					var ship = new Ship(shipDefnToBuild.name);
+					ship.initialize(universe, universe.world);
 					player.shipGroup.ships.push(ship);
 				}
 			}
@@ -198,9 +277,6 @@ function PlaceStationDock(world, placeStation)
 		var player = world.player;
 		var playerItemHolder = player.flagship.itemHolder;
 		var playerShipGroup = player.shipGroup;
-		var fuelValuePerUnit = 20;
-		var crewValuePerUnit = 3;
-		var landerValue = 100;
 		var shipWeaponSlots = ShipWeaponSlot.Instances()._All;
 
 		var containerDockSize = universe.display.sizeInPixels.clone();
@@ -349,7 +425,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player.flagship, "componentsCurrentOverMax()"),
+					new DataBinding(player.flagship, "componentsBackboneCurrentOverMax()"),
 					fontHeightShort
 				),
 
@@ -602,7 +678,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					listShipsSize,
 					shipPlansAvailable,
-					new DataBinding(null, "fullName()"), // bindingForItemText
+					new DataBinding(null, "fullNameAndValue()"), // bindingForItemText
 					fontHeightShort,
 					new DataBinding(placeStationDock, "shipDefnToBuild"),
 					new DataBinding()
@@ -621,7 +697,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					this.shipBuild,
+					this.shipBuild.bind(this),
 					universe // context
 				),
 
@@ -682,7 +758,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					this.shipScrap,
+					this.shipScrap.bind(this),
 					universe // context
 				),
 
@@ -699,7 +775,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
-					this.crewAdd,
+					this.crewAdd.bind(this),
 					universe // context
 				),
 
@@ -716,7 +792,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder,a
 					true, // isEnabled,
-					this.crewRemove,
+					this.crewRemove.bind(this),
 					universe // context
 				),
 			]
@@ -786,14 +862,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						if (player.credit >= fuelValuePerUnit)
-						{
-							player.credit -= fuelValuePerUnit;
-							player.fuel += 1;
-						}
-					},
+					this.fuelAdd.bind(this),
 					universe
 				),
 
@@ -810,19 +879,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						if (player.fuel > 0)
-						{
-							var fuelUnitsToSell = 1;
-							if (player.fuel < 1)
-							{
-								fuelUnitsToSell = player.fuel;
-							}
-							player.credit += fuelUnitsToSell * fuelValuePerUnit;
-							player.fuel -= fuelUnitsToSell;
-						}
-					},
+					this.fuelRemove.bind(this),
 					universe
 				),
 
@@ -845,12 +902,12 @@ function PlaceStationDock(world, placeStation)
 					"infoLanders",
 					new Coords
 					(
-						marginSize.x * 5,
+						marginSize.x * 6,
 						marginSize.y * 3 + labelSize.y * 2
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player, "numberOfLanders"),
+					new DataBinding(player.flagship, "numberOfLanders"),
 					fontHeightShort
 				),
 
@@ -867,14 +924,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						if (player.credit >= landerValue)
-						{
-							player.credit -= landerValue;
-							player.numberOfLanders++;
-						}
-					},
+					this.landerAdd.bind(this),
 					universe
 				),
 
@@ -891,14 +941,7 @@ function PlaceStationDock(world, placeStation)
 					fontHeightShort,
 					true, // hasBorder
 					true, // isEnabled
-					function click()
-					{
-						if (player.numberOfLanders > 0)
-						{
-							player.numberOfLanders--;
-							player.credit += landerValue;
-						}
-					},
+					this.landerRemove.bind(this),
 					universe
 				),
 
