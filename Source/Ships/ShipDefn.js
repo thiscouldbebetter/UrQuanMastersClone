@@ -33,6 +33,8 @@ function ShipDefn
 	this.visual = visual;
 	this.attackDefn = attackDefn;
 	this.specialDefn = specialDefn;
+
+	this.sensorRange = 300; // todo
 }
 {
 	// instances
@@ -79,9 +81,9 @@ function ShipDefn
 			24, // speedMax
 			.005, // turnsPerTick
 			10, // crewInitial
-			10, // crewMax
-			0, // energyPerTick
-			0, // energyMax
+			50, // crewMax
+			2, // energyPerTick
+			50, // energyMax
 			0, // value
 			ShipDefn.visual(shipDimension, "Gray", "Black"),
 			attackDefnTodo
@@ -184,7 +186,7 @@ function ShipDefn
 			function effect(universe, world, place, actor)
 			{
 				var combat = place.combat;
-				var ships = place.shipEntities();
+				var ships = place.entitiesShips();
 				var target = ships[1 - ships.indexOf(actor)];
 				var actorLoc = actor.locatable.loc;
 				var actorPos = actorLoc.pos;

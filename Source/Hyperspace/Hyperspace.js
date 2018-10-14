@@ -1,11 +1,14 @@
 
-function Hyperspace(size, starsystemRadiusOuter, starsystems)
+function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 {
 	this.size = size;
 	this.starsystemRadiusOuter = starsystemRadiusOuter;
 	this.starsystems = starsystems.addLookups("name");
+	this.shipGroups = shipGroups;
 }
 {
+	// static methods
+
 	Hyperspace.random = function(size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner)
 	{
 		var planetsPerStarsystemMax = 6;
@@ -69,12 +72,12 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 		(
 			size,
 			starsystemRadiusOuter,
-			starsystems
+			starsystems,
+			[] // shipGroups
 		);
 
 		return returnValue;
 	}
-
 
 	Hyperspace.fromFileContentsAsString = function
 	(
@@ -217,8 +220,53 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems)
 			bodyListToAddTo.push(planet);
 		}
 
-		var hyperspace = new Hyperspace(size, starsystemRadiusOuter, starsystems);
+		starsystems.addLookups("name");
+
+		// todo - Encounter test.
+		var shipGroup = new ShipGroup
+		(
+			"Tempestrial Ship Group X",
+			"Tempestrial",
+			starsystems["Sol"].posInHyperspace.clone().add(new Coords(100, 0)),
+			[ new Ship("Tumbler") ]
+		);
+
+		var shipGroups = [ shipGroup ];
+
+		var hyperspace = new Hyperspace
+		(
+			size, starsystemRadiusOuter, starsystems, shipGroups
+		);
 
 		return hyperspace;
+	}
+
+	// instance methods
+
+	Hyperspace.prototype.starsystemClosestTo = function(point)
+	{
+		var starsystemClosestSoFar = null;
+
+		var distanceClosestSoFar = Number.POSITIVE_INFINITY;
+		var displacement = new Coords();
+
+		for (var i = 0; i < this.starsystems.length; i++)
+		{
+			var starsystem = this.starsystems[i];
+			var distance = displacement.overwriteWith
+			(
+				starsystem.posInHyperspace
+			).subtract
+			(
+				point
+			).magnitude();
+			if (distance < distanceClosestSoFar)
+			{
+				distanceClosestSoFar = distance;
+				starsystemClosestSoFar = starsystem;
+			}
+		}
+
+		return starsystemClosestSoFar;
 	}
 }

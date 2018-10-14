@@ -105,6 +105,39 @@ function Ship(defnName)
 		);
 	}
 
+	Ship.activityApproachPlayer = function(universe, world, place, actor)
+	{
+		var entities = place.entities;
+		var target = entities["Player"];
+		var targetPos = target.locatable.loc.pos;
+		var actorLoc = actor.locatable.loc;
+		var actorPos = actorLoc.pos;
+		var actorVel = actorLoc.vel;
+
+		var targetDisplacement = targetPos.clone().subtract(actorPos);
+
+		var targetDistance = targetDisplacement.magnitude();
+		if (targetDistance < actor.ship.defn(world).sensorRange)
+		{
+			var forwardAsPolar = new Polar().fromCoords(actorLoc.orientation.forward);
+			var angleForward = forwardAsPolar.azimuthInTurns;
+
+			var targetDisplacementAsPolar = new Polar().fromCoords(targetDisplacement);
+			var angleToTarget = targetDisplacementAsPolar.azimuthInTurns;
+
+			var angleTargetMinusForward =
+				angleToTarget.subtractWrappedToRangeMax(angleForward, 1);
+
+			if (angleTargetMinusForward != 0)
+			{
+				var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
+				actor.ship.turnInDirection(world, actor, directionToTurn);
+			}
+
+			actor.ship.accelerate(world, actor);
+		}
+	}
+
 	Ship.inputToActionMappings = function()
 	{
 		var returnValues =

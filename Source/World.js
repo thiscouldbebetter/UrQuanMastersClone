@@ -213,6 +213,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 		(
 			"Player",
 			"Player", // factionName
+			null, // pos
 			playerShips
 		);
 		var shipComponentDefns = ShipComponentDefn.Instances();

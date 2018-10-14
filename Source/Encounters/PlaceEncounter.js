@@ -19,9 +19,13 @@ function PlaceEncounter(world, encounter)
 		var world = universe.world;
 		var placeEncounter = world.place;
 		var encounter = placeEncounter.encounter;
-		var combat = new Combat(size, encounter).initialize(world);
+		var displaySize = universe.display.sizeInPixels;
+		var combatSize = new Coords(1, 1).multiplyScalar(displaySize.y * 2);
+		var player = world.player;
+		var shipGroups = [player.shipGroup, encounter.shipGroupOther];
+		var combat = new Combat(combatSize, encounter, shipGroups).initialize(world);
 		var shipSelect = combat.toControlShipSelect(universe, universe.display.sizeInPixels);
-		universe.venueNext = new VenueControls();
+		universe.venueNext = new VenueControls(shipSelect);
 	}
 
 	PlaceEncounter.prototype.talk = function(universe)
@@ -81,11 +85,19 @@ function PlaceEncounter(world, encounter)
 
 		if (this.venueControls == null)
 		{
-			var messageToShow = "[Encounter]";
+			var encounter = this.encounter;
+			var shipGroupOther = encounter.shipGroupOther;
+			var shipGroupOtherDescription = shipGroupOther.toStringDescription()
+
+			var newline = "\n";
+			var messageToShow =
+				"Encounter" + newline
+				+ "with " + shipGroupOtherDescription + newline
+				+ "near " + encounter.planet.name;
 
 			var size = new Coords(400, 300); // hack - size
 
-			var factionName = this.encounter.factionName;
+			var factionName = encounter.factionName;
 			var faction = universe.world.defns.factions[factionName];
 
 			if (faction.talksImmediately == true)
@@ -95,7 +107,7 @@ function PlaceEncounter(world, encounter)
 			}
 
 			var choiceNames = [ "Talk" ];
-			var choiceActions = [ this.talk ];
+			var choiceActions = [ this.talk.bind(this) ];
 
 			if (faction.relationsWithPlayer == Faction.RelationsHostile)
 			{

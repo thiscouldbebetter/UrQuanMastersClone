@@ -130,10 +130,11 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 
 	Player.prototype.toControlSidebar = function()
 	{
+		var flagship = this.flagship;
 		var containerSidebarSize = new Coords(100, 300); // hack
 		var marginWidth = 10;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
-		var fontHeight = 16;
+		var fontHeight = 10;
 		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
 		var labelSize = new Coords(childControlWidth, fontHeight);
 
@@ -150,19 +151,101 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(containerSidebarSize.x / 2, marginSize.y + labelSize.y / 2),
 					labelSize,
 					true, // isTextCentered,
-					"Flagship",
+					flagship.name,
 					fontHeight
 				),
 
-				new ControlContainer
+				new ControlLabel
 				(
-					"containerShipImage",
-					new Coords(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
-					new Coords(1, 2).multiplyScalar(childControlWidth),
-					[
-						// todo
-					]// children
+					"labelCrew",
+					new Coords(marginSize.x, marginSize.y * 2 + labelSize.y),
+					labelSize,
+					false, // isTextCentered
+					"Crew:",
+					fontHeight
 				),
+
+				new ControlLabel
+				(
+					"infoCrew",
+					new Coords(marginSize.x * 4, marginSize.y * 2 + labelSize.y),
+					labelSize,
+					false, // isTextCentered
+					new DataBinding(flagship, "fuelCurrentOverMax()"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelFuel",
+					new Coords(marginSize.x, marginSize.y * 3 + labelSize.y * 2),
+					labelSize,
+					false, // isTextCentered
+					"Fuel:",
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoFuel",
+					new Coords(marginSize.x * 4, marginSize.y * 3 + labelSize.y * 2),
+					labelSize,
+					false, // isTextCentered
+					new DataBinding(flagship, "fuelCurrentOverMax()"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelLanders",
+					new Coords
+					(
+						marginSize.x,
+						marginSize.y * 4 + labelSize.y * 3
+					),
+					labelSize,
+					false, // isTextCentered
+					"Landers:",
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoLanders",
+					new Coords
+					(
+						marginSize.x * 6,
+						marginSize.y * 4 + labelSize.y * 3
+					),
+					labelSize,
+					false, // isTextCentered
+					new DataBinding(flagship, "numberOfLanders"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelCargo",
+					new Coords
+					(
+						marginSize.x, marginSize.y * 5 + labelSize.y * 4
+					),
+					labelSize,
+					false, // isTextCentered
+					"Cargo:",
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoCargo",
+					new Coords(marginSize.x * 4, marginSize.y * 5 + labelSize.y * 4),
+					labelSize,
+					false, // isTextCentered
+					new DataBinding(flagship, "cargoCurrentOverMax()"),
+					fontHeight
+				),
+
 			]
 		);
 

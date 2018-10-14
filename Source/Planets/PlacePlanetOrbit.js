@@ -31,39 +31,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var world = universe.world;
 		var placeOrbit = world.place;
 		var placePlanetVicinity = placeOrbit.placePlanetVicinity;
-		var planetDeparted = placeOrbit.planet;
-
-		var size = placePlanetVicinity.size;
-		var playerPosNext = size.clone().half();
-
-		var planetPrimary = placePlanetVicinity.planet;
-		if (planetDeparted != planetPrimary)
-		{
-			playerPosNext.add
-			(
-				planetDeparted.posAsPolar.toCoords( new Coords() )
-			)
-		}
-
-		var playerOrientationNext = Orientation.Instances.ForwardXDownZ.clone()
-		var playerHeading = playerOrientationNext.headingInTurns();
-		playerPosNext.add
-		(
-			new Polar
-			(
-				playerHeading, planetDeparted.radiusOuter * 3
-			).toCoords
-			(
-				new Coords()
-			)
-		);
-
-		var playerLocNext = new Location(playerPosNext, playerOrientationNext);
-
-		world.placeNext = new PlacePlanetVicinity
-		(
-			world, size, planetPrimary, playerLocNext, placePlanetVicinity.placeStarsystem
-		);
+		world.placeNext = placePlanetVicinity;
 	}
 
 	PlacePlanetOrbit.prototype.scanEnergy = function(universe)
@@ -528,10 +496,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					fontHeight,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
-					{
-						placePlanetOrbit.returnToPlaceParent(universe);
-					},
+					this.returnToPlaceParent.bind(this),
 					universe // context
 				),
 			]

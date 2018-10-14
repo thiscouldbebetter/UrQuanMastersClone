@@ -1,6 +1,7 @@
 
-function Encounter(factionName, shipGroupOther, placeToReturnTo, posToReturnTo)
+function Encounter(planet, factionName, shipGroupOther, placeToReturnTo, posToReturnTo)
 {
+	this.planet = planet;
 	this.factionName = factionName;
 	this.shipGroupOther = shipGroupOther;
 	this.placeToReturnTo = placeToReturnTo;

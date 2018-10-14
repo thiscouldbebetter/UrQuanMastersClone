@@ -116,8 +116,12 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		{
 			if (entityOther.planet != null)
 			{
-				var planetToOrbit = entityOther.planet;
-				world.placeNext = new PlacePlanetOrbit(world, planetToOrbit, place);
+				var playerLoc = entityPlayer.locatable.loc;
+				var planetPos = entityOther.locatable.loc.pos;
+				playerLoc.pos.overwriteWith(planetPos);
+				playerLoc.vel.clear();
+				entityPlayer.collidable.entityAlreadyCollidedWith = entityOther;
+				world.placeNext = new PlacePlanetOrbit(world, entityOther.planet, place);
 			}
 			else if (entityOther.shipGroup != null)
 			{
@@ -125,7 +129,11 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 				var shipGroup = entityOther.shipGroup;
 				var encounter = new Encounter
 				(
-					shipGroup.factionName, shipGroup, place, entityPlayer.locatable.loc.pos
+					this.planet,
+					shipGroup.factionName,
+					shipGroup,
+					place,
+					entityPlayer.locatable.loc.pos
 				);
 				var placeEncounter = new PlaceEncounter(world, encounter);
 				world.placeNext = placeEncounter;
@@ -143,7 +151,11 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 					entityOther.collidable.ticksUntilCanCollide = 50; // hack
 					var encounter = new Encounter
 					(
-						station.factionName, null, place, entityPlayer.locatable.loc.pos
+						this.planet,
+						station.factionName,
+						null,
+						place,
+						entityPlayer.locatable.loc.pos
 					);
 					var placeEncounter = new PlaceEncounter(world, encounter);
 					world.placeNext = placeEncounter;
@@ -160,6 +172,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 	(
 		"Player",
 		[
+			world.player.shipGroup.ships[0],
 			world.player.shipGroup,
 			new Locatable(playerLoc),
 			new Constrainable([constraintSpeedMax, constraintTrimToRange]),
@@ -174,6 +187,8 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 			new Playable(),
 		]
 	);
+
+	//playerEntity.collidable.ticksUntilCanCollide = 100; // hack
 
 	entities.push(playerEntity);
 

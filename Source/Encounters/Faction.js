@@ -15,5 +15,4 @@ function Faction(name, nameOriginal, color, relationsWithPlayer, talksImmediatel
 	Faction.RelationsAllied = "Allied";
 	Faction.RelationsHostile = "Hostile";
 	Faction.RelationsNeutral = "Neutral";
-
 }

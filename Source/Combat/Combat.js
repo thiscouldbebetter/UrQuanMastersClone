@@ -17,8 +17,8 @@ function Combat(size, encounter, shipGroups)
 {
 	Combat.prototype.enemyActivity = function(universe, world, place, actor)
 	{
-		var shipEntities = place.shipEntities();
-		var target = (shipEntities[0] == actor ? shipEntities[1] : shipEntities[0]);
+		var entitiesShips = place.entitiesShips();
+		var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
 		var targetPos = target.locatable.loc.pos;
 		var actorLoc = actor.locatable.loc;
 		var actorPos = actorLoc.pos;
@@ -45,15 +45,17 @@ function Combat(size, encounter, shipGroups)
 		if (angleTargetMinusForward != 0)
 		{
 			var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-			Ship.turnInDirection(world, actor, directionToTurn);
+			actor.ship.turnInDirection(world, actor, directionToTurn);
 		}
 
 		actor.ship.accelerate(world, actor);
 	}
 
-	Combat.prototype.exit = function(universe, world, place, entity)
+	Combat.prototype.exit = function(universe)
 	{
-		alert("todo");
+		var world = universe.world;
+		world.placeNext = this.encounter.placeToReturnTo;
+		universe.venueNext = new VenueWorld(world);
 	}
 
 	Combat.prototype.initialize = function(world)
@@ -130,7 +132,7 @@ function Combat(size, encounter, shipGroups)
 	{
 		var returnValue = universe.controlBuilder.message
 		(
-			universe, size, "Combat complete.", this.exit
+			universe, size, "Combat complete.", this.exit.bind(this)
 		);
 		return returnValue;
 	}

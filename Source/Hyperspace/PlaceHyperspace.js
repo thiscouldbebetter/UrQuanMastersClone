@@ -1,5 +1,5 @@
 
-function PlaceHyperspace(world, hyperspace, playerLoc)
+function PlaceHyperspace(world, hyperspace, starsystemDeparted, playerLoc)
 {
 	this.hyperspace = hyperspace;
 	this.size = this.hyperspace.size;
@@ -96,7 +96,7 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 
 		var starEntity = new Entity
 		(
-			"Star" + i,
+			starsystem.name,
 			[
 				starsystem,
 				new Locatable( new Location(starPos) ),
@@ -107,6 +107,8 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 
 		entities.push(starEntity);
 	}
+
+	entities.addLookups("name");
 
 	// factions
 
@@ -129,6 +131,16 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 		}
 	}
 
+	// shipGroups
+
+	var shipGroups = this.hyperspace.shipGroups;
+	for (var i = 0; i < shipGroups.length; i++)
+	{
+		var shipGroup = shipGroups[i];
+		var entityShipGroup = this.shipGroupToEntity(world, this, shipGroup);
+		entities.push(entityShipGroup);
+	}
+
 	// player
 
 	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
@@ -144,106 +156,6 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 		]),
 		this.camera
 	);
-
-	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
-	{
-		var entityOtherName = entityOther.name;
-		if (entityOtherName.startsWith("Star"))
-		{
-			var starsystem = entityOther.starsystem;
-			var playerLoc = entityPlayer.locatable.loc;
-			var playerOrientation = playerLoc.orientation;
-			var playerPosNextAsPolar = new Polar().fromCoords
-			(
-				playerOrientation.forward
-			).addToAzimuthInTurns(.5).wrap();
-			playerPosNextAsPolar.radius = starsystem.sizeInner.x * .45;
-			var playerPosNext = playerPosNextAsPolar.toCoords(new Coords()).add
-			(
-				starsystem.sizeInner.clone().half()
-			);
-
-			world.placeNext = new PlaceStarsystem
-			(
-				world,
-				starsystem,
-				new Location
-				(
-					playerPosNext,
-					playerOrientation.clone()
-				)
-			);
-		}
-		else if (entityOtherName.startsWith("ShipGroup"))
-		{
-			var shipGroupOther = entityOther.shipGroup;
-			var encounter = new Encounter
-			(
-				shipGroupOther.factionName, shipGroupOther, place, entityPlayer.locatable.loc.pos
-			);
-			var placeEncounter = new PlaceEncounter(world, encounter);
-			world.placeNext = placeEncounter;
-		}
-		else if (entityOtherName.startsWith("Faction"))
-		{
-			var faction = entityOther.faction;
-			var factionName = faction.name;
-
-			var numberOfShipGroupsExistingForFaction = 0;
-			var entitiesShipGroupsAll = place.entitiesShipGroups();
-			for (var i = 0; i < entitiesShipGroupsAll.length; i++)
-			{
-				var entityShipGroup = entitiesShipGroupsAll[i];
-				if (entityShipGroup.shipGroup.factionName == factionName)
-				{
-					numberOfShipGroupsExistingForFaction++;
-				}
-			}
-
-			var shipGroupsPerFaction = 1;
-			if (numberOfShipGroupsExistingForFaction < shipGroupsPerFaction)
-			{
-				var shipDefnName = faction.shipDefnName; // todo
-				var shipGroup = new ShipGroup
-				(
-					factionName + Math.random(),
-					factionName,
-					[
-						new Ship(shipDefnName)
-					]
-				);
-
-				var shipPos = entityPlayer.locatable.loc.pos.clone().add
-				(
-					new Coords(50, 0)
-				);
-
-				var entityShipGroup = new Entity
-				(
-					"ShipGroup" + faction.name,
-					[
-						faction,
-						shipGroup,
-						new Locatable(new Location(shipPos)),
-						new Collidable(new Sphere(shipPos, 5)),
-						new Drawable
-						(
-							new VisualCamera
-							(
-								new VisualGroup([
-									new VisualCircle(10, null, "Red"),
-									new VisualText(factionName, "White", "Red"),
-								]),
-								place.camera
-							)
-						),
-					]
-				);
-
-				place.entitiesToSpawn.push(entityShipGroup);
-			}
-		}
-	}
 
 	var playerShipGroup = world.player.shipGroup;
 	var playerShip = playerShipGroup.ships[0];
@@ -270,7 +182,7 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 			(
 				playerCollider,
 				[ "collidable" ], // entityPropertyNamesToCollideWith
-				playerCollide
+				this.playerCollide
 			),
 			new Drawable(playerVisual),
 			new ItemHolder(),
@@ -279,6 +191,13 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 			playerShipGroup.ships[0]
 		]
 	);
+
+	if (starsystemDeparted != null)
+	{
+		var starsystemName = starsystemDeparted.name;
+		var entityForStarsystemDeparted = entities[starsystemName];
+		playerEntity.collidable.entityAlreadyCollidedWith = entityForStarsystemDeparted;
+	}
 
 	entities.push(playerEntity);
 
@@ -298,9 +217,141 @@ function PlaceHyperspace(world, hyperspace, playerLoc)
 	PlaceHyperspace.prototype = Object.create(Place.prototype);
 	PlaceHyperspace.prototype.constructor = Place;
 
+	// methods
+
+	PlaceHyperspace.prototype.entitiesShips = function()
+	{
+		return this.entitiesByPropertyName("ship");
+	}
+
 	PlaceHyperspace.prototype.entitiesShipGroups = function()
 	{
 		return this.entitiesByPropertyName("shipGroup");
+	}
+
+	PlaceHyperspace.prototype.factionShipGroupSpawnIfNeeded = function
+	(
+		universe, world, place, entityPlayer, entityOther
+	)
+	{
+		var faction = entityOther.faction;
+		var factionName = faction.name;
+
+		var numberOfShipGroupsExistingForFaction = 0;
+		var entitiesShipGroupsAll = place.entitiesShipGroups();
+		for (var i = 0; i < entitiesShipGroupsAll.length; i++)
+		{
+			var entityShipGroup = entitiesShipGroupsAll[i];
+			if (entityShipGroup.shipGroup.factionName == factionName)
+			{
+				numberOfShipGroupsExistingForFaction++;
+			}
+		}
+
+		var shipGroupsPerFaction = 1; // todo
+		if (numberOfShipGroupsExistingForFaction < shipGroupsPerFaction)
+		{
+			var factionSphereOfInfluence = faction.sphereOfInfluence;
+			var shipGroupPos = factionSphereOfInfluence.pointRandom().clearZ();
+
+			var shipDefnName = faction.shipDefnName; // todo
+			var factionName = faction.name;
+
+			var shipGroup = new ShipGroup
+			(
+				factionName + " Ship Group",
+				factionName,
+				shipGroupPos,
+				[ new Ship(shipDefnName) ]
+			);
+
+			var entityShipGroup = place.shipGroupToEntity(world, place, shipGroup);
+			place.hyperspace.shipGroups.push(shipGroup);
+			place.entitiesToSpawn.push(entityShipGroup);
+		}
+	}
+
+	PlaceHyperspace.prototype.playerCollide = function(universe, world, place, entityPlayer, entityOther)
+	{
+		if (entityOther.starsystem != null)
+		{
+			var starsystem = entityOther.starsystem;
+			var playerLoc = entityPlayer.locatable.loc;
+			var playerOrientation = playerLoc.orientation;
+			var playerPosNextAsPolar = new Polar().fromCoords
+			(
+				playerOrientation.forward
+			).addToAzimuthInTurns(.5).wrap();
+			playerPosNextAsPolar.radius = starsystem.sizeInner.x * .45;
+			var playerPosNext = playerPosNextAsPolar.toCoords(new Coords()).add
+			(
+				starsystem.sizeInner.clone().half()
+			);
+
+			world.placeNext = new PlaceStarsystem
+			(
+				world,
+				starsystem,
+				new Location
+				(
+					playerPosNext,
+					playerOrientation.clone()
+				)
+			);
+		}
+		else if (entityOther.ship != null)
+		{
+			var shipGroupOther = entityOther.shipGroup;
+			var playerPos = entityPlayer.locatable.loc.pos;
+			var starsystemClosest = place.hyperspace.starsystemClosestTo(playerPos);
+			var planetClosest = starsystemClosest.planets.random();
+			var encounter = new Encounter
+			(
+				planetClosest,
+				shipGroupOther.factionName,
+				shipGroupOther,
+				place,
+				playerPos
+			);
+			var placeEncounter = new PlaceEncounter(world, encounter);
+			world.placeNext = placeEncounter;
+
+			place.entitiesToRemove.push(entityOther);
+			place.hyperspace.shipGroups.remove(shipGroupOther);
+		}
+		else if (entityOther.faction != null)
+		{
+			place.factionShipGroupSpawnIfNeeded(universe, world, place, entityPlayer, entityOther);
+		}
+	}
+
+	PlaceHyperspace.prototype.shipGroupToEntity = function(world, place, shipGroup)
+	{
+		var ship0 = shipGroup.ships[0];
+		var shipGroupPos = shipGroup.pos;
+
+		var entityShipGroup = new Entity
+		(
+			shipGroup.name + Math.random(),
+			[
+				new Actor(Ship.activityApproachPlayer), // hack
+				//faction,
+				shipGroup,
+				ship0,
+				new Locatable(new Location(shipGroupPos)),
+				new Collidable(new Sphere(shipGroupPos, 5)),
+				new Drawable
+				(
+					new VisualCamera
+					(
+						ship0.defn(world).visual,
+						place.camera
+					)
+				),
+			]
+		);
+
+		return entityShipGroup;
 	}
 
 	// Place overrides

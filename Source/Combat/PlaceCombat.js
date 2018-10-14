@@ -106,11 +106,11 @@ function PlaceCombat(world, combat)
 
 		var combat = place.combat;
 		var combatSize = combat.size;
-		var shipEntities = place.shipEntities();
+		var entitiesShips = place.entitiesShips();
 
-		for (var i = 0; i < shipEntities.length; i++)
+		for (var i = 0; i < entitiesShips.length; i++)
 		{
-			var ship = shipEntities[i];
+			var ship = entitiesShips[i];
 			var shipLoc = ship.locatable.loc;
 			var shipPos = shipLoc.pos;
 			var displacement = shipPos.clone().subtractWrappedToRangeMax(planetPos, combatSize);
@@ -298,7 +298,7 @@ function PlaceCombat(world, combat)
 		place.entitiesToSpawn.push(entityExplosion);
 	}
 
-	PlaceCombat.prototype.shipEntities = function()
+	PlaceCombat.prototype.entitiesShips = function()
 	{
 		return this.entitiesByPropertyName("ship");
 	}
@@ -315,7 +315,7 @@ function PlaceCombat(world, combat)
 		var drawLoc = this.drawLoc;
 		var drawPos = drawLoc.pos;
 
-		var ships = this.shipEntities();
+		var ships = this.entitiesShips();
 
 		var camera = this.camera;
 		var cameraPos = camera.loc.pos;

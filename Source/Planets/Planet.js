@@ -9,10 +9,10 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 	this.satellites = satellites;
 	this.shipGroups = (shipGroups == null ? [] : shipGroups);
 
-	this.mass = mass;
-	this.radius = radius;
-	this.gravity = gravity;
-	this.orbit = orbit;
+	this.mass = Math.round(mass);
+	this.radius = Math.round(radius);
+	this.gravity = gravity.toFixed(2);
+	this.orbit = Math.round(orbit);
 	this.day = day;
 	this.year = year;
 	this.tectonics = tectonics;

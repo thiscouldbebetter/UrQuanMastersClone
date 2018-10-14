@@ -10,6 +10,10 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 	ShipComponentDefn.Categories = function()
 	{
 		this.Backbone = "Backbone";
+		this.Cargo = "Cargo";
+		this.Crew = "Crew";
+		this.Energy = "Energy";
+		this.Fuel = "Fuel";
 		this.Propulsion = "Propulsion";
 		this.Thruster = "Thruster";
 		this.TurningJets = "TurningJets";
@@ -18,6 +22,10 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 		this._All =
 		[
 			this.Backbone,
+			this.Cargo,
+			this.Crew,
+			this.Energy,
+			this.Fuel,
 			this.Propulsion,
 			this.Thruster,
 			this.TurningJets,
@@ -41,24 +49,69 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 	{
 		var categories = ShipComponentDefn.Categories();
 		var categoryBackbone = categories.Backbone;
+		var categoryCargo = categories.Cargo;
+		var categoryCrew = categories.Crew;
+		var categoryEnergy = categories.Energy
+		var categoryFuel = categories.Fuel;
 		var categoryThruster = categories.Thruster;
 		var categoryTurningJets = categories.TurningJets;
+		var categoryWeapon = categories.Weapon;
 
-		var noEffect = function applyToFlagship(player) {};
+		var noEffect = function applyToFlagship(flagship) {};
 
-		this.CargoHold = new ShipComponentDefn("Cargo Hold", [ categoryBackbone ], 100, noEffect);
-		this.CrewHabitat = new ShipComponentDefn("Crew Habitat", [ categoryBackbone ], 100, noEffect);
+		this.CargoHold = new ShipComponentDefn
+		(
+			"Cargo Hold",
+			[ categoryBackbone, categoryCargo ],
+			100,
+			function applyToFlagship(flagship) { flagship._cargoMax += 100; }
+		);
+		this.CrewHabitat = new ShipComponentDefn
+		(
+			"Crew Habitat",
+			[ categoryBackbone, categoryCrew ],
+			100,
+			function applyToFlagship(flagship) { flagship._crewMax += 100; }
+		);
 		this.FuelTank = new ShipComponentDefn
 		(
 			"Fuel Tank",
-			[ categoryBackbone ],
+			[ categoryBackbone, categoryFuel ],
 			100, // value
-			function applyToFlagship(player) { player._fuelMax += 100; }
+			function applyToFlagship(flagship) { flagship._fuelMax += 100; }
 		);
-		this.IonCannon = new ShipComponentDefn("Ion Cannon", [ categoryBackbone ], 100, noEffect);
-		this.FusionThruster = new ShipComponentDefn("Fusion Thruster", [ categoryThruster ], 100, noEffect);
-		this.PowerPlant = new ShipComponentDefn("Power Plant", [ categoryBackbone ], 100, noEffect);
-		this.TurningJets = new ShipComponentDefn("Turning Jets", [ categoryTurningJets ], 100, noEffect);
+
+		this.IonCannon = new ShipComponentDefn
+		(
+			"Ion Cannon",
+			[ categoryBackbone, categoryWeapon ],
+			100,
+			noEffect
+		);
+
+		this.FusionThruster = new ShipComponentDefn
+		(
+			"Fusion Thruster",
+			[ categoryThruster ],
+			100,
+			function applyToFlagship(flagship) { flagship._acceleration += 1; }
+		);
+
+		this.PowerPlant = new ShipComponentDefn
+		(
+			"Power Plant",
+			[ categoryBackbone, categoryEnergy ],
+			100,
+			function applyToFlagship(flagship) { flagship._energyPerTick += 1; }
+		);
+
+		this.TurningJets = new ShipComponentDefn
+		(
+			"Turning Jets",
+			[ categoryTurningJets ],
+			100,
+			function applyToFlagship(flagship) { flagship._turnsPerTick += 1; }
+		);
 
 		this._All =
 		[

@@ -60,12 +60,14 @@ function combat(universe)
 			(
 				"Player",
 				null, // factionName
+				null, // pos
 				playerShips
 			),
 			new ShipGroup
 			(
 				"Other",
 				null, // factionName
+				null, // pos
 				enemyShips
 			)
 		]

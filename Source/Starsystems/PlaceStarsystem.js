@@ -66,70 +66,6 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		playerVisualBody,
 	]);
 
-	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
-	{
-		var entityOtherName = entityOther.name;
-
-		if (entityOtherName.startsWith("Enemy"))
-		{
-			var shipGroupOther = entityOther.shipGroup;
-			var encounter = new Encounter
-			(
-				shipGroupOther.factionName, shipGroupOther, place, entityPlayer.locatable.loc.pos
-			);
-			var placeEncounter = new PlaceEncounter(world, encounter);
-			world.placeNext = placeEncounter;
-		}
-		else if (entityOtherName.startsWith("Wall"))
-		{
-			var hyperspace = world.hyperspace;
-			var playerLoc = entityPlayer.locatable.loc;
-			var playerPosNext = place.starsystem.posInHyperspace.clone().add
-			(
-				playerLoc.orientation.forward.clone().multiplyScalar
-				(
-					2 * hyperspace.starsystemRadiusOuter
-				)
-			);
-
-			world.placeNext = new PlaceHyperspace
-			(
-				world,
-				hyperspace,
-				new Location(playerPosNext, playerLoc.orientation.clone())
-			);
-		}
-		else if (entityOtherName.startsWith("Sun"))
-		{
-			// Do nothing.
-		}
-		else
-		{
-			if (entityOther.planet != null)
-			{
-				var planet = entityOther.planet;
-				var sizeNext = place.size.clone();
-				var playerOrientation = entityPlayer.locatable.loc.orientation;
-				var heading = playerOrientation.headingInTurns();
-				var playerPosNext = new Polar
-				(
-					heading + .5, .4 * sizeNext.y
-				).wrap().toCoords
-				(
-					new Coords()
-				).add
-				(
-					sizeNext.clone().half()
-				);
-				var playerLocNext = new Location(playerPosNext, playerOrientation);
-				world.placeNext = new PlacePlanetVicinity
-				(
-					world, sizeNext, planet, playerLocNext, place
-				);
-			}
-		}
-	}
-
 	var constraintSpeedMax = new Constraint("SpeedMax", 1);
 	//var constraintFriction = new Constraint("Friction", 0.3);
 	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
@@ -146,7 +82,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			(
 				playerCollider,
 				[ "collidable" ], // entityPropertyNamesToCollideWith
-				playerCollide
+				this.playerCollide
 			),
 			new Drawable(playerVisual),
 			new ItemHolder(),
@@ -302,6 +238,70 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 
 	PlaceStarsystem.prototype = Object.create(Place.prototype);
 	PlaceStarsystem.prototype.constructor = Place;
+
+	// methods
+
+	PlaceStarsystem.prototype.playerCollide = function(universe, world, place, entityPlayer, entityOther)
+	{
+		var entityOtherName = entityOther.name;
+
+		if (entityOtherName.startsWith("Enemy"))
+		{
+			var shipGroupOther = entityOther.shipGroup;
+			var encounter = new Encounter
+			(
+				this.starsystem.planets.random(),
+				shipGroupOther.factionName,
+				shipGroupOther,
+				place,
+				entityPlayer.locatable.loc.pos
+			);
+			var placeEncounter = new PlaceEncounter(world, encounter);
+			world.placeNext = placeEncounter;
+		}
+		else if (entityOtherName.startsWith("Wall"))
+		{
+			var hyperspace = world.hyperspace;
+			var playerLoc = entityPlayer.locatable.loc;
+			var playerPosNext = place.starsystem.posInHyperspace.clone();
+			world.placeNext = new PlaceHyperspace
+			(
+				world,
+				hyperspace,
+				place.starsystem, // starsystemDeparted
+				new Location(playerPosNext, playerLoc.orientation.clone())
+			);
+		}
+		else if (entityOtherName.startsWith("Sun"))
+		{
+			// Do nothing.
+		}
+		else
+		{
+			if (entityOther.planet != null)
+			{
+				var planet = entityOther.planet;
+				var sizeNext = place.size.clone();
+				var playerOrientation = entityPlayer.locatable.loc.orientation;
+				var heading = playerOrientation.headingInTurns();
+				var playerPosNext = new Polar
+				(
+					heading + .5, .4 * sizeNext.y
+				).wrap().toCoords
+				(
+					new Coords()
+				).add
+				(
+					sizeNext.clone().half()
+				);
+				var playerLocNext = new Location(playerPosNext, playerOrientation);
+				world.placeNext = new PlacePlanetVicinity
+				(
+					world, sizeNext, planet, playerLocNext, place
+				);
+			}
+		}
+	}
 
 	// Place overrides
 
