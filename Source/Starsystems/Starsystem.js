@@ -50,12 +50,13 @@ function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, pl
 
 		planetEarth.satellites.splice(0, 0, station);
 
-		var enemyShipDefnName = "LahkemupGuardDrone";
+		var enemyShipDefnName = "GuardDrone";
 		var enemyShip = new Ship(enemyShipDefnName);
 		var enemyShipGroup = new ShipGroup
 		(
 			"Enemy",
 			"LahkemupGuardDrone", // factionName
+			new Coords(0, 0), // todo
 			[ enemyShip ]
 		);
 

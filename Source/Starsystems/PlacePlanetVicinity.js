@@ -129,7 +129,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 				var shipGroup = entityOther.shipGroup;
 				var encounter = new Encounter
 				(
-					this.planet,
+					place.planet,
 					shipGroup.factionName,
 					shipGroup,
 					place,

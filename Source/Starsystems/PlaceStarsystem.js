@@ -250,7 +250,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			var shipGroupOther = entityOther.shipGroup;
 			var encounter = new Encounter
 			(
-				this.starsystem.planets.random(),
+				place.starsystem.planets.random(),
 				shipGroupOther.factionName,
 				shipGroupOther,
 				place,
