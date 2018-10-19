@@ -152,9 +152,8 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 				new Drawable(enemyVisual),
 				new Actor
 				(
-					function activity(universe, world, place, actor)
+					function activity(universe, world, place, actor, entityToTargetName)
 					{
-						var entityToTargetName = "Player";
 						var target = place.entities[entityToTargetName];
 						var actorLoc = actor.locatable.loc;
 
@@ -168,7 +167,8 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 						(
 							.5 // hack - speed
 						);
-					}
+					},
+					"Player"
 				),
 			]
 		);

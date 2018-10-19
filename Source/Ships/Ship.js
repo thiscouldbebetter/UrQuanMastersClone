@@ -35,7 +35,7 @@ function Ship(defnName)
 				if (ship.energy >= attackDefn.energyToUse)
 				{
 					ship.energy -= attackDefn.energyToUse;
-					attackDefn.projectileSpawn(universe, world, place, actor);
+					attackDefn.activate(universe, world, place, actor);
 				}
 			}
 		);
@@ -56,7 +56,7 @@ function Ship(defnName)
 				if (ship.energy >= specialDefn.energyToUse)
 				{
 					ship.energy -= specialDefn.energyToUse;
-					specialDefn.effectWhenInvoked(universe, world, place, actor);
+					specialDefn.activate(universe, world, place, actor);
 				}
 			}
 		);

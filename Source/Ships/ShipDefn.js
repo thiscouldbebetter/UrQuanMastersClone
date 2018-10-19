@@ -59,8 +59,10 @@ function ShipDefn
 			"todo",
 			4, // energyToUse
 			2, // projectileRadius
+			0, // angleInTurns
 			8, // speed
 			16, // ticksToLive
+			true, // diesOnImpact
 			20, // damage
 			new VisualCircle(2, "Yellow"), // visualProjectile
 			new VisualGroup
@@ -69,6 +71,7 @@ function ShipDefn
 				new VisualCircle(6, "Red")
 			]), // visualImpact
 			function effectWhenInvoked(universe, world, place, actor) {},
+			null, // activity
 			function effectOnImpact(universe, world, place, actor, target) {},
 		);
 
@@ -165,6 +168,50 @@ function ShipDefn
 			return shipVisual;
 		}
 
+		// ship attacks and specials
+
+		// encumbrator
+
+		var shipEncumbratorSpecialBurr = new ShipAttackDefn
+		(
+			"Burr",
+			4, // energyToUse
+			2, // projectileRadius
+			.5, // angleInTurns
+			0, // speed
+			null, // ticksToLive
+			false, // diesOnImpact
+			0, // damage
+			new VisualCircle(3, "DarkGreen", "Green"), // visualProjectile
+			new VisualGroup
+			([
+				new VisualSound("Sound"),
+				new VisualCircle(6, "Red")
+			]), // visualImpact
+			function effectWhenInvoked(universe, world, place, actor) {},
+			function activity(universe, world, place, actor, targetEntityName)
+			{
+				var actorLoc = actor.locatable.loc;
+				var actorPos = actorLoc.pos;
+				var target = place.entities[targetEntityName];
+				var targetPos = target.locatable.loc.pos;
+				var displacementToTarget = targetPos.clone().subtract(actorPos);
+				var directionToMove = displacementToTarget.normalize();
+				actorPos.add(directionToMove);
+			},
+			function effectOnImpact(universe, world, place, actor, target) {},
+		);
+
+		var shipElysianSpecialEnticer = new ShipSpecialDefn
+		(
+			"Enticer",
+			10, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				// todo
+			}
+		);
+
 		// fireblossom
 
 		var shipFireblossomSpecialRefuel = new ShipSpecialDefn
@@ -224,6 +271,18 @@ function ShipDefn
 			}
 		);
 
+		// kickback
+
+		var shipKickbackSpecialRightsize = new ShipSpecialDefn
+		(
+			"Rightsize",
+			-20, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				// Do nothing.
+			}
+		);
+
 		// pustule
 
 		var shipPustuleSpecialRetrodrive = new ShipSpecialDefn
@@ -241,6 +300,70 @@ function ShipDefn
 			}
 		);
 
+		// scuttler
+
+		var shipScuttlerSpecialMoonbeam = new ShipAttackDefn
+		(
+			"Moonbeam",
+			4, // energyToUse
+			2, // projectileRadius
+			.5, // angleInTurns
+			0, // speed
+			null, // ticksToLive
+			false, // diesOnImpact
+			0, // damage
+			new VisualCircle(3, "Red", "DarkRed"), // visualProjectile
+			new VisualGroup
+			([
+				new VisualSound("Sound"),
+				new VisualCircle(6, "Red")
+			]), // visualImpact
+			function effectWhenInvoked(universe, world, place, actor) {},
+			function activity(universe, world, place, actor, targetEntityName)
+			{
+				var actorLoc = actor.locatable.loc;
+				var actorPos = actorLoc.pos;
+				var target = place.entities[targetEntityName];
+				var targetPos = target.locatable.loc.pos;
+				var displacementToTarget = targetPos.clone().subtract(actorPos);
+				var directionToMove = displacementToTarget.normalize();
+				actorPos.add(directionToMove);
+			},
+			function effectOnImpact(universe, world, place, actor, target) {},
+		);
+
+		// shackler
+
+		var shipShacklerSpecialFighter = new ShipAttackDefn
+		(
+			"Fighter",
+			4, // energyToUse
+			2, // projectileRadius
+			.5, // angleInTurns
+			0, // speed
+			null, // ticksToLive
+			false, // diesOnImpact
+			0, // damage
+			new VisualCircle(3, "Red", "DarkRed"), // visualProjectile
+			new VisualGroup
+			([
+				new VisualSound("Sound"),
+				new VisualCircle(6, "Red")
+			]), // visualImpact
+			function effectWhenInvoked(universe, world, place, actor) {},
+			function activity(universe, world, place, actor, targetEntityName)
+			{
+				var actorLoc = actor.locatable.loc;
+				var actorPos = actorLoc.pos;
+				var target = place.entities[targetEntityName];
+				var targetPos = target.locatable.loc.pos;
+				var displacementToTarget = targetPos.clone().subtract(actorPos);
+				var directionToMove = displacementToTarget.normalize();
+				actorPos.add(directionToMove);
+			},
+			function effectOnImpact(universe, world, place, actor, target) {},
+		);
+
 		// sporsac
 
 		var shipSporsacSpecialRegenerate = new ShipSpecialDefn
@@ -255,10 +378,54 @@ function ShipDefn
 
 		// starshard
 
-		var shipStarshardSpecialLeech = new ShipSpecialDefn
+		var shipStarshardSpecialLeech = new ShipAttackDefn
 		(
-			"Leech",
-			1, // energyToUse
+			"todo",
+			4, // energyToUse
+			2, // projectileRadius
+			.5, // angleInTurns
+			0, // speed
+			null, // ticksToLive
+			false, // diesOnImpact
+			0, // damage
+			new VisualCircle(5, "White", "Cyan"), // visualProjectile
+			new VisualGroup
+			([
+				new VisualSound("Sound"),
+				new VisualCircle(6, "Red")
+			]), // visualImpact
+			function effectWhenInvoked(universe, world, place, actor) {},
+			function activity(universe, world, place, actor, targetEntityName)
+			{
+				var actorLoc = actor.locatable.loc;
+				var actorPos = actorLoc.pos;
+				var target = place.entities[targetEntityName];
+				var targetPos = target.locatable.loc.pos;
+				var displacementToTarget = targetPos.clone().subtract(actorPos);
+				var directionToMove = displacementToTarget.normalize();
+				actorPos.add(directionToMove);
+			},
+			function effectOnImpact(universe, world, place, actor, target) {},
+		);
+
+		// sunbright
+
+		var shipSunbrightSpecialBigBadaBoom = new ShipSpecialDefn
+		(
+			"BigBadaBoom",
+			0, // energyToUse
+			function effect(universe, world, place, actor)
+			{
+				// todo
+			}
+		);
+
+		// tumbler
+
+		var shipTumblerSpecialCatabolize = new ShipSpecialDefn
+		(
+			"Catabolize",
+			0, // energyToUse
 			function effect(universe, world, place, actor)
 			{
 				// todo
@@ -277,20 +444,20 @@ function ShipDefn
 			new sd("Efflorescence", "Twyggan", 	4, 		8, 		40, 	.5 / heads,  12, 12, 	.2,  	16, 	1000, 	sv("Efflorescence", "supox/blade"), adTodo,	adTodo ),
 			new sd("Starshard", "Xtalix", 		10,		.6, 	27, 	.142 / heads,36, 36, 	.2,  	30, 	1000, 	sv("Starshard", "chenjesu/broodhome"), adTodo,	shipStarshardSpecialLeech ),
 			new sd("Broadsider", "Terran", 		6,		.6, 	24, 	.5 / heads,	 18, 18, 	.111,  	18, 	1000, 	sv("Broadsider", "human/cruiser"),	adTodo,	adTodo ),
-			new sd("Shackler", 	"Lahkemup", 	10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	1000, 	sv("Shackler", "urquan/dreadnought"),adTodo,	adTodo ),
+			new sd("Shackler", 	"Lahkemup", 	10,		.86, 	30, 	.2 / heads,	 42, 42, 	.14,  	42, 	1000, 	sv("Shackler", "urquan/dreadnought"),adTodo, shipShacklerSpecialFighter ),
 			new sd("Pustule", 	"Amorfus", 		1,		1.5, 	18, 	.2 / heads,	 10, 10, 	.2,  	30, 	1000, 	sv("Pustule", "umgah/drone"), 		adTodo,	shipPustuleSpecialRetrodrive ),
-			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	1000, 	sv("Scuttler", "spathi/eluder"), 	adTodo,	adTodo ),
+			new sd("Scuttler", 	"Mauluska", 	7,		6, 		48, 	.5 / heads,	 30, 30, 	.091,  	10, 	1000, 	sv("Scuttler", "spathi/eluder"), 	adTodo,	shipScuttlerSpecialMoonbeam ),
 			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	1000, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	shipFireblossomSpecialRefuel ),
 			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	1000, 	sv("Collapsar", "androsynth/guardian"),	adTodo,	adTodo ),
-			new sd("Encumbrator","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	1000, 	sv("Encumbrator", "vux/intruder"), 	adTodo,	adTodo ),
+			new sd("Encumbrator","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	1000, 	sv("Encumbrator", "vux/intruder"), 	adTodo,	shipEncumbratorSpecialBurr ),
 			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	1000, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
 			new sd("Silencer",	"Kehlemal",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	1000, 	sv("Silencer", "kohrah/marauder"), 	adTodo,	adTodo ),
-			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	1000, 	sv("Kickback", "druuge/mauler"), 	adTodo,	adTodo ),
+			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	1000, 	sv("Kickback", "druuge/mauler"), 	adTodo,	shipKickbackSpecialRightsize ),
 			new sd("Wingshadow","Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	1000, 	sv("Wingshadow", "orz/nemesis"), 	adTodo,	adTodo ),
-			new sd("Elysian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	1000, 	sv("Elysian", "syreen/penetrator"),	adTodo,	adTodo ),
+			new sd("Elysian",	"Mazonae",		2,		4.5,	36,		.5 / heads,  12, 42,	.142,	16, 	1000, 	sv("Elysian", "syreen/penetrator"),	adTodo,	shipElysianSpecialEnticer ),
 			new sd("Sporsac",	"Hyphae",		7,		1.29,	27,		.14 / heads, 20, 20,	.2,		40, 	1000, 	sv("Sporsac", "mycon/podship"), 	adTodo,	shipSporsacSpecialRegenerate ),
-			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	1000, 	sv("Tumbler", "slylandro/probe"),	adTodo,	adTodo ),
-			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		1000, 	sv("Sunbright", "shofixti/scout"),	adTodo,	adTodo ),
+			new sd("Tumbler",	"Tempestrial",	1,		60,		60,		.5 / heads,  12, 12,	0,		20, 	1000, 	sv("Tumbler", "slylandro/probe"),	adTodo,	shipTumblerSpecialCatabolize ),
+			new sd("Sunbright",	"Supial",		1,		5,		35,		.5 / heads,  6, 6,		.1,		4, 		1000, 	sv("Sunbright", "shofixti/scout"),	adTodo,	shipSunbrightSpecialBigBadaBoom ),
 			new sd("Discus",	"Ellfyn",		1,		40,		40,		.5 / heads,  6, 6,		.142,	20, 	1000, 	sv("Discus", "arilou/skiff"), 		adTodo,	adTodo ),
 			new sd("Nitpiknik",	"Triunion",		5,		10,		40,		.5 / heads,  10, 10,	.2,		10, 	1000, 	sv("Nitpiknik", "zoqfotpik/stinger"), adTodo,	adTodo ),
 			new sd("Aegis",		"Raptor",		3,		2,		30,		.33 / heads, 20, 20,	.29,	10, 	1000, 	sv("Aegis", "yehat/terminator"), 	adTodo,	adTodo ),

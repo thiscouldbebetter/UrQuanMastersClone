@@ -35,12 +35,15 @@ function combat(universe)
 	var combatSize = new Coords(1, 1).multiplyScalar(displaySize.y * 2);
 	var encounter = null; // todo
 	var shipDefnsAll = ShipDefn.Instances(universe);
+	/*
 	var playerShipDefns =
 	[
 		shipDefnsAll["Fireblossom"],
 		shipDefnsAll["Efflorescence"],
 		shipDefnsAll["Scuttler"],
 	];
+	*/
+	var playerShipDefns = shipDefnsAll;
 	var enemyShipDefns =
 	[
 		shipDefnsAll["Kickback"],
