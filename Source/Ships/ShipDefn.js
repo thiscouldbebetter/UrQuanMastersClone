@@ -154,7 +154,7 @@ function ShipDefn
 					imageName, imagePath
 				);
 				imagesForHeadings.push(imageForHeading);
-				var visualForHeading = new VisualImage(imageName, shipSize);
+				var visualForHeading = new VisualImageFromLibrary(imageName, shipSize);
 				visualsForHeadings.push(visualForHeading);
 			}
 			universe.mediaLibrary.imagesAdd(imagesForHeadings);

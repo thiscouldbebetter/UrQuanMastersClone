@@ -1,5 +1,5 @@
 
-function PlaceHyperspace(world, hyperspace, starsystemDeparted, playerLoc)
+function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 {
 	this.hyperspace = hyperspace;
 	this.size = this.hyperspace.size;
@@ -112,6 +112,7 @@ function PlaceHyperspace(world, hyperspace, starsystemDeparted, playerLoc)
 
 	// factions
 
+	var world = universe.world;
 	var factions = world.defns.factions;
 	for (var i = 0; i < factions.length; i++)
 	{
@@ -201,7 +202,7 @@ function PlaceHyperspace(world, hyperspace, starsystemDeparted, playerLoc)
 
 	entities.push(playerEntity);
 
-	var containerSidebar = world.player.toControlSidebar();
+	var containerSidebar = this.toControlSidebar(universe);
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
@@ -354,6 +355,44 @@ function PlaceHyperspace(world, hyperspace, starsystemDeparted, playerLoc)
 		return entityShipGroup;
 	}
 
+	// controls
+
+	PlaceHyperspace.prototype.toControlSidebar = function(universe)
+	{
+		var world = universe.world;
+		var containerSidebar = world.player.toControlSidebar();
+
+		var marginWidth = 10;
+		var size = new Coords(1, 1).multiplyScalar
+		(
+			containerSidebar.size.x - marginWidth * 2
+		);
+
+		var display = universe.display;
+		this.displaySensors = new Display
+		(
+			[ size ],
+			display.fontName,
+			display.fontHeightInPixels,
+			"LightGreen",
+			"DarkGreen"
+		);
+
+		var imageSensors = this.displaySensors.initializeCanvasAndGraphicsContext().toImage();
+
+		var controlVisualSensors = new ControlVisual
+		(
+			"controlVisualSensors",
+			new Coords(10, 110), // pos
+			size,
+			new VisualImageImmediate(imageSensors, size)
+		);
+
+		containerSidebar.children.add(controlVisualSensors);
+
+		return containerSidebar;
+	}
+
 	// Place overrides
 
 	PlaceHyperspace.prototype.draw_FromSuperclass = Place.prototype.draw;
@@ -381,6 +420,39 @@ function PlaceHyperspace(world, hyperspace, starsystemDeparted, playerLoc)
 
 		this.draw_FromSuperclass(universe, world);
 
+		this.draw_Sensors();
+
 		this.venueControls.draw(universe, world);
+	}
+
+	PlaceHyperspace.prototype.draw_Sensors = function()
+	{
+		this.displaySensors.clear();
+
+		var stars = this.hyperspace.starsystems;
+		var starRadius = 1;
+		var starColor = this.displaySensors.colorFore;
+		var hyperspaceSize = this.hyperspace.size;
+		var sensorsSize = this.displaySensors.sizeInPixels;
+		var cameraPos = this.camera.loc.pos;
+		var drawPos = new Coords();
+		for (var i = 0; i < stars.length; i++)
+		{
+			var star = stars[i];
+			drawPos.overwriteWith
+			(
+				star.posInHyperspace
+			).subtract
+			(
+				cameraPos
+			).divide
+			(
+				hyperspaceSize
+			).multiply
+			(
+				sensorsSize
+			);
+			this.displaySensors.drawCircle(drawPos, starRadius, starColor);
+		}
 	}
 }

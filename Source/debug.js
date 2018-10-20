@@ -19,6 +19,10 @@ function debug_MediaLoaded(universe)
 	{
 		docks(universe);
 	}
+	else if (debuggingMode == "Hyperspace")
+	{
+		hyperspace(universe);
+	}
 	else if (debuggingMode == "Planet")
 	{
 		planet(universe);
@@ -102,6 +106,17 @@ function docks(universe)
 	world.place = placeStationDocks;
 }
 
+function hyperspace(universe)
+{
+	var world = universe.world;
+	var hyperspace = world.hyperspace
+	var starsystemSol = hyperspace.starsystems["Sol"];
+	var playerPos = starsystemSol.posInHyperspace.clone();
+	var playerLoc = new Location(playerPos);
+	var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
+	world.place = placeHyperspace;
+}
+
 function planet(universe)
 {
 	var world = universe.world;
@@ -123,6 +138,6 @@ function start(universe)
 		playerPos,
 		new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
 	);
-	var placePlanetOrbit = new PlaceStarsystem(world, starsystemSol, playerLoc);
-	world.place = placePlanetOrbit;
+	var place = new PlaceStarsystem(world, starsystemSol, playerLoc);
+	world.place = place;
 }

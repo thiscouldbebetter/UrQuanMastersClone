@@ -266,7 +266,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			var playerPosNext = place.starsystem.posInHyperspace.clone();
 			world.placeNext = new PlaceHyperspace
 			(
-				world,
+				universe,
 				hyperspace,
 				place.starsystem, // starsystemDeparted
 				new Location(playerPosNext, playerLoc.orientation.clone())

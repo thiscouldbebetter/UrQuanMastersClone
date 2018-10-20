@@ -62,7 +62,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	// background
 
-	var visualBackground = new VisualImage("PlanetSurface", this.planet.sizeSurface);
+	var visualBackground = new VisualImageFromLibrary("PlanetSurface", this.planet.sizeSurface);
 	visualBackground = new VisualCamera(visualBackground, this.camera);
 	visualBackground = new VisualWrapped(this.planet.sizeSurface, visualBackground);
 

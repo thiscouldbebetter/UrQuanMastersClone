@@ -52,7 +52,7 @@
 		{
 			imageNonplayerName = "Conversation";
 		}
-		var visualNonplayer = new VisualImage(imageNonplayerName, paneSizeTopAndBottom);
+		var visualNonplayer = new VisualImageFromLibrary(imageNonplayerName, paneSizeTopAndBottom);
 
 		var controlRoot = new ControlContainer
 		(
