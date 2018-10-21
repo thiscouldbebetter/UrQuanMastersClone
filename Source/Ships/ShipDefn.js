@@ -380,7 +380,7 @@ function ShipDefn
 
 		var shipStarshardSpecialLeech = new ShipAttackDefn
 		(
-			"todo",
+			"Leech",
 			4, // energyToUse
 			2, // projectileRadius
 			.5, // angleInTurns

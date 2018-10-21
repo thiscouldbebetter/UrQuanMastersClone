@@ -131,23 +131,28 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 	{
 		var flagship = this.flagship;
 		var containerSidebarSize = new Coords(100, 300); // hack
-		var marginWidth = 10;
+		var marginWidth = 8;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 		var fontHeight = 10;
 		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
 		var labelSize = new Coords(childControlWidth, fontHeight);
-
-		var containerSidebar = new ControlContainer
+		var containerFlagshipSize = new Coords
 		(
-			"containerSidebar",
-			new Coords(300, 0), // hack - pos
-			containerSidebarSize,
+			containerSidebarSize.x - marginSize.x * 2,
+			(containerSidebarSize.y - marginSize.x * 3) / 2
+		);
+
+		var containerFlagship = new ControlContainer
+		(
+			"containerFlagship",
+			new Coords(marginSize.x, marginSize.y), // hack - pos
+			containerFlagshipSize,
 			// children
 			[
 				new ControlLabel
 				(
 					"labelFlagship",
-					new Coords(containerSidebarSize.x / 2, marginSize.y + labelSize.y / 2),
+					new Coords(containerFlagshipSize.x / 2, marginSize.y + labelSize.y / 2),
 					labelSize,
 					true, // isTextCentered,
 					flagship.name,
@@ -238,7 +243,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"infoCargo",
-					new Coords(marginSize.x * 4, marginSize.y * 5 + labelSize.y * 4),
+					new Coords(marginSize.x * 5, marginSize.y * 5 + labelSize.y * 4),
 					labelSize,
 					false, // isTextCentered
 					new DataBinding(flagship, "cargoCurrentOverMax()"),
@@ -246,6 +251,15 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				),
 
 			]
+		);
+
+		var containerSidebar = new ControlContainer
+		(
+			"containerSidebar",
+			new Coords(300, 0), // hack - pos
+			containerSidebarSize,
+			// children
+			[ containerFlagship ]
 		);
 
 		return containerSidebar;

@@ -127,12 +127,21 @@ function Combat(size, encounter, shipGroups)
 
 	// controls
 
-
 	Combat.prototype.toControlDebriefing = function(universe, size)
 	{
+		var numberOfShipsLost = 0; // todo
+		var numberOfShipsDestroyed = 1;
+		var numberOfCreditsSalvaged = 550;
+
+		var message =
+			"Combat complete.\n"
+			+ numberOfShipsLost + " ships lost.\n"
+			+ numberOfShipsDestroyed + " ships destroyed.\n"
+			+ numberOfCreditsSalvaged + " credits worth of resources salvaged.\n";
+
 		var returnValue = universe.controlBuilder.message
 		(
-			universe, size, "Combat complete.", this.exit.bind(this)
+			universe, size, message, this.exit.bind(this)
 		);
 		return returnValue;
 	}

@@ -23,5 +23,6 @@ Screenshots
 ![Conversation Transcript](/Screenshots/Screenshot-ConversationTranscript.png?raw=true "Conversation Transcript")
 ![Combat Ship Selection](/Screenshots/Screenshot-CombatShipSelect.png?raw=true "Combat Ship Selection")
 ![Combat](/Screenshots/Screenshot-Combat.png?raw=true "Combat")
+![Combat Debriefing](/Screenshots/Screenshot-CombatDebriefing.png?raw=true "Combat Debriefing")
 ![Station](/Screenshots/Screenshot-Station.png?raw=true "Station")
 ![Station Dock](/Screenshots/Screenshot-StationDock.png?raw=true "Station Dock")

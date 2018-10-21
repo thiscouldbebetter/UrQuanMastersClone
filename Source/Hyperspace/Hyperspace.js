@@ -133,7 +133,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 			{
 				var starColor = planetAsValues[5].toTitleCase();
 				var starSizeIndex = starSizeNames.indexOf(planetAsValues[6]);
-			
+
 				var starsystemPos = new Coords
 				(
 					parseFloat(planetAsValues[2]),
@@ -228,12 +228,40 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 
 		starsystems.addLookups("name");
 
+		var starsystemSol = starsystems["Sol"];
+
+		var pluto = starsystemSol.planets[8];
+		var energySourceAbandonedScuttlerMessage = "todo";
+		var energySourceAbandonedScuttler = new EnergySource
+		(
+			"AbandonedScuttler",
+			pluto.sizeSurface.clone().half().addDimensions(30, 20, 0),
+			new VisualCircle(10, "Red"), // todo
+			function collide(universe, world, place, entityEnergySource, entityLander)
+			{
+				var controlMessage = universe.controlBuilder.message
+				(
+					universe,
+					universe.display.sizeInPixels,
+					energySourceAbandonedScuttlerMessage,
+					function()
+					{
+						alert("todo");
+					}
+				);
+
+				universe.venueNext = new VenueControls(controlMessage);
+			}
+		);
+		var energySources = [ energySourceAbandonedScuttler ];
+		pluto.energySources = energySources;
+
 		// todo - Encounter test.
 		var shipGroup = new ShipGroup
 		(
 			"Tempestrial Ship Group X",
 			"Tempestrial",
-			starsystems["Sol"].posInHyperspace.clone().add(new Coords(100, 0)),
+			starsystemSol.posInHyperspace.clone().add(new Coords(100, 0)),
 			[ new Ship("Tumbler") ]
 		);
 

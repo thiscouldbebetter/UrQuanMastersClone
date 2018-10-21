@@ -1,5 +1,5 @@
 
-function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, resources, hasLife)
+function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, resources, hasLife, energySources)
 {
 	this.name = name;
 	this.defnName = defnName;
@@ -21,6 +21,7 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 
 	this.resources = resources;
 	this.hasLife = hasLife;
+	this.energySources = energySources;
 
 	this.mineralsGenerate();
 	this.lifeformsGenerate();
@@ -116,101 +117,6 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		);
 
 		return returnValue;
-	}
-
-	// controls
-
-	Planet.prototype.toControlSidebar = function(universe)
-	{
-		var containerSidebarSize = new Coords(100, 300); // hack
-		var marginWidth = 10;
-		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
-		var fontHeight = 10;
-		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
-		var labelSize = new Coords(childControlWidth, fontHeight);
-		var minimapSize = new Coords(1, .5).multiplyScalar(childControlWidth);
-		var containerLanderSize = new Coords(1, 2).multiplyScalar(childControlWidth);
-
-		var containerSidebar = new ControlContainer
-		(
-			"containerSidebar",
-			new Coords(300, 0), // hack - pos
-			containerSidebarSize,
-			// children
-			[
-				new ControlLabel
-				(
-					"labelMap",
-					new Coords(marginSize.x, marginSize.y),
-					labelSize,
-					false, // isTextCentered,
-					"Map:",
-					fontHeight
-				),
-
-
-				new ControlContainer
-				(
-					"containerMap",
-					new Coords(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
-					minimapSize,
-					[
-						new ControlVisual
-						(
-							"visualMap",
-							new Coords(0, 0),
-							minimapSize,
-							new VisualRectangle(minimapSize, "Gray")
-						)
-					]
-				),
-
-				new ControlLabel
-				(
-					"labelLander",
-					new Coords(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y),
-					labelSize,
-					false, // isTextCentered,
-					"Lander:",
-					fontHeight
-				),
-
-				new ControlContainer
-				(
-					"containerLander",
-					new Coords
-					(
-						marginSize.x,
-						marginSize.y * 4 + labelSize.y * 2 + minimapSize.y
-					), // pos
-					containerLanderSize,
-					[
-						// todo
-					]// children
-				),
-
-				new ControlButton
-				(
-					"buttonLeave",
-					new Coords
-					(
-						marginSize.x,
-						marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y
-					), // pos
-					new Coords(containerLanderSize.x, labelSize.y * 2),
-					"Launch",
-					fontHeight,
-					true, // hasBorder
-					true, // isEnabled
-					function click(universe)
-					{},
-					null // contextForClick
-				),
-
-			]
-		);
-
-		return containerSidebar;
 	}
 }
 

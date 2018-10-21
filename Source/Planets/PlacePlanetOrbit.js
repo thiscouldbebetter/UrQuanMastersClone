@@ -78,6 +78,15 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 			contactVisuals.push(new VisualCircle(3, "LightGreen"));
 		}
 
+		if (this.hasEnergyBeenScanned)
+		{
+			if (this.planet.energySources != null)
+			{
+				scanContacts.push(this.planet.energySources);
+				contactVisuals.push(new VisualCircle(3, "White"));
+			}
+		}
+
 		var contactDrawable = new Drawable();
 		contactDrawable.loc = new Location(new Coords());
 
@@ -138,7 +147,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var containerMainSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
 		var fontHeightShort = fontHeight / 2;
-		var buttonBackSize = new Coords(25, 25);
+		var buttonBackSize = new Coords(1, 1).multiplyScalar(1.6 * fontHeightShort);
 		var marginWidth = 10;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 
@@ -314,6 +323,16 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					([
 						new VisualRectangle(containerInfoSize, "Black"),
 						new VisualCircle(containerInfoSize.y * .4, "Gray"),
+						new VisualCircleGradient
+						(
+							containerInfoSize.y * .4,
+							new Gradient
+							([
+								new GradientStop(0, planet.defn().color),
+								new GradientStop(1, "Black")
+							]),
+							planet.defn().color
+						)
 					])
 				)
 			]
@@ -493,7 +512,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					marginSize,
 					buttonBackSize,
 					"<",
-					fontHeight,
+					fontHeightShort,
 					true, // hasBorder,
 					true, // isEnabled,
 					this.returnToPlaceParent.bind(this),

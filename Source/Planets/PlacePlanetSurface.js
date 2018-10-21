@@ -91,6 +91,8 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	} // end if planet.hasLife
 
+	// resources
+
 	var resourceDefns = ResourceDefn.Instances();
 	var resourceRadiusBase = entityDimension / 2;
 	var resources = this.planet.resources;
@@ -101,6 +103,16 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		var resource = resources[i];
 		var entityResource = resource.toEntity(world, this, resourceRadiusBase);
 		entities.push(entityResource);
+	}
+
+	// energySources
+
+	var energySources = this.planet.energySources;
+	for (var i = 0; i < energySources.length; i++)
+	{
+		var energySource = energySources[i];
+		var entityEnergySource = energySource.toEntity(world, this);
+		entities.push(entityEnergySource);
 	}
 
 	// player
@@ -138,6 +150,11 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 				}
 			}
 		}
+		else if (entityOther.energySource != null)
+		{
+			var energySource = entityOther.energySource;
+			energySource.collideWithLander(universe, world, place, entityOther, entityPlayer)
+		}
 	}
 
 	var playerShipLander = new Ship("Lander");
@@ -167,7 +184,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	entities.push(playerEntity);
 
-	var containerSidebar = this.planet.toControlSidebar();
+	var containerSidebar = this.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
@@ -287,5 +304,160 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 				}
 			}
 		}
+	}
+
+	// controls
+
+	PlacePlanetSurface.prototype.toControlSidebar = function(universe)
+	{
+		var containerSidebarSize = new Coords(100, 300); // hack
+		var marginWidth = 10;
+		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
+		var fontHeight = 10;
+		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
+		var labelSize = new Coords(childControlWidth, fontHeight);
+		var minimapSize = new Coords(1, .5).multiplyScalar(childControlWidth);
+		var containerLanderSize = new Coords(1, 2).multiplyScalar(childControlWidth);
+
+		var lander = new Lander(); // todo
+
+		var containerSidebar = new ControlContainer
+		(
+			"containerSidebar",
+			new Coords(300, 0), // hack - pos
+			containerSidebarSize,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelMap",
+					new Coords(marginSize.x, marginSize.y),
+					labelSize,
+					false, // isTextCentered,
+					"Map:",
+					fontHeight
+				),
+
+				new ControlContainer
+				(
+					"containerMap",
+					new Coords(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
+					minimapSize,
+					[
+						new ControlVisual
+						(
+							"visualMap",
+							new Coords(0, 0),
+							minimapSize,
+							new VisualRectangle(minimapSize, "Gray")
+						)
+					]
+				),
+
+				new ControlLabel
+				(
+					"labelLander",
+					new Coords(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y),
+					labelSize,
+					false, // isTextCentered,
+					"Lander:",
+					fontHeight
+				),
+
+				new ControlContainer
+				(
+					"containerLander",
+					new Coords
+					(
+						marginSize.x,
+						marginSize.y * 4 + labelSize.y * 2 + minimapSize.y
+					), // pos
+					containerLanderSize,
+					[
+						new ControlLabel
+						(
+							"labelCrew",
+							new Coords(marginSize.x, marginSize.y),
+							labelSize,
+							false, // isTextCentered
+							"Crew:",
+							fontHeight
+						),
+
+						new ControlLabel
+						(
+							"infoCrew",
+							new Coords(marginSize.x * 5, marginSize.y),
+							labelSize,
+							false, // isTextCentered
+							new DataBinding(lander, "crewCurrentOverMax()"),
+							fontHeight
+						),
+
+						new ControlLabel
+						(
+							"labelCargo",
+							new Coords(marginSize.x, marginSize.y * 2),
+							labelSize,
+							false, // isTextCentered
+							"Cargo:",
+							fontHeight
+						),
+
+						new ControlLabel
+						(
+							"infoCargo",
+							new Coords(marginSize.x * 5, marginSize.y * 2),
+							labelSize,
+							false, // isTextCentered
+							new DataBinding(lander, "cargoCurrentOverMax()"),
+							fontHeight
+						),
+
+						new ControlLabel
+						(
+							"labelData",
+							new Coords(marginSize.x, marginSize.y * 3),
+							labelSize,
+							false, // isTextCentered
+							"Data:",
+							fontHeight
+						),
+
+						new ControlLabel
+						(
+							"infoData",
+							new Coords(marginSize.x * 5, marginSize.y * 3),
+							labelSize,
+							false, // isTextCentered
+							new DataBinding(lander, "dataCurrentOverMax()"),
+							fontHeight
+						),
+
+					]// children
+				),
+
+				new ControlButton
+				(
+					"buttonLeave",
+					new Coords
+					(
+						marginSize.x,
+						marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y
+					), // pos
+					new Coords(containerLanderSize.x, labelSize.y * 2),
+					"Launch",
+					fontHeight,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe)
+					{},
+					null // contextForClick
+				),
+
+			]
+		);
+
+		return containerSidebar;
 	}
 }

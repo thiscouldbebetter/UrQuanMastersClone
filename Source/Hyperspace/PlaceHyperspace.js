@@ -65,7 +65,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		(
 			new Coords(1, 1, 1).multiplyScalar(starRadius * (j / 2 + 1))
 		);
-	
+
 		var starVisualPath = new PathBuilder().star(5, .5).transform
 		(
 			transformScale
@@ -377,7 +377,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		var world = universe.world;
 		var containerSidebar = world.player.toControlSidebar();
 
-		var marginWidth = 10;
+		var marginWidth = 8;
 		var size = new Coords(1, 1).multiplyScalar
 		(
 			containerSidebar.size.x - marginWidth * 2
@@ -398,7 +398,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		var controlVisualSensors = new ControlVisual
 		(
 			"controlVisualSensors",
-			new Coords(10, 110), // pos
+			new Coords(10, 160), // pos
 			size,
 			new VisualImageImmediate(imageSensors, size)
 		);

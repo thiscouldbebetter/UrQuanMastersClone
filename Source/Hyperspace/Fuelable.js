@@ -13,7 +13,7 @@ function Fuelable()
 		if (entitySpeed > 0)
 		{
 			var flagship = world.player.flagship;
-			var fuelToConsume = entitySpeed * fuelConsumedPerSpeed;	
+			var fuelToConsume = entitySpeed * fuelConsumedPerSpeed;
 			if (flagship.fuel >= fuelToConsume)
 			{
 				flagship.fuel -= fuelToConsume;

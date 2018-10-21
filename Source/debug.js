@@ -27,6 +27,10 @@ function debug_MediaLoaded(universe)
 	{
 		planet(universe);
 	}
+	else if (debuggingMode == "PlanetEnergy")
+	{
+		planetEnergy(universe);
+	}
 	else if (debuggingMode == "Start")
 	{
 		start(universe);
@@ -122,6 +126,16 @@ function planet(universe)
 	var world = universe.world;
 	var starsystem = world.hyperspace.starsystems[1]; // Eta Giclas
 	var planet = starsystem.planets[4]; // E Giclas V
+	var placePlanetVicinity = null;
+	var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
+	world.place = placePlanetOrbit;
+}
+
+function planetEnergy(universe)
+{
+	var world = universe.world;
+	var starsystem = world.hyperspace.starsystems["Sol"];
+	var planet = starsystem.planets[8]; // Pluto
 	var placePlanetVicinity = null;
 	var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
 	world.place = placePlanetOrbit;
