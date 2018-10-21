@@ -302,7 +302,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		"containerSidebar",
 		new Coords(300, 0), // todo
 		new Coords(100, 300), // size
-		[ world.player.toControlSidebar() ]
+		[ world.player.toControlSidebar(world) ]
 	)
 	this.venueControls = new VenueControls(containerSidebar);
 

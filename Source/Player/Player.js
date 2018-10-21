@@ -127,7 +127,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 
 	// controls
 
-	Player.prototype.toControlSidebar = function()
+	Player.prototype.toControlSidebar = function(world)
 	{
 		var flagship = this.flagship;
 		var containerSidebarSize = new Coords(100, 300); // hack
@@ -255,7 +255,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(marginSize.x * 5, labelSize.y * 6),
 					labelSize,
 					false, // isTextCentered
-					"x, y", // todo
+					new DataBinding(this.shipGroup, "toStringPosition(world)", { "world": world } ),
 					fontHeight
 				),
 			]

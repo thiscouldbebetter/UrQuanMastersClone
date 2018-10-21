@@ -204,7 +204,7 @@
 					"containerSidebar",
 					new Coords(300, 0), // todo
 					new Coords(100, 300), // size
-					[ universe.world.player.toControlSidebar() ]
+					[ universe.world.player.toControlSidebar(world) ]
 				)
 			]
 		);

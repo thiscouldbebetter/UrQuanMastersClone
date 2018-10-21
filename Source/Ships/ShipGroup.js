@@ -5,6 +5,8 @@ function ShipGroup(name, factionName, pos, ships)
 	this.factionName = factionName;
 	this.pos = pos;
 	this.ships = ships;
+
+	this._posInverted = new Coords();
 }
 {
 	ShipGroup.prototype.faction = function(world)
@@ -19,6 +21,15 @@ function ShipGroup(name, factionName, pos, ships)
 			var ship = this.ships[i];
 			ship.initialize(universe, world);
 		}
+	}
+
+	ShipGroup.prototype.toStringPosition = function(world)
+	{
+		var hyperspaceSize = world.hyperspace.size;
+		return this._posInverted.overwriteWithDimensions
+		(
+			this.pos.x, hyperspaceSize.y - this.pos.y
+		).round().toStringXY();
 	}
 
 	ShipGroup.prototype.toStringDescription = function()

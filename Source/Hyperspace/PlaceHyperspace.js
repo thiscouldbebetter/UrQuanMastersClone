@@ -380,7 +380,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 			"containerSidebar",
 			new Coords(300, 0),
 			new Coords(100, 300),
-			[ world.player.toControlSidebar() ]
+			[ world.player.toControlSidebar(world) ]
 		);
 
 		var marginWidth = 8;

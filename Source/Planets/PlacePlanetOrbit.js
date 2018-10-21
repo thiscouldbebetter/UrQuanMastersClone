@@ -338,7 +338,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 			]
 		);
 
-		var containerPlayer = world.player.toControlSidebar();
+		var containerPlayer = world.player.toControlSidebar(world);
 
 		var containerRight = new ControlContainer
 		(

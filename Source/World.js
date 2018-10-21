@@ -1,4 +1,4 @@
-function World(name, dateCreated, defns, player, hyperspace)
+function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 {
 	this.name = name;
 	this.dateCreated = dateCreated;
@@ -10,9 +10,6 @@ function World(name, dateCreated, defns, player, hyperspace)
 	this.player = player;
 	this.hyperspace = hyperspace;
 
-	var starsystems = hyperspace.starsystems;
-	var starsystemStart = starsystems["Sol"];
-	starsystemStart.solarSystem();
 	this.place = new PlaceStarsystem
 	(
 		this,
@@ -201,6 +198,24 @@ function World(name, dateCreated, defns, player, hyperspace)
 
 		var defns = new Defns(constraintDefns, factions, shipDefns, lifeformDefns);
 
+		var mediaLibrary = universe.mediaLibrary;
+
+		var starsAndPlanetsAsStringCSVCompressed =
+			mediaLibrary.textStringGetByName("StarsAndPlanets").value;
+
+		var hyperspace = Hyperspace.fromFileContentsAsString
+		(
+			hyperspaceSize,
+			10, // starsystemRadiusOuter
+			new Coords(300, 300),
+			factions,
+			starsAndPlanetsAsStringCSVCompressed
+		);
+
+		var starsystems = hyperspace.starsystems;
+		var starsystemStart = starsystems["Sol"];
+		starsystemStart.solarSystem(); // todo
+
 		var playerShipDefnName = "Flagship";
 		var playerShip = new Ship(playerShipDefnName);
 		var shipDefns = ShipDefn.Instances(universe);
@@ -213,7 +228,7 @@ function World(name, dateCreated, defns, player, hyperspace)
 		(
 			"Player",
 			"Player", // factionName
-			null, // pos
+			starsystemStart.posInHyperspace.clone(), // pos
 			playerShips
 		);
 		var shipComponentDefns = ShipComponentDefn.Instances();
@@ -251,37 +266,14 @@ function World(name, dateCreated, defns, player, hyperspace)
 			playerShipGroup
 		);
 
-		/*
-		var hyperspace = Hyperspace.random
-		(
-			new Coords(1024, 1024), // size
-			64, //numberOfStarsystems
-			10, // starsystemRadiusOuter
-			new Coords(400, 300), // starsystemSizeInner
-		);
-		*/
-
-		var mediaLibrary = universe.mediaLibrary;
-
-		var starsAndPlanetsAsStringCSVCompressed =
-			mediaLibrary.textStringGetByName("StarsAndPlanets").value;
-
-		var hyperspace = Hyperspace.fromFileContentsAsString
-		(
-			hyperspaceSize,
-			10, // starsystemRadiusOuter
-			new Coords(300, 300),
-			factions,
-			starsAndPlanetsAsStringCSVCompressed
-		);
-
 		var returnValue = new World
 		(
 			"World-" + nowAsString,
 			now, // dateCreated
 			defns,
 			player,
-			hyperspace
+			hyperspace,
+			starsystemStart
 		);
 		return returnValue;
 	}

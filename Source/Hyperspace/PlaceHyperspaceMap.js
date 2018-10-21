@@ -3,13 +3,42 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 {
 	this.placeHyperspaceToReturnTo = placeHyperspaceToReturnTo;
 
-	this._drawPos = new Coords();
-
 	Place.call(this, []);
+
+	this._displacement = new Coords();
+	this._drawPos = new Coords();
+	this._reticlePosInverted = new Coords();
 }
 {
 	PlaceHyperspaceMap.prototype = Object.create(Place.prototype);
 	PlaceHyperspaceMap.prototype.constructor = Place;
+
+	// methods
+
+	PlaceHyperspaceMap.prototype.fuelFromPlayerShipGroupToReticle = function(world)
+	{
+		var returnValue = this._displacement.overwriteWith(this.reticlePos).subtract
+		(
+			world.player.shipGroup.pos
+		).magnitude();
+		returnValue = Math.round(returnValue);
+		return returnValue;
+	}
+
+	PlaceHyperspaceMap.prototype.reticlePosAsStringXY = function()
+	{
+		var hyperspaceSize = this.placeHyperspaceToReturnTo.hyperspace.size;
+
+		var returnValue = this._reticlePosInverted.overwriteWithDimensions
+		(
+			this.reticlePos.x,
+			hyperspaceSize.y - this.reticlePos.y
+		).round().toStringXY();
+
+		return returnValue;
+	}
+
+	// Place
 
 	PlaceHyperspaceMap.prototype.draw_FromSuperclass = Place.prototype.draw;
 	PlaceHyperspaceMap.prototype.draw = function(universe, world)
@@ -29,8 +58,11 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		var zeroes = Coords.Instances.Zeroes;
 		display.drawRectangle(zeroes, mapSize, "Black", "Gray");
 
+		var camera = this.camera;
+		var cameraPos = camera.loc.pos;
+		var magnificationFactor = camera.focalLength / camera.viewSize.x;
 		var drawPos = this._drawPos;
-		var starRadius = 1;
+		var starRadius = .5;
 		var starsystems = hyperspace.starsystems;
 		for (var i = 0; i < starsystems.length; i++)
 		{
@@ -38,18 +70,15 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			var starColor = starsystem.starColor;
 			var starsystemPos = starsystem.posInHyperspace;
 
-			drawPos.overwriteWith
-			(
-				starsystemPos
-			).divide
-			(
-				hyperspaceSize
-			).multiply
-			(
-				mapSize
-			);
+			drawPos.overwriteWith(starsystemPos);
+			this.camera.coordsTransformWorldToView(drawPos);
 
-			display.drawCircle(drawPos, starRadius, starColor);
+			var starRadiusApparent = starRadius * magnificationFactor;
+			if (starRadiusApparent < 1)
+			{
+				starRadiusApparent = 1;
+			}
+			display.drawCircle(drawPos, starRadiusApparent, starColor);
 		}
 
 		var factionsKnownNames = world.player.factionsKnownNames;
@@ -62,18 +91,11 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 			if (factionZone != null)
 			{
-				drawPos.overwriteWith
-				(
-					factionZone.center
-				).divide
-				(
-					hyperspaceSize
-				).multiply
-				(
-					mapSize
-				)
+				drawPos.overwriteWith(factionZone.center);
+				this.camera.coordsTransformWorldToView(drawPos);
 
-				var factionZoneRadiusScaled = factionZone.radius / hyperspaceSize.x * mapSize.x;
+				var factionZoneRadiusScaled =
+					factionZone.radius * magnificationFactor;
 
 				var factionColor = faction.color;
 				display.drawCircle(drawPos, factionZoneRadiusScaled, null, factionColor);
@@ -95,22 +117,19 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
 		var playerPos = entityForPlayer.locatable.loc.pos;
-		drawPos.overwriteWith(playerPos).divide(hyperspaceSize).multiply(mapSize);
-		var locatorDimension = starRadius * 8;
+		drawPos.overwriteWith(playerPos);
+		this.camera.coordsTransformWorldToView(drawPos);
+		var locatorDimension = starRadius * 8 * magnificationFactor;
 		var locatorSize = new Coords(1, 1).multiplyScalar(locatorDimension);
 		display.drawRectangleCentered(drawPos, locatorSize, null, "Gray");
-
-		if (this.reticlePos == null)
-		{
-			this.reticlePos = playerPos.clone();
-		}
 
 		var reticleRadius = locatorDimension * 2;
 
 		drawPos.overwriteWith
 		(
 			this.reticlePos
-		).divide(hyperspaceSize).multiply(mapSize);
+		);
+		this.camera.coordsTransformWorldToView(drawPos);
 		display.drawCrosshairs(drawPos, reticleRadius, "Gray");
 	}
 
@@ -118,118 +137,49 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 	PlaceHyperspaceMap.prototype.updateForTimerTick = function(universe, world)
 	{
 		this.updateForTimerTick_FromSuperclass(universe, world);
-		if (this.venueControls == null)
+
+		if (this.reticlePos == null)
 		{
-			var containerSize = universe.display.sizeInPixels.clone();
-			var fontHeight = 20;
-			var marginWidth = 10;
-			var buttonSize = new Coords(25, 25);
-			var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
-
-			var titleSize = new Coords(containerSize.x, 25);
-
-			var containerRightSize = new Coords
-			(
-				(containerSize.x - marginSize.x * 3) / 3,
-				containerSize.y - marginSize.y * 3 - titleSize.y
-			);
-
-			var containerMapSize = new Coords
-			(
-				containerSize.x - marginSize.x * 3 - containerRightSize.x,
-				containerRightSize.y
-			);
-
-			var displayMain = universe.display;
-
-			var displayMap = new Display
-			(
-				[ containerMapSize ],
-				displayMain.fontName,
-				displayMain.fontHeightInPixels,
-				"Gray", "Black" // colorsForeAndBack
-			);
-			this.displayMap = displayMap.initializeCanvasAndGraphicsContext();
-
-			var containerPlayer = world.player.toControlSidebar();
-
-			var containerSidebar = new ControlContainer
-			(
-				"containerRight",
-				new Coords
-				(
-					marginSize.x * 2 + containerMapSize.x,
-					marginSize.y * 2 + titleSize.y
-				),
-				containerRightSize,
-				// children
-				[
-					containerPlayer
-				]
-			);
-
-			var controlRoot = new ControlContainer
-			(
-				"containerMain",
-				new Coords(0, 0), // pos
-				containerSize,
-				[
-					new ControlLabel
-					(
-						"labelHyperspaceMap",
-						new Coords
-						(
-							containerSize.x / 2,
-							marginSize.y + titleSize.y / 2
-						),
-						titleSize,
-						true, // isTextCentered
-						"Hyperspace Map",
-						fontHeight
-					),
-
-					new ControlVisual
-					(
-						"visualMap",
-						new Coords
-						(
-							marginSize.x,
-							marginSize.y * 2 + titleSize.y
-						),
-						containerMapSize,
-						new VisualImageImmediate
-						(
-							Image.fromSystemImage("[fromCanvas]", this.displayMap.canvas)
-						)
-					),
-
-					containerSidebar,
-
-					new ControlButton
-					(
-						"buttonBack",
-						marginSize,
-						buttonSize,
-						"<",
-						fontHeight,
-						true, // hasBorder,
-						true, // isEnabled,
-						function click(universe)
-						{
-							var world = universe.world;
-							var place = world.place;
-							var placeNext = place.placeHyperspaceToReturnTo;
-							world.placeNext = placeNext;
-						},
-						universe // context
-					),
-				]
-			);
-
-			this.venueControls = new VenueControls(controlRoot);
+			var entityForPlayer =
+				this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
+			var playerPos = entityForPlayer.locatable.loc.pos;
+			this.reticlePos = playerPos.clone();
 		}
 
+		if (this.venueControls == null)
+		{
+			var controlRoot = this.toControl(universe, world);
+			this.venueControls = new VenueControls(controlRoot);
+		}
 		this.venueControls.updateForTimerTick(universe, world);
+
+		var hyperspaceSize = this.placeHyperspaceToReturnTo.hyperspace.size;
+
+		if (this.camera == null)
+		{
+			var visualMap = this.venueControls.controlRoot.children["visualMap"];
+			var cameraViewSize = visualMap.size.clone();
+
+			this.camera = new Camera
+			(
+				cameraViewSize,
+				cameraViewSize.x, // focalLength
+				new Location
+				(
+					new Coords
+					(
+						hyperspaceSize.x / 2,
+						hyperspaceSize.y / 2,
+						0 - hyperspaceSize.x
+					), // pos
+					new Orientation
+					(
+						new Coords(0, 0, 1),
+						new Coords(0, 1, 0)
+					),
+				)
+			);
+		}
 
 		var inputHelper = universe.inputHelper;
 		var inputsPressed = inputHelper.inputsPressed;
@@ -262,12 +212,227 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			}
 			else if (inputPressedName == "PageDown")
 			{
-				// todo
+				var camera = this.camera;
+				var cameraViewSize = camera.viewSize;
+				var magnificationFactor = camera.focalLength / camera.viewSize.x;
+				if (magnificationFactor < 8)
+				{
+					camera.focalLength *= 1.1;
+				}
+				var cameraPos = camera.loc.pos;
+				var cameraPosZ = cameraPos.z;
+				cameraPos.overwriteWith(this.reticlePos);
+				var cameraMargin = hyperspaceSize.clone().divideScalar
+				(
+					magnificationFactor * 2
+				);
+				cameraPos.trimToRangeMinMax
+				(
+					cameraMargin,
+					hyperspaceSize.clone().subtract(cameraMargin)
+				);
+				cameraPos.z = cameraPosZ;
 			}
 			else if (inputPressedName == "PageUp")
 			{
-				// todo
+				var camera = this.camera;
+				var cameraViewSize = camera.viewSize;
+				var magnificationFactor = camera.focalLength / camera.viewSize.x;
+				if (magnificationFactor > 1)
+				{
+					camera.focalLength /= 1.1;
+				}
+				var cameraPos = camera.loc.pos;
+				var cameraPosZ = cameraPos.z;
+				cameraPos.overwriteWith(this.reticlePos);
+				var cameraMargin = hyperspaceSize.clone().divideScalar
+				(
+					magnificationFactor * 2
+				);
+				cameraPos.trimToRangeMinMax
+				(
+					cameraMargin,
+					hyperspaceSize.clone().subtract(cameraMargin)
+				);
+				cameraPos.z = cameraPosZ;
 			}
 		}
+	}
+
+	// controls
+
+	PlaceHyperspaceMap.prototype.toControl = function(universe, world)
+	{
+		var containerSize = universe.display.sizeInPixels.clone();
+		var fontHeight = 20;
+		var fontHeightShort = 10;
+		var marginWidth = 8;
+		var buttonSize = new Coords(1, 1).multiplyScalar(25);
+		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
+
+		var titleSize = new Coords(containerSize.x, 25);
+
+		var containerRightSize = new Coords
+		(
+			(containerSize.x - marginSize.x * 3) / 3,
+			containerSize.y - marginSize.y * 3 - titleSize.y
+		);
+
+		var containerMapSize = new Coords
+		(
+			containerSize.x - marginSize.x * 3 - containerRightSize.x,
+			containerRightSize.y
+		);
+
+		var displayMain = universe.display;
+
+		var displayMap = new Display
+		(
+			[ containerMapSize ],
+			displayMain.fontName,
+			displayMain.fontHeightInPixels,
+			"Gray", "Black" // colorsForeAndBack
+		);
+		this.displayMap = displayMap.initializeCanvasAndGraphicsContext();
+
+		var containerPlayer = world.player.toControlSidebar(world);
+
+		var containerReticle = new ControlContainer
+		(
+			"containerReticle",
+			new Coords(marginSize.x, marginSize.y * 2 + containerPlayer.size.y),
+			containerPlayer.size,
+			[
+				new ControlLabel
+				(
+					"labelReticle",
+					new Coords
+					(
+						containerPlayer.size.x / 2,
+						marginSize.y
+					),
+					titleSize,
+					true, // isTextCentered
+					"Reticle",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelPos",
+					new Coords(marginSize.x, marginSize.y * 2),
+					titleSize,
+					false, // isTextCentered
+					"Pos:",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"infoPos",
+					new Coords(marginSize.x * 4, marginSize.y * 2),
+					titleSize,
+					false, // isTextCentered
+					new DataBinding(this, "reticlePosAsStringXY()"),
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"labelFuel",
+					new Coords(marginSize.x, marginSize.y * 3),
+					titleSize,
+					false, // isTextCentered
+					"Fuel:",
+					fontHeightShort
+				),
+
+				new ControlLabel
+				(
+					"infoFuel",
+					new Coords(marginSize.x * 4, marginSize.y * 3),
+					titleSize,
+					false, // isTextCentered
+					new DataBinding(this, "fuelFromPlayerShipGroupToReticle(world)", { "world": world } ),
+					fontHeightShort
+				),
+			]
+		);
+
+		var containerSidebar = new ControlContainer
+		(
+			"containerRight",
+			new Coords
+			(
+				marginSize.x * 2 + containerMapSize.x,
+				marginSize.y * 2 + titleSize.y
+			),
+			containerRightSize,
+			// children
+			[
+				containerPlayer,
+				containerReticle
+			]
+		);
+
+		var controlRoot = new ControlContainer
+		(
+			"containerMain",
+			new Coords(0, 0), // pos
+			containerSize,
+			[
+				new ControlLabel
+				(
+					"labelHyperspaceMap",
+					new Coords
+					(
+						containerSize.x / 2,
+						marginSize.y + titleSize.y / 2
+					),
+					titleSize,
+					true, // isTextCentered
+					"Hyperspace Map",
+					fontHeight
+				),
+
+				new ControlVisual
+				(
+					"visualMap",
+					new Coords
+					(
+						marginSize.x,
+						marginSize.y * 2 + titleSize.y
+					),
+					containerMapSize,
+					new VisualImageImmediate
+					(
+						Image.fromSystemImage("[fromCanvas]", this.displayMap.canvas)
+					)
+				),
+
+				containerSidebar,
+
+				new ControlButton
+				(
+					"buttonBack",
+					marginSize,
+					buttonSize,
+					"<",
+					fontHeight,
+					true, // hasBorder,
+					true, // isEnabled,
+					function click(universe)
+					{
+						var world = universe.world;
+						var place = world.place;
+						var placeNext = place.placeHyperspaceToReturnTo;
+						world.placeNext = placeNext;
+					},
+					universe // context
+				),
+			]
+		);
+
+		return controlRoot;
 	}
 }
