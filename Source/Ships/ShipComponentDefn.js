@@ -71,7 +71,7 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 			"Crew Habitat",
 			[ categoryBackbone, categoryCrew ],
 			100,
-			function applyToFlagship(flagship) { flagship._crewMax += 100; }
+			function applyToFlagship(flagship) { flagship._crewMax += 50; }
 		);
 		this.FuelTank = new ShipComponentDefn
 		(

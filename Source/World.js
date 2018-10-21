@@ -227,10 +227,12 @@ function World(name, dateCreated, defns, player, hyperspace)
 			[
 				shipComponentDefns.FusionThruster.name,
 				shipComponentDefns.CargoHold.name,
+				shipComponentDefns.CrewHabitat.name,
 				shipComponentDefns.FuelTank.name,
 				shipComponentDefns.TurningJets.name,
 			], // componentNames
 			1, // numberOfLanders
+			50, // crew
 			100, // fuel
 			[], // items
 			30 // shipsMax

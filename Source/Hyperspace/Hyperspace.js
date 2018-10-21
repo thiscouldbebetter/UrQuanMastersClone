@@ -51,6 +51,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 			var starsystem = new Starsystem
 			(
 				starName,
+				0, // starSizeIndex
 				starColor,
 				starsystemPos,
 				starsystemSizeInner,
@@ -106,6 +107,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 		var starsystems = [];
 		var starsystem = null;
 		var starsystemNamePrev = null;
+		var starSizeNames = [ "dwarf", "giant", "super giant" ];
 		var orbitOrdinalSymbolToIndexLookup =
 		{
 			"I": 0, "II": 1, "III": 2, "IV": 3, "V": 4,
@@ -130,6 +132,8 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 			if (starsystemName != starsystemNamePrev)
 			{
 				var starColor = planetAsValues[5].toTitleCase();
+				var starSizeIndex = starSizeNames.indexOf(planetAsValues[6]);
+			
 				var starsystemPos = new Coords
 				(
 					parseFloat(planetAsValues[2]),
@@ -142,7 +146,9 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 
 				starsystem = new Starsystem
 				(
-					starsystemName, starColor, starsystemPos, starsystemSizeInner,
+					starsystemName,
+					starSizeIndex,
+					starColor, starsystemPos, starsystemSizeInner,
 					factionName,
 					[], // planets
 					[] // shipGroups

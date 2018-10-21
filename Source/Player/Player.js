@@ -13,12 +13,11 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 }
 
 {
-	Player.prototype.cachesInvalidate = function()
+	Player.prototype.cachesCalculate = function()
 	{
 		this._factionsKnown = null;
-		this._fuelMax = null;
 
-		this.flagship.cachesInvalidate();
+		this.flagship.cachesCalculate();
 	}
 
 	Player.prototype.factionsAllied = function(world)
@@ -171,7 +170,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(marginSize.x * 4, marginSize.y * 2 + labelSize.y),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(flagship, "fuelCurrentOverMax()"),
+					new DataBinding(flagship, "crewCurrentOverMax()"),
 					fontHeight
 				),
 

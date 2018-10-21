@@ -87,7 +87,7 @@ function PlaceStationDock(world, placeStation)
 			{
 				player.credit -= componentToBuild.value;
 				player.flagship.componentNames.push(componentToBuild.name);
-				player.cachesInvalidate();
+				player.cachesCalculate();
 			}
 		}
 	}
@@ -99,7 +99,7 @@ function PlaceStationDock(world, placeStation)
 			var player = universe.world.player;
 			player.flagship.componentNames.remove(componentToScrap.name);
 			player.credit += componentToScrap.value;
-			player.cachesInvalidate();
+			player.cachesCalculate();
 		}
 	}
 

@@ -1,7 +1,8 @@
 
-function Starsystem(name, starColor, posInHyperspace, sizeInner, factionName, planets, shipGroups)
+function Starsystem(name, starSizeIndex, starColor, posInHyperspace, sizeInner, factionName, planets, shipGroups)
 {
 	this.name = name;
+	this.starSizeIndex = starSizeIndex;
 	this.starColor = starColor;
 	this.posInHyperspace = posInHyperspace;
 	this.sizeInner = sizeInner;

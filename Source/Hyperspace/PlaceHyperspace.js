@@ -56,32 +56,44 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	var starsystems = this.hyperspace.starsystems;
 	var numberOfStars = starsystems.length;
 	var starRadius = entityDimension / 2;
-	var transformScale = new Transform_Scale
-	(
-		new Coords(1, 1, 1).multiplyScalar(starRadius)
-	);
 	var transformRotate = new Transform_Rotate2D(.75);
 
-	var starVisualPath = new PathBuilder().star(5, .5).transform
-	(
-		transformScale
-	).transform
-	(
-		transformRotate
-	);
+	var starVisualPathsForSizes = [];
+	for (var j = 0; j < 3; j++)
+	{
+		var transformScale = new Transform_Scale
+		(
+			new Coords(1, 1, 1).multiplyScalar(starRadius * (j / 2 + 1))
+		);
+	
+		var starVisualPath = new PathBuilder().star(5, .5).transform
+		(
+			transformScale
+		).transform
+		(
+			transformRotate
+		);
+		starVisualPathsForSizes.push(starVisualPath);
+	}
 
 	var starColors = Starsystem.StarColors;
 
-	var starVisualsForColors = [];
+	var starVisualsForColorsAndSizes = [];
 	for (var i = 0; i < starColors.length; i++)
 	{
 		var starColor = starColors[i];
-		var starVisualForColor = new VisualCamera
-		(
-			new VisualPolygon(starVisualPath, starColor),
-			this.camera
-		);
-		starVisualsForColors[starColor] = starVisualForColor;
+		var starVisualsForColor = [];
+		for (var j = 0; j < 3; j++)
+		{
+			var starVisualPathForSize = starVisualPathsForSizes[j];
+			var starVisual = new VisualCamera
+			(
+				new VisualPolygon(starVisualPathForSize, starColor),
+				this.camera
+			);
+			starVisualsForColor.push(starVisual);
+		}
+		starVisualsForColorsAndSizes[starColor] = starVisualsForColor;
 	}
 
 	for (var i = 0; i < numberOfStars; i++)
@@ -92,7 +104,8 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		var starCollider = new Sphere(starPos, starRadius);
 
 		var starColor = starsystem.starColor;
-		var starVisual = starVisualsForColors[starColor];
+		var starSizeIndex = starsystem.starSizeIndex;
+		var starVisual = starVisualsForColorsAndSizes[starColor][starSizeIndex];
 
 		var starEntity = new Entity
 		(
@@ -162,9 +175,9 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	var playerShip = playerShipGroup.ships[0];
 	var playerShipDefn = playerShip.defn(world);
 
-	var constraintSpeedMax = new Constraint("SpeedMax", playerShipDefn.speedMax);
-	var constraintFriction = new Constraint("Friction", 0.03);
-	var constraintStopBelowSpeedMin = new Constraint("StopBelowSpeedMin", 0.005);
+	//var constraintSpeedMax = new Constraint("SpeedMax", playerShipDefn.speedMax * 5);
+	var constraintFriction = new Constraint("FrictionDry", 0.01);
+	//var constraintStopBelowSpeedMin = new Constraint("StopBelowSpeedMin", 0.015);
 	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
 
 	var playerEntity = new Entity
@@ -176,7 +189,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 			([
 				//constraintSpeedMax,
 				constraintFriction,
-				constraintStopBelowSpeedMin,
+				//constraintStopBelowSpeedMin,
 				constraintTrimToRange
 			]),
 			new Collidable
@@ -187,9 +200,10 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 			),
 			new Drawable(playerVisual),
 			new ItemHolder(),
-			new Playable(),
+			new Playable(world.player),
 			playerShipGroup,
-			playerShipGroup.ships[0]
+			playerShip,
+			new Fuelable()
 		]
 	);
 
@@ -206,6 +220,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
+	this.propertyNamesToProcess.push("fuelable");
 
 	// Helper variables.
 
@@ -429,13 +444,17 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	{
 		this.displaySensors.clear();
 
-		var stars = this.hyperspace.starsystems;
-		var starRadius = 1;
-		var starColor = this.displaySensors.colorFore;
 		var hyperspaceSize = this.hyperspace.size;
-		var sensorsSize = this.displaySensors.sizeInPixels;
+		var sensorRange = this.camera.viewSize.clone().double();
+		var controlSize = this.displaySensors.sizeInPixels;
+		var controlSizeHalf = controlSize.clone().half();
 		var cameraPos = this.camera.loc.pos;
 		var drawPos = new Coords();
+
+		var stars = this.hyperspace.starsystems;
+		var starRadius = 2.5;
+		var starColor = this.displaySensors.colorFore;
+
 		for (var i = 0; i < stars.length; i++)
 		{
 			var star = stars[i];
@@ -447,12 +466,43 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 				cameraPos
 			).divide
 			(
-				hyperspaceSize
+				sensorRange
 			).multiply
 			(
-				sensorsSize
+				controlSize
+			).add
+			(
+				controlSizeHalf
 			);
 			this.displaySensors.drawCircle(drawPos, starRadius, starColor);
 		}
+
+		var ships = this.hyperspace.shipGroups;
+		var shipSize = new Coords(1, 1).multiplyScalar(2 * starRadius);
+		var shipColor = starColor;
+		for (var i = 0; i < ships.length; i++)
+		{
+			var ship = ships[i];
+			drawPos.overwriteWith
+			(
+				ship.pos
+			).subtract
+			(
+				cameraPos
+			).divide
+			(
+				sensorRange
+			).multiply
+			(
+				controlSize
+			).add
+			(
+				controlSizeHalf
+			);
+			this.displaySensors.drawRectangle(drawPos, shipSize, shipColor);
+		}
+
+		var drawPos = controlSizeHalf;
+		this.displaySensors.drawCrosshairs(drawPos, starRadius * 4, shipColor)
 	}
 }

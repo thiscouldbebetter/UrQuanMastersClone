@@ -1,5 +1,5 @@
 
-function Flagship(name, thrustersMax, turningJetsMax, componentsBackboneMax, componentNames, numberOfLanders, fuel, items, shipsMax)
+function Flagship(name, thrustersMax, turningJetsMax, componentsBackboneMax, componentNames, numberOfLanders, crew, fuel, items, shipsMax)
 {
 	this.name = name;
 	this.thrustersMax = thrustersMax;
@@ -7,16 +7,29 @@ function Flagship(name, thrustersMax, turningJetsMax, componentsBackboneMax, com
 	this.componentsBackboneMax = componentsBackboneMax;
 	this.componentNames = componentNames;
 	this.numberOfLanders = numberOfLanders;
+	this.crew = crew;
 	this.fuel = fuel;
 	this.itemHolder = new ItemHolder(items);
 	this.shipsMax = shipsMax;
+
+	this.cachesCalculate();
 }
 {
-	Flagship.prototype.cachesInvalidate = function()
+	Flagship.prototype.cachesCalculate = function()
 	{
+		this._cargoMax = 0;
+		this._crewMax = 0;
+		this._fuelMax = 0;
 		this._components = null;
 		this._componentsThruster = null;
 		this._componentsTurningJets = null;
+
+		var components = this.components();
+		for (var i = 0; i < components.length; i++)
+		{
+			var component = components[i];
+			component.applyToFlagship(this);
+		}
 	}
 
 	Flagship.prototype.cargoCurrent = function()
@@ -26,22 +39,7 @@ function Flagship(name, thrustersMax, turningJetsMax, componentsBackboneMax, com
 
 	Flagship.prototype.cargoCurrentOverMax = function()
 	{
-		return this.cargoCurrent() + "/" + this.cargoMax();
-	}
-
-	Flagship.prototype.cargoMax = function()
-	{
-		if (this._cargoMax == null)
-		{
-			this._cargoMax = 0;
-			var components = this.componentsCargo();
-			for (var i = 0; i < components.length; i++)
-			{
-				var component = components[i];
-				component.applyToFlagship(this);
-			}
-		}
-		return this._cargoMax;
+		return this.cargoCurrent() + "/" + this._cargoMax;
 	}
 
 	Flagship.prototype.components = function()
@@ -161,49 +159,14 @@ function Flagship(name, thrustersMax, turningJetsMax, componentsBackboneMax, com
 		return this._componentsWeapon;
 	}
 
-	Flagship.prototype.crewCurrent = function()
-	{
-		return 0;
-	}
-
 	Flagship.prototype.crewCurrentOverMax = function()
 	{
-		return this.crewCurrent() + "/" + this.crewMax();
-	}
-
-	Flagship.prototype.crewMax = function()
-	{
-		if (this._crewMax == null)
-		{
-			this._crewMax = 0;
-			var components = this.components();
-			for (var i = 0; i < components.length; i++)
-			{
-				var component = components[i];
-				component.applyToFlagship(this);
-			}
-		}
-		return this._crewMax;
+		return this.crew + "/" + this._crewMax;
 	}
 
 	Flagship.prototype.fuelCurrentOverMax = function()
 	{
-		return this.fuel + "/" + this.fuelMax();
-	}
-
-	Flagship.prototype.fuelMax = function()
-	{
-		if (this._fuelMax == null)
-		{
-			this._fuelMax = 0;
-			var components = this.componentsFuel();
-			for (var i = 0; i < components.length; i++)
-			{
-				var component = components[i];
-				component.applyToFlagship(this);
-			}
-		}
-		return this._fuelMax;
+		return this.fuel.roundToDecimalPlaces(1) + "/" + this._fuelMax;
 	}
 
 	Flagship.prototype.thrustersCurrent = function()
