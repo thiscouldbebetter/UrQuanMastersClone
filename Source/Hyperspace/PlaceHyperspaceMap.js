@@ -16,17 +16,18 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 	{
 		this.draw_FromSuperclass(universe, world);
 
-		var display = universe.display;
-
-		//display.drawBackground("Gray", "Black");
+		var display = this.displayMap;
+		if (display == null)
+		{
+			return; // todo
+		}
 
 		var hyperspace = this.placeHyperspaceToReturnTo.hyperspace;
 		var hyperspaceSize = hyperspace.size;
 		var controlRoot = this.venueControls.controlRoot;
-		var containerMap = controlRoot.children["containerMap"];
-		var mapPos = containerMap.pos;
-		var mapSize = containerMap.size;
-		display.drawRectangle(mapPos, mapSize, "Black", "Gray");
+		var mapSize = this.displayMap.sizeInPixels;
+		var zeroes = Coords.Instances.Zeroes;
+		display.drawRectangle(zeroes, mapSize, "Black", "Gray");
 
 		var drawPos = this._drawPos;
 		var starRadius = 1;
@@ -46,9 +47,6 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			).multiply
 			(
 				mapSize
-			).add
-			(
-				mapPos
 			);
 
 			display.drawCircle(drawPos, starRadius, starColor);
@@ -64,7 +62,6 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 			if (factionZone != null)
 			{
-
 				drawPos.overwriteWith
 				(
 					factionZone.center
@@ -74,10 +71,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 				).multiply
 				(
 					mapSize
-				).add
-				(
-					mapPos
-				);
+				)
 
 				var factionZoneRadiusScaled = factionZone.radius / hyperspaceSize.x * mapSize.x;
 
@@ -98,24 +92,10 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			}
 		}
 
-		/*
-		var shipGroup = entityForPlayer.shipGroup;
-		var ship = shipGroup.ships[0];
-		var shipDefn = ship.defn(world);
-		var safetyFactor = .9;
-		var fuelRangeRadius =
-			(shipGroup.fuel / shipGroup.fuelPerTick)
-			 * shipDefn.speedMax
-			 / hyperspace.size.x
-			 * mapSize.x
-			 * safetyFactor;
-		display.drawCircle(drawPos, fuelRangeRadius, null, "Gray");
-		*/
-
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
 		var playerPos = entityForPlayer.locatable.loc.pos;
-		drawPos.overwriteWith(playerPos).divide(hyperspaceSize).multiply(mapSize).add(mapPos);
+		drawPos.overwriteWith(playerPos).divide(hyperspaceSize).multiply(mapSize);
 		var locatorDimension = starRadius * 8;
 		var locatorSize = new Coords(1, 1).multiplyScalar(locatorDimension);
 		display.drawRectangleCentered(drawPos, locatorSize, null, "Gray");
@@ -130,9 +110,8 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		drawPos.overwriteWith
 		(
 			this.reticlePos
-		).divide(hyperspaceSize).multiply(mapSize).add(mapPos);
+		).divide(hyperspaceSize).multiply(mapSize);
 		display.drawCrosshairs(drawPos, reticleRadius, "Gray");
-
 	}
 
 	PlaceHyperspaceMap.prototype.updateForTimerTick_FromSuperclass = Place.prototype.draw;
@@ -161,6 +140,34 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 				containerRightSize.y
 			);
 
+			var displayMain = universe.display;
+
+			var displayMap = new Display
+			(
+				[ containerMapSize ],
+				displayMain.fontName,
+				displayMain.fontHeightInPixels,
+				"Gray", "Black" // colorsForeAndBack
+			);
+			this.displayMap = displayMap.initializeCanvasAndGraphicsContext();
+
+			var containerPlayer = world.player.toControlSidebar();
+
+			var containerSidebar = new ControlContainer
+			(
+				"containerRight",
+				new Coords
+				(
+					marginSize.x * 2 + containerMapSize.x,
+					marginSize.y * 2 + titleSize.y
+				),
+				containerRightSize,
+				// children
+				[
+					containerPlayer
+				]
+			);
+
 			var controlRoot = new ControlContainer
 			(
 				"containerMain",
@@ -181,35 +188,22 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 						fontHeight
 					),
 
-					new ControlContainer
+					new ControlVisual
 					(
-						"containerMap",
+						"visualMap",
 						new Coords
 						(
 							marginSize.x,
 							marginSize.y * 2 + titleSize.y
 						),
 						containerMapSize,
-						// children
-						[
-							// todo
-						]
+						new VisualImageImmediate
+						(
+							Image.fromSystemImage("[fromCanvas]", this.displayMap.canvas)
+						)
 					),
 
-					new ControlContainer
-					(
-						"containerRight",
-						new Coords
-						(
-							marginSize.x * 2 + containerMapSize.x,
-							marginSize.y * 2 + titleSize.y
-						),
-						containerRightSize,
-						// children
-						[
-							// todo
-						]
-					),
+					containerSidebar,
 
 					new ControlButton
 					(
@@ -243,11 +237,8 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		{
 			var inputPressed = inputsPressed[i];
 			var inputPressedName = inputPressed.name;
-			if (inputPressed.isActive == false)
-			{
-				// Do nothing.
-			}
-			else if (inputPressedName.startsWith("Arrow"))
+			//if (inputPressed.isActive == false)
+			if (inputPressedName.startsWith("Arrow"))
 			{
 				var directionToMove;
 				if (inputPressedName.endsWith("Down"))

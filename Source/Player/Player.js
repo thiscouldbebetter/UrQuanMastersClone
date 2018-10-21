@@ -139,7 +139,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		var containerFlagshipSize = new Coords
 		(
 			containerSidebarSize.x - marginSize.x * 2,
-			(containerSidebarSize.y - marginSize.x * 3) / 2
+			(containerSidebarSize.y - marginSize.x * 3) / 3
 		);
 
 		var containerFlagship = new ControlContainer
@@ -152,7 +152,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"labelFlagship",
-					new Coords(containerFlagshipSize.x / 2, marginSize.y + labelSize.y / 2),
+					new Coords(containerFlagshipSize.x / 2, labelSize.y),
 					labelSize,
 					true, // isTextCentered,
 					flagship.name,
@@ -162,7 +162,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"labelCrew",
-					new Coords(marginSize.x, marginSize.y * 2 + labelSize.y),
+					new Coords(marginSize.x, labelSize.y * 2),
 					labelSize,
 					false, // isTextCentered
 					"Crew:",
@@ -172,7 +172,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"infoCrew",
-					new Coords(marginSize.x * 4, marginSize.y * 2 + labelSize.y),
+					new Coords(marginSize.x * 4, labelSize.y * 2),
 					labelSize,
 					false, // isTextCentered
 					new DataBinding(flagship, "crewCurrentOverMax()"),
@@ -182,7 +182,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"labelFuel",
-					new Coords(marginSize.x, marginSize.y * 3 + labelSize.y * 2),
+					new Coords(marginSize.x, labelSize.y * 3),
 					labelSize,
 					false, // isTextCentered
 					"Fuel:",
@@ -192,7 +192,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"infoFuel",
-					new Coords(marginSize.x * 4, marginSize.y * 3 + labelSize.y * 2),
+					new Coords(marginSize.x * 4, labelSize.y * 3),
 					labelSize,
 					false, // isTextCentered
 					new DataBinding(flagship, "fuelCurrentOverMax()"),
@@ -202,11 +202,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"labelLanders",
-					new Coords
-					(
-						marginSize.x,
-						marginSize.y * 4 + labelSize.y * 3
-					),
+					new Coords(marginSize.x, labelSize.y * 4),
 					labelSize,
 					false, // isTextCentered
 					"Landers:",
@@ -216,11 +212,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"infoLanders",
-					new Coords
-					(
-						marginSize.x * 6,
-						marginSize.y * 4 + labelSize.y * 3
-					),
+					new Coords(marginSize.x * 6, labelSize.y * 4),
 					labelSize,
 					false, // isTextCentered
 					new DataBinding(flagship, "numberOfLanders"),
@@ -230,10 +222,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"labelCargo",
-					new Coords
-					(
-						marginSize.x, marginSize.y * 5 + labelSize.y * 4
-					),
+					new Coords(marginSize.x, labelSize.y * 5),
 					labelSize,
 					false, // isTextCentered
 					"Cargo:",
@@ -243,24 +232,46 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 				new ControlLabel
 				(
 					"infoCargo",
-					new Coords(marginSize.x * 5, marginSize.y * 5 + labelSize.y * 4),
+					new Coords(marginSize.x * 5, labelSize.y * 5),
 					labelSize,
 					false, // isTextCentered
 					new DataBinding(flagship, "cargoCurrentOverMax()"),
 					fontHeight
 				),
 
+				new ControlLabel
+				(
+					"labelPosition",
+					new Coords(marginSize.x, labelSize.y * 6),
+					labelSize,
+					false, // isTextCentered
+					"Pos:",
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoPosition",
+					new Coords(marginSize.x * 5, labelSize.y * 6),
+					labelSize,
+					false, // isTextCentered
+					"x, y", // todo
+					fontHeight
+				),
 			]
 		);
 
+		/*
 		var containerSidebar = new ControlContainer
 		(
 			"containerSidebar",
-			new Coords(300, 0), // hack - pos
+			new Coords(0, 0), // hack - pos
 			containerSidebarSize,
 			// children
 			[ containerFlagship ]
 		);
+		*/
+		var containerSidebar = containerFlagship;
 
 		return containerSidebar;
 	}

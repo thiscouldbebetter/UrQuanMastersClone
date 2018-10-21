@@ -375,7 +375,13 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	PlaceHyperspace.prototype.toControlSidebar = function(universe)
 	{
 		var world = universe.world;
-		var containerSidebar = world.player.toControlSidebar();
+		var containerSidebar = new ControlContainer
+		(
+			"containerSidebar",
+			new Coords(300, 0),
+			new Coords(100, 300),
+			[ world.player.toControlSidebar() ]
+		);
 
 		var marginWidth = 8;
 		var size = new Coords(1, 1).multiplyScalar
@@ -398,7 +404,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		var controlVisualSensors = new ControlVisual
 		(
 			"controlVisualSensors",
-			new Coords(10, 160), // pos
+			new Coords(8, 152), // pos
 			size,
 			new VisualImageImmediate(imageSensors, size)
 		);

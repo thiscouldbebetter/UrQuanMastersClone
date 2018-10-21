@@ -23,6 +23,10 @@ function debug_MediaLoaded(universe)
 	{
 		hyperspace(universe);
 	}
+	else if (debuggingMode == "HyperspaceMap")
+	{
+		hyperspaceMap(universe);
+	}
 	else if (debuggingMode == "Planet")
 	{
 		planet(universe);
@@ -119,6 +123,19 @@ function hyperspace(universe)
 	var playerLoc = new Location(playerPos);
 	var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
 	world.place = placeHyperspace;
+}
+
+function hyperspaceMap(universe)
+{
+	var world = universe.world;
+	var hyperspace = world.hyperspace
+	var starsystemSol = hyperspace.starsystems["Sol"];
+	var playerPos = starsystemSol.posInHyperspace.clone();
+	var playerLoc = new Location(playerPos);
+	var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
+	placeHyperspace.updateForTimerTick(universe, world);
+	var placeMap = new PlaceHyperspaceMap(placeHyperspace);
+	world.place = placeMap;
 }
 
 function planet(universe)

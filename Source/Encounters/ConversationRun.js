@@ -199,7 +199,13 @@
 					]
 				),
 
-				universe.world.player.toControlSidebar()
+				new ControlContainer
+				(
+					"containerSidebar",
+					new Coords(300, 0), // todo
+					new Coords(100, 300), // size
+					[ universe.world.player.toControlSidebar() ]
+				)
 			]
 		);
 

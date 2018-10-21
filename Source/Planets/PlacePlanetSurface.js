@@ -108,11 +108,14 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	// energySources
 
 	var energySources = this.planet.energySources;
-	for (var i = 0; i < energySources.length; i++)
+	if (energySources != null)
 	{
-		var energySource = energySources[i];
-		var entityEnergySource = energySource.toEntity(world, this);
-		entities.push(entityEnergySource);
+		for (var i = 0; i < energySources.length; i++)
+		{
+			var energySource = energySources[i];
+			var entityEnergySource = energySource.toEntity(world, this);
+			entities.push(entityEnergySource);
+		}
 	}
 
 	// player

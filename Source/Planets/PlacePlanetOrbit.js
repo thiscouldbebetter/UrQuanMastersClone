@@ -148,7 +148,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var fontHeight = 20;
 		var fontHeightShort = fontHeight / 2;
 		var buttonBackSize = new Coords(1, 1).multiplyScalar(1.6 * fontHeightShort);
-		var marginWidth = 10;
+		var marginWidth = 8;
 		var marginSize = new Coords(1, 1).multiplyScalar(marginWidth);
 
 		var titleSize = new Coords(containerMainSize.x, 25);
@@ -175,7 +175,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var containerScanSize = new Coords
 		(
 			containerRightSize.x - marginSize.x * 2,
-			buttonScanSize.y * 3 + marginSize.y * 4
+			buttonScanSize.y * 3 + marginSize.y * 2
 		);
 
 		var containerMapSize = new Coords
@@ -204,7 +204,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelName",
-					new Coords(marginSize.x, marginSize.y),
+					new Coords(marginSize.x, labelSize.y),
 					labelSize,
 					false, // isTextCentered
 					"Name: " + planet.name,
@@ -214,7 +214,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelMass",
-					new Coords(marginSize.x, marginSize.y * 2),
+					new Coords(marginSize.x, labelSize.y * 2),
 					labelSize,
 					false, // isTextCentered
 					"Mass: " + planet.mass.toExponential(3).replace("e", " x 10^").replace("+", "") + " kg",
@@ -224,7 +224,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelRadius",
-					new Coords(marginSize.x, marginSize.y * 3),
+					new Coords(marginSize.x, labelSize.y * 3),
 					labelSize,
 					false, // isTextCentered
 					"Radius: " + planet.radius + " km",
@@ -234,7 +234,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelGravity",
-					new Coords(marginSize.x, marginSize.y * 4),
+					new Coords(marginSize.x, labelSize.y * 4),
 					labelSize,
 					false, // isTextCentered
 					"Surface Gravity: " + planet.gravity + "g",
@@ -244,7 +244,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelOrbitDistance",
-					new Coords(marginSize.x, marginSize.y * 5),
+					new Coords(marginSize.x, labelSize.y * 5),
 					labelSize,
 					false, // isTextCentered
 					"Orbit: " + planet.orbit.toExponential(3).replace("e", " x 10^").replace("+", "") + " km",
@@ -254,7 +254,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelRotationPeriod",
-					new Coords(marginSize.x, marginSize.y * 6),
+					new Coords(marginSize.x, labelSize.y * 6),
 					labelSize,
 					false, // isTextCentered
 					"Day: " + planet.day + " hours",
@@ -264,7 +264,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelOrbitPeriod",
-					new Coords(marginSize.x, marginSize.y * 7),
+					new Coords(marginSize.x, labelSize.y * 7),
 					labelSize,
 					false,
 					"Year: " + planet.year + " Earth days",
@@ -274,7 +274,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelTemperature",
-					new Coords(marginSize.x, marginSize.y * 8),
+					new Coords(marginSize.x, labelSize.y * 8),
 					labelSize,
 					false,
 					"Temperature: " + planet.temperature + " C",
@@ -284,7 +284,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelWeather",
-					new Coords(marginSize.x, marginSize.y * 9),
+					new Coords(marginSize.x, labelSize.y * 9),
 					labelSize,
 					false,
 					"Weather: Class " + planet.weather,
@@ -294,7 +294,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 				new ControlLabel
 				(
 					"labelTectonics",
-					new Coords(marginSize.x, marginSize.y * 10),
+					new Coords(marginSize.x, labelSize.y * 10),
 					labelSize,
 					false,
 					"Tectonics: Class " + planet.tectonics,
@@ -338,6 +338,8 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 			]
 		);
 
+		var containerPlayer = world.player.toControlSidebar();
+
 		var containerRight = new ControlContainer
 		(
 			"containerRight",
@@ -349,6 +351,8 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 			containerRightSize,
 			// children
 			[
+				containerPlayer,
+
 				new ControlLabel
 				(
 					"labelScan",
@@ -405,7 +409,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 							new Coords
 							(
 								marginSize.x,
-								marginSize.y * 2 + buttonScanSize.y
+								marginSize.y + buttonScanSize.y
 							),
 							buttonScanSize,
 							"Life",
@@ -425,7 +429,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 							new Coords
 							(
 								marginSize.x,
-								marginSize.y * 3 + buttonScanSize.y * 2
+								marginSize.y + buttonScanSize.y * 2
 							),
 							buttonScanSize,
 							"Energy",

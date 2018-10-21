@@ -224,7 +224,13 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		entities.push(wallEntity);
 	}
 
-	var containerSidebar = world.player.toControlSidebar();
+	var containerSidebar = new ControlContainer
+	(
+		"containerSidebar",
+		new Coords(300, 0), // todo
+		new Coords(100, 300), // size
+		[ world.player.toControlSidebar() ]
+	);
 	this.venueControls = new VenueControls(containerSidebar);
 
 	Place.call(this, entities);
