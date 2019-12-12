@@ -21,20 +21,17 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		Ship.actionTurnRight(),
 		actionFire,
 		actionExit,
-	].addLookups("name");
+	].addLookupsByName();
 
-	this.inputToActionMappings = Ship.inputToActionMappings();
-	this.inputToActionMappings = this.inputToActionMappings.concat
+	this._actionToInputsMappings = Ship.actionToInputsMappings();
+	this._actionToInputsMappings = this._actionToInputsMappings.concat
 	(
 		[
-			new InputToActionMapping("Enter", "Fire", true),
-			new InputToActionMapping("_", "Exit"),
-
-			new InputToActionMapping("Gamepad0Button0", "Fire"),
-			new InputToActionMapping("Gamepad0Button1", "Exit"),
+			new ActionToInputsMapping("Fire", ["Enter", "Gamepad0Button0"], true),
+			new ActionToInputsMapping("Exit", ["_", "Gamepad0Button1"]),
 		]
 	);
-	this.inputToActionMappings.addLookups("inputName");
+	this._actionToInputsMappings.addLookupsMultiple( function(x) { return x.inputNames; } );
 
 	// constraints
 
@@ -49,7 +46,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		new Location
 		(
 			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
+			Orientation.Instances().ForwardZDownY.clone()
 		)
 	);
 
@@ -63,7 +60,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	// background
 
 	var visualBackground = new VisualImageFromLibrary("PlanetSurface", this.planet.sizeSurface);
-	visualBackground = new VisualCamera(visualBackground, this.camera);
+	visualBackground = new VisualCamera(visualBackground, () => this.camera);
 	visualBackground = new VisualWrapped(this.planet.sizeSurface, visualBackground);
 
 	var entityBackground = new Entity
@@ -128,7 +125,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	var playerVisual = new VisualCamera
 	(
 		ShipDefn.visual(entityDimension, playerColor, "Black"),
-		this.camera
+		() => this.camera
 	);
 	playerVisual = new VisualWrapped(this.size, playerVisual);
 
@@ -175,7 +172,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 			new Collidable
 			(
 				playerCollider,
-				[ "collidable" ], // entityPropertyNamesToCollideWith
+				[ Collidable.name ], // entityPropertyNamesToCollideWith
 				playerCollide
 			),
 			new Drawable(playerVisual),
@@ -190,7 +187,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	var containerSidebar = this.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, entities);
+	Place.call(this, PlacePlanetSurface.name, entities);
 	this.propertyNamesToProcess.push("ship");
 
 	// Helper variables.
@@ -204,6 +201,11 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	PlacePlanetSurface.prototype.constructor = Place;
 
 	// methods
+
+	PlacePlanetSurface.prototype.actionToInputsMappings = function()
+	{
+		return this._actionToInputsMappings;
+	};
 
 	PlacePlanetSurface.prototype.exit = function(universe, world, place, actor)
 	{
@@ -231,7 +233,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		var drawPos = this._drawPos;
 
 		var player = this.entities["Player"];
-		var playerLoc = player.locatable.loc;
+		var playerLoc = player.Locatable.loc;
 
 		var camera = this.camera;
 		camera.loc.pos.overwriteWith
@@ -269,7 +271,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		contactVisuals.push(new VisualCircle(1, "LightGreen"));
 
 		var entityLander = this.entities["Player"];
-		scanContacts.push([entityLander.locatable.loc]);
+		scanContacts.push([entityLander.Locatable.loc]);
 		contactVisuals.push(new VisualCircle(3, null, "Cyan"));
 
 		var contactDrawable = new Drawable();
@@ -393,7 +395,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 							new Coords(marginSize.x * 5, marginSize.y),
 							labelSize,
 							false, // isTextCentered
-							new DataBinding(lander, "crewCurrentOverMax()"),
+							new DataBinding(lander, function get(c) { return c.crewCurrentOverMax(); } ),
 							fontHeight
 						),
 
@@ -413,7 +415,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 							new Coords(marginSize.x * 5, marginSize.y * 2),
 							labelSize,
 							false, // isTextCentered
-							new DataBinding(lander, "cargoCurrentOverMax()"),
+							new DataBinding(lander, function get(c) { return c.cargoCurrentOverMax(); } ),
 							fontHeight
 						),
 
@@ -433,7 +435,7 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 							new Coords(marginSize.x * 5, marginSize.y * 3),
 							labelSize,
 							false, // isTextCentered
-							new DataBinding(lander, "dataCurrentOverMax()"),
+							new DataBinding(lander, function get(c) { return c.dataCurrentOverMax(); } ),
 							fontHeight
 						),
 

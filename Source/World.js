@@ -16,7 +16,7 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 		starsystemStart,
 		new Location
 		(
-			new Coords(.5, .99).multiply(starsystemStart.sizeInner),
+			new Coords(.5, .95).multiply(starsystemStart.sizeInner),
 			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
 		)
 	);
@@ -31,15 +31,31 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 		var now = DateTime.now();
 		var nowAsString = now.toStringMMDD_HHMM_SS();
 
+		var constraintDefnsAll = ConstraintDefn.Instances();
 		var constraintDefns =
 		[
-			ConstraintDefn.Instances.Friction,
-			ConstraintDefn.Instances.FrictionDry,
-			ConstraintDefn.Instances.SpeedMax,
-			ConstraintDefn.Instances.StopBelowSpeedMin,
-			ConstraintDefn.Instances.TrimToRange,
-			ConstraintDefn.Instances.WrapToRange,
-			ConstraintDefn.Instances.WrapXTrimY
+			constraintDefnsAll.Friction,
+			constraintDefnsAll.FrictionDry,
+			constraintDefnsAll.SpeedMax,
+			constraintDefnsAll.StopBelowSpeedMin,
+			constraintDefnsAll.TrimToRange,
+			constraintDefnsAll.WrapToRange,
+			constraintDefnsAll.WrapXTrimY
+		];
+
+		// todo
+		var actions = Ship.actions();
+		var actionToInputsMappings = Ship.actionToInputsMappings();
+
+		var placeDefns = 
+		[
+			new PlaceDefn(PlaceCombat.name, actions, actionToInputsMappings),
+			new PlaceDefn(PlaceEncounter.name, actions, actionToInputsMappings),
+			new PlaceDefn(PlaceHyperspace.name, actions, actionToInputsMappings),
+			new PlaceDefn(PlacePlanetOrbit.name, actions, actionToInputsMappings),
+			new PlaceDefn(PlacePlanetSurface.name, actions, actionToInputsMappings),
+			new PlaceDefn(PlacePlanetVicinity.name, actions, actionToInputsMappings),
+			new PlaceDefn(PlaceStarsystem.name, actions, actionToInputsMappings),
 		];
 
 		var hyperspaceSize = new Coords(1, 1).multiplyScalar(10000);
@@ -53,11 +69,11 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 			{
 				var entityToTargetName = "Player";
 				var target = place.entities[entityToTargetName];
-				targetPos = target.locatable.loc.pos;
+				targetPos = target.Locatable.loc.pos;
 				actor.targetPos = targetPos;
 			}
 
-			var actorLoc = entityActor.locatable.loc;
+			var actorLoc = entityActor.Locatable.loc;
 			var actorPos = actorLoc.pos;
 			var actorVel = actorLoc.vel;
 
@@ -196,7 +212,7 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 
 		var lifeformDefns = LifeformDefn.Instances();
 
-		var defns = new Defns(constraintDefns, factions, shipDefns, lifeformDefns);
+		var defns = new Defns(constraintDefns, placeDefns, factions, shipDefns, lifeformDefns);
 
 		var mediaLibrary = universe.mediaLibrary;
 
@@ -235,7 +251,7 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 
 		var playerFlagship = new Flagship
 		(
-			"Flagship",
+			playerShipDefnName,
 			12, // componentsMax
 			10, // thrustersMax
 			10, // turningJetsMax

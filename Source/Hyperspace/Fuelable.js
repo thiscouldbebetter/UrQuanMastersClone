@@ -6,7 +6,7 @@ function Fuelable()
 {
 	Fuelable.prototype.updateForTimerTick = function(universe, world, place, entityFuelable)
 	{
-		var entityLoc = entityFuelable.locatable.loc;
+		var entityLoc = entityFuelable.Locatable.loc;
 		var entityVel = entityLoc.vel;
 		var entitySpeed = entityVel.magnitude();
 		var fuelConsumedPerSpeed = .1;

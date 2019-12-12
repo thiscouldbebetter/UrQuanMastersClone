@@ -5,7 +5,7 @@ function PlaceStation(world, station, placePlanetVicinity)
 	this.placePlanetVicinity = placePlanetVicinity;
 
 	var entities = [];
-	Place.call(this, entities);
+	Place.call(this, PlaceStation.name, entities);
 }
 {
 	// superclass
@@ -128,7 +128,7 @@ function PlaceStation(world, station, placePlanetVicinity)
 	{
 		var placeNext = this.placeToReturnTo;
 		var playerFromPlaceNext = placeNext.entities["Player"];
-		var playerLoc = playerFromPlaceNext.locatable.loc;
+		var playerLoc = playerFromPlaceNext.Locatable.loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
 		world.placeNext = placeNext;

@@ -43,6 +43,6 @@ function ResourceDefn(name, nameFriendly, color, valuePerUnit)
 
 			this.Biodata,
 
-		].addLookups("name");
+		].addLookupsByName();
 	}
 }

@@ -4,7 +4,7 @@ function PlaceEncounter(world, encounter)
 	this.encounter = encounter;
 
 	var entities = [];
-	Place.call(this, entities);
+	Place.call(this, PlaceEncounter.name, entities);
 }
 {
 	// superclass
@@ -57,7 +57,7 @@ function PlaceEncounter(world, encounter)
 			},
 			universe
 		);
-		var conversationSize = universe.display.sizeDefault.clone();
+		var conversationSize = universe.display.sizeDefault().clone();
 		var conversationAsControl =
 			conversation.toControl(conversationSize, universe);
 

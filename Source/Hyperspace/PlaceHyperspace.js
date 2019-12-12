@@ -20,18 +20,16 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		Ship.actionTurnLeft(),
 		Ship.actionTurnRight(),
 		actionMapView
-	].addLookups("name");
+	].addLookupsByName();
 
-	this.inputToActionMappings = Ship.inputToActionMappings();
-	this.inputToActionMappings = this.inputToActionMappings.concat
+	this._actionToInputsMappings = Ship.actionToInputsMappings();
+	this._actionToInputsMappings = this._actionToInputsMappings.concat
 	(
 		[
-			new InputToActionMapping("Tab", "MapView"),
-
-			new InputToActionMapping("Gamepad0Button0", "MapView"),
+			new ActionToInputsMapping("MapView", [ "Tab", "Gamepad0Button0" ]),
 		]
 	);
-	this.inputToActionMappings.addLookups("inputName");
+	this._actionToInputsMappings.addLookupsMultiple(function (x) { return x.inputNames; });
 
 	this.camera = new Camera
 	(
@@ -40,7 +38,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		new Location
 		(
 			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
+			Orientation.Instances().ForwardZDownY.clone()
 		)
 	);
 
@@ -89,7 +87,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 			var starVisual = new VisualCamera
 			(
 				new VisualPolygon(starVisualPathForSize, starColor),
-				this.camera
+				() => this.camera
 			);
 			starVisualsForColor.push(starVisual);
 		}
@@ -121,7 +119,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		entities.push(starEntity);
 	}
 
-	entities.addLookups("name");
+	entities.addLookupsByName();
 
 	// factions
 
@@ -138,7 +136,11 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 				"Faction" + faction.name,
 				[
 					new Collidable(factionCollider),
-					faction
+					faction,
+					new Locatable
+					(
+						new Location( new Coords(0, 0) )
+					)
 				]
 			);
 			entities.push(factionEntity);
@@ -168,7 +170,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		([
 			playerVisualBody,
 		]),
-		this.camera
+		() => this.camera
 	);
 
 	var playerShipGroup = world.player.shipGroup;
@@ -195,7 +197,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 			new Collidable
 			(
 				playerCollider,
-				[ "collidable" ], // entityPropertyNamesToCollideWith
+				[ Collidable.name ], // entityPropertyNamesToCollideWith
 				this.playerCollide
 			),
 			new Drawable(playerVisual),
@@ -211,7 +213,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	{
 		var starsystemName = starsystemDeparted.name;
 		var entityForStarsystemDeparted = entities[starsystemName];
-		playerEntity.collidable.entityAlreadyCollidedWith = entityForStarsystemDeparted;
+		playerEntity.Collidable.entityAlreadyCollidedWith = entityForStarsystemDeparted;
 	}
 
 	entities.push(playerEntity);
@@ -219,8 +221,8 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	var containerSidebar = this.toControlSidebar(universe);
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, entities);
-	this.propertyNamesToProcess.push("fuelable");
+	Place.call(this, PlaceHyperspace.name, entities);
+	this.propertyNamesToProcess.push(Fuelable.name);
 
 	// Helper variables.
 
@@ -234,6 +236,11 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	PlaceHyperspace.prototype.constructor = Place;
 
 	// methods
+
+	PlaceHyperspace.prototype.actionToInputsMappings = function()
+	{
+		return this._actionToInputsMappings;
+	};
 
 	PlaceHyperspace.prototype.entitiesShips = function()
 	{
@@ -250,7 +257,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		universe, world, place, entityPlayer, entityOther
 	)
 	{
-		var faction = entityOther.faction;
+		var faction = entityOther.Faction;
 		var factionName = faction.name;
 
 		var numberOfShipGroupsExistingForFaction = 0;
@@ -258,7 +265,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		for (var i = 0; i < entitiesShipGroupsAll.length; i++)
 		{
 			var entityShipGroup = entitiesShipGroupsAll[i];
-			if (entityShipGroup.shipGroup.factionName == factionName)
+			if (entityShipGroup.ShipGroup.factionName == factionName)
 			{
 				numberOfShipGroupsExistingForFaction++;
 			}
@@ -289,10 +296,10 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 
 	PlaceHyperspace.prototype.playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
-		if (entityOther.starsystem != null)
+		if (entityOther.Starsystem != null)
 		{
-			var starsystem = entityOther.starsystem;
-			var playerLoc = entityPlayer.locatable.loc;
+			var starsystem = entityOther.Starsystem;
+			var playerLoc = entityPlayer.Locatable.loc;
 			var playerOrientation = playerLoc.orientation;
 			var playerPosNextAsPolar = new Polar().fromCoords
 			(
@@ -315,10 +322,10 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 				)
 			);
 		}
-		else if (entityOther.ship != null)
+		else if (entityOther.Ship != null)
 		{
-			var shipGroupOther = entityOther.shipGroup;
-			var playerPos = entityPlayer.locatable.loc.pos;
+			var shipGroupOther = entityOther.ShipGroup;
+			var playerPos = entityPlayer.Locatable.loc.pos;
 			var starsystemClosest = place.hyperspace.starsystemClosestTo(playerPos);
 			var planetClosest = starsystemClosest.planets.random();
 			var encounter = new Encounter
@@ -361,7 +368,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 					new VisualCamera
 					(
 						ship0.defn(world).visual,
-						place.camera
+						() => place.camera
 					)
 				),
 			]
@@ -399,7 +406,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 			"DarkGreen"
 		);
 
-		var imageSensors = this.displaySensors.initializeCanvasAndGraphicsContext().toImage();
+		var imageSensors = this.displaySensors.initialize().toImage();
 
 		var controlVisualSensors = new ControlVisual
 		(
@@ -427,7 +434,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		var drawPos = drawLoc.pos;
 
 		var player = this.entities["Player"];
-		var playerLoc = player.locatable.loc;
+		var playerLoc = player.Locatable.loc;
 
 		var camera = this.camera;
 		camera.loc.pos.overwriteWith

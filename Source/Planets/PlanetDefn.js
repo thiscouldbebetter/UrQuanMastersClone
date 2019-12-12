@@ -177,6 +177,6 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 			this.Xenolithic,
 			this.Yttric,
 
-		].addLookups("name");
+		].addLookupsByName();
 	}
 }

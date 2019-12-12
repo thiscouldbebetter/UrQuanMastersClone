@@ -21,7 +21,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 	ShipAttackDefn.prototype.activate = function(universe, world, place, actor)
 	{
 		var attackDefn = this;
-		var actorLoc = actor.locatable.loc;
+		var actorLoc = actor.Locatable.loc;
 		var actorPos = actorLoc.pos;
 		var actorVisual = actor.drawable.visual;
 
@@ -31,7 +31,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 			new VisualCamera
 			(
 				attackDefn.visualProjectile,
-				place.camera
+				() => place.camera
 			)
 		);
 
@@ -42,7 +42,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 		projectileDirectionAsPolar.azimuthInTurns =
 			projectileDirectionAsPolar.azimuthInTurns.wrapToRangeMinMax(0, 1);
 		var projectileDirection = projectileDirectionAsPolar.toCoords(new Coords());
-		var actorRadius = actor.collidable.collider.radius;
+		var actorRadius = actor.Collidable.collider.radius;
 		var projectilePos = actorPos.clone().add
 		(
 			projectileDirection.clone().multiplyScalar(actorRadius).double()
@@ -106,7 +106,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 				"Impact",
 				[
 					new Ephemeral(10),
-					entityProjectile.locatable,
+					entityProjectile.Locatable,
 					entityProjectile.drawable
 				]
 			);
@@ -121,7 +121,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 			killable.integrity -= projectileDamagePerHit;
 			if (entityOther.ship != null)
 			{
-				entityOther.ship.crew = killable.integrity;
+				entityOther.Ship.crew = killable.integrity;
 			}
 		}
 	}

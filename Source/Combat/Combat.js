@@ -19,8 +19,8 @@ function Combat(size, encounter, shipGroups)
 	{
 		var entitiesShips = place.entitiesShips();
 		var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
-		var targetPos = target.locatable.loc.pos;
-		var actorLoc = actor.locatable.loc;
+		var targetPos = target.Locatable.loc.pos;
+		var actorLoc = actor.Locatable.loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 		var combat = place.combat;
@@ -45,10 +45,10 @@ function Combat(size, encounter, shipGroups)
 		if (angleTargetMinusForward != 0)
 		{
 			var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-			actor.ship.turnInDirection(world, actor, directionToTurn);
+			actor.Ship.turnInDirection(world, actor, directionToTurn);
 		}
 
-		actor.ship.accelerate(world, actor);
+		actor.Ship.accelerate(world, actor);
 	}
 
 	Combat.prototype.exit = function(universe)
@@ -169,8 +169,10 @@ function Combat(size, encounter, shipGroups)
 			headingSize.x,
 			size.y - titleSize.y - headingSize.y - buttonHeight * 2 - marginSize.y * 6
 		);
-		var bindingForOptionText =
-			new DataBinding(null, "fullNameAndCrew(world)", { "world": world } );
+		var bindingForOptionText = new DataBinding
+		(
+			null, function get(c) { return c.fullNameAndCrew(world); }
+		);
 
 		var listShipsYours = new ControlList
 		(
@@ -182,7 +184,7 @@ function Combat(size, encounter, shipGroups)
 			fontHeight,
 			null, // bindingForItemSelected
 			null, // bindingForItemValue
-			new DataBinding(combat, "ship0HasNotBeenSelected()") // isEnabled
+			new DataBinding(combat, function get(c) { return c.ship0HasNotBeenSelected(); } ) // isEnabled
 		);
 
 		var listShipsTheirs = new ControlList
@@ -199,13 +201,13 @@ function Combat(size, encounter, shipGroups)
 			fontHeight,
 			null, // bindingForItemSelected
 			null, // bindingForItemValue
-			new DataBinding(combat, "ship1HasNotBeenSelected()") // isEnabled
+			new DataBinding(combat, function get(c) { return c.ship1HasNotBeenSelected(); } ) // isEnabled
 		);
 
 		var returnValue = new ControlContainer
 		(
 			"containerShipSelect",
-			Coords.Instances.Zeroes,
+			Coords.Instances().Zeroes,
 			size,
 			[
 				new ControlLabel
@@ -242,7 +244,7 @@ function Combat(size, encounter, shipGroups)
 					"Select",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(combat, "ship0HasNotBeenSelected()"), // isEnabled,
+					new DataBinding(combat, function get(c) { return c.ship0HasNotBeenSelected(); } ), // isEnabled,
 					function click(universe)
 					{
 						var shipYours = listShipsYours.itemSelected();
@@ -264,7 +266,7 @@ function Combat(size, encounter, shipGroups)
 					"Random",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(combat, "ship0HasNotBeenSelected()"), // isEnabled,
+					new DataBinding(combat, function get(c) { return c.ship0HasNotBeenSelected(); } ), // isEnabled,
 					function click(universe)
 					{
 						var shipGroupIndex = 0;
@@ -304,7 +306,7 @@ function Combat(size, encounter, shipGroups)
 					"Select",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(combat, "ship1HasNotBeenSelected()"), // isEnabled,
+					new DataBinding(combat, function get(c) { return c.ship1HasNotBeenSelected(); } ), // isEnabled,
 					function click(universe)
 					{
 						var shipTheirs = listShipsTheirs.itemSelected();
@@ -326,7 +328,7 @@ function Combat(size, encounter, shipGroups)
 					"Random",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(combat, "ship1HasNotBeenSelected()"), // isEnabled,
+					new DataBinding(combat, function get(c) { return c.ship1HasNotBeenSelected(); } ), // isEnabled,
 					function click(universe)
 					{
 						var shipGroupIndex = 1;
@@ -346,7 +348,7 @@ function Combat(size, encounter, shipGroups)
 					"Fight",
 					fontHeight,
 					true, // hasBorder
-					new DataBinding(combat, "shipsHaveBeenSelected()"), // isEnabled,
+					new DataBinding(combat, function get(c) { return c.shipsHaveBeenSelected(); } ), // isEnabled,
 					function click(universe)
 					{
 						var shipYours = combat.shipsFighting[0];

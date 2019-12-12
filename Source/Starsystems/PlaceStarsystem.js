@@ -11,9 +11,9 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		Ship.actionTurnLeft(),
 		Ship.actionTurnRight(),
 
-	].addLookups("name");
+	].addLookupsByName();
 
-	this.inputToActionMappings = Ship.inputToActionMappings();
+	this._actionToInputsMappings = Ship.actionToInputsMappings();
 
 	// entities
 
@@ -81,7 +81,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			new Collidable
 			(
 				playerCollider,
-				[ "collidable" ], // entityPropertyNamesToCollideWith
+				[ Collidable.name ], // entityPropertyNamesToCollideWith
 				this.playerCollide
 			),
 			new Drawable(playerVisual),
@@ -122,7 +122,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			new Path(enemyColliderAsFace.vertices), enemyColor
 		);
 
-		var enemyShipDefnName = "Flagship";
+		var enemyShipDefnName = "Flagship"; // todo
 		var enemyShip = new Ship(enemyShipDefnName);
 		var enemyShipGroup = new ShipGroup
 		(
@@ -155,11 +155,11 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 					function activity(universe, world, place, actor, entityToTargetName)
 					{
 						var target = place.entities[entityToTargetName];
-						var actorLoc = actor.locatable.loc;
+						var actorLoc = actor.Locatable.loc;
 
 						actorLoc.vel.overwriteWith
 						(
-							target.locatable.loc.pos
+							target.Locatable.loc.pos
 						).subtract
 						(
 							actorLoc.pos
@@ -183,7 +183,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		new Location
 		(
 			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
+			Orientation.Instances().ForwardZDownY.clone()
 		)
 	);
 
@@ -233,7 +233,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 	);
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, entities);
+	Place.call(this, PlaceStarsystem.name, entities);
 
 	// Helper variables.
 
@@ -246,6 +246,11 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 	PlaceStarsystem.prototype.constructor = Place;
 
 	// methods
+
+	PlaceStarsystem.prototype.actionToInputsMappings = function()
+	{
+		return this._actionToInputsMappings;
+	};
 
 	PlaceStarsystem.prototype.playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
@@ -260,7 +265,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 				shipGroupOther.factionName,
 				shipGroupOther,
 				place,
-				entityPlayer.locatable.loc.pos
+				entityPlayer.Locatable.loc.pos
 			);
 			var placeEncounter = new PlaceEncounter(world, encounter);
 			world.placeNext = placeEncounter;
@@ -268,7 +273,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		else if (entityOtherName.startsWith("Wall"))
 		{
 			var hyperspace = world.hyperspace;
-			var playerLoc = entityPlayer.locatable.loc;
+			var playerLoc = entityPlayer.Locatable.loc;
 			var playerPosNext = place.starsystem.posInHyperspace.clone();
 			world.placeNext = new PlaceHyperspace
 			(
@@ -284,11 +289,11 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		}
 		else
 		{
-			if (entityOther.planet != null)
+			if (entityOther.Planet != null)
 			{
-				var planet = entityOther.planet;
+				var planet = entityOther.Planet;
 				var sizeNext = place.size.clone();
-				var playerOrientation = entityPlayer.locatable.loc.orientation;
+				var playerOrientation = entityPlayer.Locatable.loc.orientation;
 				var heading = playerOrientation.headingInTurns();
 				var playerPosNext = new Polar
 				(
@@ -326,7 +331,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		{
 			return; // hack
 		}
-		var playerLoc = player.locatable.loc;
+		var playerLoc = player.Locatable.loc;
 
 		var camera = this.camera;
 		camera.loc.pos.overwriteWith

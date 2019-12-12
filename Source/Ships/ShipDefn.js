@@ -191,10 +191,10 @@ function ShipDefn
 			function effectWhenInvoked(universe, world, place, actor) {},
 			function activity(universe, world, place, actor, targetEntityName)
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.Locatable.loc;
 				var actorPos = actorLoc.pos;
 				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var targetPos = target.Locatable.loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
@@ -235,9 +235,9 @@ function ShipDefn
 				var combat = place.combat;
 				var ships = place.entitiesShips();
 				var target = ships[1 - ships.indexOf(actor)];
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.Locatable.loc;
 				var actorPos = actorLoc.pos;
-				var targetLoc = target.locatable.loc;
+				var targetLoc = target.Locatable.loc;
 				var targetPos = targetLoc.pos;
 				var displacement = targetPos.clone().subtract(actorPos);
 				var direction = displacement.normalize();
@@ -254,9 +254,9 @@ function ShipDefn
 			1, // energyToUse
 			function effect(universe, world, place, actor)
 			{
-				var isCloaked = actor.ship.isCloaked;
+				var isCloaked = actor.Ship.isCloaked;
 				isCloaked = (isCloaked == null ? false : isCloaked);
-				actor.ship.isCloaked = (isCloaked == false);
+				actor.Ship.isCloaked = (isCloaked == false);
 			}
 		);
 
@@ -266,7 +266,7 @@ function ShipDefn
 		(
 			function(universe, world, drawable, entity)
 			{
-				var isCloaked = entity.ship.isCloaked;
+				var isCloaked = entity.Ship.isCloaked;
 				return (isCloaked == true ? shipInfernusVisualCloaked : shipInfernusVisualBase);
 			}
 		);
@@ -291,7 +291,7 @@ function ShipDefn
 			1, // energyToUse
 			function effect(universe, world, place, actor)
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.Locatable.loc;
 				var actorPos = actorLoc.pos;
 				var thrust = 10;
 				var direction = actorLoc.orientation.forward.clone();
@@ -321,10 +321,10 @@ function ShipDefn
 			function effectWhenInvoked(universe, world, place, actor) {},
 			function activity(universe, world, place, actor, targetEntityName)
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.Locatable.loc;
 				var actorPos = actorLoc.pos;
 				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var targetPos = target.Locatable.loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
@@ -353,10 +353,10 @@ function ShipDefn
 			function effectWhenInvoked(universe, world, place, actor) {},
 			function activity(universe, world, place, actor, targetEntityName)
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.Locatable.loc;
 				var actorPos = actorLoc.pos;
 				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var targetPos = target.Locatable.loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
@@ -397,10 +397,10 @@ function ShipDefn
 			function effectWhenInvoked(universe, world, place, actor) {},
 			function activity(universe, world, place, actor, targetEntityName)
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.Locatable.loc;
 				var actorPos = actorLoc.pos;
 				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var targetPos = target.Locatable.loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
@@ -467,7 +467,7 @@ function ShipDefn
 			new sd("MetamorphB", "Knsnynz",		3,		10,		50,		.07 / heads,  20, 20,	.14,	10, 	1000, 	sv("MetamorphB", "mmrnmhrm/xform"), adTodo,	adTodo ),
 		];
 
-		return this._All.addLookups("name");
+		return this._All.addLookupsByName();
 	}
 
 	// static methods

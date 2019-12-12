@@ -8,7 +8,7 @@ function PlaceStationDock(world, placeStation)
 	this.landerValue = 100;
 
 	var entities = [];
-	Place.call(this, entities);
+	Place.call(this, PlaceStationDock.name, entities);
 }
 {
 	// superclass
@@ -378,10 +378,15 @@ function PlaceStationDock(world, placeStation)
 					),
 					listComponentsSize,
 					shipComponentDefnsKnownBackbone,
-					new DataBinding(null, "name"), // bindingForItemText
+					new DataBinding(null, function get(c) { return c.name } ), // bindingForItemText
 					fontHeightShort,
-					new DataBinding(placeStationDock, "componentToBuild"), // bindingForItemSelected
-					new DataBinding(),
+					new DataBinding
+					(
+						placeStationDock,
+						function get(c) { return c.componentToBuild; },
+						function set(c, v) { c.componentToBuild = v; }
+					), // bindingForItemSelected
+					new DataBinding(), // ?
 				),
 
 				new ControlButton
@@ -425,7 +430,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player.flagship, "componentsBackboneCurrentOverMax()"),
+					new DataBinding(player.flagship, function get(c) { return c.componentsBackboneCurrentOverMax(); } ),
 					fontHeightShort
 				),
 
@@ -439,10 +444,15 @@ function PlaceStationDock(world, placeStation)
 					),
 					listComponentsSize,
 					shipComponentsInstalled,
-					new DataBinding(null, "name"), // bindingForItemText
+					new DataBinding(null, function get(c) { return c.name; } ), // bindingForItemText
 					fontHeightShort,
-					new DataBinding(placeStationDock, "componentToScrap"), // bindingForItemSelected
-					new DataBinding(),
+					new DataBinding
+					(
+						placeStationDock,
+						function get(c) { return c.componentToScrap; },
+						function set(c) { c.componentToScrap = v; }
+					), // bindingForItemSelected
+					new DataBinding(), // ?
 				),
 
 				new ControlButton
@@ -486,10 +496,15 @@ function PlaceStationDock(world, placeStation)
 					),
 					listComponentsSize,
 					shipWeaponSlots,
-					new DataBinding(null, "nameAndComponentInstalled()"), // bindingForItemText
+					new DataBinding(null, function(c) { return c.nameAndComponentInstalled(); } ), // bindingForItemText
 					fontHeightShort,
-					new DataBinding(placeStationDock, "weaponSlotToMove"), // bindingForItemSelected
-					new DataBinding(),
+					new DataBinding
+					(
+						placeStationDock,
+						function get(c) { return c.weaponSlotToMove; },
+						function set(c, v) { c.weaponSlotToMove = v; }
+					), // bindingForItemSelected
+					new DataBinding() // ?
 				),
 
 				new ControlButton
@@ -536,7 +551,11 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player.flagship, "thrustersCurrentOverMax()"),
+					new DataBinding
+					(
+						player.flagship,
+						function get(c) { return c.thrustersCurrentOverMax(); }
+					),
 					fontHeightShort
 				),
 
@@ -598,7 +617,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player.flagship, "turningJetsCurrentOverMax()"),
+					new DataBinding(player.flagship, function get(c) { return c.turningJetsCurrentOverMax(); } ),
 					fontHeightShort
 				),
 
@@ -678,9 +697,14 @@ function PlaceStationDock(world, placeStation)
 					),
 					listShipsSize,
 					shipPlansAvailable,
-					new DataBinding(null, "fullNameAndValue()"), // bindingForItemText
+					new DataBinding(null, function get(c) { return c.fullNameAndValue(); } ), // bindingForItemText
 					fontHeightShort,
-					new DataBinding(placeStationDock, "shipDefnToBuild"),
+					new DataBinding
+					(
+						placeStationDock,
+						function get(c) { return c.shipDefnToBuild; },
+						function set(c, v) { c.shipDefnToBuild = v; }
+					),
 					new DataBinding()
 				),
 
@@ -725,7 +749,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player, "shipsCurrentOverMax()"),
+					new DataBinding(player, function get(c) { return c.shipsCurrentOverMax(); } ),
 					fontHeightShort
 				),
 
@@ -739,10 +763,19 @@ function PlaceStationDock(world, placeStation)
 					),
 					listShipsSize,
 					shipsInFleet,
-					new DataBinding(null, "fullNameAndCrew(world)", { "world" : world } ), // bindingForItemText
+					new DataBinding
+					(
+						null,
+						function get(c) { return c.fullNameAndCrew(world); }
+					), // bindingForItemText
 					fontHeightShort,
-					new DataBinding(placeStationDock, "shipInFleetSelected"),
-					new DataBinding()
+					new DataBinding
+					(
+						placeStationDock,
+						function get(c) { return c.shipInFleetSelected; },
+						function set(c, v) { c.shipInFleetSelected = v; }
+					),
+					new DataBinding() // ?
 				),
 
 				new ControlButton
@@ -825,7 +858,7 @@ function PlaceStationDock(world, placeStation)
 					new Coords(marginSize.x * 7, marginSize.y),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player, "credit"),
+					new DataBinding(player, function get(c) { return c.credit; } ),
 					fontHeightShort
 				),
 
@@ -845,7 +878,7 @@ function PlaceStationDock(world, placeStation)
 					new Coords(marginSize.x * 4, marginSize.y * 2 + labelSize.y),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player, "flagship.fuelCurrentOverMax()"),
+					new DataBinding(player, function get(c) { return c.flagship.fuelCurrentOverMax(); } ),
 					fontHeightShort
 				),
 
@@ -907,7 +940,7 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player.flagship, "numberOfLanders"),
+					new DataBinding(player.flagship, function get(c) { return c.numberOfLanders; } ),
 					fontHeightShort
 				),
 
@@ -972,7 +1005,7 @@ function PlaceStationDock(world, placeStation)
 						containerRightSize.y - marginSize.y * 7 - labelSize.y * 4 - buttonSizeRight.y
 					), // size
 					playerItemHolder.items,
-					new DataBinding(null, "toString()"), // bindingForItemText
+					new DataBinding(null, function get(c) { return c.toString(); } ), // bindingForItemText
 					fontHeightShort,
 					new DataBinding(), // bindingForItemSelected
 					new DataBinding() // bindingForItemValue
@@ -1051,7 +1084,7 @@ function PlaceStationDock(world, placeStation)
 	{
 		var placeNext = this.placeToReturnTo;
 		var playerFromPlaceNext = placeNext.entities["Player"];
-		var playerLoc = playerFromPlaceNext.locatable.loc;
+		var playerLoc = playerFromPlaceNext.Locatable.loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
 		world.placeNext = placeNext;

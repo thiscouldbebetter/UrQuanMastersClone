@@ -5,7 +5,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 	this.placePlanetVicinity = placePlanetVicinity;
 
 	var entities = [];
-	Place.call(this, entities);
+	Place.call(this, PlacePlanetOrbit.name, entities);
 
 	this._drawPos = new Coords();
 }
@@ -501,7 +501,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 						new ControlVisual
 						(
 							"visualSurface",
-							Coords.Instances.Zeroes,
+							Coords.Instances().Zeroes,
 							containerMapSize,
 							new VisualImageFromLibrary("PlanetSurface", containerMapSize)
 						),

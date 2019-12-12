@@ -24,22 +24,18 @@ function PlaceCombat(world, combat)
 		Ship.actionFire(),
 		Ship.actionSpecial(),
 		actionExit,
-	].addLookups("name");
+	].addLookupsByName();
 
-	this.inputToActionMappings = Ship.inputToActionMappings();
-	this.inputToActionMappings = this.inputToActionMappings.concat
+	this._actionToInputsMappings = Ship.actionToInputsMappings();
+	this._actionToInputsMappings = this._actionToInputsMappings.concat
 	(
 		[
-			new InputToActionMapping("Enter", "Fire", true),
-			new InputToActionMapping("_", "Special", true),
-			new InputToActionMapping("Escape", "Exit"),
-
-			new InputToActionMapping("Gamepad0Button0", "Fire", true),
-			new InputToActionMapping("Gamepad0Button1", "Special", true),
-			new InputToActionMapping("Gamepad0Button2", "Exit"),
+			new ActionToInputsMapping("Fire", ["Enter", "Gamepad0Button0"], true),
+			new ActionToInputsMapping("Special", ["_", "Gamepad0Button1"], true),
+			new ActionToInputsMapping("Exit", ["Escape", "Gamepad0Button2"]),
 		]
 	);
-	this.inputToActionMappings.addLookups("inputName");
+	this._actionToInputsMappings.addLookups(function (x) { return x.inputNames; } );
 
 	// camera
 
@@ -50,7 +46,7 @@ function PlaceCombat(world, combat)
 		new Location
 		(
 			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
+			Orientation.Instances().ForwardZDownY.clone()
 		)
 	);
 
@@ -74,23 +70,23 @@ function PlaceCombat(world, combat)
 		new VisualCamera
 		(
 			new VisualCircle(planetRadius, planetColor),
-			this.camera
+			() => this.camera
 		)
 	);
 	var planetCollider = new Sphere(planetPos, planetRadius);
 
 	var planetCollide = function(universe, world, place, entityPlanet, entityOther)
 	{
-		var planetPos = entityPlanet.locatable.loc.pos;
+		var planetPos = entityPlanet.Locatable.loc.pos;
 
-		var otherLoc = entityOther.locatable.loc;
+		var otherLoc = entityOther.Locatable.loc;
 		var otherPos = otherLoc.pos;
 		var displacement = otherPos.clone().subtract(planetPos);
 		var distance = displacement.magnitude();
 		var direction = displacement.divideScalar(distance);
-		var planetCollider = entityPlanet.collidable.collider;
+		var planetCollider = entityPlanet.Collidable.collider;
 		var planetRadius = planetCollider.radius;
-		var otherCollider = entityOther.collidable.collider;
+		var otherCollider = entityOther.Collidable.collider;
 		var sumOfRadii = planetRadius + otherCollider.radius;
 		if (distance < sumOfRadii)
 		{
@@ -102,7 +98,7 @@ function PlaceCombat(world, combat)
 	var planetActivityGravitate = function(universe, world, place, actor)
 	{
 		var planet = actor;
-		var planetPos = planet.locatable.loc.pos;
+		var planetPos = planet.Locatable.loc.pos;
 
 		var combat = place.combat;
 		var combatSize = combat.size;
@@ -111,7 +107,7 @@ function PlaceCombat(world, combat)
 		for (var i = 0; i < entitiesShips.length; i++)
 		{
 			var ship = entitiesShips[i];
-			var shipLoc = ship.locatable.loc;
+			var shipLoc = ship.Locatable.loc;
 			var shipPos = shipLoc.pos;
 			var displacement = shipPos.clone().subtractWrappedToRangeMax(planetPos, combatSize);
 			var distance = displacement.magnitude();
@@ -134,7 +130,7 @@ function PlaceCombat(world, combat)
 			new Collidable
 			(
 				planetCollider,
-				[ "collidable" ], // entityPropertyNamesToCollideWith
+				[ Collidable.name ], // entityPropertyNamesToCollideWith
 				planetCollide
 			),
 			new Drawable(planetVisual),
@@ -170,7 +166,7 @@ function PlaceCombat(world, combat)
 			new VisualCamera
 			(
 				shipVisualBody,
-				this.camera
+				() => this.camera
 			)
 		);
 
@@ -182,7 +178,7 @@ function PlaceCombat(world, combat)
 			new Collidable
 			(
 				shipCollider,
-				[ "collidable" ], // entityPropertyNamesToCollideWith
+				[ Collidable.name ], // entityPropertyNamesToCollideWith
 				shipCollide
 			),
 			new Drawable(shipVisual),
@@ -225,7 +221,7 @@ function PlaceCombat(world, combat)
 
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, entities);
+	Place.call(this, PlaceCombat.name, entities);
 	this.propertyNamesToProcess.push("ship");
 
 	// Helper variables.
@@ -238,6 +234,11 @@ function PlaceCombat(world, combat)
 	PlaceCombat.prototype.constructor = Place;
 
 	// methods
+
+	PlaceCombat.prototype.actionToInputsMappings = function()
+	{
+		return this._actionToInputsMappings;
+	};
 
 	PlaceCombat.prototype.roundOver = function(universe, world, place, entity)
 	{
@@ -283,7 +284,7 @@ function PlaceCombat(world, combat)
 		var visualToRecycle = entityShipToDie.drawable.visual;
 		visualToRecycle.child.child = new VisualCircle(32, "Red");
 
-		entityShipToDie.locatable.loc.vel.clear();
+		entityShipToDie.Locatable.loc.vel.clear();
 
 		var entityExplosion = new Entity
 		(
@@ -291,7 +292,7 @@ function PlaceCombat(world, combat)
 			[
 				new Ephemeral(64, place.roundOver),
 				new Drawable(visualToRecycle),
-				entityShipToDie.locatable,
+				entityShipToDie.Locatable,
 			]
 		);
 
@@ -324,7 +325,7 @@ function PlaceCombat(world, combat)
 
 		if (ships.length == 1)
 		{
-			midpointBetweenCombatants = ships[0].locatable.loc.pos;
+			midpointBetweenCombatants = ships[0].Locatable.loc.pos;
 		}
 		else // if ships.length == 2
 		{
@@ -332,8 +333,8 @@ function PlaceCombat(world, combat)
 				this.combat.midpointOfPointsWrappedToRange
 				(
 					cameraPos, // midpointToOverwrite
-					ships[0].locatable.loc.pos,
-					ships[1].locatable.loc.pos,
+					ships[0].Locatable.loc.pos,
+					ships[1].Locatable.loc.pos,
 					this.size
 				);
 		}

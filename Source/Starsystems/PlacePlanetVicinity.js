@@ -12,9 +12,9 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		Ship.actionTurnLeft(),
 		Ship.actionTurnRight(),
 
-	].addLookups("name");
+	].addLookupsByName();
 
-	this.inputToActionMappings = Ship.inputToActionMappings();
+	this._actionToInputsMappings = Ship.actionToInputsMappings();
 
 	// entities
 
@@ -114,18 +114,18 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		}
 		else
 		{
-			if (entityOther.planet != null)
+			if (entityOther.Planet != null)
 			{
-				var playerLoc = entityPlayer.locatable.loc;
-				var planetPos = entityOther.locatable.loc.pos;
+				var playerLoc = entityPlayer.Locatable.loc;
+				var planetPos = entityOther.Locatable.loc.pos;
 				playerLoc.pos.overwriteWith(planetPos);
 				playerLoc.vel.clear();
-				entityPlayer.collidable.entityAlreadyCollidedWith = entityOther;
-				world.placeNext = new PlacePlanetOrbit(world, entityOther.planet, place);
+				entityPlayer.Collidable.entityAlreadyCollidedWith = entityOther;
+				world.placeNext = new PlacePlanetOrbit(world, entityOther.Planet, place);
 			}
 			else if (entityOther.shipGroup != null)
 			{
-				entityOther.collidable.ticksUntilCanCollide = 50; // hack
+				entityOther.Collidable.ticksUntilCanCollide = 50; // hack
 				var shipGroup = entityOther.shipGroup;
 				var encounter = new Encounter
 				(
@@ -133,7 +133,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 					shipGroup.factionName,
 					shipGroup,
 					place,
-					entityPlayer.locatable.loc.pos
+					entityPlayer.Locatable.loc.pos
 				);
 				var placeEncounter = new PlaceEncounter(world, encounter);
 				world.placeNext = placeEncounter;
@@ -148,14 +148,14 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 				}
 				else
 				{
-					entityOther.collidable.ticksUntilCanCollide = 50; // hack
+					entityOther.Collidable.ticksUntilCanCollide = 50; // hack
 					var encounter = new Encounter
 					(
 						this.planet,
 						station.factionName,
 						null,
 						place,
-						entityPlayer.locatable.loc.pos
+						entityPlayer.Locatable.loc.pos
 					);
 					var placeEncounter = new PlaceEncounter(world, encounter);
 					world.placeNext = placeEncounter;
@@ -179,7 +179,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 			new Collidable
 			(
 				playerCollider,
-				[ "collidable" ], // entityPropertyNamesToCollideWith
+				[ Collidable.name ], // entityPropertyNamesToCollideWith
 				playerCollide
 			),
 			new Drawable(playerVisual),
@@ -188,7 +188,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		]
 	);
 
-	//playerEntity.collidable.ticksUntilCanCollide = 100; // hack
+	//playerEntity.Collidable.ticksUntilCanCollide = 100; // hack
 
 	entities.push(playerEntity);
 
@@ -256,7 +256,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		new Location
 		(
 			new Coords(0, 0, 0),
-			Orientation.Instances.ForwardZDownY.clone()
+			Orientation.Instances().ForwardZDownY.clone()
 		)
 	);
 
@@ -306,7 +306,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 	)
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, entities);
+	Place.call(this, PlacePlanetVicinity.name, entities);
 
 	// Helper variables.
 
@@ -316,6 +316,13 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 {
 	PlacePlanetVicinity.prototype = Object.create(Place.prototype);
 	PlacePlanetVicinity.prototype.constructor = Place;
+
+	// methods
+
+	PlacePlanetVicinity.prototype.actionToInputsMappings = function()
+	{
+		return this._actionToInputsMappings;
+	};
 
 	PlacePlanetVicinity.prototype.draw_FromSuperclass = PlacePlanetVicinity.prototype.draw;
 	PlacePlanetVicinity.prototype.draw = function(universe, world)
@@ -328,7 +335,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		var drawPos = drawLoc.pos;
 
 		var player = this.entities["Player"];
-		var playerLoc = player.locatable.loc;
+		var playerLoc = player.Locatable.loc;
 
 		var camera = this.camera;
 		camera.loc.pos.overwriteWith

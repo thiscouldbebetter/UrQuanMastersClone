@@ -28,7 +28,7 @@ function ShipWeaponSlot(name, componentInstalledIndex)
 			this.Oblique,
 			this.Lateral,
 			this.Rear
-		].addLookups("name");
+		].addLookupsByName();
 	}
 
 	// instance methods

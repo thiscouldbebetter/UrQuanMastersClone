@@ -122,7 +122,7 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 			this.IonCannon,
 			this.FusionThruster,
 			this.PowerPlant,
-		].addLookups("name");
+		].addLookupsByName();
 
 		this._AllBackbone =
 		[
@@ -131,7 +131,7 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 			this.FuelTank,
 			this.IonCannon,
 			this.PowerPlant,
-		].addLookups("name");
+		].addLookupsByName();
 	}
 
 	// instance methods

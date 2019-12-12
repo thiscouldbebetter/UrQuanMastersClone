@@ -10,7 +10,7 @@ function EnergySource(name, pos, visual, collideWithLander)
 	EnergySource.prototype.toEntity = function(world, place)
 	{
 		var visual = new VisualCircle(10, "Cyan");
-		visual = new VisualCamera(visual, place.camera);
+		visual = new VisualCamera(visual, () => place.camera);
 		Visual = new VisualWrapped(place.size, visual);
 		var energySourceCollider = new Sphere(this.pos, 5);
 		var returnValue = new Entity

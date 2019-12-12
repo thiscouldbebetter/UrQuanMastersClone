@@ -91,7 +91,7 @@ function main()
 
 	var universe = Universe.new
 	(
-		"SpaceAdventureClone", timerHelper, display, mediaLibrary, null
+		"SpaceAdventureClone", "0.0.0", timerHelper, display, mediaLibrary, null
 	);
 	universe.initialize();
 	universe.venueNext = new VenueControls

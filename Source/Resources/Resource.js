@@ -25,7 +25,7 @@ function Resource(defnName, quantity, pos)
 		(
 			resourceRadius, resourceGradient
 		);
-		resourceVisual = new VisualCamera(resourceVisual, place.camera);
+		resourceVisual = new VisualCamera(resourceVisual, () => place.camera);
 		resourceVisual = new VisualWrapped(place.size, resourceVisual);
 
 		var resourcePos = resource.pos;

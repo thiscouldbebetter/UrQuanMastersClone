@@ -7,7 +7,7 @@
 		var venueCurrent = universe.venueCurrent;
 		var transcriptAsControl = this.toControlTranscript
 		(
-			universe.display.sizeDefault.clone(), universe, venueCurrent
+			universe.display.sizeDefault().clone(), universe, venueCurrent
 		);
 		var venueNext = new VenueControls(transcriptAsControl);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
@@ -20,6 +20,8 @@
 	{
 		var conversationRun = this;
 		var conversationDefn = conversationRun.defn;
+		
+		var world = universe.world;
 
 		var venueToReturnTo = universe.venueCurrent;
 
@@ -69,7 +71,7 @@
 						new ControlVisual
 						(
 							"visualNonplayer",
-							Coords.Instances.Zeroes,
+							Coords.Instances().Zeroes,
 							paneSizeTopAndBottom,
 							visualNonplayer
 						),
@@ -87,7 +89,7 @@
 							new DataBinding
 							(
 								conversationRun,
-								"scopeCurrent.displayTextCurrent"
+								function get(c) { return c.scopeCurrent.displayTextCurrent; }
 							),
 							fontHeight
 						),
@@ -114,19 +116,20 @@
 							new DataBinding
 							(
 								conversationRun,
-								"scopeCurrent.talkNodesForOptionsActive()"
+								function get(c) { return c.scopeCurrent.talkNodesForOptionsActive(); }
 							),
 							// bindingForItemText
 							new DataBinding
 							(
 								null, // context
-								"text" // bindingExpression
+								function get(c) { return c.text; } // bindingExpression
 							),
 							fontHeight,
 							new DataBinding
 							(
 								conversationRun,
-								"scopeCurrent.talkNodeForOptionSelected"
+								function get(c) { return c.scopeCurrent.talkNodeForOptionSelected; },
+								function set(c, v) { c.scopeCurrent.talkNodeForOptionSelected = v; }
 							), // bindingForItemSelected
 							new DataBinding() // bindingForItemValue
 						),

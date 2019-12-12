@@ -59,8 +59,8 @@ function LifeformDefn
 
 		var lifeformActivityTodo = function(universe, world, place, actor)
 		{
-			var actorLoc = actor.locatable.loc;
-			actorLoc.vel.randomize().double().subtract(Coords.Instances.Ones).clearZ();
+			var actorLoc = actor.Locatable.loc;
+			actorLoc.vel.randomize().double().subtract(Coords.Instances().Ones).clearZ();
 		}
 
 		var activityAvoid = lifeformActivityTodo;
@@ -100,6 +100,6 @@ function LifeformDefn
 			new ld("FreakyBeast", 		15, 3, 3, 15, visual(n, p), activityPursue),
 		];
 
-		return this._All.addLookups("name");
+		return this._All.addLookupsByName();
 	}
 }

@@ -3,7 +3,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 {
 	this.size = size;
 	this.starsystemRadiusOuter = starsystemRadiusOuter;
-	this.starsystems = starsystems.addLookups("name");
+	this.starsystems = starsystems.addLookupsByName();
 	this.shipGroups = shipGroups;
 }
 {
@@ -102,7 +102,10 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 		}
 		iOffset++;
 
-		var factionOriginalToNewLookup = factions.slice(0).addLookups("nameOriginal");
+		var factionOriginalToNewLookup = factions.slice(0).addLookups
+		(
+			function(x) { return x.nameOriginal; }
+		);
 
 		var starsystems = [];
 		var starsystem = null;
@@ -226,7 +229,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 			bodyListToAddTo.push(planet);
 		}
 
-		starsystems.addLookups("name");
+		starsystems.addLookupsByName();
 
 		var starsystemSol = starsystems["Sol"];
 

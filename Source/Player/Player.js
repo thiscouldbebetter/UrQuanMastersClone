@@ -175,7 +175,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(marginSize.x * 4, labelSize.y * 2),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(flagship, "crewCurrentOverMax()"),
+					new DataBinding(flagship, function get(c) { return c.crewCurrentOverMax(); } ),
 					fontHeight
 				),
 
@@ -195,7 +195,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(marginSize.x * 4, labelSize.y * 3),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(flagship, "fuelCurrentOverMax()"),
+					new DataBinding(flagship, function get(c) { return c.fuelCurrentOverMax(); } ),
 					fontHeight
 				),
 
@@ -215,7 +215,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(marginSize.x * 6, labelSize.y * 4),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(flagship, "numberOfLanders"),
+					new DataBinding(flagship, function get(c) { return c.numberOfLanders; } ),
 					fontHeight
 				),
 
@@ -235,7 +235,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(marginSize.x * 5, labelSize.y * 5),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(flagship, "cargoCurrentOverMax()"),
+					new DataBinding(flagship, function get(c) { return c.cargoCurrentOverMax(); } ),
 					fontHeight
 				),
 
@@ -255,7 +255,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 					new Coords(marginSize.x * 5, labelSize.y * 6),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(this.shipGroup, "toStringPosition(world)", { "world": world } ),
+					new DataBinding(this.shipGroup, function get(c) { return c.toStringPosition(world); } ),
 					fontHeight
 				),
 			]

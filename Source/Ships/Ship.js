@@ -17,7 +17,7 @@ function Ship(defnName)
 			"Accelerate",
 			function perform(universe, world, place, actor)
 			{
-				actor.ship.accelerate(world, actor);
+				actor.Ship.accelerate(world, actor);
 			}
 		);
 	}
@@ -88,7 +88,7 @@ function Ship(defnName)
 			"TurnLeft",
 			function perform(universe, world, place, actor)
 			{
-				actor.ship.turnLeft(world, actor);
+				actor.Ship.turnLeft(world, actor);
 			}
 		);
 	}
@@ -100,24 +100,38 @@ function Ship(defnName)
 			"TurnRight",
 			function perform(universe, world, place, actor)
 			{
-				actor.ship.turnRight(world, actor);
+				actor.Ship.turnRight(world, actor);
 			}
 		);
-	}
+	};
+
+	Ship.actions = function()
+	{
+		var returnValues =
+		[
+			Ship.actionShowMenu(),
+			Ship.actionAccelerate(),
+			Ship.actionTurnLeft(),
+			Ship.actionTurnRight(),
+			//actionMapView
+		].addLookupsByName();
+
+		return returnValues;
+	};
 
 	Ship.activityApproachPlayer = function(universe, world, place, actor)
 	{
 		var entities = place.entities;
 		var target = entities["Player"];
-		var targetPos = target.locatable.loc.pos;
-		var actorLoc = actor.locatable.loc;
+		var targetPos = target.Locatable.loc.pos;
+		var actorLoc = actor.Locatable.loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 
 		var targetDisplacement = targetPos.clone().subtract(actorPos);
 
 		var targetDistance = targetDisplacement.magnitude();
-		if (targetDistance < actor.ship.defn(world).sensorRange)
+		if (targetDistance < actor.Ship.defn(world).sensorRange)
 		{
 			var forwardAsPolar = new Polar().fromCoords(actorLoc.orientation.forward);
 			var angleForward = forwardAsPolar.azimuthInTurns;
@@ -131,28 +145,24 @@ function Ship(defnName)
 			if (angleTargetMinusForward != 0)
 			{
 				var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-				actor.ship.turnInDirection(world, actor, directionToTurn);
+				actor.Ship.turnInDirection(world, actor, directionToTurn);
 			}
 
-			actor.ship.accelerate(world, actor);
+			actor.Ship.accelerate(world, actor);
 		}
 	}
 
-	Ship.inputToActionMappings = function()
+	Ship.actionToInputsMappings = function()
 	{
 		var returnValues =
 		[
-			new InputToActionMapping("Escape", "ShowMenu"),
+			new ActionToInputsMapping("ShowMenu", ["Escape"]),
 
-			new InputToActionMapping("ArrowLeft", "TurnLeft"),
-			new InputToActionMapping("ArrowRight", "TurnRight"),
-			new InputToActionMapping("ArrowUp", "Accelerate"),
+			new ActionToInputsMapping("TurnLeft", ["ArrowLeft", "Gamepad0Left"]),
+			new ActionToInputsMapping("TurnRight", ["ArrowRight", "Gamepad0Right"]),
+			new ActionToInputsMapping("Accelerate", ["ArrowUp", "Gamepad0Up"]),
 
-			new InputToActionMapping("Gamepad0Left", "TurnLeft"),
-			new InputToActionMapping("Gamepad0Right", "TurnRight"),
-			new InputToActionMapping("Gamepad0Up", "Accelerate"),
-
-		].addLookups("inputName");
+		].addLookupsMultiple(function(x) { return x.inputNames; } );
 
 		return returnValues;
 	}
@@ -225,9 +235,9 @@ function Ship(defnName)
 
 	Ship.prototype.accelerate = function(world, entity)
 	{
-		var ship = (entity.shipGroup != null ? entity.shipGroup.ships[0] : entity.ship);
+		var ship = (entity.ShipGroup != null ? entity.ShipGroup.ships[0] : entity.Ship);
 		var shipDefn = ship.defn(world);
-		var shipLoc = entity.locatable.loc;
+		var shipLoc = entity.Locatable.loc;
 		var shipForward = shipLoc.orientation.forward;
 		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
 		(
@@ -243,10 +253,10 @@ function Ship(defnName)
 
 	Ship.prototype.turnInDirection = function(world, entity, direction)
 	{
-		var entityLoc = entity.locatable.loc;
+		var entityLoc = entity.Locatable.loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
-		var ship = (entity.ship == null ? entity.shipGroup.ships[0] : entity.ship);
+		var ship = (entity.Ship == null ? entity.ShipGroup.ships[0] : entity.Ship);
 		var shipDefn = ship.defn(world);
 		var turnsPerTick = shipDefn.turnsPerTick;
 		var entityForwardNew = Ship._polar.fromCoords
@@ -342,7 +352,7 @@ function Ship(defnName)
 					), // pos
 					labelSizeShort,
 					false, // isTextCentered
-					new DataBinding(ship, "crewCurrentOverMax(world)", { "world": world }),
+					new DataBinding(ship, function get(c) { return c.crewCurrentOverMax(world); } ),
 					fontHeightShort
 				),
 
@@ -366,7 +376,7 @@ function Ship(defnName)
 					), // pos
 					labelSizeShort,
 					false, // isTextCentered
-					new DataBinding(ship, "energyCurrentOverMax(world)", { "world": world }),
+					new DataBinding(ship, function get(c) { return c.energyCurrentOverMax(world); } ),
 					fontHeightShort
 				),
 			]

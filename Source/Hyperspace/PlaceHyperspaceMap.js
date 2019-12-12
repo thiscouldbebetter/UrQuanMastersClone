@@ -3,7 +3,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 {
 	this.placeHyperspaceToReturnTo = placeHyperspaceToReturnTo;
 
-	Place.call(this, []);
+	Place.call(this, PlaceHyperspaceMap.name, []);
 
 	this._displacement = new Coords();
 	this._drawPos = new Coords();
@@ -55,7 +55,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		var hyperspaceSize = hyperspace.size;
 		var controlRoot = this.venueControls.controlRoot;
 		var mapSize = this.displayMap.sizeInPixels;
-		var zeroes = Coords.Instances.Zeroes;
+		var zeroes = Coords.Instances().Zeroes;
 		display.drawRectangle(zeroes, mapSize, "Black", "Gray");
 
 		var camera = this.camera;
@@ -116,7 +116,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
-		var playerPos = entityForPlayer.locatable.loc.pos;
+		var playerPos = entityForPlayer.Locatable.loc.pos;
 		drawPos.overwriteWith(playerPos);
 		this.camera.coordsTransformWorldToView(drawPos);
 		var locatorDimension = starRadius * 8 * magnificationFactor;
@@ -142,7 +142,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		{
 			var entityForPlayer =
 				this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
-			var playerPos = entityForPlayer.locatable.loc.pos;
+			var playerPos = entityForPlayer.Locatable.loc.pos;
 			this.reticlePos = playerPos.clone();
 		}
 
@@ -333,7 +333,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 					new Coords(marginSize.x * 4, marginSize.y * 2),
 					titleSize,
 					false, // isTextCentered
-					new DataBinding(this, "reticlePosAsStringXY()"),
+					new DataBinding(this, function get(c) { return c.reticlePosAsStringXY(); } ),
 					fontHeightShort
 				),
 
@@ -353,7 +353,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 					new Coords(marginSize.x * 4, marginSize.y * 3),
 					titleSize,
 					false, // isTextCentered
-					new DataBinding(this, "fuelFromPlayerShipGroupToReticle(world)", { "world": world } ),
+					new DataBinding(this, function get(c) { return fuelFromPlayerShipGroupToReticle(world); } ),
 					fontHeightShort
 				),
 			]
