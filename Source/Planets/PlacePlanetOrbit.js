@@ -503,7 +503,11 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 							"visualSurface",
 							Coords.Instances().Zeroes,
 							containerMapSize,
-							new VisualImageFromLibrary("PlanetSurface", containerMapSize)
+							new VisualImageScaled
+							(
+								new VisualImageFromLibrary("PlanetSurface", containerMapSize),
+								containerMapSize
+							)
 						),
 					]
 				),
