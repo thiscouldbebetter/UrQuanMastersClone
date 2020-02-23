@@ -103,7 +103,7 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 			new VisualCircle(this.radiusOuter, planetDefn.color)
 		]);
 
-		var collider = new Sphere(pos, this.radiusOuter);
+		var collider = new Sphere(new Coords(0, 0, 0), this.radiusOuter);
 
 		var returnValue = new Entity
 		(

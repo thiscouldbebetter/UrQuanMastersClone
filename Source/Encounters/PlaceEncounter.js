@@ -4,7 +4,7 @@ function PlaceEncounter(world, encounter)
 	this.encounter = encounter;
 
 	var entities = [];
-	Place.call(this, PlaceEncounter.name, entities);
+	Place.call(this, PlaceEncounter.name, PlaceEncounter.name, null, entities);
 }
 {
 	// superclass

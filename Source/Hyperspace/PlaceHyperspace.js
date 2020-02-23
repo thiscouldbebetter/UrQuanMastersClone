@@ -99,7 +99,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		var starsystem = starsystems[i];
 		var starPos = starsystem.posInHyperspace;
 
-		var starCollider = new Sphere(starPos, starRadius);
+		var starCollider = new Sphere(new Coords(0, 0, 0), starRadius);
 
 		var starColor = starsystem.starColor;
 		var starSizeIndex = starsystem.starSizeIndex;
@@ -110,9 +110,13 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 			starsystem.name,
 			[
 				starsystem,
-				new Locatable( new Location(starPos) ),
+				new Boundable
+				(
+					new Box(starPos, new Coords(1, 1, 1).multiplyScalar(starRadius))
+				),
 				new Collidable(starCollider),
-				new Drawable(starVisual)
+				new Drawable(starVisual),
+				new Locatable( new Location(starPos) )
 			]
 		);
 
@@ -159,7 +163,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 
 	// player
 
-	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
+	var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
 	var playerColor = "Gray";
 
 	var playerVisualBody = ShipDefn.visual(entityDimension, playerColor);
@@ -178,9 +182,9 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	var playerShipDefn = playerShip.defn(world);
 
 	//var constraintSpeedMax = new Constraint("SpeedMax", playerShipDefn.speedMax * 5);
-	var constraintFriction = new Constraint("FrictionDry", 0.01);
+	var constraintFriction = new Constraint_FrictionDry(0.01);
 	//var constraintStopBelowSpeedMin = new Constraint("StopBelowSpeedMin", 0.015);
-	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
+	var constraintTrimToRange = new Constraint_TrimToRange(this.size);
 
 	var playerEntity = new Entity
 	(
@@ -213,7 +217,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	{
 		var starsystemName = starsystemDeparted.name;
 		var entityForStarsystemDeparted = entities[starsystemName];
-		playerEntity.Collidable.entityAlreadyCollidedWith = entityForStarsystemDeparted;
+		playerEntity.collidable.entityAlreadyCollidedWith = entityForStarsystemDeparted;
 	}
 
 	entities.push(playerEntity);
@@ -221,7 +225,8 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 	var containerSidebar = this.toControlSidebar(universe);
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, PlaceHyperspace.name, entities);
+	var size = this.hyperspace.size;
+	Place.call(this, PlaceHyperspace.name, PlaceHyperspace.name, size, entities);
 	this.propertyNamesToProcess.push(Fuelable.name);
 
 	// Helper variables.
@@ -257,7 +262,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		universe, world, place, entityPlayer, entityOther
 	)
 	{
-		var faction = entityOther.Faction;
+		var faction = entityOther.faction;
 		var factionName = faction.name;
 
 		var numberOfShipGroupsExistingForFaction = 0;
@@ -265,7 +270,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		for (var i = 0; i < entitiesShipGroupsAll.length; i++)
 		{
 			var entityShipGroup = entitiesShipGroupsAll[i];
-			if (entityShipGroup.ShipGroup.factionName == factionName)
+			if (entityShipGroup.shipGroup.factionName == factionName)
 			{
 				numberOfShipGroupsExistingForFaction++;
 			}
@@ -296,10 +301,10 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 
 	PlaceHyperspace.prototype.playerCollide = function(universe, world, place, entityPlayer, entityOther)
 	{
-		if (entityOther.Starsystem != null)
+		if (entityOther.starsystem != null)
 		{
-			var starsystem = entityOther.Starsystem;
-			var playerLoc = entityPlayer.Locatable.loc;
+			var starsystem = entityOther.starsystem;
+			var playerLoc = entityPlayer.locatable.loc;
 			var playerOrientation = playerLoc.orientation;
 			var playerPosNextAsPolar = new Polar().fromCoords
 			(
@@ -322,12 +327,12 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 				)
 			);
 		}
-		else if (entityOther.Ship != null)
+		else if (entityOther.ship != null)
 		{
-			var shipGroupOther = entityOther.ShipGroup;
-			var playerPos = entityPlayer.Locatable.loc.pos;
+			var shipGroupOther = entityOther.shipGroup;
+			var playerPos = entityPlayer.locatable.loc.pos;
 			var starsystemClosest = place.hyperspace.starsystemClosestTo(playerPos);
-			var planetClosest = starsystemClosest.planets.random();
+			var planetClosest = starsystemClosest.planets.random(universe.randomizer);
 			var encounter = new Encounter
 			(
 				planetClosest,
@@ -362,7 +367,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 				shipGroup,
 				ship0,
 				new Locatable(new Location(shipGroupPos)),
-				new Collidable(new Sphere(shipGroupPos, 5)),
+				new Collidable(new Sphere(new Coords(0, 0, 0), 5)),
 				new Drawable
 				(
 					new VisualCamera
@@ -434,7 +439,7 @@ function PlaceHyperspace(universe, hyperspace, starsystemDeparted, playerLoc)
 		var drawPos = drawLoc.pos;
 
 		var player = this.entities["Player"];
-		var playerLoc = player.Locatable.loc;
+		var playerLoc = player.locatable.loc;
 
 		var camera = this.camera;
 		camera.loc.pos.overwriteWith

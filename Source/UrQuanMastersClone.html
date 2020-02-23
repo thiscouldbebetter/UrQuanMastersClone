@@ -5,6 +5,7 @@
 <script type="text/javascript" src="Framework/Source/Extensions/NumberExtensions.js"></script>
 <script type="text/javascript" src="Framework/Source/Extensions/StringExtensions.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Controls/ControlActionNames.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlButton.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlContainer.js"></script>
@@ -58,7 +59,6 @@
 <script type="text/javascript" src="Framework/Source/Geometry/CollisionHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/CollisionTracker.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraint.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/ConstraintDefn.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Location.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Orientation.js"></script>
@@ -67,7 +67,8 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Rotation.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Arc.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Bounds.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Box.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/BoxRotated.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Cylinder.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Edge.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Face.js"></script>
@@ -75,12 +76,10 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Map.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/MapCell.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/MapLocated.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Mesh.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Path.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/PathBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Plane.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Ray.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/RectangleRotated.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeContainer.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAll.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAny.js"></script>
@@ -88,6 +87,8 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Shell.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Sphere.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Wedge.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_OrientRDF.js"></script>
@@ -113,6 +114,7 @@
 
 <script type="text/javascript" src="Framework/Source/Model/Action.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Actor.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Boundable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Collidable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Constrainable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Damager.js"></script>
@@ -150,6 +152,7 @@
 <script type="text/javascript" src="Framework/Source/Utility/Reference.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/TimerHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/URLParser.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/VenueTask.js"></script>
 
 <script type="text/javascript" src="Combat/Combat.js"></script>
 <script type="text/javascript" src="Combat/PlaceCombat.js"></script>

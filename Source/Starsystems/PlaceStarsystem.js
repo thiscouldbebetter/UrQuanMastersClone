@@ -30,7 +30,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 	var sunPos = sizeHalf.clone();
 	var sunColor = starsystem.starColor;
 	var sunVisual = new VisualCircle(sunRadius, sunColor);
-	var sunCollider = new Sphere(sunPos, sunRadius);
+	var sunCollider = new Sphere(new Coords(0, 0, 0), sunRadius);
 
 	var sunEntity = new Entity
 	(
@@ -56,7 +56,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 
 	// player
 
-	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
+	var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
 	var playerColor = "Gray";
 
 	var playerVisualBody = ShipDefn.visual(entityDimension, playerColor);
@@ -66,9 +66,9 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		playerVisualBody,
 	]);
 
-	var constraintSpeedMax = new Constraint("SpeedMax", 1);
+	var constraintSpeedMax = new Constraint_SpeedMax(1);
 	//var constraintFriction = new Constraint("Friction", 0.3);
-	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
+	var constraintTrimToRange = new Constraint_TrimToRange(this.size);
 
 	var playerShipGroup = world.player.shipGroup;
 
@@ -112,7 +112,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 
 		var enemyCollider = Mesh.fromFace
 		(
-			enemyPos, // center
+			new Coords(0, 0, 0), // center
 			enemyColliderAsFace,
 			1 // thickness
 		);
@@ -155,11 +155,11 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 					function activity(universe, world, place, actor, entityToTargetName)
 					{
 						var target = place.entities[entityToTargetName];
-						var actorLoc = actor.Locatable.loc;
+						var actorLoc = actor.locatable.loc;
 
 						actorLoc.vel.overwriteWith
 						(
-							target.Locatable.loc.pos
+							target.locatable.loc.pos
 						).subtract
 						(
 							actorLoc.pos
@@ -176,7 +176,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		entities.push(enemyEntity);
 	}
 
-	this.camera = new Camera
+	this._camera = new Camera
 	(
 		new Coords(1, 1).multiplyScalar(this.size.y),
 		null, // focalLength
@@ -187,7 +187,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		)
 	);
 
-	var wallColor = "DarkViolet";
+	//var wallColor = "DarkViolet";
 	var numberOfWalls = 4;
 	var wallThickness = 5;
 
@@ -210,7 +210,8 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		}
 
 		var wallLoc = new Location(wallPos);
-		var wallCollider = new Bounds(wallPos, wallSize);
+		var wallCollider = 
+			new Box(new Coords(0, 0, 0), wallSize);
 
 		var wallEntity = new Entity
 		(
@@ -218,6 +219,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 			[
 				new Locatable(wallLoc),
 				new Collidable(wallCollider),
+				//new Drawable(new VisualRectangle(wallSize, null, wallColor)) // todo
 			]
 		);
 
@@ -233,7 +235,8 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 	);
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, PlaceStarsystem.name, entities);
+	var size = new Coords(300, 300); // todo
+	Place.call(this, PlaceStarsystem.name, PlaceStarsystem.name, size, entities);
 
 	// Helper variables.
 
@@ -265,7 +268,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 				shipGroupOther.factionName,
 				shipGroupOther,
 				place,
-				entityPlayer.Locatable.loc.pos
+				entityPlayer.locatable.loc.pos
 			);
 			var placeEncounter = new PlaceEncounter(world, encounter);
 			world.placeNext = placeEncounter;
@@ -273,7 +276,7 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		else if (entityOtherName.startsWith("Wall"))
 		{
 			var hyperspace = world.hyperspace;
-			var playerLoc = entityPlayer.Locatable.loc;
+			var playerLoc = entityPlayer.locatable.loc;
 			var playerPosNext = place.starsystem.posInHyperspace.clone();
 			world.placeNext = new PlaceHyperspace
 			(
@@ -289,11 +292,11 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		}
 		else
 		{
-			if (entityOther.Planet != null)
+			if (entityOther.planet != null)
 			{
-				var planet = entityOther.Planet;
+				var planet = entityOther.planet;
 				var sizeNext = place.size.clone();
-				var playerOrientation = entityPlayer.Locatable.loc.orientation;
+				var playerOrientation = entityPlayer.locatable.loc.orientation;
 				var heading = playerOrientation.headingInTurns();
 				var playerPosNext = new Polar
 				(
@@ -331,9 +334,9 @@ function PlaceStarsystem(world, starsystem, playerLoc)
 		{
 			return; // hack
 		}
-		var playerLoc = player.Locatable.loc;
+		var playerLoc = player.locatable.loc;
 
-		var camera = this.camera;
+		var camera = this._camera;
 		camera.loc.pos.overwriteWith
 		(
 			playerLoc.pos

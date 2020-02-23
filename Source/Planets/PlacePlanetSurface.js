@@ -35,9 +35,9 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	// constraints
 
-	var constraintSpeedMax = new Constraint("SpeedMax", 10);
-	var constraintFriction = new Constraint("Friction", 0.1);
-	var constraintWrapXTrimY = new Constraint("WrapXTrimY", this.size);
+	var constraintSpeedMax = new Constraint_SpeedMax(10);
+	var constraintFriction = new Constraint_Friction(0.1);
+	var constraintWrapXTrimY = new Constraint_WrapXTrimY(this.size);
 
 	this.camera = new Camera
 	(
@@ -59,9 +59,11 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	// background
 
-	var visualBackground = new VisualImageFromLibrary("PlanetSurface", this.planet.sizeSurface);
+	var visualBackground = new VisualImageFromLibrary("PlanetSurface");
+	var planetSizeSurface = this.planet.sizeSurface;
+	visualBackground = new VisualImageScaled(visualBackground, planetSizeSurface);
 	visualBackground = new VisualCamera(visualBackground, () => this.camera);
-	visualBackground = new VisualWrapped(this.planet.sizeSurface, visualBackground);
+	visualBackground = new VisualWrapped(planetSizeSurface, visualBackground);
 
 	var entityBackground = new Entity
 	(
@@ -76,50 +78,41 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 
 	// lifeforms
 
-	if (planet.hasLife == true)
+	if (planet.hasLife)
 	{
 		var lifeforms = planet.lifeforms;
-		for (var i = 0; i < lifeforms.length; i++)
-		{
-			var lifeform = lifeforms[i];
-			var lifeformEntity = lifeform.toEntity(world, this);
-			entities.push(lifeformEntity);
-		}
-
-	} // end if planet.hasLife
+		var lifeformEntities = lifeforms.map
+		(
+			x => x.toEntity(world, this)
+		);
+		entities.addMany(lifeformEntity);
+	}
 
 	// resources
 
 	var resourceDefns = ResourceDefn.Instances();
 	var resourceRadiusBase = entityDimension / 2;
-	var resources = this.planet.resources;
-	resources = (resources == null ? [] : resources);
-
-	for (var i = 0; i < resources.length; i++)
-	{
-		var resource = resources[i];
-		var entityResource = resource.toEntity(world, this, resourceRadiusBase);
-		entities.push(entityResource);
-	}
+	var resources = this.planet.resources || [];
+	var resourceEntities = resources.map
+	(
+		x => x.toEntity(world, this, resourceRadiusBase)
+	);
+	entities.addMany(resourceEntities);
 
 	// energySources
 
-	var energySources = this.planet.energySources;
-	if (energySources != null)
-	{
-		for (var i = 0; i < energySources.length; i++)
-		{
-			var energySource = energySources[i];
-			var entityEnergySource = energySource.toEntity(world, this);
-			entities.push(entityEnergySource);
-		}
-	}
+	var energySources = this.planet.energySources || [];
+	var energySourceEntities = energySources.map
+	(
+		x => x.toEntity(world, this)
+	);
+	entities.addMany(energySourceEntities);
 
 	// player
 
 	var playerPos = this.size.clone().half(); // todo
 	var playerLoc = new Location(playerPos);
-	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
+	var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
 	var playerColor = "Gray";
 
 	var playerVisual = new VisualCamera
@@ -187,7 +180,8 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 	var containerSidebar = this.toControlSidebar();
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, PlacePlanetSurface.name, entities);
+	var size = new Coords(300, 300); // todo
+	Place.call(this, PlacePlanetSurface.name, PlacePlanetSurface.name, size, entities);
 	this.propertyNamesToProcess.push("ship");
 
 	// Helper variables.
@@ -233,16 +227,17 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		var drawPos = this._drawPos;
 
 		var player = this.entities["Player"];
-		var playerLoc = player.Locatable.loc;
+		var playerLoc = player.locatable.loc;
 
 		var camera = this.camera;
+		var planetSize = this.planet.sizeSurface;
 		camera.loc.pos.overwriteWith
 		(
 			playerLoc.pos
 		).trimToRangeMinMax
 		(
 			new Coords(0, camera.viewSizeHalf.y),
-			new Coords(this.size.x, this.size.y - camera.viewSizeHalf.y)
+			new Coords(planetSize.x, planetSize.y - camera.viewSizeHalf.y)
 		);
 
 		this.draw_FromSuperclass(universe, world);
@@ -261,53 +256,32 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		var surfaceSize = this.planet.sizeSurface;
 		var display = universe.display;
 
-		var scanContacts = [];
-		var contactVisuals = [];
-
-		scanContacts.push(this.planet.resources);
-		contactVisuals.push(new VisualCircle(1, "Red"));
-
-		scanContacts.push(this.planet.lifeforms);
-		contactVisuals.push(new VisualCircle(1, "LightGreen"));
-
-		var entityLander = this.entities["Player"];
-		scanContacts.push([entityLander.Locatable.loc]);
-		contactVisuals.push(new VisualCircle(3, null, "Cyan"));
-
-		var contactDrawable = new Drawable();
-		contactDrawable.loc = new Location(new Coords());
-
-		for (var t = 0; t < scanContacts.length; t++)
+		var scanContacts = this.entities;
+		var contactPosSaved = new Coords();
+		for (var i = 0; i < scanContacts.length; i++)
 		{
-			var contactsOfType = scanContacts[t];
-			var contactVisual = contactVisuals[t];
-			contactDrawable.visual = contactVisual;
+			var contact = scanContacts[i];
 
-			if (contactsOfType != null)
-			{
-				for (var i = 0; i < contactsOfType.length; i++)
-				{
-					var contact = contactsOfType[i];
+			var contactPos = contact.locatable.loc.pos;
+			contactPosSaved.overwriteWith(contactPos);
 
-					var contactPos = contact.pos;
-					var drawPos = this._drawPos.overwriteWith
-					(
-						contactPos
-					).divide
-					(
-						surfaceSize
-					).multiply
-					(
-						mapSize
-					).add
-					(
-						mapPos
-					);
+			var drawPos = this._drawPos.overwriteWith
+			(
+				contactPos
+			).divide
+			(
+				surfaceSize
+			).multiply
+			(
+				mapSize
+			).add
+			(
+				mapPos
+			);
 
-					contactDrawable.loc.pos.overwriteWith(drawPos);
-					contactVisual.draw(universe, world, display, contactDrawable, contact)
-				}
-			}
+			contactPos.overwriteWith(drawPos);
+			contact.drawable.draw(universe, world, display, contact);
+			contactPos.overwriteWith(contactPosSaved);
 		}
 	}
 

@@ -30,7 +30,7 @@ function Station(name, color, radiusOuter, factionName, posAsPolar)
 			new VisualRectangle(new Coords(1, 1).multiplyScalar(this.radiusOuter), this.color)
 		]);
 
-		var collider = new Sphere(pos, this.radiusOuter);
+		var collider = new Sphere(new Coords(0, 0, 0), this.radiusOuter);
 
 		var returnValue = new Entity
 		(

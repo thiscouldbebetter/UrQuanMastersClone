@@ -59,7 +59,7 @@ function LifeformDefn
 
 		var lifeformActivityTodo = function(universe, world, place, actor)
 		{
-			var actorLoc = actor.Locatable.loc;
+			var actorLoc = actor.locatable.loc;
 			actorLoc.vel.randomize().double().subtract(Coords.Instances().Ones).clearZ();
 		}
 

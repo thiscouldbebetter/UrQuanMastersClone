@@ -50,7 +50,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		planetOrbitVisual,
 		new VisualCircle(planetRadius, planetColor),
 	]);
-	var planetCollider = new Sphere(planetPos, planetRadius);
+	var planetCollider = new Sphere(new Coords(0, 0, 0), planetRadius);
 
 	var planetEntity = new Entity
 	(
@@ -81,7 +81,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 
 	// player
 
-	var playerCollider = new Sphere(playerLoc.pos, entityDimension / 2);
+	var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
 	var playerColor = "Gray";
 
 	var playerVisualBody = ShipDefn.visual(entityDimension, playerColor);
@@ -114,18 +114,18 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		}
 		else
 		{
-			if (entityOther.Planet != null)
+			if (entityOther.planet != null)
 			{
-				var playerLoc = entityPlayer.Locatable.loc;
-				var planetPos = entityOther.Locatable.loc.pos;
+				var playerLoc = entityPlayer.locatable.loc;
+				var planetPos = entityOther.locatable.loc.pos;
 				playerLoc.pos.overwriteWith(planetPos);
 				playerLoc.vel.clear();
-				entityPlayer.Collidable.entityAlreadyCollidedWith = entityOther;
-				world.placeNext = new PlacePlanetOrbit(world, entityOther.Planet, place);
+				entityPlayer.collidable.entityAlreadyCollidedWith = entityOther;
+				world.placeNext = new PlacePlanetOrbit(world, entityOther.planet, place);
 			}
 			else if (entityOther.shipGroup != null)
 			{
-				entityOther.Collidable.ticksUntilCanCollide = 50; // hack
+				entityOther.collidable.ticksUntilCanCollide = 50; // hack
 				var shipGroup = entityOther.shipGroup;
 				var encounter = new Encounter
 				(
@@ -133,7 +133,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 					shipGroup.factionName,
 					shipGroup,
 					place,
-					entityPlayer.Locatable.loc.pos
+					entityPlayer.locatable.loc.pos
 				);
 				var placeEncounter = new PlaceEncounter(world, encounter);
 				world.placeNext = placeEncounter;
@@ -148,14 +148,14 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 				}
 				else
 				{
-					entityOther.Collidable.ticksUntilCanCollide = 50; // hack
+					entityOther.collidable.ticksUntilCanCollide = 50; // hack
 					var encounter = new Encounter
 					(
 						this.planet,
 						station.factionName,
 						null,
 						place,
-						entityPlayer.Locatable.loc.pos
+						entityPlayer.locatable.loc.pos
 					);
 					var placeEncounter = new PlaceEncounter(world, encounter);
 					world.placeNext = placeEncounter;
@@ -164,9 +164,9 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		}
 	}
 
-	var constraintSpeedMax = new Constraint("SpeedMax", 1);
+	var constraintSpeedMax = new Constraint_SpeedMax(1);
 	//var constraintFriction = new Constraint("Friction", 0.3);
-	var constraintTrimToRange = new Constraint("TrimToRange", this.size);
+	var constraintTrimToRange = new Constraint_TrimToRange(this.size);
 
 	var playerEntity = new Entity
 	(
@@ -188,7 +188,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		]
 	);
 
-	//playerEntity.Collidable.ticksUntilCanCollide = 100; // hack
+	//playerEntity.collidable.ticksUntilCanCollide = 100; // hack
 
 	entities.push(playerEntity);
 
@@ -212,7 +212,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 
 		var enemyCollider = Mesh.fromFace
 		(
-			enemyPos, // center
+			new Coords(0, 0, 0), // center
 			enemyColliderAsFace,
 			1 // thickness
 		);
@@ -283,7 +283,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		}
 
 		var wallLoc = new Location(wallPos);
-		var wallCollider = new Bounds(wallPos, wallSize);
+		var wallCollider = new Box(new Coords(0, 0, 0), wallSize);
 
 		var wallEntity = new Entity
 		(
@@ -306,7 +306,8 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 	)
 	this.venueControls = new VenueControls(containerSidebar);
 
-	Place.call(this, PlacePlanetVicinity.name, entities);
+	var size = new Coords(300, 300); // todo
+	Place.call(this, PlacePlanetVicinity.name, PlacePlanetVicinity.name, size, entities);
 
 	// Helper variables.
 
@@ -335,7 +336,7 @@ function PlacePlanetVicinity(world, size, planet, playerLoc, placeStarsystem)
 		var drawPos = drawLoc.pos;
 
 		var player = this.entities["Player"];
-		var playerLoc = player.Locatable.loc;
+		var playerLoc = player.locatable.loc;
 
 		var camera = this.camera;
 		camera.loc.pos.overwriteWith

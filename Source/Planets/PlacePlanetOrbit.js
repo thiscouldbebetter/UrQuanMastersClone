@@ -5,7 +5,15 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 	this.placePlanetVicinity = placePlanetVicinity;
 
 	var entities = [];
-	Place.call(this, PlacePlanetOrbit.name, entities);
+	var resourceRadiusBase = 5; // todo
+	var resourceEntities = this.planet.resources.map
+	(
+		x => x.toEntity(world, this, resourceRadiusBase)
+	);
+	entities.addMany(resourceEntities);
+	// todo - Lifeforms and energy sources.
+
+	Place.call(this, PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, entities);
 
 	this._drawPos = new Coords();
 }
@@ -63,64 +71,33 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 		var surfaceSize = this.planet.sizeSurface;
 		var display = universe.display;
 
-		var scanContacts = [];
-		var contactVisuals = [];
-
-		if (this.haveMineralsBeenScanned)
+		var scanContacts = this.entities;
+		var contactPosSaved = new Coords();
+		for (var i = 0; i < scanContacts.length; i++)
 		{
-			scanContacts.push(this.planet.resources);
-			contactVisuals.push(new VisualCircle(3, "Red"));
-		}
+			var contact = scanContacts[i];
 
-		if (this.hasLifeBeenScanned)
-		{
-			scanContacts.push(this.planet.lifeforms);
-			contactVisuals.push(new VisualCircle(3, "LightGreen"));
-		}
+			var contactPos = contact.pos;
+			contactPosSaved.overwriteWith(contactPos);
 
-		if (this.hasEnergyBeenScanned)
-		{
-			if (this.planet.energySources != null)
-			{
-				scanContacts.push(this.planet.energySources);
-				contactVisuals.push(new VisualCircle(3, "White"));
-			}
-		}
+			var drawPos = this._drawPos.overwriteWith
+			(
+				contactPos
+			).divide
+			(
+				surfaceSize
+			).multiply
+			(
+				mapSize
+			).add
+			(
+				mapPos
+			);
 
-		var contactDrawable = new Drawable();
-		contactDrawable.loc = new Location(new Coords());
+			contactPos.overwriteWith(drawPos);
+			contactVisual.draw(universe, world, display, contact);
 
-		for (var t = 0; t < scanContacts.length; t++)
-		{
-			var contactsOfType = scanContacts[t];
-			var contactVisual = contactVisuals[t];
-			contactDrawable.visual = contactVisual;
-
-			if (contactsOfType != null)
-			{
-				for (var i = 0; i < contactsOfType.length; i++)
-				{
-					var contact = contactsOfType[i];
-
-					var contactPos = contact.pos;
-					var drawPos = this._drawPos.overwriteWith
-					(
-						contactPos
-					).divide
-					(
-						surfaceSize
-					).multiply
-					(
-						mapSize
-					).add
-					(
-						mapPos
-					);
-
-					contactDrawable.loc.pos.overwriteWith(drawPos);
-					contactVisual.draw(universe, world, display, contactDrawable, contact)
-				}
-			}
+			contactPos.overwriteWith(contactPosSaved);
 		}
 	}
 

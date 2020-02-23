@@ -15,7 +15,7 @@ function Lifeform(defnName, pos)
 		var lifeformDefn = this.defn(world);
 		var lifeformVisual = new VisualCamera(lifeformDefn.visual, () => place.camera);
 		lifeformVisual = new VisualWrapped(place.size, lifeformVisual);
-		var lifeformCollider = new Sphere(this.pos, 5);
+		var lifeformCollider = new Sphere(new Coords(0, 0, 0), 5);
 		var returnValue = new Entity
 		(
 			"Lifeform" + this.defnName + Math.random(),
@@ -30,8 +30,8 @@ function Lifeform(defnName, pos)
 					function die(universe, world, place, entity)
 					{
 						var planet = place.planet;
-						var resource = new Resource("Biodata", 1, entity.Locatable.loc.pos);
-						var radius = entity.Collidable.collider.radius;
+						var resource = new Resource("Biodata", 1, entity.locatable.loc.pos);
+						var radius = entity.collidable.collider.radius;
 						var entityResource = resource.toEntity(world, place, radius);
 						place.entitiesToSpawn.push(entityResource);
 					}

@@ -25,11 +25,15 @@ function Resource(defnName, quantity, pos)
 		(
 			resourceRadius, resourceGradient
 		);
-		resourceVisual = new VisualCamera(resourceVisual, () => place.camera);
-		resourceVisual = new VisualWrapped(place.size, resourceVisual);
+		var camera = place.camera();
+		if (camera != null)
+		{
+			resourceVisual = new VisualCamera(resourceVisual, () => place.camera());
+			resourceVisual = new VisualWrapped(place.planet.sizeSurface, resourceVisual);
+		}
 
 		var resourcePos = resource.pos;
-		var resourceCollider = new Sphere(resourcePos, resourceRadius);
+		var resourceCollider = new Sphere(new Coords(0, 0, 0), resourceRadius);
 
 		var resourceEntity = new Entity
 		(

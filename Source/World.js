@@ -31,18 +31,6 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 		var now = DateTime.now();
 		var nowAsString = now.toStringMMDD_HHMM_SS();
 
-		var constraintDefnsAll = ConstraintDefn.Instances();
-		var constraintDefns =
-		[
-			constraintDefnsAll.Friction,
-			constraintDefnsAll.FrictionDry,
-			constraintDefnsAll.SpeedMax,
-			constraintDefnsAll.StopBelowSpeedMin,
-			constraintDefnsAll.TrimToRange,
-			constraintDefnsAll.WrapToRange,
-			constraintDefnsAll.WrapXTrimY
-		];
-
 		// todo
 		var actions = Ship.actions();
 		var actionToInputsMappings = Ship.actionToInputsMappings();
@@ -69,11 +57,11 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 			{
 				var entityToTargetName = "Player";
 				var target = place.entities[entityToTargetName];
-				targetPos = target.Locatable.loc.pos;
+				targetPos = target.locatable.loc.pos;
 				actor.targetPos = targetPos;
 			}
 
-			var actorLoc = entityActor.Locatable.loc;
+			var actorLoc = entityActor.locatable.loc;
 			var actorPos = actorLoc.pos;
 			var actorVel = actorLoc.vel;
 
@@ -212,7 +200,7 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 
 		var lifeformDefns = LifeformDefn.Instances();
 
-		var defns = new Defns(constraintDefns, placeDefns, factions, shipDefns, lifeformDefns);
+		var defns = new Defns(placeDefns, factions, shipDefns, lifeformDefns);
 
 		var mediaLibrary = universe.mediaLibrary;
 

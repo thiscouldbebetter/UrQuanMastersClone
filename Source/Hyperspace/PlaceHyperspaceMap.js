@@ -3,7 +3,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 {
 	this.placeHyperspaceToReturnTo = placeHyperspaceToReturnTo;
 
-	Place.call(this, PlaceHyperspaceMap.name, []);
+	Place.call(this, PlaceHyperspaceMap.name, PlaceHyperspaceMap.name, null, []);
 
 	this._displacement = new Coords();
 	this._drawPos = new Coords();
@@ -116,7 +116,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
-		var playerPos = entityForPlayer.Locatable.loc.pos;
+		var playerPos = entityForPlayer.locatable.loc.pos;
 		drawPos.overwriteWith(playerPos);
 		this.camera.coordsTransformWorldToView(drawPos);
 		var locatorDimension = starRadius * 8 * magnificationFactor;
@@ -142,7 +142,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		{
 			var entityForPlayer =
 				this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
-			var playerPos = entityForPlayer.Locatable.loc.pos;
+			var playerPos = entityForPlayer.locatable.loc.pos;
 			this.reticlePos = playerPos.clone();
 		}
 

@@ -8,7 +8,7 @@ function PlaceStationDock(world, placeStation)
 	this.landerValue = 100;
 
 	var entities = [];
-	Place.call(this, PlaceStationDock.name, entities);
+	Place.call(this, PlaceStationDock.name, PlaceStationDock.name, null, entities);
 }
 {
 	// superclass
@@ -1084,7 +1084,7 @@ function PlaceStationDock(world, placeStation)
 	{
 		var placeNext = this.placeToReturnTo;
 		var playerFromPlaceNext = placeNext.entities["Player"];
-		var playerLoc = playerFromPlaceNext.Locatable.loc;
+		var playerLoc = playerFromPlaceNext.locatable.loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
 		world.placeNext = placeNext;

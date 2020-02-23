@@ -24,7 +24,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 
 			var starsystemPos;
 			var isTooCloseToExistingStarsystem = true;
-			while (isTooCloseToExistingStarsystem == true)
+			while (isTooCloseToExistingStarsystem)
 			{
 				starsystemPos = new Coords().randomize().multiply(size);
 

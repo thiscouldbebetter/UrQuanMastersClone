@@ -93,7 +93,10 @@ function main()
 	(
 		"SpaceAdventureClone", "0.0.0", timerHelper, display, mediaLibrary, null
 	);
-	universe.initialize();
+	universe.initialize
+	(
+		function() { universe.start(); }
+	);
 	universe.venueNext = new VenueControls
 	(
 		universe.controlBuilder.slideshow

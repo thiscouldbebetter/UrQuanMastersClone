@@ -17,7 +17,7 @@ function Ship(defnName)
 			"Accelerate",
 			function perform(universe, world, place, actor)
 			{
-				actor.Ship.accelerate(world, actor);
+				actor.ship.accelerate(world, actor);
 			}
 		);
 	}
@@ -73,7 +73,7 @@ function Ship(defnName)
 			{
 				var venueNext = new VenueControls
 				(
-					universe.controlBuilder.configure(universe)
+					universe.controlBuilder.gameAndSettings(universe)
 				);
 				venueNext = new VenueFader(venueNext, universe.venueCurrent);
 				universe.venueNext = venueNext;
@@ -88,7 +88,7 @@ function Ship(defnName)
 			"TurnLeft",
 			function perform(universe, world, place, actor)
 			{
-				actor.Ship.turnLeft(world, actor);
+				actor.ship.turnLeft(world, actor);
 			}
 		);
 	}
@@ -100,7 +100,7 @@ function Ship(defnName)
 			"TurnRight",
 			function perform(universe, world, place, actor)
 			{
-				actor.Ship.turnRight(world, actor);
+				actor.ship.turnRight(world, actor);
 			}
 		);
 	};
@@ -123,15 +123,15 @@ function Ship(defnName)
 	{
 		var entities = place.entities;
 		var target = entities["Player"];
-		var targetPos = target.Locatable.loc.pos;
-		var actorLoc = actor.Locatable.loc;
+		var targetPos = target.locatable.loc.pos;
+		var actorLoc = actor.locatable.loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 
 		var targetDisplacement = targetPos.clone().subtract(actorPos);
 
 		var targetDistance = targetDisplacement.magnitude();
-		if (targetDistance < actor.Ship.defn(world).sensorRange)
+		if (targetDistance < actor.ship.defn(world).sensorRange)
 		{
 			var forwardAsPolar = new Polar().fromCoords(actorLoc.orientation.forward);
 			var angleForward = forwardAsPolar.azimuthInTurns;
@@ -145,10 +145,10 @@ function Ship(defnName)
 			if (angleTargetMinusForward != 0)
 			{
 				var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-				actor.Ship.turnInDirection(world, actor, directionToTurn);
+				actor.ship.turnInDirection(world, actor, directionToTurn);
 			}
 
-			actor.Ship.accelerate(world, actor);
+			actor.ship.accelerate(world, actor);
 		}
 	}
 
@@ -235,9 +235,9 @@ function Ship(defnName)
 
 	Ship.prototype.accelerate = function(world, entity)
 	{
-		var ship = (entity.ShipGroup != null ? entity.ShipGroup.ships[0] : entity.Ship);
+		var ship = (entity.shipGroup != null ? entity.shipGroup.ships[0] : entity.ship);
 		var shipDefn = ship.defn(world);
-		var shipLoc = entity.Locatable.loc;
+		var shipLoc = entity.locatable.loc;
 		var shipForward = shipLoc.orientation.forward;
 		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
 		(
@@ -253,10 +253,10 @@ function Ship(defnName)
 
 	Ship.prototype.turnInDirection = function(world, entity, direction)
 	{
-		var entityLoc = entity.Locatable.loc;
+		var entityLoc = entity.locatable.loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
-		var ship = (entity.Ship == null ? entity.ShipGroup.ships[0] : entity.Ship);
+		var ship = (entity.ship == null ? entity.shipGroup.ships[0] : entity.ship);
 		var shipDefn = ship.defn(world);
 		var turnsPerTick = shipDefn.turnsPerTick;
 		var entityForwardNew = Ship._polar.fromCoords

@@ -12,7 +12,7 @@ function EnergySource(name, pos, visual, collideWithLander)
 		var visual = new VisualCircle(10, "Cyan");
 		visual = new VisualCamera(visual, () => place.camera);
 		Visual = new VisualWrapped(place.size, visual);
-		var energySourceCollider = new Sphere(this.pos, 5);
+		var energySourceCollider = new Sphere(new Coords(0, 0, 0), 5);
 		var returnValue = new Entity
 		(
 			this.name,

@@ -17,7 +17,7 @@ function Encounter(planet, factionName, shipGroupOther, placeToReturnTo, posToRe
 	{
 		var placeNext = this.placeToReturnTo;
 		var playerFromPlaceNext = placeNext.entities["Player"];
-		var playerLoc = playerFromPlaceNext.Locatable.loc;
+		var playerLoc = playerFromPlaceNext.locatable.loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
 		world.placeNext = placeNext;

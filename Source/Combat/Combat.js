@@ -19,8 +19,8 @@ function Combat(size, encounter, shipGroups)
 	{
 		var entitiesShips = place.entitiesShips();
 		var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
-		var targetPos = target.Locatable.loc.pos;
-		var actorLoc = actor.Locatable.loc;
+		var targetPos = target.locatable.loc.pos;
+		var actorLoc = actor.locatable.loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 		var combat = place.combat;
@@ -45,10 +45,10 @@ function Combat(size, encounter, shipGroups)
 		if (angleTargetMinusForward != 0)
 		{
 			var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-			actor.Ship.turnInDirection(world, actor, directionToTurn);
+			actor.ship.turnInDirection(world, actor, directionToTurn);
 		}
 
-		actor.Ship.accelerate(world, actor);
+		actor.ship.accelerate(world, actor);
 	}
 
 	Combat.prototype.exit = function(universe)
@@ -270,7 +270,8 @@ function Combat(size, encounter, shipGroups)
 					function click(universe)
 					{
 						var shipGroupIndex = 0;
-						var ship = combat.shipGroups[shipGroupIndex].ships.random();
+						var shipGroup = combat.shipGroups[shipGroupIndex];
+						var ship = shipGroup.ships.random(universe.randomizer);
 						combat.shipsFighting[shipGroupIndex] = ship;
 						listShipsYours._itemSelected = null;
 					},
@@ -332,7 +333,8 @@ function Combat(size, encounter, shipGroups)
 					function click(universe)
 					{
 						var shipGroupIndex = 1;
-						var ship = combat.shipGroups[shipGroupIndex].ships.random();
+						var shipGroup = combat.shipGroups[shipGroupIndex];
+						var ship = shipGroup.ships.random(universe.randomizer);
 						combat.shipsFighting[shipGroupIndex] = ship;
 						listShipsTheirs._itemSelected = null;
 					},

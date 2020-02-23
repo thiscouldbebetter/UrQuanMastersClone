@@ -10,9 +10,9 @@ function VisualWrapped(sizeToWrapTo, child)
 }
 
 {
-	VisualWrapped.prototype.draw = function(universe, world, display, drawable, entity)
+	VisualWrapped.prototype.draw = function(universe, world, display, entity)
 	{
-		var drawablePos = drawable.loc.pos;
+		var drawablePos = entity.locatable.loc.pos;
 		this._posSaved.overwriteWith(drawablePos);
 
 		var tilePos = this._tilePos;
@@ -35,7 +35,7 @@ function VisualWrapped(sizeToWrapTo, child)
 					)
 				);
 
-				this.child.draw(universe, world, display, drawable, entity);
+				this.child.draw(universe, world, display, entity);
 
 				drawablePos.overwriteWith(this._posSaved);
 			}
