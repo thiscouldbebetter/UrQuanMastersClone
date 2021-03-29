@@ -1,209 +1,219 @@
 
-function PlacePlanetSurface(world, planet, placePlanetOrbit)
+class PlacePlanetSurface extends Place
 {
-	this.planet = planet;
-	this.size = this.planet.sizeSurface;
-	this.placePlanetOrbit = placePlanetOrbit;
-
-	var actionExit = new Action
-	(
-		"Exit",
-		this.exit.bind(this)
-	);
-
-	var actionFire = Ship.actionFire();
-
-	this.actions =
-	[
-		Ship.actionShowMenu(),
-		Ship.actionAccelerate(),
-		Ship.actionTurnLeft(),
-		Ship.actionTurnRight(),
-		actionFire,
-		actionExit,
-	].addLookupsByName();
-
-	this._actionToInputsMappings = Ship.actionToInputsMappings();
-	this._actionToInputsMappings = this._actionToInputsMappings.concat
-	(
-		[
-			new ActionToInputsMapping("Fire", ["Enter", "Gamepad0Button0"], true),
-			new ActionToInputsMapping("Exit", ["_", "Gamepad0Button1"]),
-		]
-	);
-	this._actionToInputsMappings.addLookupsMultiple( function(x) { return x.inputNames; } );
-
-	// constraints
-
-	var constraintSpeedMax = new Constraint_SpeedMax(10);
-	var constraintFriction = new Constraint_Friction(0.1);
-	var constraintWrapXTrimY = new Constraint_WrapXTrimY(this.size);
-
-	this.camera = new Camera
-	(
-		new Coords(300, 300), // hack
-		null, // focalLength
-		new Location
-		(
-			new Coords(0, 0, 0),
-			Orientation.Instances().ForwardZDownY.clone()
-		)
-	);
-
-	// entities
-
-	var entities = [];
-
-	var entityDimension = 10;
-	var entitySize = new Coords(1, 1, 1).multiplyScalar(entityDimension);
-
-	// background
-
-	var visualBackground = new VisualImageFromLibrary("PlanetSurface");
-	var planetSizeSurface = this.planet.sizeSurface;
-	visualBackground = new VisualImageScaled(visualBackground, planetSizeSurface);
-	visualBackground = new VisualCamera(visualBackground, () => this.camera);
-	visualBackground = new VisualWrapped(planetSizeSurface, visualBackground);
-
-	var entityBackground = new Entity
-	(
-		"Background",
-		[
-			new Locatable(new Location( this.planet.sizeSurface.clone().half() )),
-			new Drawable(visualBackground)
-		]
-	);
-
-	entities.push(entityBackground);
-
-	// lifeforms
-
-	if (planet.hasLife)
+	constructor(world, planet, placePlanetOrbit)
 	{
-		var lifeforms = planet.lifeforms;
-		var lifeformEntities = lifeforms.map
+		super(PlacePlanetSurface.name, PlacePlanetSurface.name, new Coords(300, 300), []);
+
+		this.planet = planet;
+		this.size = this.planet.sizeSurface;
+		this.placePlanetOrbit = placePlanetOrbit;
+
+		var actionExit = new Action
+		(
+			"Exit",
+			this.exit.bind(this)
+		);
+
+		var actionFire = Ship.actionFire();
+
+		this.actions =
+		[
+			Ship.actionShowMenu(),
+			Ship.actionAccelerate(),
+			Ship.actionTurnLeft(),
+			Ship.actionTurnRight(),
+			actionFire,
+			actionExit,
+		];//.addLookupsByName();
+
+		this._actionToInputsMappings = Ship.actionToInputsMappings();
+		this._actionToInputsMappings = this._actionToInputsMappings.concat
+		(
+			[
+				new ActionToInputsMapping("Fire", ["Enter", "Gamepad0Button0"], true),
+				new ActionToInputsMapping("Exit", ["_", "Gamepad0Button1"]),
+			]
+		);
+		this.actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple
+		(
+			this._actionToInputsMappings, x => x.inputNames
+		);
+
+		// constraints
+
+		var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
+		var constraintFriction = new Constraint_FrictionXY(0.1);
+		var constraintWrapXTrimY = new Constraint_WrapXTrimY(this.size);
+
+		// entities
+
+		var entities = this.entitiesToSpawn;
+
+		var entityDimension = 10;
+		var entitySize = new Coords(1, 1, 1).multiplyScalar(entityDimension);
+
+		// camera
+
+		this._camera = new Camera
+		(
+			new Coords(300, 300), // hack
+			null, // focalLength
+			new Disposition
+			(
+				new Coords(0, 0, 0),
+				Orientation.Instances().ForwardZDownY.clone()
+			)
+		);
+		var cameraAsEntity = CameraHelper.toEntity(this._camera);
+		entities.push(cameraAsEntity);
+
+		// background
+
+		var visualBackground = new VisualImageFromLibrary("PlanetSurface");
+		var planetSizeSurface = this.planet.sizeSurface;
+		visualBackground = new VisualImageScaled(visualBackground, planetSizeSurface);
+		visualBackground = new VisualWrapped(planetSizeSurface, visualBackground);
+
+		var entityBackground = new Entity
+		(
+			"Background",
+			[
+				new Locatable(new Disposition( this.planet.sizeSurface.clone().half() )),
+				new Drawable(visualBackground)
+			]
+		);
+
+		entities.push(entityBackground);
+
+		// lifeforms
+
+		if (planet.hasLife)
+		{
+			var lifeforms = planet.lifeforms;
+			var lifeformEntities = lifeforms.map
+			(
+				x => x.toEntity(world, this)
+			);
+			entities.push(...lifeformEntity);
+		}
+
+		// resources
+
+		var resourceDefns = ResourceDefn.Instances();
+		var resourceRadiusBase = entityDimension / 2;
+		var resources = this.planet.resources || [];
+		var resourceEntities = resources.map
+		(
+			x => x.toEntity(world, this, resourceRadiusBase)
+		);
+		entities.push(...resourceEntities);
+
+		// energySources
+
+		var energySources = this.planet.energySources || [];
+		var energySourceEntities = energySources.map
 		(
 			x => x.toEntity(world, this)
 		);
-		entities.addMany(lifeformEntity);
-	}
+		entities.push(...energySourceEntities);
 
-	// resources
+		// player
 
-	var resourceDefns = ResourceDefn.Instances();
-	var resourceRadiusBase = entityDimension / 2;
-	var resources = this.planet.resources || [];
-	var resourceEntities = resources.map
-	(
-		x => x.toEntity(world, this, resourceRadiusBase)
-	);
-	entities.addMany(resourceEntities);
+		var playerActivityDefnName = Player.activityDefn().name;
+		var playerActivity = new Activity(playerActivityDefnName);
 
-	// energySources
+		var playerPos = this.size.clone().half(); // todo
+		var playerLoc = new Disposition(playerPos);
+		var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var playerColor = Color.byName("Gray");
 
-	var energySources = this.planet.energySources || [];
-	var energySourceEntities = energySources.map
-	(
-		x => x.toEntity(world, this)
-	);
-	entities.addMany(energySourceEntities);
+		var playerVisual = ShipDefn.visual
+		(
+			entityDimension, playerColor, Color.byName("Black")
+		);
+		playerVisual = new VisualWrapped(this.size, playerVisual);
 
-	// player
-
-	var playerPos = this.size.clone().half(); // todo
-	var playerLoc = new Location(playerPos);
-	var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
-	var playerColor = "Gray";
-
-	var playerVisual = new VisualCamera
-	(
-		ShipDefn.visual(entityDimension, playerColor, "Black"),
-		() => this.camera
-	);
-	playerVisual = new VisualWrapped(this.size, playerVisual);
-
-	var playerCollide = function(universe, world, place, entityPlayer, entityOther)
-	{
-		if (entityOther.item != null)
+		var playerCollide = (universe, world, place, entityPlayer, entityOther) =>
 		{
-			var item = entityOther.item;
-			entityPlayer.itemHolder.itemAdd(item);
-			place.entitiesToRemove.push(entityOther);
-		}
-		else if (entityOther.name.startsWith("Lifeform") == true)
-		{
-			var lifeformDefn = entityOther.lifeform.defn(world);
-			var damage = lifeformDefn.damagePerAttack;
-			if (damage > 0)
+			var entityOtherItem = entityOther.item();
+			var entityOtherEnergySource = entityOther.energySource();
+
+			if (entityOtherItem != null)
 			{
-				var chanceOfDamagePerTick = .05;
-				if (Math.random() < chanceOfDamagePerTick)
+				var item = entityOtherItem;
+				entityPlayer.itemHolder.itemAdd(item);
+				place.entitiesToRemove.push(entityOther);
+			}
+			else if (entityOther.name.startsWith("Lifeform") == true)
+			{
+				var lifeformDefn = EntityExtensions.lifeform(entityOther).defn(world);
+				var damage = lifeformDefn.damagePerAttack;
+				if (damage > 0)
 				{
-					entityPlayer.killable.integrity -= damage;
+					var chanceOfDamagePerTick = .05;
+					if (Math.random() < chanceOfDamagePerTick)
+					{
+						entityPlayer.killable().integrity -= damage;
+					}
 				}
 			}
+			else if (entityOtherEnergySource != null)
+			{
+				var energySource = entityOtherEnergySource;
+				energySource.collideWithLander(universe, world, place, entityOther, entityPlayer)
+			}
 		}
-		else if (entityOther.energySource != null)
-		{
-			var energySource = entityOther.energySource;
-			energySource.collideWithLander(universe, world, place, entityOther, entityPlayer)
-		}
+
+		var playerShipLander = new Ship("Lander");
+
+		var playerEntity = new Entity
+		(
+			"Player",
+			[
+				new Actor(playerActivity),
+				new Collidable
+				(
+					null, // ticks
+					playerCollider,
+					[ Collidable.name ], // entityPropertyNamesToCollideWith
+					playerCollide
+				),
+				new Constrainable
+				([
+					constraintFriction, constraintSpeedMax, constraintWrapXTrimY
+				]),
+				new Drawable(playerVisual),
+				new ItemHolder(),
+				new Killable(1, this.playerDie.bind(this)),
+				new Locatable(playerLoc),
+				new Playable(),
+				playerShipLander
+			]
+		);
+
+		entities.push(playerEntity);
+
+		var containerSidebar = this.toControlSidebar();
+		this.venueControls = new VenueControls(containerSidebar);
+
+		//this.propertyNamesToProcess.push("ship");
+
+		// Helper variables.
+
+		this._drawPos = new Coords();
 	}
-
-	var playerShipLander = new Ship("Lander");
-
-	var playerEntity = new Entity
-	(
-		"Player",
-		[
-			playerShipLander,
-			new Locatable(playerLoc),
-			new Constrainable
-			([
-				constraintFriction, constraintSpeedMax, constraintWrapXTrimY
-			]),
-			new Collidable
-			(
-				playerCollider,
-				[ Collidable.name ], // entityPropertyNamesToCollideWith
-				playerCollide
-			),
-			new Drawable(playerVisual),
-			new ItemHolder(),
-			new Playable(),
-			new Killable(1, this.playerDie.bind(this))
-		]
-	);
-
-	entities.push(playerEntity);
-
-	var containerSidebar = this.toControlSidebar();
-	this.venueControls = new VenueControls(containerSidebar);
-
-	var size = new Coords(300, 300); // todo
-	Place.call(this, PlacePlanetSurface.name, PlacePlanetSurface.name, size, entities);
-	this.propertyNamesToProcess.push("ship");
-
-	// Helper variables.
-
-	this._drawPos = new Coords();
-}
-{
-	// superclass
-
-	PlacePlanetSurface.prototype = Object.create(Place.prototype);
-	PlacePlanetSurface.prototype.constructor = Place;
 
 	// methods
 
-	PlacePlanetSurface.prototype.actionToInputsMappings = function()
+	actionToInputsMappings()
 	{
 		return this._actionToInputsMappings;
-	};
+	}
 
-	PlacePlanetSurface.prototype.exit = function(universe, world, place, actor)
+	exit(universe, world, place, actor)
 	{
-		var entityLander = place.entities["Player"];
+		var entityLander = place.entitiesByName.get(Player.name);
 		var itemHolderLander = entityLander.itemHolder;
 		var itemHolderPlayer = world.player.flagship.itemHolder;
 		itemHolderLander.itemsTransferTo(itemHolderPlayer);
@@ -212,24 +222,23 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		world.placeNext = placePlanetOrbit;
 	}
 
-	PlacePlanetSurface.prototype.playerDie = function(universe, world, place, entityPlayer)
+	playerDie(universe, world, place, entityPlayer)
 	{
 		this.exit(universe, world, place, entityPlayer);
 	}
 
 	// Place overrides
 
-	PlacePlanetSurface.prototype.draw_FromSuperclass = Place.prototype.draw;
-	PlacePlanetSurface.prototype.draw = function(universe, world)
+	draw(universe, world)
 	{
 		var display = universe.display;
 
 		var drawPos = this._drawPos;
 
-		var player = this.entities["Player"];
-		var playerLoc = player.locatable.loc;
+		var player = this.entitiesByName.get(Player.name);
+		var playerLoc = player.locatable().loc;
 
-		var camera = this.camera;
+		var camera = this._camera;
 		var planetSize = this.planet.sizeSurface;
 		camera.loc.pos.overwriteWith
 		(
@@ -240,17 +249,17 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 			new Coords(planetSize.x, planetSize.y - camera.viewSizeHalf.y)
 		);
 
-		this.draw_FromSuperclass(universe, world);
+		super.draw(universe, world, display);
 
 		this.venueControls.draw(universe, world);
 
 		this.drawMap(universe, world);
 	}
 
-	PlacePlanetSurface.prototype.drawMap = function(universe, world)
+	drawMap(universe, world)
 	{
 		var containerSidebar = this.venueControls.controlRoot;
-		var controlMap = containerSidebar.children["containerMap"];
+		var controlMap = containerSidebar.childrenByName.get("containerMap");
 		var mapPos = containerSidebar.pos.clone().add(controlMap.pos);
 		var mapSize = controlMap.size;
 		var surfaceSize = this.planet.sizeSurface;
@@ -262,32 +271,38 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 		{
 			var contact = scanContacts[i];
 
-			var contactPos = contact.locatable.loc.pos;
-			contactPosSaved.overwriteWith(contactPos);
+			var contactDrawable = contact.drawable();
 
-			var drawPos = this._drawPos.overwriteWith
-			(
-				contactPos
-			).divide
-			(
-				surfaceSize
-			).multiply
-			(
-				mapSize
-			).add
-			(
-				mapPos
-			);
+			if (contactDrawable != null)
+			{
+				var contactPos = contact.locatable().loc.pos;
+				contactPosSaved.overwriteWith(contactPos);
 
-			contactPos.overwriteWith(drawPos);
-			contact.drawable.draw(universe, world, display, contact);
-			contactPos.overwriteWith(contactPosSaved);
+				var drawPos = this._drawPos.overwriteWith
+				(
+					contactPos
+				).divide
+				(
+					surfaceSize
+				).multiply
+				(
+					mapSize
+				).add
+				(
+					mapPos
+				);
+
+				contactPos.overwriteWith(drawPos);
+				var contactVisual = contactDrawable.visual;
+				contactVisual.draw(universe, world, this, contact, display);
+				contactPos.overwriteWith(contactPosSaved);
+			}
 		}
 	}
 
 	// controls
 
-	PlacePlanetSurface.prototype.toControlSidebar = function(universe)
+	toControlSidebar(universe)
 	{
 		var containerSidebarSize = new Coords(100, 300); // hack
 		var marginWidth = 10;
@@ -328,7 +343,10 @@ function PlacePlanetSurface(world, planet, placePlanetOrbit)
 							"visualMap",
 							new Coords(0, 0),
 							minimapSize,
-							new VisualRectangle(minimapSize, "Gray")
+							DataBinding.fromContext
+							(
+								new VisualRectangle(minimapSize, Color.byName("Gray") )
+							)
 						)
 					]
 				),

@@ -1,26 +1,52 @@
-function Player(name, credit, flagship, factionsKnownNames, shipGroup)
+class Player
 {
-	this.name = name;
-	this.credit = credit;
-	this.flagship = flagship;
-	this.factionsKnownNames = factionsKnownNames;
-	this.shipGroup = shipGroup;
+	constructor(name, credit, flagship, factionsKnownNames, shipGroup)
+	{
+		this.name = name;
+		this.credit = credit;
+		this.flagship = flagship;
+		this.factionsKnownNames = factionsKnownNames;
+		this.shipGroup = shipGroup;
 
-	this.variableLookup = {};
+		this.variableLookup = {};
 
-	// Abbreviate for scripts.
-	this.vars = this.variableLookup;
-}
+		// Abbreviate for scripts.
+		this.vars = this.variableLookup;
+	}
 
-{
-	Player.prototype.cachesCalculate = function()
+	static activityDefn()
+	{
+		return new ActivityDefn
+		(
+			"AcceptUserInput",
+			(universe, world, place, entity) =>
+			{
+				var inputHelper = universe.inputHelper;
+				var placeDefn = place.defn(world);
+				var actionsByName = placeDefn.actionsByName;
+				var actionToInputsMappingsByInputName =
+					placeDefn.actionToInputsMappingsByInputName;
+				var actionsToPerform = inputHelper.actionsFromInput
+				(
+					actionsByName, actionToInputsMappingsByInputName
+				);
+				for (var i = 0; i < actionsToPerform.length; i++)
+				{
+					var action = actionsToPerform[i];
+					action.perform(universe, world, place, entity);
+				}
+			}
+		);
+	}
+
+	cachesCalculate()
 	{
 		this._factionsKnown = null;
 
 		this.flagship.cachesCalculate();
 	}
 
-	Player.prototype.factionsAllied = function(world)
+	factionsAllied(world)
 	{
 		if (this._factionsAllied == null)
 		{
@@ -40,7 +66,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		return this._factionsAllied;
 	}
 
-	Player.prototype.factionsKnown = function(world)
+	factionsKnown(world)
 	{
 		if (this._factionsKnown == null)
 		{
@@ -49,7 +75,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 			for (var i = 0; i < this.factionsKnownNames.length; i++)
 			{
 				var factionName = this.factionsKnownNames[i];
-				var faction = world.defns.factions[factionName];
+				var faction = world.defn.factionByName(factionName);
 				this._factionsKnown.push(faction);
 			}
 		}
@@ -57,7 +83,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		return this._factionsKnown;
 	}
 
-	Player.prototype.initialize = function(universe, world)
+	initialize(universe, world)
 	{
 		var ships = this.shipGroup.ships;
 		for (var i = 0; i < ships.length; i++)
@@ -67,7 +93,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		}
 	}
 
-	Player.prototype.shipComponentDefnsKnown = function()
+	shipComponentDefnsKnown()
 	{
 		if (this._shipComponentDefnsKnown == null)
 		{
@@ -77,7 +103,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		return this._shipComponentDefnsKnown;
 	}
 
-	Player.prototype.shipComponentDefnsKnownBackbone = function()
+	shipComponentDefnsKnownBackbone()
 	{
 		if (this._shipComponentDefnsKnownBackbone == null)
 		{
@@ -96,12 +122,12 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 		return this._shipComponentDefnsKnownBackbone;
 	}
 
-	Player.prototype.shipsCurrentOverMax = function()
+	shipsCurrentOverMax()
 	{
 		return this.shipGroup.ships.length + "/" + this.flagship.shipsMax;
 	}
 
-	Player.prototype.shipDefnsAvailable = function(universe)
+	shipDefnsAvailable(universe)
 	{
 		if (this._shipDefnsAvailable == null)
 		{
@@ -127,7 +153,7 @@ function Player(name, credit, flagship, factionsKnownNames, shipGroup)
 
 	// controls
 
-	Player.prototype.toControlSidebar = function(world)
+	toControlSidebar(world)
 	{
 		var flagship = this.flagship;
 		var containerSidebarSize = new Coords(100, 300); // hack

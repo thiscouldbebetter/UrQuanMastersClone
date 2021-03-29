@@ -1,15 +1,18 @@
 
-function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
+class Hyperspace
 {
-	this.size = size;
-	this.starsystemRadiusOuter = starsystemRadiusOuter;
-	this.starsystems = starsystems.addLookupsByName();
-	this.shipGroups = shipGroups;
-}
-{
+	constructor(size, starsystemRadiusOuter, starsystems, shipGroups)
+	{
+		this.size = size;
+		this.starsystemRadiusOuter = starsystemRadiusOuter;
+		this.starsystems = starsystems;
+		this.starsystemsByName = ArrayHelper.addLookupsByName(this.starsystems);
+		this.shipGroups = shipGroups;
+	}
+
 	// static methods
 
-	Hyperspace.random = function(size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner)
+	static random(size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner)
 	{
 		var planetsPerStarsystemMax = 6;
 		var factionName = null; // todo
@@ -80,7 +83,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 		return returnValue;
 	}
 
-	Hyperspace.fromFileContentsAsString = function
+	static fromFileContentsAsString
 	(
 		size,
 		starsystemRadiusOuter,
@@ -102,9 +105,8 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 		}
 		iOffset++;
 
-		var factionOriginalToNewLookup = factions.slice(0).addLookups
-		(
-			function(x) { return x.nameOriginal; }
+		var factionsByOldName = ArrayHelper.addLookups(
+			factions, x => x.nameOriginal
 		);
 
 		var starsystems = [];
@@ -134,7 +136,9 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 			var starsystemName =  starsystemPrefix + planetAsValues[0];
 			if (starsystemName != starsystemNamePrev)
 			{
-				var starColor = planetAsValues[5].toTitleCase();
+				var starColorName = planetAsValues[5];
+				starColorName = StringHelper.toTitleCase(starColorName);
+				var starColor = Color.byName(starColorName);
 				var starSizeIndex = starSizeNames.indexOf(planetAsValues[6]);
 
 				var starsystemPos = new Coords
@@ -144,7 +148,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 				).multiplyScalar(10);
 				starsystemPos.y = size.y - starsystemPos.y;
 				var factionNameOriginal = planetAsValues[7];
-				var faction = factionOriginalToNewLookup[factionNameOriginal];
+				var faction = factionsByOldName.get(factionNameOriginal);
 				var factionName = (faction == null ? null : faction.name);
 
 				starsystem = new Starsystem
@@ -215,6 +219,7 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 			);
 
 			var isMoon = (orbitOrdinalParts.length > 1);
+			var planetCurrent;
 			var bodyListToAddTo;
 			if (isMoon == true)
 			{
@@ -229,9 +234,9 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 			bodyListToAddTo.push(planet);
 		}
 
-		starsystems.addLookupsByName();
+		var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
 
-		var starsystemSol = starsystems["Sol"];
+		var starsystemSol = starsystemsByName.get("Sol");
 
 		var pluto = starsystemSol.planets[8];
 		var energySourceAbandonedScuttlerMessage = "todo";
@@ -280,7 +285,12 @@ function Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups)
 
 	// instance methods
 
-	Hyperspace.prototype.starsystemClosestTo = function(point)
+	starsystemByName(starsystemName)
+	{
+		return this.starsystemsByName.get(starsystemName);
+	}
+
+	starsystemClosestTo(point)
 	{
 		var starsystemClosestSoFar = null;
 

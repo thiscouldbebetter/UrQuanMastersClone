@@ -1,20 +1,17 @@
 
-function Lander()
+class Lander
 {
-	// todo
-}
-{
-	Lander.prototype.cargoCurrentOverMax = function()
+	cargoCurrentOverMax()
 	{
 		return "nn/mm"; // todo
 	}
 
-	Lander.prototype.crewCurrentOverMax = function()
+	crewCurrentOverMax()
 	{
 		return "nn/mm"; // todo
 	}
 
-	Lander.prototype.dataCurrentOverMax = function()
+	dataCurrentOverMax()
 	{
 		return "nn/mm"; // todo
 	}

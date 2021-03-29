@@ -1,33 +1,28 @@
 
-function PlaceStation(world, station, placePlanetVicinity)
+class PlaceStation extends Place
 {
-	this.station = station;
-	this.placePlanetVicinity = placePlanetVicinity;
-
-	var entities = [];
-	Place.call(this, PlaceStation.name, PlaceStation.name, null, entities);
-}
-{
-	// superclass
-
-	PlaceStation.prototype = Object.create(Place.prototype);
-	PlaceStation.prototype.constructor = Place;
+	constructor(world, station, placePlanetVicinity)
+	{
+		super(PlaceStation.name, PlaceStation.name, null, []);
+		this.station = station;
+		this.placePlanetVicinity = placePlanetVicinity;
+	}
 
 	// methods
 
-	PlaceStation.prototype.dock = function(universe)
+	dock(universe)
 	{
 		var world = universe.world;
 		var size = universe.display.sizeInPixels;
-		var placeStation = world.place;
+		var placeStation = world.placeCurrent;
 		var placeNext = new PlaceStationDock(world, placeStation);
 		world.placeNext = placeNext;
 	}
 
-	PlaceStation.prototype.leave = function(universe)
+	leave(universe)
 	{
 		var world = universe.world;
-		var place = world.place;
+		var place = world.placeCurrent;
 		var placePrev = place.placePlanetVicinity;
 		var size = placePrev.size;
 		var planet = placePrev.planet;
@@ -42,7 +37,7 @@ function PlaceStation(world, station, placePlanetVicinity)
 		(
 			new Coords(3, 0).multiplyScalar(10)
 		);
-		var playerLocNext = new Location(playerPosNext);
+		var playerLocNext = new Disposition(playerPosNext);
 		var placeNext = new PlacePlanetVicinity
 		(
 			world, size, planet, playerLocNext, placePrev.placeStarsystem
@@ -50,13 +45,13 @@ function PlaceStation(world, station, placePlanetVicinity)
 		world.placeNext = placeNext;
 	}
 
-	PlaceStation.prototype.talk = function(universe)
+	talk(universe)
 	{
 		var world = universe.world;
 		var size = universe.display.sizeInPixels;
-		var placeStation = world.place;
+		var placeStation = world.placeCurrent;
 		var factionName = this.station.factionName;
-		var faction = world.defns.factions[factionName];
+		var faction = world.defn.factionByName(factionName);
 		var conversationDefnName = faction.conversationDefnName;
 		var conversationResourceName = "Conversation-" + conversationDefnName;
 		var conversationDefnAsJSON =
@@ -78,17 +73,15 @@ function PlaceStation(world, station, placePlanetVicinity)
 
 	// Place
 
-	PlaceStation.prototype.draw_FromSuperclass = Place.prototype.draw;
-	PlaceStation.prototype.draw = function(universe, world)
+	draw(universe, world)
 	{
-		this.draw_FromSuperclass(universe, world);
+		//super.draw(universe, world);
 		this.venueControls.draw(universe, world);
 	}
 
-	PlaceStation.prototype.updateForTimerTick_FromSuperclass = Place.prototype.updateForTimerTick;
-	PlaceStation.prototype.updateForTimerTick = function(universe, world)
+	updateForTimerTick(universe, world)
 	{
-		this.updateForTimerTick_FromSuperclass(universe, world);
+		super.updateForTimerTick(universe, world);
 		if (this.venueControls == null)
 		{
 			var messageToShow = "[Station]";
@@ -98,7 +91,7 @@ function PlaceStation(world, station, placePlanetVicinity)
 			(
 				universe,
 				universe.display.sizeInPixels.clone(),
-				messageToShow,
+				DataBinding.fromContext(messageToShow),
 				[ "Talk", "Dock", "Leave", ],
 				[
 					function talk(universe)
@@ -124,11 +117,11 @@ function PlaceStation(world, station, placePlanetVicinity)
 		this.venueControls.updateForTimerTick(universe, world);
 	}
 
-	PlaceStation.prototype.returnToPlace = function(world)
+	returnToPlace(world)
 	{
 		var placeNext = this.placeToReturnTo;
-		var playerFromPlaceNext = placeNext.entities["Player"];
-		var playerLoc = playerFromPlaceNext.locatable.loc;
+		var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+		var playerLoc = playerFromPlaceNext.locatable().loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
 		world.placeNext = placeNext;

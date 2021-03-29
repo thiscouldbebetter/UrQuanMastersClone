@@ -5,7 +5,7 @@
     "talkNodes": [
 
 { "defnName": "Display", "text": "#(SEND_MESSAGE)"},
-
+{ "defnName": "Script", "text": "(u) => u.world.placeCurrent.encounter.entityOther.actor().activity.defnName = 'Leave'" },
 { "defnName": "Quit" }
 
     ]

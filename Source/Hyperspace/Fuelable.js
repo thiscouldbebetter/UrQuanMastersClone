@@ -1,12 +1,9 @@
 
-function Fuelable()
+class Fuelable
 {
-	// Do nothing.
-}
-{
-	Fuelable.prototype.updateForTimerTick = function(universe, world, place, entityFuelable)
+	updateForTimerTick(universe, world, place, entityFuelable)
 	{
-		var entityLoc = entityFuelable.locatable.loc;
+		var entityLoc = entityFuelable.locatable().loc;
 		var entityVel = entityLoc.vel;
 		var entitySpeed = entityVel.magnitude();
 		var fuelConsumedPerSpeed = .1;

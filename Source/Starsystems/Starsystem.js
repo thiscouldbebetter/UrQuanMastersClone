@@ -1,17 +1,19 @@
 
-function Starsystem(name, starSizeIndex, starColor, posInHyperspace, sizeInner, factionName, planets, shipGroups)
+class Starsystem
 {
-	this.name = name;
-	this.starSizeIndex = starSizeIndex;
-	this.starColor = starColor;
-	this.posInHyperspace = posInHyperspace;
-	this.sizeInner = sizeInner;
-	this.factionName = factionName;
-	this.planets = planets;
-	this.shipGroups = shipGroups;
-}
-{
-	Starsystem.StarColors =
+	constructor(name, starSizeIndex, starColor, posInHyperspace, sizeInner, factionName, planets, shipGroups)
+	{
+		this.name = name;
+		this.starSizeIndex = starSizeIndex;
+		this.starColor = starColor;
+		this.posInHyperspace = posInHyperspace;
+		this.sizeInner = sizeInner;
+		this.factionName = factionName;
+		this.planets = planets;
+		this.shipGroups = shipGroups;
+	}
+
+	static StarColors =
 	[
 		"Red",
 		"Orange",
@@ -19,9 +21,9 @@ function Starsystem(name, starSizeIndex, starColor, posInHyperspace, sizeInner, 
 		"Green",
 		"Blue",
 		"White",
-	];
+	].map(x => Color.byName(x));
 
-	Starsystem.prototype.solarSystem = function()
+	solarSystem()
 	{
 		this.name = "Sol";
 
@@ -43,7 +45,7 @@ function Starsystem(name, starSizeIndex, starColor, posInHyperspace, sizeInner, 
 		var station = new Station
 		(
 			"Station",
-			"Gray", // color
+			Color.byName("Gray"), // color
 			radiusBase,
 			"Terran", // factionName
 			new Polar(Math.random(), moon.posAsPolar.radius / 2)
@@ -64,7 +66,7 @@ function Starsystem(name, starSizeIndex, starColor, posInHyperspace, sizeInner, 
 		planetEarth.shipGroups.push(enemyShipGroup);
 	}
 
-	Starsystem.prototype.contentsRandomize = function()
+	contentsRandomize()
 	{
 		var planetsPerStarsystemMax = 6;
 
@@ -119,7 +121,7 @@ function Starsystem(name, starSizeIndex, starColor, posInHyperspace, sizeInner, 
 		this.planets = planets;
 	}
 
-	Starsystem.prototype.stationBuild = function(planetWithStation)
+	stationBuild(planetWithStation)
 	{
 		var numberOfPlanets = this.planets.length;
 		var distanceBetweenPlanetOrbits =
@@ -128,7 +130,7 @@ function Starsystem(name, starSizeIndex, starColor, posInHyperspace, sizeInner, 
 		var station = new Station
 		(
 			"Station",
-			"Gray", // color
+			Color.byName("Gray"), // color
 			10, // radius
 			"Terran", // factionName
 			new Polar(Math.random(), distanceBetweenPlanetOrbits),

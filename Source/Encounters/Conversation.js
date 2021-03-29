@@ -1,14 +1,16 @@
 
-function Conversation(statements)
+class Conversation
 {
-	this.statements = statements;
-	this.statementIndexCurrent = null;
-	this.isDone = false;
-	this._statementCurrent = new Reference(null);
-	this.statementAdvance();
-}
-{
-	Conversation.demo = function()
+	constructor(statements)
+	{
+		this.statements = statements;
+		this.statementIndexCurrent = null;
+		this.isDone = false;
+		this._statementCurrent = new Reference(null);
+		this.statementAdvance();
+	}
+
+	static demo()
 	{
 		var returnValue = new Conversation
 		([
@@ -20,7 +22,7 @@ function Conversation(statements)
 		return returnValue;
 	}
 
-	Conversation.prototype.statementAdvance = function()
+	statementAdvance()
 	{
 		if (this.statementIndexCurrent == null)
 		{
@@ -40,7 +42,7 @@ function Conversation(statements)
 		return this.statementCurrent();
 	}
 
-	Conversation.prototype.statementCurrent = function()
+	statementCurrent()
 	{
 		var statementNext = (this.isDone ? "[Done]" : this.statements[this.statementIndexCurrent]);
 		this._statementCurrent.value = statementNext;

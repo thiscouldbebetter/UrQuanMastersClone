@@ -12,22 +12,26 @@ function main()
 	(
 		// images
 		[
-			new Image("Conversation", imageDirectory + "Conversation.png"),
-			new Image("Conversation-EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
-			new Image("Conversation-Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
+			new Image2("Conversation", imageDirectory + "Conversation.png"),
+			new Image2("Conversation-EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
+			new Image2("Conversation-Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
 
-			new Image("PlanetSurface", imageDirectory + "PlanetSurface.png"),
-			new Image("Title", imageDirectory + "Title.png"),
+			new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
+
+			// opening
+			new Image2("Opening", imageDirectory + "Opening.png"),
+			new Image2("Title", imageDirectory + "Title.png"),
 
 			// slides
-			new Image("Black", imageDirectory + "/Slides/Black-1x1px.png"),
-			new Image("Red", imageDirectory + "Slides/Red-1x1px.png"),
-			new Image("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
+			new Image2("Black", imageDirectory + "/Slides/Black-1x1px.png"),
+			new Image2("Red", imageDirectory + "Slides/Red-1x1px.png"),
+			new Image2("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
 		],
 		// sounds
 		[
 			new Sound("Sound", "../Content/Audio/Effects/Sound.wav", false),
-			new Sound("Music", "../Content/Audio/Music/Music.mp3", true),
+			new Sound("Music_Music", "../Content/Audio/Music/Music.mp3", true),
+			new Sound("Music_Title", "../Content/Audio/Music/Music.mp3", true),
 		],
 		// videos
 		[
@@ -74,7 +78,7 @@ function main()
 
 	var displaySizeInPixelsDefault = new Coords(400, 300, 1);
 
-	var display = new Display
+	var display = new Display2D
 	(
 		// sizesAvailable
 		[
@@ -89,13 +93,19 @@ function main()
 
 	var timerHelper = new TimerHelper(24);
 
-	var universe = Universe.new
+	var universe = Universe.create
 	(
-		"SpaceAdventureClone", "0.0.0", timerHelper, display, mediaLibrary, null
+		"SpaceAdventureClone",
+		"0.0.0-20210322",
+		timerHelper,
+		display,
+		mediaLibrary,
+		ControlBuilder.default(),
+		WorldExtended.create
 	);
 	universe.initialize
 	(
-		function() { universe.start(); }
+		() => { universe.start(); }
 	);
 	universe.venueNext = new VenueControls
 	(

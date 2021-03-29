@@ -1,24 +1,19 @@
 
-function PlaceStationDock(world, placeStation)
+class PlaceStationDock extends Place
 {
-	this.placeStation = placeStation;
+	constructor(world, placeStation)
+	{
+		super(PlaceStationDock.name, PlaceStationDock.name, null, []);
+		this.placeStation = placeStation;
 
-	this.crewValuePerUnit = 3;
-	this.fuelValuePerUnit = 20;
-	this.landerValue = 100;
-
-	var entities = [];
-	Place.call(this, PlaceStationDock.name, PlaceStationDock.name, null, entities);
-}
-{
-	// superclass
-
-	PlaceStationDock.prototype = Object.create(Place.prototype);
-	PlaceStationDock.prototype.constructor = Place;
+		this.crewValuePerUnit = 3;
+		this.fuelValuePerUnit = 20;
+		this.landerValue = 100;
+	}
 
 	// method
 
-	PlaceStationDock.prototype.componentBackboneBuild = function(universe)
+	componentBackboneBuild(universe)
 	{
 		var player = universe.world.player;
 		var flagship = player.flagship;
@@ -29,12 +24,12 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.componentBackboneScrap = function(universe)
+	componentBackboneScrap(universe)
 	{
 		this.componentScrap(universe, this.componentToScrap);
 	}
 
-	PlaceStationDock.prototype.componentThrusterBuild = function(universe)
+	componentThrusterBuild(universe)
 	{
 		var player = universe.world.player;
 		var flagship = player.flagship;
@@ -43,12 +38,12 @@ function PlaceStationDock(world, placeStation)
 		{
 			var componentDefns = player.shipComponentDefnsKnown(universe.world);
 			var componentName = thrustersInstalled[0].name;
-			var componentToBuild = componentDefns[componentName];
+			var componentToBuild = ShipComponentDefn.byName(componentName);
 			this.componentBuild(universe, componentToBuild);
 		}
 	}
 
-	PlaceStationDock.prototype.componentThrusterScrap = function(universe)
+	componentThrusterScrap(universe)
 	{
 		var player = universe.world.player;
 		var thrustersInstalled = player.flagship.componentsThruster();
@@ -56,7 +51,7 @@ function PlaceStationDock(world, placeStation)
 		this.componentScrap(universe, componentToScrap);
 	}
 
-	PlaceStationDock.prototype.componentTurningJetsBuild = function(universe)
+	componentTurningJetsBuild(universe)
 	{
 		var player = universe.world.player;
 		var flagship = player.flagship;
@@ -65,12 +60,12 @@ function PlaceStationDock(world, placeStation)
 		{
 			var componentDefns = player.shipComponentDefnsKnown(universe.world);
 			var componentName = turningJetsInstalled[0].name;
-			var componentToBuild = componentDefns[componentName];
+			var componentToBuild = ShipComponentDefn.byName(componentName);
 			this.componentBuild(universe, componentToBuild);
 		}
 	}
 
-	PlaceStationDock.prototype.componentTurningJetsScrap = function(universe)
+	componentTurningJetsScrap(universe)
 	{
 		var player = universe.world.player;
 		var turningJetsInstalled = player.flagship.componentsTurningJets();
@@ -78,7 +73,7 @@ function PlaceStationDock(world, placeStation)
 		this.componentScrap(universe, componentToScrap);
 	}
 
-	PlaceStationDock.prototype.componentBuild = function(universe, componentToBuild)
+	componentBuild(universe, componentToBuild)
 	{
 		if (componentToBuild != null)
 		{
@@ -92,7 +87,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.componentScrap = function(universe, componentToScrap)
+	componentScrap(universe, componentToScrap)
 	{
 		if (componentToScrap != null)
 		{
@@ -103,7 +98,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.crewAdd = function(universe)
+	crewAdd(universe)
 	{
 		var ship = this.shipInFleetSelected;
 		if (ship.crew < ship.defn(universe.world).crewMax)
@@ -117,7 +112,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.crewRemove = function(universe)
+	crewRemove(universe)
 	{
 		var ship = this.shipInFleetSelected;
 		if (ship.crew > 1)
@@ -128,7 +123,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.fuelAdd = function(universe)
+	fuelAdd(universe)
 	{
 		var player = universe.world.player;
 		var flagship = player.flagship;
@@ -146,7 +141,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.fuelRemove = function(universe)
+	fuelRemove(universe)
 	{
 		var player = universe.world.player;
 		var flagship = player.flagship;
@@ -163,7 +158,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.landerAdd = function(universe)
+	landerAdd(universe)
 	{
 		var player = universe.world.player;
 		if (player.credit >= this.landerValue)
@@ -173,7 +168,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.landerRemove = function(universe)
+	landerRemove(universe)
 	{
 		var player = universe.world.player;
 		var flagship = player.flagship;
@@ -184,7 +179,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.offload = function(universe)
+	offload(universe)
 	{
 		var world = universe.world;
 		var player = world.player;
@@ -204,7 +199,7 @@ function PlaceStationDock(world, placeStation)
 		items.length = 0;
 	}
 
-	PlaceStationDock.prototype.shipBuild = function(universe)
+	shipBuild(universe)
 	{
 		var shipDefnToBuild = this.shipDefnToBuild;
 		if (shipDefnToBuild != null)
@@ -224,7 +219,7 @@ function PlaceStationDock(world, placeStation)
 		}
 	}
 
-	PlaceStationDock.prototype.shipScrap = function(universe)
+	shipScrap(universe)
 	{
 		var shipToScrap = this.shipInFleetSelected;
 		if (shipToScrap != null)
@@ -241,24 +236,21 @@ function PlaceStationDock(world, placeStation)
 
 	// Place
 
-	PlaceStationDock.prototype.draw_FromSuperclass = Place.prototype.draw;
-	PlaceStationDock.prototype.draw = function(universe, world)
+	draw(universe, world)
 	{
-		this.draw_FromSuperclass(universe, world);
+		super.draw(universe, world);
 		this.venueControls.draw(universe, world);
 	}
 
-	PlaceStationDock.prototype.initialize_FromSuperclass = Place.prototype.initialize;
-	PlaceStationDock.prototype.initialize = function(universe, world)
+	initialize(universe, world)
 	{
-		this.initialize_FromSuperclass(universe, world);
+		super.initialize(universe, world);
 		universe.world.player.initialize(universe, world);
 	}
 
-	PlaceStationDock.prototype.updateForTimerTick_FromSuperclass = Place.prototype.updateForTimerTick;
-	PlaceStationDock.prototype.updateForTimerTick = function(universe, world)
+	updateForTimerTick(universe, world)
 	{
-		this.updateForTimerTick_FromSuperclass(universe, world);
+		super.updateForTimerTick(universe, world);
 		if (this.venueControls == null)
 		{
 			var controlRoot = this.toControl(universe, world);
@@ -270,7 +262,7 @@ function PlaceStationDock(world, placeStation)
 
 	// controls
 
-	PlaceStationDock.prototype.toControl = function(universe, world)
+	toControl(universe, world)
 	{
 		var placeStationDock = this;
 
@@ -378,13 +370,13 @@ function PlaceStationDock(world, placeStation)
 					),
 					listComponentsSize,
 					shipComponentDefnsKnownBackbone,
-					new DataBinding(null, function get(c) { return c.name } ), // bindingForItemText
+					DataBinding.fromGet(c => c.name), // bindingForItemText
 					fontHeightShort,
 					new DataBinding
 					(
 						placeStationDock,
-						function get(c) { return c.componentToBuild; },
-						function set(c, v) { c.componentToBuild = v; }
+						(c) => c.componentToBuild,
+						(c, v) => c.componentToBuild = v
 					), // bindingForItemSelected
 					new DataBinding(), // ?
 				),
@@ -430,7 +422,10 @@ function PlaceStationDock(world, placeStation)
 					),
 					labelSize,
 					false, // isTextCentered
-					new DataBinding(player.flagship, function get(c) { return c.componentsBackboneCurrentOverMax(); } ),
+					new DataBinding
+					(
+						player.flagship, (c) => c.componentsBackboneCurrentOverMax()
+					),
 					fontHeightShort
 				),
 
@@ -1068,7 +1063,7 @@ function PlaceStationDock(world, placeStation)
 					function click(universe)
 					{
 						var world = universe.world;
-						var place = world.place;
+						var place = world.placeCurrent;
 						var placeNext = place.placeStation;
 						world.placeNext = placeNext;
 					},
@@ -1080,11 +1075,11 @@ function PlaceStationDock(world, placeStation)
 		return controlRoot;
 	}
 
-	PlaceStation.prototype.returnToPlace = function(world)
+	returnToPlace(world)
 	{
 		var placeNext = this.placeToReturnTo;
-		var playerFromPlaceNext = placeNext.entities["Player"];
-		var playerLoc = playerFromPlaceNext.locatable.loc;
+		var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+		var playerLoc = playerFromPlaceNext.locatable().loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
 		world.placeNext = placeNext;

@@ -1,110 +1,127 @@
 
-function PlacePlanetOrbit(world, planet, placePlanetVicinity)
+class PlacePlanetOrbit extends Place
 {
-	this.planet = planet;
-	this.placePlanetVicinity = placePlanetVicinity;
+	constructor(world, planet, placePlanetVicinity)
+	{
+		super(PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, []);
 
-	var entities = [];
-	var resourceRadiusBase = 5; // todo
-	var resourceEntities = this.planet.resources.map
-	(
-		x => x.toEntity(world, this, resourceRadiusBase)
-	);
-	entities.addMany(resourceEntities);
-	// todo - Lifeforms and energy sources.
+		this.planet = planet;
+		this.placePlanetVicinity = placePlanetVicinity;
 
-	Place.call(this, PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, entities);
+		var entities = this.entitiesToSpawn;
+		var resourceRadiusBase = 5; // todo
+		var resourceEntities = this.planet.resources.map
+		(
+			x => x.toEntity(world, this, resourceRadiusBase)
+		);
+		entities.push(...resourceEntities);
 
-	this._drawPos = new Coords();
-}
-{
-	// superclass
+		// todo - Lifeforms and energy sources.
 
-	PlacePlanetOrbit.prototype = Object.create(Place.prototype);
-	PlacePlanetOrbit.prototype.constructor = Place;
+		this._camera = new Camera
+		(
+			new Coords(1, 1).multiplyScalar(this.planet.sizeSurface.y),
+			null, // focalLength
+			new Disposition
+			(
+				new Coords(0, 0, 0),
+				Orientation.Instances().ForwardZDownY.clone()
+			)
+		);
+		var cameraAsEntity = CameraHelper.toEntity(this._camera);
+		entities.push(cameraAsEntity);
+
+		this._drawPos = new Coords();
+	}
 
 	// methods
 
-	PlacePlanetOrbit.prototype.land = function(universe)
+	land(universe)
 	{
 		var world = universe.world;
-		var placeOrbit = world.place;
+		var placeOrbit = world.placeCurrent;
 		var planet = placeOrbit.planet;
 		var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
 		world.placeNext = placeNext;
 	}
 
-	PlacePlanetOrbit.prototype.returnToPlaceParent = function(universe)
+	returnToPlaceParent(universe)
 	{
 		var world = universe.world;
-		var placeOrbit = world.place;
+		var placeOrbit = world.placeCurrent;
 		var placePlanetVicinity = placeOrbit.placePlanetVicinity;
 		world.placeNext = placePlanetVicinity;
 	}
 
-	PlacePlanetOrbit.prototype.scanEnergy = function(universe)
+	scanEnergy(universe)
 	{
 		this.hasEnergyBeenScanned = true;
 	}
 
-	PlacePlanetOrbit.prototype.scanLife = function(universe)
+	scanLife(universe)
 	{
 		this.hasLifeBeenScanned = true;
 	}
 
-	PlacePlanetOrbit.prototype.scanMinerals = function(universe)
+	scanMinerals(universe)
 	{
 		this.haveMineralsBeenScanned = true;
 	}
 
 	// overrides
 
-	PlacePlanetOrbit.prototype.draw_FromSuperclass = Place.prototype.draw;
-	PlacePlanetOrbit.prototype.draw = function(universe, world)
+	draw(universe, world)
 	{
-		this.draw_FromSuperclass(universe, world);
+		var display = universe.display;
+
+		super.draw(universe, world, display);
 		this.venueControls.draw(universe, world);
 
-		var controlMap = this.venueControls.controlRoot.children["containerMap"];
+		var controlMap = this.venueControls.controlRoot.childrenByName.get("containerMap");
 		var mapPos = controlMap.pos;
 		var mapSize = controlMap.size;
 		var surfaceSize = this.planet.sizeSurface;
-		var display = universe.display;
 
 		var scanContacts = this.entities;
 		var contactPosSaved = new Coords();
 		for (var i = 0; i < scanContacts.length; i++)
 		{
 			var contact = scanContacts[i];
+			var contactDrawable = contact.drawable();
+			if (contactDrawable != null)
+			{
+				var contactLocatable = contact.locatable();
+				var contactLoc = contactLocatable.loc;
+				var contactPos = contactLoc.pos;
+				contactPosSaved.overwriteWith(contactPos);
 
-			var contactPos = contact.pos;
-			contactPosSaved.overwriteWith(contactPos);
+				var drawPos = this._drawPos.overwriteWith
+				(
+					contactPos
+				).divide
+				(
+					surfaceSize
+				).multiply
+				(
+					mapSize
+				).add
+				(
+					mapPos
+				);
 
-			var drawPos = this._drawPos.overwriteWith
-			(
-				contactPos
-			).divide
-			(
-				surfaceSize
-			).multiply
-			(
-				mapSize
-			).add
-			(
-				mapPos
-			);
+				contactPos.overwriteWith(drawPos);
 
-			contactPos.overwriteWith(drawPos);
-			contactVisual.draw(universe, world, display, contact);
+				var contactVisual = contactDrawable.visual;
+				contactVisual.draw(universe, world, this, contact, display);
 
-			contactPos.overwriteWith(contactPosSaved);
+				contactPos.overwriteWith(contactPosSaved);
+			}
 		}
 	}
 
-	PlacePlanetOrbit.prototype.updateForTimerTick_FromSuperclass = Place.prototype.updateForTimerTick;
-	PlacePlanetOrbit.prototype.updateForTimerTick = function(universe, world)
+	updateForTimerTick(universe, world)
 	{
-		this.updateForTimerTick_FromSuperclass(universe, world);
+		super.updateForTimerTick(universe, world);
 		if (this.venueControls == null)
 		{
 			var controlRoot = this.toControl(universe, world);
@@ -116,7 +133,7 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 
 	// controls
 
-	PlacePlanetOrbit.prototype.toControl = function(universe, world)
+	toControl(universe, world)
 	{
 		var placePlanetOrbit = this;
 		var planet = this.planet;
@@ -296,21 +313,24 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 					"visualGlobe",
 					new Coords(0, 0),
 					containerInfoSize,
-					new VisualGroup
-					([
-						new VisualRectangle(containerInfoSize, "Black"),
-						new VisualCircle(containerInfoSize.y * .4, "Gray"),
-						new VisualCircleGradient
-						(
-							containerInfoSize.y * .4,
-							new Gradient
-							([
-								new GradientStop(0, planet.defn().color),
-								new GradientStop(1, "Black")
-							]),
-							planet.defn().color
-						)
-					])
+					DataBinding.fromContext
+					(
+						new VisualGroup
+						([
+							new VisualRectangle(containerInfoSize, Color.byName("Black") ),
+							new VisualCircle(containerInfoSize.y * .4, Color.byName("Gray") ),
+							new VisualCircleGradient
+							(
+								containerInfoSize.y * .4,
+								new ValueBreakGroup
+								([
+									new ValueBreak(0, planet.defn().color),
+									new ValueBreak(1, Color.byName("Black"))
+								]),
+								planet.defn().color
+							)
+						])
+					)
 				)
 			]
 		);
@@ -343,8 +363,9 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 							- labelSize.y
 					),
 					labelSize,
-					fontHeightShort,
-					"Scan:"
+					false, // isTextCentered
+					"Scan:",
+					fontHeightShort
 				),
 
 				new ControlContainer
@@ -480,10 +501,13 @@ function PlacePlanetOrbit(world, planet, placePlanetVicinity)
 							"visualSurface",
 							Coords.Instances().Zeroes,
 							containerMapSize,
-							new VisualImageScaled
+							DataBinding.fromContext
 							(
-								new VisualImageFromLibrary("PlanetSurface", containerMapSize),
-								containerMapSize
+								new VisualImageScaled
+								(
+									new VisualImageFromLibrary("PlanetSurface", containerMapSize),
+									containerMapSize
+								)
 							)
 						),
 					]

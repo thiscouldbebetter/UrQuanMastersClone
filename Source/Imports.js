@@ -1,0 +1,227 @@
+
+var gf = ThisCouldBeBetter.GameFramework;
+
+// hack
+// These classes currently have to come first.
+
+var RandomizerLCG = gf.RandomizerLCG;
+
+// Extensions.
+
+var ArrayHelper = gf.ArrayHelper;
+var NumberHelper = gf.NumberHelper;
+var StringHelper = gf.StringHelper;
+
+// hack
+
+var EntityProperty = gf.EntityProperty;
+
+// Controls.
+
+var ControlActionNames = gf.ControlActionNames;
+var ControlBase = gf.ControlBase;
+var ControlBuilder = gf.ControlBuilder;
+var ControlButton = gf.ControlButton;
+var ControlContainer = gf.ControlContainer;
+var ControlContainerTransparent = gf.ControlContainerTransparent;
+var ControlLabel = gf.ControlLabel;
+var ControlList = gf.ControlList;
+var ControlNone = gf.ControlNone;
+var ControlScrollbar = gf.ControlScrollbar;
+var ControlSelect = gf.ControlSelect;
+var ControlSelectOption = gf.ControlSelectOption;
+var ControlStyle = gf.ControlStyle;
+var ControlTextBox = gf.ControlTextBox;
+var ControlVisual = gf.ControlVisual;
+var DataBinding = gf.DataBinding;
+var VenueControls = gf.VenueControls;
+var VenueMessage = gf.VenueMessage;
+
+// Display.
+
+var Color = gf.Color;
+var Drawable = gf.Drawable;
+var Display = gf.Display;
+var Display2D = gf.Display2D;
+var DisplayRecorder = gf.DisplayRecorder;
+var VenueFader = gf.VenueFader;
+var VenueLayered = gf.VenueLayered;
+
+// Display - Visuals.
+
+var Visual = gf.Visual;
+var VisualAnchor = gf.VisualAnchor;
+var VisualCircle = gf.VisualCircle;
+var VisualCircleGradient = gf.VisualCircleGradient;
+var VisualDirectional = gf.VisualDirectional;
+var VisualDynamic = gf.VisualDynamic;
+var VisualGroup = gf.VisualGroup;
+var VisualImageFromLibrary = gf.VisualImageFromLibrary;
+var VisualImageImmediate = gf.VisualImageImmediate;
+var VisualImageScaled = gf.VisualImageScaled;
+var VisualLine = gf.VisualLine;
+var VisualNone = gf.VisualNone;
+var VisualOffset = gf.VisualOffset;
+var VisualPolygon = gf.VisualPolygon;
+var VisualRectangle = gf.VisualRectangle;
+var VisualSelect = gf.VisualSelect;
+var VisualText = gf.VisualText;
+
+// Display - Visuals - Animation.
+
+var VisualAnimation = gf.VisualAnimation;
+
+// Geometry.
+
+var Camera = gf.Camera;
+var CollisionHelper = gf.CollisionHelper;
+var CollisionTracker = gf.CollisionTracker;
+var Constraint = gf.Constraint;
+var Constraint_FrictionDry = gf.Constraint_FrictionDry;
+var Constraint_FrictionXY = gf.Constraint_FrictionXY;
+var Constraint_SpeedMaxXY = gf.Constraint_SpeedMaxXY;
+var Constraint_TrimToRange = gf.Constraint_TrimToRange;
+var Constraint_WrapXTrimY = gf.Constraint_WrapXTrimY;
+var Coords = gf.Coords;
+var Disposition = gf.Disposition;
+var Orientation = gf.Orientation;
+var Polar = gf.Polar;
+var RangeExtent = gf.RangeExtent;
+var Rotation = gf.Rotation;
+
+// Geometry - Shapes.
+
+var Box = gf.Box;
+var BoxRotated = gf.BoxRotated;
+var Cylinder = gf.Cylinder;
+var Edge = gf.Edge;
+var Face = gf.Face;
+var Hemispace = gf.Hemispace;
+var Path = gf.Path;
+var PathBuilder = gf.PathBuilder;
+var Plane = gf.Plane;
+var Ray = gf.Ray;
+var ShapeContainer = gf.ShapeContainer;
+var ShapeGroupAll = gf.ShapeGroupAll;
+var ShapeGroupAny = gf.ShapeGroupAny;
+var ShapeInverse = gf.ShapeInverse;
+var Sphere = gf.Sphere;
+
+// Geometry - Shapes - Map.
+
+var MapLocated = gf.MapLocated;
+
+// Geometry - Shapes - Meshes.
+
+var Mesh = gf.Mesh;;
+
+// Geometry - Transforms.
+
+var Transform = gf.Transform;
+var Transform_Locate = gf.Transform_Locate;
+var Transform_Orient = gf.Transform_Orient;
+var Transform_Rotate2D = gf.Transform_Rotate2D;
+var Transform_Scale = gf.Transform_Scale;
+var Transform_Translate = gf.Transform_Translate;
+var Transforms = gf.Transforms;
+
+// Input.
+
+var ActionToInputsMapping = gf.ActionToInputsMapping;
+var Input = gf.Input;
+var InputHelper = gf.InputHelper;
+
+// Media.
+
+var Font = gf.Font;
+var Image2 = gf.Image2;
+var MediaLibrary = gf.MediaLibrary;
+var Sound = gf.Sound;
+var SoundHelper = gf.SoundHelper;
+var TextString = gf.TextString;
+var VenueVideo = gf.VenueVideo;
+var Video = gf.Video;
+var VideoHelper = gf.VideoHelper;
+var VisualSound = gf.VisualSound;
+
+// Model.
+
+var Entity = gf.Entity;
+var EntityBuilder = gf.EntityBuilder;
+var Namable = gf.Namable;
+var Place = gf.Place;
+var PlaceDefn = gf.PlaceDefn;
+var Playable = gf.Playable;
+var Universe = gf.Universe;
+var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
+var Venue = gf.Venue;
+var VenueWorld = gf.VenueWorld;
+var World = gf.World;
+var WorldDefn = gf.WorldDefn;
+
+// Model - Actors.
+
+var Action = gf.Action;
+var Activity = gf.Activity;
+var ActivityDefn = gf.ActivityDefn;
+var Actor = gf.Actor;
+
+// Model - Combat.
+
+var Damage = gf.Damage;
+var Damager = gf.Damager;
+var Killable = gf.Killable;
+
+// Model - Items.
+
+var Item = gf.Item;
+var ItemDefn = gf.ItemDefn;
+var ItemHolder = gf.ItemHolder;
+
+// Model - Physics.
+
+var Boundable = gf.Boundable;
+var Collidable = gf.Collidable;
+var Constrainable = gf.Constrainable;
+var Constraint = gf.Constraint;
+var Locatable = gf.Locatable;
+var Movable = gf.Movable;
+
+// Model - Talk.
+
+var ConversationDefn = gf.ConversationDefn;
+var ConversationRun = gf.ConversationRun;
+var ConversationScope = gf.ConversationScope;
+var TalkNode = gf.TalkNode;
+var TalkNodeDefn = gf.TalkNodeDefn;
+var Talker = gf.Talker;
+
+// Profiles.
+
+var Profile = gf.Profile;
+
+// Storage.
+
+var FileHelper = gf.FileHelper;
+var Serializer = gf.Serializer;
+var StorageHelper = gf.StorageHelper;
+var VenueFileUpload = gf.VenueFileUpload;
+
+// Storage - Compressor.
+
+var BitStream = gf.BitStream;
+var ByteStreamFromString = gf.ByteStreamFromString;
+var CompressorLZW = gf.CompressorLZW;
+
+// Utility.
+
+var DateTime = gf.DateTime;
+var IDHelper = gf.IDHelper;
+var PlatformHelper = gf.PlatformHelper;
+var RandomizerSystem = gf.RandomizerSystem;
+var Reference = gf.Reference;
+var TimerHelper = gf.TimerHelper;
+var URLParser = gf.URLParser;
+var ValueBreak = gf.ValueBreak;
+var ValueBreakGroup = gf.ValueBreakGroup;
+var VenueTask = gf.VenueTask;

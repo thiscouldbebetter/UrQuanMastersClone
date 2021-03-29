@@ -1,23 +1,19 @@
 
-function PlaceEncounter(world, encounter)
+class PlaceEncounter extends Place
 {
-	this.encounter = encounter;
+	constructor(world, encounter)
+	{
+		super(PlaceEncounter.name, PlaceEncounter.name, null, []);
 
-	var entities = [];
-	Place.call(this, PlaceEncounter.name, PlaceEncounter.name, null, entities);
-}
-{
-	// superclass
-
-	PlaceEncounter.prototype = Object.create(Place.prototype);
-	PlaceEncounter.prototype.constructor = Place;
+		this.encounter = encounter;
+	}
 
 	// methods
 
-	PlaceEncounter.prototype.fight = function(universe)
+	fight(universe)
 	{
 		var world = universe.world;
-		var placeEncounter = world.place;
+		var placeEncounter = world.placeCurrent;
 		var encounter = placeEncounter.encounter;
 		var displaySize = universe.display.sizeInPixels;
 		var combatSize = new Coords(1, 1).multiplyScalar(displaySize.y * 2);
@@ -28,10 +24,10 @@ function PlaceEncounter(world, encounter)
 		universe.venueNext = new VenueControls(shipSelect);
 	}
 
-	PlaceEncounter.prototype.talk = function(universe)
+	talk(universe)
 	{
 		var world = universe.world;
-		var placeEncounter = world.place;
+		var placeEncounter = world.placeCurrent;
 		var encounter = placeEncounter.encounter;
 		var faction = this.encounter.faction(universe.world);
 		var conversationDefnName = faction.conversationDefnName;
@@ -50,7 +46,7 @@ function PlaceEncounter(world, encounter)
 		var conversation = new ConversationRun
 		(
 			conversationDefn,
-			function quit()
+			() => // quit
 			{
 				encounter.returnToPlace(world);
 				universe.venueNext = venueToReturnTo;
@@ -68,25 +64,23 @@ function PlaceEncounter(world, encounter)
 
 	// Place
 
-	PlaceEncounter.prototype.draw_FromSuperclass = Place.prototype.draw;
-	PlaceEncounter.prototype.draw = function(universe, world)
+	draw(universe, world)
 	{
-		this.draw_FromSuperclass(universe, world);
+		//super.draw(universe, world);
 		if (this.venueControls != null)
 		{
 			this.venueControls.draw(universe, world);
 		}
 	}
 
-	PlaceEncounter.prototype.updateForTimerTick_FromSuperclass = Place.prototype.updateForTimerTick;
-	PlaceEncounter.prototype.updateForTimerTick = function(universe, world)
+	updateForTimerTick(universe, world)
 	{
-		this.updateForTimerTick_FromSuperclass(universe, world);
+		super.updateForTimerTick(universe, world);
 
 		if (this.venueControls == null)
 		{
 			var encounter = this.encounter;
-			var shipGroupOther = encounter.shipGroupOther;
+			var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
 			var shipGroupOtherDescription = shipGroupOther.toStringDescription()
 
 			var newline = "\n";
@@ -98,9 +92,9 @@ function PlaceEncounter(world, encounter)
 			var size = new Coords(400, 300); // hack - size
 
 			var factionName = encounter.factionName;
-			var faction = universe.world.defns.factions[factionName];
+			var faction = universe.world.defn.factionByName(factionName);
 
-			if (faction.talksImmediately == true)
+			if (faction.talksImmediately)
 			{
 				this.talk(universe);
 				return; // hack
@@ -119,7 +113,7 @@ function PlaceEncounter(world, encounter)
 			(
 				universe,
 				universe.display.sizeInPixels.clone(),
-				messageToShow,
+				DataBinding.fromContext(messageToShow),
 				choiceNames,
 				choiceActions
 			);

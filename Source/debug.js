@@ -98,7 +98,7 @@ function combat(universe)
 function docks(universe)
 {
 	var world = universe.world;
-	world.defns.factions["Terran"].relationsWithPlayer = Faction.RelationsAllied;
+	world.defn.factionsByName("Terran").relationsWithPlayer = Faction.RelationsAllied;
 	var player = world.player;
 	player.credit = 1000;
 	var resourceDefns = ResourceDefn.Instances();
@@ -106,7 +106,7 @@ function docks(universe)
 	playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
 	playerItemHolder.itemAdd(new Item(resourceDefns.Exotics.name, 100));
 
-	var starsystemSol = world.hyperspace.starsystems["Sol"];
+	var starsystemSol = world.hyperspace.starsystemByName("Sol");
 	var station = starsystemSol.planets[2].satellites[0];
 	var placePlanetVicinity = null;
 	var placeStation = new PlaceStation(world, station, placePlanetVicinity);
@@ -118,9 +118,9 @@ function hyperspace(universe)
 {
 	var world = universe.world;
 	var hyperspace = world.hyperspace
-	var starsystemSol = hyperspace.starsystems["Sol"];
+	var starsystemSol = hyperspace.starsystemByName("Sol");
 	var playerPos = starsystemSol.posInHyperspace.clone();
-	var playerLoc = new Location(playerPos);
+	var playerLoc = new Disposition(playerPos);
 	var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
 	world.place = placeHyperspace;
 }
@@ -129,9 +129,9 @@ function hyperspaceMap(universe)
 {
 	var world = universe.world;
 	var hyperspace = world.hyperspace
-	var starsystemSol = hyperspace.starsystems["Sol"];
+	var starsystemSol = hyperspace.starsystemByName("Sol");
 	var playerPos = starsystemSol.posInHyperspace.clone();
-	var playerLoc = new Location(playerPos);
+	var playerLoc = new Disposition(playerPos);
 	var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
 	placeHyperspace.updateForTimerTick(universe, world);
 	var placeMap = new PlaceHyperspaceMap(placeHyperspace);
@@ -151,7 +151,7 @@ function planet(universe)
 function planetEnergy(universe)
 {
 	var world = universe.world;
-	var starsystem = world.hyperspace.starsystems["Sol"];
+	var starsystem = world.hyperspace.starsystemByName("Sol");
 	var planet = starsystem.planets[8]; // Pluto
 	var placePlanetVicinity = null;
 	var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
@@ -161,10 +161,10 @@ function planetEnergy(universe)
 function start(universe)
 {
 	var world = universe.world;
-	var starsystemSol = world.hyperspace.starsystems["Sol"];
+	var starsystemSol = world.hyperspace.starsystemByName("Sol");
 	var starsystemSize = starsystemSol.sizeInner;
 	var playerPos = new Coords(.5, .95).multiply(starsystemSize);
-	var playerLoc = new Location
+	var playerLoc = new Disposition
 	(
 		playerPos,
 		new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))

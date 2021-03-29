@@ -73,7 +73,7 @@
 							"visualNonplayer",
 							Coords.Instances().Zeroes,
 							paneSizeTopAndBottom,
-							visualNonplayer
+							DataBinding.fromContext(visualNonplayer)
 						),
 
 						new ControlLabel
@@ -89,7 +89,7 @@
 							new DataBinding
 							(
 								conversationRun,
-								function get(c) { return c.scopeCurrent.displayTextCurrent; }
+								(c) => c.scopeCurrent.displayTextCurrent
 							),
 							fontHeight
 						),
@@ -116,20 +116,19 @@
 							new DataBinding
 							(
 								conversationRun,
-								function get(c) { return c.scopeCurrent.talkNodesForOptionsActive(); }
+								(c) => c.scopeCurrent.talkNodesForOptionsActive()
 							),
 							// bindingForItemText
-							new DataBinding
+							DataBinding.fromGet
 							(
-								null, // context
-								function get(c) { return c.text; } // bindingExpression
+								(c) => c.text // bindingExpression
 							),
 							fontHeight,
 							new DataBinding
 							(
 								conversationRun,
-								function get(c) { return c.scopeCurrent.talkNodeForOptionSelected; },
-								function set(c, v) { c.scopeCurrent.talkNodeForOptionSelected = v; }
+								(c) => c.scopeCurrent.talkNodeForOptionSelected,
+								(c, v) => c.scopeCurrent.talkNodeForOptionSelected = v
 							), // bindingForItemSelected
 							new DataBinding() // bindingForItemValue
 						),
@@ -148,9 +147,9 @@
 							fontHeight,
 							true, // hasBorder,
 							true, // isEnabled
-							function click(universe)
+							(universe) => // click
 							{
-								conversationRun.next();
+								conversationRun.next(universe);
 							},
 							universe, // context
 							false // canBeHeldDown
@@ -170,7 +169,7 @@
 							fontHeight,
 							true, // hasBorder,
 							true, // isEnabled
-							function click(universe)
+							(universe) => // click
 							{
 								conversationRun.transcript(universe);
 							},
@@ -192,7 +191,7 @@
 							fontHeight,
 							true, // hasBorder,
 							true, // isEnabled
-							function click()
+							() =>
 							{
 								conversationRun.quit();
 							},

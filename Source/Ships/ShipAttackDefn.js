@@ -1,38 +1,41 @@
 
-function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed, ticksToLive, diesOnImpact, damage, visualProjectile, visualImpact, effectWhenInvoked, activity, effectOnImpact)
+class ShipAttackDefn
 {
-	this.name = name;
-	this.energyToUse = energyToUse;
-	this.projectileRadius = projectileRadius;
-	this.angleInTurns = angleInTurns;
-	this.speed = speed;
-	this.ticksToLive = ticksToLive;
-	this.diesOnImpact = diesOnImpact;
-	this.damage = damage;
-	this.visualProjectile = visualProjectile;
-	this.visualImpact = visualImpact;
-	this.effectWhenInvoked = effectWhenInvoked;
-	this.activity = activity;
-	this.effectOnImpact = effectOnImpact;
+	constructor
+	(
+		name, energyToUse, projectileRadius, angleInTurns, speed,
+		ticksToLive, diesOnImpact, damage, visualProjectile,
+		visualImpact, effectWhenInvoked, activity, effectOnImpact
+	)
+	{
+		this.name = name;
+		this.energyToUse = energyToUse;
+		this.projectileRadius = projectileRadius;
+		this.angleInTurns = angleInTurns;
+		this.speed = speed;
+		this.ticksToLive = ticksToLive;
+		this.diesOnImpact = diesOnImpact;
+		this.damage = damage;
+		this.visualProjectile = visualProjectile;
+		this.visualImpact = visualImpact;
+		this.effectWhenInvoked = effectWhenInvoked;
+		this.activity = activity;
+		this.effectOnImpact = effectOnImpact;
 
-	this.range = this.speed * this.ticksToLive;
-}
-{
-	ShipAttackDefn.prototype.activate = function(universe, world, place, actor)
+		this.range = this.speed * this.ticksToLive;
+	}
+
+	activate(universe, world, place, actor)
 	{
 		var attackDefn = this;
-		var actorLoc = actor.locatable.loc;
+		var actorLoc = actor.locatable().loc;
 		var actorPos = actorLoc.pos;
 		var actorVisual = actor.drawable.visual;
 
 		var projectileVisual = new VisualWrapped
 		(
 			actorVisual.sizeToWrapTo,
-			new VisualCamera
-			(
-				attackDefn.visualProjectile,
-				() => place.camera
-			)
+			attackDefn.visualProjectile,
 		);
 
 		var actorOrientation = actorLoc.orientation;
@@ -47,7 +50,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 		(
 			projectileDirection.clone().multiplyScalar(actorRadius).double()
 		);
-		var projectileLoc = new Location(projectilePos);
+		var projectileLoc = new Disposition(projectilePos);
 		projectileLoc.vel.overwriteWith(projectileDirection).multiplyScalar(this.speed);
 
 		var projectileCollider =
@@ -57,7 +60,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 		[
 			this,
 			new Locatable( projectileLoc ),
-			new Collidable
+			CollidableHelper.fromCollider
 			(
 				projectileCollider,
 				[ "killable" ],
@@ -89,7 +92,7 @@ function ShipAttackDefn(name, energyToUse, projectileRadius, angleInTurns, speed
 		place.entitiesToSpawn.push(projectileEntity);
 	}
 
-	ShipAttackDefn.prototype.projectileCollide = function
+	projectileCollide
 	(
 		universe, world, place, entityProjectile, entityOther
 	)

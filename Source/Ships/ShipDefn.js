@@ -1,45 +1,48 @@
 
-function ShipDefn
-(
-	name,
-	factionName,
-	mass,
-	acceleration,
-	speedMax,
-	turnsPerTick,
-	crewInitial,
-	crewMax,
-	energyPerTick,
-	energyMax,
-	value,
-	visual,
-	attackDefn,
-	specialDefn
-)
+class ShipDefn
 {
-	var speedDivisor = 32; // Trial and error.
+	constructor
+	(
+		name,
+		factionName,
+		mass,
+		acceleration,
+		speedMax,
+		turnsPerTick,
+		crewInitial,
+		crewMax,
+		energyPerTick,
+		energyMax,
+		value,
+		visual,
+		attackDefn,
+		specialDefn
+	)
+	{
+		var speedDivisor = 32; // Trial and error.
 
-	this.name = name;
-	this.factionName = factionName;
-	this.mass = mass;
-	this.acceleration = acceleration / speedDivisor;
-	this.speedMax = speedMax / speedDivisor;
-	this.turnsPerTick = turnsPerTick;
-	this.crewInitial = crewInitial;
-	this.crewMax = crewMax;
-	this.energyPerTick = energyPerTick;
-	this.energyMax = energyMax;
-	this.value = value;
-	this.visual = visual;
-	this.attackDefn = attackDefn;
-	this.specialDefn = specialDefn;
+		this.name = name;
+		this.factionName = factionName;
+		this.mass = mass;
+		this.acceleration = acceleration / speedDivisor;
+		this.speedMax = speedMax / speedDivisor;
+		this.turnsPerTick = turnsPerTick;
+		this.crewInitial = crewInitial;
+		this.crewMax = crewMax;
+		this.energyPerTick = energyPerTick;
+		this.energyMax = energyMax;
+		this.value = value;
+		this.visual = visual;
+		this.attackDefn = attackDefn;
+		this.specialDefn = specialDefn;
 
-	this.sensorRange = 300; // todo
-}
-{
+		this.sensorRange = 300; // todo
+	}
+
 	// instances
 
-	ShipDefn.Instances = function(universe)
+	static _instances;
+	static Instances(universe)
 	{
 		if (ShipDefn._instances == null)
 		{
@@ -49,7 +52,70 @@ function ShipDefn
 		return ShipDefn._instances;
 	}
 
-	function ShipDefn_Instances(universe)
+	// static methods
+
+	static visual(dimension, colorFill, colorBorder)
+	{
+		var visualPath = new Path
+		([
+			new Coords(1.2, 0).multiplyScalar(dimension).half(),
+			new Coords(-.8, .8).multiplyScalar(dimension).half(),
+			new Coords(-.8, -.8).multiplyScalar(dimension).half(),
+		]);
+
+		/*
+		var visualsPerTurn = 32;
+		var turnsPerPlayerVisual = 1 / visualsPerTurn;
+		var visualsForAngles = [];
+		var transformRotate2D = new Transform_Rotate2D();
+
+		for (var i = 0; i < visualsPerTurn; i++)
+		{
+			transformRotate2D.turnsToRotate = i * turnsPerPlayerVisual;
+
+			var visualForAngle = new VisualPolygon
+			(
+				visualPath.clone().transform(transformRotate2D),
+				colorFill, colorBorder
+			);
+
+			visualsForAngles.push(visualForAngle);
+		}
+
+		var returnValue = new VisualDirectional
+		(
+			new VisualPolygon(visualPath, colorFill, colorBorder),
+			visualsForAngles
+		);
+		*/
+
+		// Don't use a VisualDirectional, because the path is being transformed anyway!
+		var returnValue = new VisualPolygon(visualPath, colorFill, colorBorder);
+
+		return returnValue;
+	}
+
+	// instance methods
+
+	faction(world)
+	{
+		// todo
+	}
+
+	fullName()
+	{
+		return this.factionName + " " + this.name;
+	}
+
+	fullNameAndValue()
+	{
+		return this.fullName() + "(" + this.value + ")";
+	}
+}
+
+class ShipDefn_Instances
+{
+	constructor(universe)
 	{
 		var shipDimension = 10;
 		var shipSize = new Coords(1, 1).multiplyScalar(shipDimension * 2);
@@ -64,16 +130,19 @@ function ShipDefn
 			16, // ticksToLive
 			true, // diesOnImpact
 			20, // damage
-			new VisualCircle(2, "Yellow"), // visualProjectile
+			new VisualCircle(2, Color.byName("Yellow") ), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound"),
-				new VisualCircle(6, "Red")
+				new VisualCircle(6, Color.byName("Red") )
 			]), // visualImpact
-			function effectWhenInvoked(universe, world, place, actor) {},
+			(universe, world, place, actor) => {}, // effectWhenInvoked
 			null, // activity
-			function effectOnImpact(universe, world, place, actor, target) {},
+			(universe, world, place, actor, target) => {}, // effectOnImpact
 		);
+
+		var colorGray = Color.byName("Gray");
+		var colorBlack = Color.byName("Black");
 
 		var shipDefnFlagship = new ShipDefn
 		(
@@ -88,7 +157,7 @@ function ShipDefn
 			2, // energyPerTick
 			50, // energyMax
 			0, // value
-			ShipDefn.visual(shipDimension, "Gray", "Black"),
+			ShipDefn.visual(shipDimension, colorGray, colorBlack),
 			attackDefnTodo
 		);
 
@@ -105,7 +174,7 @@ function ShipDefn
 			1, // energyPerTick
 			4, // energyMax
 			1000, // value
-			ShipDefn.visual(shipDimension, "Gray", "Black"),
+			ShipDefn.visual(shipDimension, colorGray, colorBlack),
 			attackDefnTodo
 		);
 
@@ -121,11 +190,10 @@ function ShipDefn
 			0, // energyPerTick
 			0, // energyMax
 			0, // value
-			ShipDefn.visual(shipDimension, "DarkGreen", "Red"),
+			ShipDefn.visual(shipDimension, Color.byName("GreenDark"), Color.byName("Red")),
 			attackDefnTodo
 		);
 
-		var sd = ShipDefn;
 		var spec = ShipSpecialDefn;
 
 		var adTodo = attackDefnTodo;
@@ -133,8 +201,10 @@ function ShipDefn
 		var heads = 16;
 
 		var shipImagesDirectory = "../Content/Import/sc2/content/base/ships/";
+		var shipDimension = 16;
+		var shipSize = new Coords(1, 1).multiplyScalar(shipDimension);
 
-		var sv = function(shipName, shipImageFilePrefix)
+		var sv = (shipName, shipImageFilePrefix) =>
 		{
 			var imagesForHeadings = [];
 			var visualsForHeadings = [];
@@ -149,12 +219,13 @@ function ShipDefn
 					+ ("" + imageIndex).padStart(2, "0")
 					+ ".png";
 
-				var imageForHeading = new Image
+				var imageForHeading = new Image2
 				(
 					imageName, imagePath
 				);
 				imagesForHeadings.push(imageForHeading);
 				var visualForHeading = new VisualImageFromLibrary(imageName, shipSize);
+				visualForHeading = new VisualImageScaled(visualForHeading, shipSize);
 				visualsForHeadings.push(visualForHeading);
 			}
 			universe.mediaLibrary.imagesAdd(imagesForHeadings);
@@ -182,31 +253,31 @@ function ShipDefn
 			null, // ticksToLive
 			false, // diesOnImpact
 			0, // damage
-			new VisualCircle(3, "DarkGreen", "Green"), // visualProjectile
+			new VisualCircle(3, Color.byName("GreenDark"), Color.byName("Green")), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound"),
-				new VisualCircle(6, "Red")
+				new VisualCircle(6, Color.byName("Red"))
 			]), // visualImpact
-			function effectWhenInvoked(universe, world, place, actor) {},
-			function activity(universe, world, place, actor, targetEntityName)
+			(universe, world, place, actor) => {}, // effectWhenInvoked
+			(universe, world, place, actor, targetEntityName) => // activity
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var target = place.entitiesByName.get(targetEntityName);
+				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
 			},
-			function effectOnImpact(universe, world, place, actor, target) {},
+			(universe, world, place, actor, target) => {}, // effectOnImpact
 		);
 
 		var shipElysianSpecialEnticer = new ShipSpecialDefn
 		(
 			"Enticer",
 			10, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				// todo
 			}
@@ -218,7 +289,7 @@ function ShipDefn
 		(
 			"Refuel",
 			-2, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				// Do nothing.
 			}
@@ -230,14 +301,14 @@ function ShipDefn
 		(
 			"TractorBeam",
 			1, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				var combat = place.combat;
 				var ships = place.entitiesShips();
 				var target = ships[1 - ships.indexOf(actor)];
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var targetLoc = target.locatable.loc;
+				var targetLoc = target.locatable().loc;
 				var targetPos = targetLoc.pos;
 				var displacement = targetPos.clone().subtract(actorPos);
 				var direction = displacement.normalize();
@@ -252,7 +323,7 @@ function ShipDefn
 		(
 			"Cloak",
 			1, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				var isCloaked = actor.ship.isCloaked;
 				isCloaked = (isCloaked == null ? false : isCloaked);
@@ -261,13 +332,14 @@ function ShipDefn
 		);
 
 		var shipInfernusVisualBase = sv("Infernus", "ilwrath/avenger");
-		var shipInfernusVisualCloaked = ShipDefn.visual(shipDimension, "Black", "Black");
+		var shipInfernusVisualCloaked = ShipDefn.visual(shipDimension, colorBlack, colorBlack);
 		var shipInfernusVisual = new VisualDynamic
 		(
-			function(universe, world, drawable, entity)
+			(universe, world, drawable, entity) =>
 			{
-				var isCloaked = entity.ship.isCloaked;
-				return (isCloaked == true ? shipInfernusVisualCloaked : shipInfernusVisualBase);
+				var ship = EntityExtensions.ship(entity);
+				var isCloaked = ship.isCloaked;
+				return (isCloaked ? shipInfernusVisualCloaked : shipInfernusVisualBase);
 			}
 		);
 
@@ -277,7 +349,7 @@ function ShipDefn
 		(
 			"Rightsize",
 			-20, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				// Do nothing.
 			}
@@ -289,9 +361,9 @@ function ShipDefn
 		(
 			"Retrodrive",
 			1, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
 				var thrust = 10;
 				var direction = actorLoc.orientation.forward.clone();
@@ -312,24 +384,24 @@ function ShipDefn
 			null, // ticksToLive
 			false, // diesOnImpact
 			0, // damage
-			new VisualCircle(3, "Red", "DarkRed"), // visualProjectile
+			new VisualCircle(3, Color.byName("Red"), Color.byName("RedDark")), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound"),
-				new VisualCircle(6, "Red")
+				new VisualCircle(6, Color.byName("Red") )
 			]), // visualImpact
-			function effectWhenInvoked(universe, world, place, actor) {},
-			function activity(universe, world, place, actor, targetEntityName)
+			(universe, world, place, actor) => {}, // effectWhenInvoked
+			(universe, world, place, actor, targetEntityName) => // activity
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var target = place.entitiesByName.get(targetEntityName);
+				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
 			},
-			function effectOnImpact(universe, world, place, actor, target) {},
+			(universe, world, place, actor, target) => {}, // effectOnImpact
 		);
 
 		// shackler
@@ -344,24 +416,24 @@ function ShipDefn
 			null, // ticksToLive
 			false, // diesOnImpact
 			0, // damage
-			new VisualCircle(3, "Red", "DarkRed"), // visualProjectile
+			new VisualCircle(3, Color.byName("Red"), Color.byName("RedDark") ), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound"),
 				new VisualCircle(6, "Red")
 			]), // visualImpact
-			function effectWhenInvoked(universe, world, place, actor) {},
-			function activity(universe, world, place, actor, targetEntityName)
+			(universe, world, place, actor) => {}, // effectWhenInvoked
+			(universe, world, place, actor, targetEntityName) => // activity
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var target = place.entitiesByName.get(targetEntityName);
+				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
 			},
-			function effectOnImpact(universe, world, place, actor, target) {},
+			(universe, world, place, actor, target) => {}, // effectOnImpact
 		);
 
 		// sporsac
@@ -370,7 +442,7 @@ function ShipDefn
 		(
 			"Regenerate",
 			40, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				// todo
 			}
@@ -388,24 +460,24 @@ function ShipDefn
 			null, // ticksToLive
 			false, // diesOnImpact
 			0, // damage
-			new VisualCircle(5, "White", "Cyan"), // visualProjectile
+			new VisualCircle(5, Color.byName("White"), Color.byName("Cyan")), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound"),
-				new VisualCircle(6, "Red")
+				new VisualCircle(6, Color.byName("Red"))
 			]), // visualImpact
-			function effectWhenInvoked(universe, world, place, actor) {},
-			function activity(universe, world, place, actor, targetEntityName)
+			(universe, world, place, actor) => {}, // effectWhenInvoked
+			(universe, world, place, actor, targetEntityName) => // activity
 			{
-				var actorLoc = actor.locatable.loc;
+				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var target = place.entities[targetEntityName];
-				var targetPos = target.locatable.loc.pos;
+				var target = place.entitiesByName.get(targetEntityName);
+				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
 			},
-			function effectOnImpact(universe, world, place, actor, target) {},
+			(universe, world, place, actor, target) => {}, // effectOnImpact
 		);
 
 		// sunbright
@@ -414,7 +486,7 @@ function ShipDefn
 		(
 			"BigBadaBoom",
 			0, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				// todo
 			}
@@ -426,11 +498,13 @@ function ShipDefn
 		(
 			"Catabolize",
 			0, // energyToUse
-			function effect(universe, world, place, actor)
+			(universe, world, place, actor) => // effect
 			{
 				// todo
 			}
 		);
+
+		var sd = ShipDefn;
 
 		this._All =
 		[
@@ -450,7 +524,7 @@ function ShipDefn
 			new sd("Fireblossom","Muuncaf",		1,		16,		64,		1 / heads,	 8, 8,		0,		12, 	1000, 	sv("Fireblossom", "pkunk/fury"), 	adTodo,	shipFireblossomSpecialRefuel ),
 			new sd("Collapsar",	"Manalogous",	6,		3,		24,		.2 / heads,	 20, 20,	.111,	24, 	1000, 	sv("Collapsar", "androsynth/guardian"),	adTodo,	adTodo ),
 			new sd("Encumbrator","Ugglegruj",	6,		1.4,	21,		.142 / heads, 20, 20,	.111,	40, 	1000, 	sv("Encumbrator", "vux/intruder"), 	adTodo,	shipEncumbratorSpecialBurr ),
-			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	1000, 	sv("Punishponge", "utwig/jugger"), 	adTodo,	adTodo ),
+			new sd("Punishpunj","Moroz",		8,		.86,	36,		.5 / heads,  20, 20,	0,		20, 	1000, 	sv("Punishpunj", "utwig/jugger"), 	adTodo,	adTodo ),
 			new sd("Silencer",	"Kehlemal",		10,		1.2,	30,		.2 / heads,  42, 42,	.2,		42, 	1000, 	sv("Silencer", "kohrah/marauder"), 	adTodo,	adTodo ),
 			new sd("Kickback",	"Daskapital",	5,		1,		20,		.2 / heads,  14, 14,	.02,	32, 	1000, 	sv("Kickback", "druuge/mauler"), 	adTodo,	shipKickbackSpecialRightsize ),
 			new sd("Wingshadow","Outsider",		4,		5,		35,		.5 / heads,  16, 16,	.142,	20, 	1000, 	sv("Wingshadow", "orz/nemesis"), 	adTodo,	adTodo ),
@@ -467,61 +541,6 @@ function ShipDefn
 			new sd("MetamorphB", "Knsnynz",		3,		10,		50,		.07 / heads,  20, 20,	.14,	10, 	1000, 	sv("MetamorphB", "mmrnmhrm/xform"), adTodo,	adTodo ),
 		];
 
-		return this._All.addLookupsByName();
-	}
-
-	// static methods
-
-	ShipDefn.visual = function(dimension, colorFill, colorBorder)
-	{
-		var visualPath = new Path
-		([
-			new Coords(1.2, 0).multiplyScalar(dimension).half(),
-			new Coords(-.8, .8).multiplyScalar(dimension).half(),
-			new Coords(-.8, -.8).multiplyScalar(dimension).half(),
-		]);
-
-		var visualsPerTurn = 32;
-		var turnsPerPlayerVisual = 1 / visualsPerTurn;
-		var visualsForAngles = [];
-		var transformRotate2D = new Transform_Rotate2D();
-
-		for (var i = 0; i < visualsPerTurn; i++)
-		{
-			transformRotate2D.turnsToRotate = i * turnsPerPlayerVisual;
-
-			var visualForAngle = new VisualPolygon
-			(
-				visualPath.clone().transform(transformRotate2D),
-				colorFill, colorBorder
-			);
-
-			visualsForAngles.push(visualForAngle);
-		}
-
-		var returnValue = new VisualDirectional
-		(
-			new VisualPolygon(visualPath, colorFill, colorBorder),
-			visualsForAngles
-		);
-
-		return returnValue;
-	}
-
-	// instance methods
-
-	ShipDefn.prototype.faction = function(world)
-	{
-		// todo
-	}
-
-	ShipDefn.prototype.fullName = function()
-	{
-		return this.factionName + " " + this.name;
-	}
-
-	ShipDefn.prototype.fullNameAndValue = function()
-	{
-		return this.fullName() + "(" + this.value + ")";
+		return this._All;//.addLookupsByName();
 	}
 }

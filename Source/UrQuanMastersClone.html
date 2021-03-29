@@ -1,18 +1,22 @@
 <html>
 <body>
 
-<script type="text/javascript" src="Framework/Source/Extensions/ArrayExtensions.js"></script>
-<script type="text/javascript" src="Framework/Source/Extensions/NumberExtensions.js"></script>
-<script type="text/javascript" src="Framework/Source/Extensions/StringExtensions.js"></script>
+<!-- hack -->
+<script type="text/javascript" src="Framework/Source/Model/EntityProperty.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Helpers/ArrayHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Helpers/NumberHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Helpers/StringHelper.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Controls/ControlActionNames.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlBase.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlButton.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlContainer.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlContainerTransparent.js"></script>
-<script type="text/javascript" src="Framework/Source/Controls/ControlDynamic.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlLabel.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlList.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlNone.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlScrollbar.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlSelect.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlSelectOption.js"></script>
@@ -23,22 +27,15 @@
 <script type="text/javascript" src="Framework/Source/Controls/VenueControls.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/VenueMessage.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Conversations/ConversationDefn.js"></script>
-<script type="text/javascript" src="Framework/Source/Conversations/ConversationRun.js"></script>
-<script type="text/javascript" src="Framework/Source/Conversations/ConversationScope.js"></script>
-<script type="text/javascript" src="Framework/Source/Conversations/TalkNode.js"></script>
-<script type="text/javascript" src="Framework/Source/Conversations/TalkNodeDefn.js"></script>
-
 <script type="text/javascript" src="Framework/Source/Display/Color.js"></script>
-<script type="text/javascript" src="Framework/Source/Display/Display.js"></script>
-<script type="text/javascript" src="Framework/Source/Display/Gradient.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Display2D.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/DisplayRecorder.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/Drawable.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/VenueFader.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/VenueLayered.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualAnchor.js"></script>
-<script type="text/javascript" src="Framework/Source/Display/Visuals/VisualAnimation.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualArc.js"></script>
-<script type="text/javascript" src="Framework/Source/Display/Visuals/VisualCamera.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualCircle.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualCircleGradient.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualDirectional.js"></script>
@@ -54,16 +51,19 @@
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualRectangle.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualText.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Display/Visuals/Animation/VisualAnimation.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Geometry/Camera.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/CollisionHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/CollisionTracker.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraint.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Location.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Disposition.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Orientation.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Polar.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Quaternion.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/RangeExtent.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Rotation.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Arc.js"></script>
@@ -73,9 +73,6 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Edge.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Face.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Hemispace.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Map.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/MapCell.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/MapLocated.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Path.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/PathBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Plane.js"></script>
@@ -83,15 +80,21 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeContainer.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAll.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAny.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeInverse.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Shell.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Sphere.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Wedge.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/Map.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapCell.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapLocated.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_OrientRDF.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transforms.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Locate.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Orient.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Rotate2D.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_RotateRight.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Scale.js"></script>
@@ -112,47 +115,69 @@
 <script type="text/javascript" src="Framework/Source/Media/VideoHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/VisualSound.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Model/Action.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Actor.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Boundable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Collidable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Constrainable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Damager.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Drawable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Ephemeral.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Goal.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Idleable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Killable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Locatable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Modellable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Place.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/PlaceDefn.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Playable.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Talker.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Universe.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/VenueWorld.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/World.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/WorldDefn.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Actors/Action.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Actors/Activity.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Actors/ActivityDefn.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Actors/Actor.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Combat/Damager.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Combat/Killable.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Items/Item.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Items/ItemDefn.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Items/ItemHolder.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Model/Mortality/Ephemeral.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Physics/Boundable.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Physics/Collidable.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Physics/Constrainable.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Physics/Locatable.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Physics/Movable.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Places/Place.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Places/PlaceDefn.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Talk/ConversationDefn.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Talk/ConversationRun.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Talk/ConversationScope.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Talk/TalkNode.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Talk/TalkNodeDefn.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Talk/Talker.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Profiles/Profile.js"></script>
-<script type="text/javascript" src="Framework/Source/Profiles/ProfileHelper.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Storage/FileHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/Serializer.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/StorageHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/VenueFileUpload.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Storage/Compressor/BitStream.js"></script>
+<script type="text/javascript" src="Framework/Source/Storage/Compressor/ByteStreamFromString.js"></script>
+<script type="text/javascript" src="Framework/Source/Storage/Compressor/CompressorLZW.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Utility/DateTime.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/Debug.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/IDHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/PlatformHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/RandomizerSystem.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/Reference.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/TimerHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/URLParser.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/ValueBreakGroup.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/VenueTask.js"></script>
+
+<script type="text/javascript" src="Imports.js"></script>
 
 <script type="text/javascript" src="Combat/Combat.js"></script>
 <script type="text/javascript" src="Combat/PlaceCombat.js"></script>
@@ -161,6 +186,10 @@
 <script type="text/javascript" src="Encounters/Encounter.js"></script>
 <script type="text/javascript" src="Encounters/Faction.js"></script>
 <script type="text/javascript" src="Encounters/PlaceEncounter.js"></script>
+
+<script type="text/javascript" src="Helpers/CameraHelper.js"></script>
+<script type="text/javascript" src="Helpers/CollidableHelper.js"></script>
+<script type="text/javascript" src="Helpers/EntityExtensions.js"></script>
 
 <script type="text/javascript" src="Hyperspace/Fuelable.js"></script>
 <script type="text/javascript" src="Hyperspace/Hyperspace.js"></script>
@@ -201,9 +230,9 @@
 
 <script type="text/javascript" src="Utility/CsvCompressor.js"></script>
 
-<script type="text/javascript" src="Defns.js"></script>
 <script type="text/javascript" src="VisualWrapped.js"></script>
 <script type="text/javascript" src="World.js"></script>
+<script type="text/javascript" src="WorldDefnExtended.js"></script>
 
 <script type="text/javascript" src="debug.js"></script>
 <script type="text/javascript" src="main.js"></script>

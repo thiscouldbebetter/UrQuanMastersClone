@@ -1,40 +1,47 @@
 
-function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, resources, hasLife, energySources)
+class Planet
 {
-	this.name = name;
-	this.defnName = defnName;
-	this.radiusOuter = radiusOuter;
-	this.posAsPolar = posAsPolar;
-	this.sizeSurface = sizeSurface;
-	this.satellites = satellites;
-	this.shipGroups = (shipGroups == null ? [] : shipGroups);
-
-	this.mass = Math.round(mass);
-	this.radius = Math.round(radius);
-	this.gravity = gravity.toFixed(2);
-	this.orbit = Math.round(orbit);
-	this.day = day;
-	this.year = year;
-	this.tectonics = tectonics;
-	this.weather = weather;
-	this.temperature = temperature;
-
-	this.resources = resources;
-	this.hasLife = hasLife;
-	this.energySources = energySources;
-
-	this.mineralsGenerate();
-	this.lifeformsGenerate();
-}
-{
-	// instance methods
-
-	Planet.prototype.defn = function()
+	constructor
+	(
+		name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites,
+		shipGroups, mass, radius, gravity, orbit, day, year, tectonics,
+		weather, temperature, resources, hasLife, energySources
+	)
 	{
-		return PlanetDefn.Instances()._All[this.defnName];
+		this.name = name;
+		this.defnName = defnName;
+		this.radiusOuter = radiusOuter;
+		this.posAsPolar = posAsPolar;
+		this.sizeSurface = sizeSurface;
+		this.satellites = satellites;
+		this.shipGroups = (shipGroups == null ? [] : shipGroups);
+
+		this.mass = Math.round(mass);
+		this.radius = Math.round(radius);
+		this.gravity = gravity.toFixed(2);
+		this.orbit = Math.round(orbit);
+		this.day = day;
+		this.year = year;
+		this.tectonics = tectonics;
+		this.weather = weather;
+		this.temperature = temperature;
+
+		this.resources = resources;
+		this.hasLife = hasLife;
+		this.energySources = energySources;
+
+		this.mineralsGenerate();
+		this.lifeformsGenerate();
 	}
 
-	Planet.prototype.lifeformsGenerate = function()
+	// instance methods
+
+	defn()
+	{
+		return PlanetDefn.byName(this.defnName);
+	}
+
+	lifeformsGenerate()
 	{
 		this.lifeforms = [];
 
@@ -53,7 +60,7 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		return this.lifeforms;
 	}
 
-	Planet.prototype.mineralsGenerate = function()
+	mineralsGenerate()
 	{
 		var planet = this;
 		var resources = planet.resources;
@@ -85,7 +92,7 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		}
 	}
 
-	Planet.prototype.toEntity = function(primaryPos)
+	toEntity(primaryPos)
 	{
 		var pos = primaryPos.clone().add
 		(
@@ -97,7 +104,7 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		([
 			new VisualAnchor
 			(
-				new VisualCircle(this.posAsPolar.radius, null, "Gray"),
+				new VisualCircle(this.posAsPolar.radius, null, Color.byName("Gray")),
 				primaryPos
 			),
 			new VisualCircle(this.radiusOuter, planetDefn.color)
@@ -109,10 +116,10 @@ function Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites
 		(
 			this.name,
 			[
+				CollidableHelper.fromCollider(collider),
+				new Drawable(visual),
 				this, // planet
-				new Locatable( new Location(pos) ),
-				new Collidable(collider),
-				new Drawable(visual)
+				new Locatable( new Disposition(pos) ),
 			]
 		);
 

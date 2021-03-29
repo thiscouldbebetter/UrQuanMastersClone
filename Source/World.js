@@ -1,89 +1,72 @@
-function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
+
+class WorldExtended extends World
 {
-	this.name = name;
-	this.dateCreated = dateCreated;
+	constructor(name, dateCreated, defn, player, hyperspace, starsystemStart)
+	{
+		super(name, dateCreated, defn, []);
 
-	this.timerTicksSoFar = 0;
+		this.timerTicksSoFar = 0;
 
-	this.defns = defns;
+		this.player = player;
+		this.hyperspace = hyperspace;
 
-	this.player = player;
-	this.hyperspace = hyperspace;
-
-	this.place = new PlaceStarsystem
-	(
-		this,
-		starsystemStart,
-		new Location
+		this.placeCurrent = new PlaceStarsystem
 		(
-			new Coords(.5, .95).multiply(starsystemStart.sizeInner),
-			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
-		)
-	);
-	//this.place.entitiesSpawn(null, this);
-}
+			this,
+			starsystemStart,
+			new Disposition
+			(
+				new Coords(.5, .95).multiply(starsystemStart.sizeInner),
+				new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
+			)
+		);
+		//this.place.entitiesSpawn(null, this);
+	}
 
-{
-	// static methods
-
-	World.new = function(universe)
+	static create(universe)
 	{
 		var now = DateTime.now();
 		var nowAsString = now.toStringMMDD_HHMM_SS();
 
 		// todo
+		var activityDefns =
+		[
+			Player.activityDefn(),
+			ShipGroup.activityDefnApproachPlayer(),
+			ShipGroup.activityDefnDie(),
+			ShipGroup.activityDefnLeave()
+		];
+
 		var actions = Ship.actions();
 		var actionToInputsMappings = Ship.actionToInputsMappings();
 
+		var entityPropertyNamesToProcess = 
+		[
+			Actor.name,
+			Playable.name,
+
+			Locatable.name,
+			Constrainable.name,
+			Collidable.name,
+			Boundable.name,
+
+			//Drawable.name,
+			//Camera.name
+		];
+
 		var placeDefns = 
 		[
-			new PlaceDefn(PlaceCombat.name, actions, actionToInputsMappings),
-			new PlaceDefn(PlaceEncounter.name, actions, actionToInputsMappings),
-			new PlaceDefn(PlaceHyperspace.name, actions, actionToInputsMappings),
-			new PlaceDefn(PlacePlanetOrbit.name, actions, actionToInputsMappings),
-			new PlaceDefn(PlacePlanetSurface.name, actions, actionToInputsMappings),
-			new PlaceDefn(PlacePlanetVicinity.name, actions, actionToInputsMappings),
-			new PlaceDefn(PlaceStarsystem.name, actions, actionToInputsMappings),
+			new PlaceDefn(PlaceCombat.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			new PlaceDefn(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			new PlaceDefn(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
+			new PlaceDefn(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			new PlaceDefn(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			new PlaceDefn(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			new PlaceDefn(PlaceStarsystem.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			new PlaceDefn(PlaceStation.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 		];
 
 		var hyperspaceSize = new Coords(1, 1).multiplyScalar(10000);
-
-		var shipGroupActivityApproach = function(universe, world, place, entityActor)
-		{
-			var actor = entityActor.actor;
-
-			var targetPos = actor.targetPos;
-			if (targetPos == null)
-			{
-				var entityToTargetName = "Player";
-				var target = place.entities[entityToTargetName];
-				targetPos = target.locatable.loc.pos;
-				actor.targetPos = targetPos;
-			}
-
-			var actorLoc = entityActor.locatable.loc;
-			var actorPos = actorLoc.pos;
-			var actorVel = actorLoc.vel;
-
-			actorVel.overwriteWith
-			(
-				targetPos
-			).subtract
-			(
-				actorPos
-			);
-
-			if (actorVel.magnitude() < 1)
-			{
-				actorPos.overwriteWith(targetPos);
-				//place.entitiesToRemove.push(entityActor);
-				entityActor.killable.die(universe, world, place, entityActor);
-			}
-			else
-			{
-				actorVel.normalize();
-			}
-		}
 
 		// special
 
@@ -110,12 +93,12 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 			"LahkemupGuardDrone", // conversationDefnName
 			null, // sphereOfInfluence
 			null, // shipDefnName
-			shipGroupActivityApproach
+			new Activity(ShipGroup.activityDefnApproachPlayer().name)
 		);
 
 		// normal
 
-		var f = function(name, nameOriginal, color, sphereOfInfluence, relations, shipDefnName)
+		var f = (name, nameOriginal, color, sphereOfInfluence, relations, shipDefnName) =>
 		{
 			var talksImmediately = (sphereOfInfluence == null);
 
@@ -129,11 +112,11 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 				name, // conversationDefnName
 				sphereOfInfluence,
 				shipDefnName,
-				shipGroupActivityApproach
+				new Activity(ShipGroup.activityDefnApproachPlayer().name)
 			);
 		}
 
-		var soi = function(centerX, centerY, radius)
+		var soi = (centerX, centerY, radius) =>
 		{
 			return new Sphere
 			(
@@ -141,33 +124,35 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 				radius * hyperspaceSize.x
 			);
 		}
+		
+		var c = (colorName) => Color.byName(colorName);
 
 		var hostile = Faction.RelationsHostile;
 		var neutral = Faction.RelationsNeutral;
 
-		var factionAmorfus 		= f("Amorfus", 		"Umgah", 	"Violet", 	soi(197.8, 596.8, .1), 	hostile, "Pustule");
-		var factionAraknoid 	= f("Araknoid", 	"Ilwrath", 	"Purple", 	soi(22.9, 366.6, .15), 	hostile, "Infernus");
-		var factionDaskapital 	= f("Daskapital", 	"Druuge", 	"Red", 		soi(946.9, 280.6, .1), 	neutral, "Kickback");
-		var factionEllfyn		= f("Ellfyn", 		"Arilou", 	"Blue", 	soi(100, 500, .05), 	neutral, "Discus");
-		var factionHyphae 		= f("Hyphae", 		"Mycon", 	"Purple", 	soi(629.1, 220.8, .12), hostile, "Sporsac");
-		var factionKehlemal 	= f("Kehlemal", 	"Kohrah", 	"Gray", 	soi(610, 610, .25), 	hostile, "Silencer");
-		var factionLahkemup 	= f("Lahkemup",		"Urquan", 	"Green",	soi(590, 590, .25), 	hostile, "Shackler");
+		var factionAmorfus 		= f("Amorfus", 		"Umgah", 	c("Violet"),soi(197.8, 596.8, .1), 	hostile, "Pustule");
+		var factionAraknoid 	= f("Araknoid", 	"Ilwrath", 	c("Purple"),soi(22.9, 366.6, .15), 	hostile, "Infernus");
+		var factionDaskapital 	= f("Daskapital", 	"Druuge", 	c("Red"), 	soi(946.9, 280.6, .1), 	neutral, "Kickback");
+		var factionEllfyn		= f("Ellfyn", 		"Arilou", 	c("Blue"), 	soi(100, 500, .05), 	neutral, "Discus");
+		var factionHyphae 		= f("Hyphae", 		"Mycon", 	c("Purple"),soi(629.1, 220.8, .12), hostile, "Sporsac");
+		var factionKehlemal 	= f("Kehlemal", 	"Kohrah", 	c("Gray"), 	soi(610, 610, .25), 	hostile, "Silencer");
+		var factionLahkemup 	= f("Lahkemup",		"Urquan", 	c("Green"),	soi(590, 590, .25), 	hostile, "Shackler");
 		var factionSilikonix 	= f("Konstalyxz", 	"Chmmr", 	null, 		null, 					neutral, "Gravitar");
-		var factionMauluska 	= f("Mauluska", 	"Spathi", 	"Brown", 	soi(241.6, 368.7, .12), neutral, "Scuttler");
-		var factionMoroz 		= f("Moroz", 		"Utwig", 	"Cyan", 	soi(863.0, 869.3, .1), 	neutral, "Punishponj");
-		var factionMuuncaf 		= f("Muuncaf", 		"Pkunk", 	"Cyan", 	soi(52.2, 52.5, .1), 	neutral, "Fireblossom");
+		var factionMauluska 	= f("Mauluska", 	"Spathi", 	c("Brown"), soi(241.6, 368.7, .12), neutral, "Scuttler");
+		var factionMoroz 		= f("Moroz", 		"Utwig", 	c("Cyan"), 	soi(863.0, 869.3, .1), 	neutral, "Punishpunj");
+		var factionMuuncaf 		= f("Muuncaf", 		"Pkunk", 	c("Cyan"), 	soi(52.2, 52.5, .1), 	neutral, "Fireblossom");
 		var factionMazonae		= f("Mazonae", 		"Syreen", 	null, 		null, 					neutral, "Elysian");
 		var factionMurch 		= f("Murch", 		"Melnorme", null, 		null, 					neutral, "Indemnity");
-		var factionOutsider 	= f("Outsider", 	"Orz", 		"Purple", 	soi(371.3, 253.7, .1), 	neutral, "Wingshadow");
-		var factionRaptor 		= f("Raptor", 		"Yehat", 	"Violet", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
-		var factionRaptorRebel 	= f("RaptorRebel", 	"Yehat", 	"Mauve", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
-		var factionRaptorRoyalist= f("RaptorRoyalist","Yehat", 	"Violet", 	soi(492.3, 029.4, .1), 	neutral, "Aegis");
+		var factionOutsider 	= f("Outsider", 	"Orz", 		c("Purple"),soi(371.3, 253.7, .1), 	neutral, "Wingshadow");
+		var factionRaptor 		= f("Raptor", 		"Yehat", 	c("Violet"),soi(492.3, 29.4, .1), 	neutral, "Aegis");
+		var factionRaptorRebel 	= f("RaptorRebel", 	"Yehat", 	c("Mauve"), soi(492.3, 29.4, .1), 	neutral, "Aegis");
+		var factionRaptorRoyalist= f("RaptorRoyalist","Yehat", 	c("Violet"),soi(492.3, 29.4, .1), 	neutral, "Aegis");
 		var factionSupial		= f("Supial", 		"Shofixti",	null,		null, 					hostile, "Starbright");
 		var factionTempestrial 	= f("Tempestrial", 	"Slylandro",null, 		soi(500, 500, 1000), 	hostile, "Tumbler");
-		var factionTriunion		= f("Triunion", 	"Zoqfotpik","Red", 		soi(400, 543.7, .067), 	neutral, "Nitpiknik");
-		var factionTwyggan 		= f("Twyggan", 		"Supox", 	"Brown", 	soi(741.4, 912.4, .1), 	neutral, "Efflorescence");
-		var factionUgglegruj 	= f("Ugglegruj", 	"VUX", 		"Blue", 	soi(433.3, 168.7, .12), hostile, "Encumbrator");
-		var factionWarpig		= f("Warpig", 		"Thraddash","Cyan", 	soi(253.5, 835.8, .1), 	hostile, "Afterburner");
+		var factionTriunion		= f("Triunion", 	"Zoqfotpik",c("Red"), 	soi(400, 543.7, .067), 	neutral, "Nitpiknik");
+		var factionTwyggan 		= f("Twyggan", 		"Supox", 	c("Brown"), soi(741.4, 912.4, .1), 	neutral, "Efflorescence");
+		var factionUgglegruj 	= f("Ugglegruj", 	"VUX", 		c("Blue"), 	soi(433.3, 168.7, .12), hostile, "Encumbrator");
+		var factionWarpig		= f("Warpig", 		"Thraddash",c("Cyan"), 	soi(253.5, 835.8, .1), 	hostile, "Afterburner");
 
 		var factions =
 		[
@@ -200,7 +185,10 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 
 		var lifeformDefns = LifeformDefn.Instances();
 
-		var defns = new Defns(placeDefns, factions, shipDefns, lifeformDefns);
+		var defn = new WorldDefnExtended
+		(
+			activityDefns, factions, lifeformDefns, placeDefns, shipDefns
+		);
 
 		var mediaLibrary = universe.mediaLibrary;
 
@@ -216,8 +204,7 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 			starsAndPlanetsAsStringCSVCompressed
 		);
 
-		var starsystems = hyperspace.starsystems;
-		var starsystemStart = starsystems["Sol"];
+		var starsystemStart = hyperspace.starsystemByName("Sol");
 		starsystemStart.solarSystem(); // todo
 
 		var playerShipDefnName = "Flagship";
@@ -270,11 +257,11 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 			playerShipGroup
 		);
 
-		var returnValue = new World
+		var returnValue = new WorldExtended
 		(
 			"World-" + nowAsString,
 			now, // dateCreated
-			defns,
+			defn,
 			player,
 			hyperspace,
 			starsystemStart
@@ -284,27 +271,37 @@ function World(name, dateCreated, defns, player, hyperspace, starsystemStart)
 
 	// instance methods
 
-	World.prototype.draw = function(universe)
+	draw(universe)
 	{
-		this.place.draw(universe, this);
+		this.placeCurrent.draw(universe, this);
 	}
 
-	World.prototype.initialize = function(universe)
+	initialize(universe)
 	{
-		this.place.initialize(universe, this);
+		this.placeCurrent.initialize(universe, this);
 	}
 
-	World.prototype.updateForTimerTick = function(universe)
+	updateForTimerTick(universe)
 	{
 		if (this.placeNext != null)
 		{
-			this.place.finalize(universe, this);
-			this.place = this.placeNext;
-			this.place.initialize(universe, this);
+			this.placeCurrent.finalize(universe, this);
+			this.placeCurrent = this.placeNext;
+			this.placeCurrent.initialize(universe, this);
 			this.placeNext = null;
 		}
 
-		this.place.updateForTimerTick(universe, this);
+		this.placeCurrent.updateForTimerTick(universe, this);
 		this.timerTicksSoFar++;
+	}
+
+	toControl(universe)
+	{
+		return new ControlNone();
+	}
+
+	toVenue()
+	{
+		return new VenueWorld(this);
 	}
 }

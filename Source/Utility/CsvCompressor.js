@@ -1,14 +1,11 @@
 
-function CsvCompressor()
+class CsvCompressor
 {
-	// Do nothing.
-}
-{
-	CsvCompressor.Blank = "";
-	CsvCompressor.Comma = ",";
-	CsvCompressor.Newline = "\n";
+	static Blank = "";
+	static Comma = ",";
+	static Newline = "\n";
 
-	CsvCompressor.prototype.compress = function(dataToCompress)
+	compress(dataToCompress)
 	{
 		var blank = CsvCompressor.Blank;
 		var comma = CsvCompressor.Comma;
@@ -42,7 +39,7 @@ function CsvCompressor()
 		return dataCompressed;
 	}
 
-	CsvCompressor.prototype.decompress = function(dataToDecompress)
+	decompress(dataToDecompress)
 	{
 		var blank = CsvCompressor.Blank;
 		var comma = CsvCompressor.Comma;

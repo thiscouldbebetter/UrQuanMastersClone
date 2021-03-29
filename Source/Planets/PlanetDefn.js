@@ -1,16 +1,19 @@
 
-function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
+class PlanetDefn
 {
-	this.name = name;
-	this.color = color;
-	this.canLand = canLand;
-	this.lifeChance = lifeChance;
-	this.resourceDistributions = resourceDistributions;
-}
-{
+	constructor(name, color, canLand, lifeChance, resourceDistributions)
+	{
+		this.name = name;
+		this.color = color;
+		this.canLand = canLand;
+		this.lifeChance = lifeChance;
+		this.resourceDistributions = resourceDistributions;
+	}
+
 	// instances
 
-	PlanetDefn.Instances = function()
+	static _instances;
+	static Instances()
 	{
 		if (PlanetDefn._instances == null)
 		{
@@ -20,17 +23,27 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 		return PlanetDefn._instances;
 	}
 
-	function PlanetDefn_Instances()
+	// methods
+
+	static byName(planetDefnName)
 	{
-		var colorRed = "Red";
-		var colorOrange = "Orange";
-		var colorYellow = "Yellow";
-		var colorGreen = "Green";
-		var colorCyan = "Cyan";
-		var colorBlue = "Blue"
-		var colorViolet = "Violet";
-		var colorGray = "Gray";
-		var colorWhite = "White";
+		return PlanetDefn.Instances()._AllByName.get(planetDefnName);
+	}
+}
+
+class PlanetDefn_Instances
+{
+	constructor()
+	{
+		var colorRed = Color.byName("Red");
+		var colorOrange = Color.byName("Orange");
+		var colorYellow = Color.byName("Yellow");
+		var colorGreen = Color.byName("Green");
+		var colorCyan = Color.byName("Cyan");
+		var colorBlue = Color.byName("Blue");
+		var colorViolet = Color.byName("Violet");
+		var colorGray = Color.byName("Gray");
+		var colorWhite = Color.byName("White");
 
 		var canLand = true;
 		var cannotLand = false;
@@ -176,7 +189,8 @@ function PlanetDefn(name, color, canLand, lifeChance, resourceDistributions)
 			this.Water,
 			this.Xenolithic,
 			this.Yttric,
+		];
 
-		].addLookupsByName();
+		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 }

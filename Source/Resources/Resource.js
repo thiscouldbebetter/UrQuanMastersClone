@@ -1,12 +1,14 @@
 
-function Resource(defnName, quantity, pos)
+class Resource
 {
-	this.defnName = defnName;
-	this.quantity = quantity;
-	this.pos = pos;
-}
-{
-	Resource.prototype.toEntity = function(world, place, resourceRadiusBase)
+	constructor(defnName, quantity, pos)
+	{
+		this.defnName = defnName;
+		this.quantity = quantity;
+		this.pos = pos;
+	}
+
+	toEntity(world, place, resourceRadiusBase)
 	{
 		var resource = this;
 
@@ -16,9 +18,9 @@ function Resource(defnName, quantity, pos)
 		var resourceDefn = resourceDefns[resourceDefnName];
 
 		var resourceColor = resourceDefn.color;
-		var resourceGradient = new Gradient
+		var resourceGradient = new ValueBreakGroup
 		([
-			new GradientStop(0, resourceColor), new GradientStop(1, "Black")
+			new ValueBreak(0, resourceColor), new ValueBreak(1, Color.byName("Black"))
 		]);
 		var resourceRadius = resourceRadiusBase * Math.sqrt(resourceQuantity);
 		var resourceVisual = new VisualCircleGradient
@@ -28,7 +30,6 @@ function Resource(defnName, quantity, pos)
 		var camera = place.camera();
 		if (camera != null)
 		{
-			resourceVisual = new VisualCamera(resourceVisual, () => place.camera());
 			resourceVisual = new VisualWrapped(place.planet.sizeSurface, resourceVisual);
 		}
 
@@ -40,8 +41,8 @@ function Resource(defnName, quantity, pos)
 			"Resource" + Math.random(),
 			[
 				new Item(resourceDefnName, resourceQuantity),
-				new Locatable( new Location(resourcePos) ),
-				new Collidable(resourceCollider),
+				new Locatable( new Disposition(resourcePos) ),
+				CollidableHelper.fromCollider(resourceCollider),
 				new Drawable(resourceVisual)
 			]
 		);

@@ -1,19 +1,21 @@
 
-function Station(name, color, radiusOuter, factionName, posAsPolar)
+class Station
 {
-	this.name = name;
-	this.color = color;
-	this.radiusOuter = radiusOuter;
-	this.factionName = factionName;
-	this.posAsPolar = posAsPolar;
-}
-{
-	Station.prototype.faction = function(world)
+	constructor(name, color, radiusOuter, factionName, posAsPolar)
 	{
-		return world.defns.factions[this.factionName];
+		this.name = name;
+		this.color = color;
+		this.radiusOuter = radiusOuter;
+		this.factionName = factionName;
+		this.posAsPolar = posAsPolar;
 	}
 
-	Station.prototype.toEntity = function(primaryPos)
+	faction(world)
+	{
+		return world.defn.factionByName(this.factionName);
+	}
+
+	toEntity(primaryPos)
 	{
 		var pos = primaryPos.clone().add
 		(
@@ -24,7 +26,7 @@ function Station(name, color, radiusOuter, factionName, posAsPolar)
 		([
 			new VisualAnchor
 			(
-				new VisualCircle(this.posAsPolar.radius, null, "Gray"),
+				new VisualCircle(this.posAsPolar.radius, null, Color.byName("Gray")),
 				primaryPos
 			),
 			new VisualRectangle(new Coords(1, 1).multiplyScalar(this.radiusOuter), this.color)
@@ -36,10 +38,10 @@ function Station(name, color, radiusOuter, factionName, posAsPolar)
 		(
 			this.name,
 			[
-				this,
-				new Locatable( new Location(pos) ),
-				new Collidable(collider),
-				new Drawable(visual)
+				CollidableHelper.fromCollider(collider),
+				new Drawable(visual),
+				new Locatable( new Disposition(pos) ),
+				this
 			]
 		);
 

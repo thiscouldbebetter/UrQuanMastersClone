@@ -1,20 +1,110 @@
 
-function ShipGroup(name, factionName, pos, ships)
+class ShipGroup
 {
-	this.name = name;
-	this.factionName = factionName;
-	this.pos = pos;
-	this.ships = ships;
-
-	this._posInverted = new Coords();
-}
-{
-	ShipGroup.prototype.faction = function(world)
+	constructor(name, factionName, pos, ships)
 	{
-		return world.defns.factions[this.factionName]
+		this.name = name;
+		this.factionName = factionName;
+		this.pos = pos;
+		this.ships = ships;
+
+		this._posInverted = new Coords();
 	}
 
-	ShipGroup.prototype.initialize = function(universe, world)
+	static activityDefnApproachPlayer()
+	{
+		return new ActivityDefn
+		(
+			"ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform
+		);
+	}
+
+	static activityDefnApproachPlayer_Perform(universe, world, place, entityActor)
+	{
+		var actor = entityActor.actor();
+
+		var targetPos = actor.targetPos;
+		if (targetPos == null)
+		{
+			var entityToTargetName = Player.name;
+			var target = place.entitiesByName.get(entityToTargetName);
+			targetPos = target.locatable().loc.pos;
+			actor.targetPos = targetPos;
+		}
+
+		var actorLoc = entityActor.locatable().loc;
+		var actorPos = actorLoc.pos;
+		var actorVel = actorLoc.vel;
+
+		actorVel.overwriteWith
+		(
+			targetPos
+		).subtract
+		(
+			actorPos
+		);
+
+		if (actorVel.magnitude() < 1)
+		{
+			actorPos.overwriteWith(targetPos);
+		}
+		else
+		{
+			actorVel.normalize();
+		}
+	}
+
+	static activityDefnDie()
+	{
+		return new ActivityDefn
+		(
+			"Die", (u, w, p, e) => e.actor().killable().integrityAdd(-10000)
+		);
+	}
+
+	static activityDefnLeave()
+	{
+		return new ActivityDefn
+		(
+			"Leave", ShipGroup.activityDefnLeave_Perform
+		);
+	}
+
+	static activityDefnLeave_Perform(universe, world, place, entityActor)
+	{
+		var actor = entityActor.actor();
+
+		actor.targetPos = new Coords(100000, 0, 0);
+		var targetPos = actor.targetPos;
+
+		var actorLoc = entityActor.locatable().loc;
+		var actorPos = actorLoc.pos;
+		var actorVel = actorLoc.vel;
+
+		actorVel.overwriteWith
+		(
+			targetPos
+		).subtract
+		(
+			actorPos
+		);
+
+		if (actorVel.magnitude() < 1)
+		{
+			actorPos.overwriteWith(targetPos);
+		}
+		else
+		{
+			actorVel.normalize();
+		}
+	}
+
+	faction(world)
+	{
+		return world.defn.factionByName(this.factionName);
+	}
+
+	initialize(universe, world)
 	{
 		for (var i = 0; i < this.ships.length; i++)
 		{
@@ -23,7 +113,7 @@ function ShipGroup(name, factionName, pos, ships)
 		}
 	}
 
-	ShipGroup.prototype.toStringPosition = function(world)
+	toStringPosition(world)
 	{
 		var hyperspaceSize = world.hyperspace.size;
 		return this._posInverted.overwriteWithDimensions
@@ -32,7 +122,7 @@ function ShipGroup(name, factionName, pos, ships)
 		).round().toStringXY();
 	}
 
-	ShipGroup.prototype.toStringDescription = function()
+	toStringDescription()
 	{
 		var shipCountsByDefnName = {};
 		for (var i = 0; i < this.ships.length; i++)

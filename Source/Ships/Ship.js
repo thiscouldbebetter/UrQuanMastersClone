@@ -1,35 +1,38 @@
 
-function Ship(defnName)
+class Ship
 {
-	this.defnName = defnName;
-}
-{
+	constructor(defnName)
+	{
+		this.defnName = defnName;
+	}
+
 	// temporary variables
 
-	Ship._polar = new Polar();
+	static _polar = new Polar();
 
 	// static methods
 
-	Ship.actionAccelerate = function()
+	static actionAccelerate()
 	{
 		return new Action
 		(
 			"Accelerate",
 			function perform(universe, world, place, actor)
 			{
-				actor.ship.accelerate(world, actor);
+				var ship = EntityExtensions.ship(actor);
+				ship.accelerate(world, actor);
 			}
 		);
 	}
 
-	Ship.actionFire = function()
+	static actionFire()
 	{
 		var returnValue = new Action
 		(
 			"Fire",
 			function perform(universe, world, place, actor)
 			{
-				var ship = actor.ship;
+				var ship = EntityExtensions.ship(actor);
 				var shipDefn = ship.defn(world);
 				var attackDefn = shipDefn.attackDefn;
 				if (ship.energy >= attackDefn.energyToUse)
@@ -43,14 +46,14 @@ function Ship(defnName)
 		return returnValue;
 	}
 
-	Ship.actionSpecial = function()
+	static actionSpecial()
 	{
 		var returnValue = new Action
 		(
 			"Special",
 			function perform(universe, world, place, actor)
 			{
-				var ship = actor.ship;
+				var ship = EntityExtensions.ship(actor);
 				var shipDefn = ship.defn(world);
 				var specialDefn = shipDefn.specialDefn;
 				if (ship.energy >= specialDefn.energyToUse)
@@ -64,7 +67,7 @@ function Ship(defnName)
 		return returnValue;
 	}
 
-	Ship.actionShowMenu = function()
+	static actionShowMenu()
 	{
 		return new Action
 		(
@@ -81,31 +84,31 @@ function Ship(defnName)
 		);
 	}
 
-	Ship.actionTurnLeft = function()
+	static actionTurnLeft()
 	{
 		return new Action
 		(
 			"TurnLeft",
 			function perform(universe, world, place, actor)
 			{
-				actor.ship.turnLeft(world, actor);
+				EntityExtensions.ship(actor).turnLeft(world, actor);
 			}
 		);
 	}
 
-	Ship.actionTurnRight = function()
+	static actionTurnRight()
 	{
 		return new Action
 		(
 			"TurnRight",
 			function perform(universe, world, place, actor)
 			{
-				actor.ship.turnRight(world, actor);
+				EntityExtensions.ship(actor).turnRight(world, actor);
 			}
 		);
-	};
+	}
 
-	Ship.actions = function()
+	static actions()
 	{
 		var returnValues =
 		[
@@ -114,17 +117,17 @@ function Ship(defnName)
 			Ship.actionTurnLeft(),
 			Ship.actionTurnRight(),
 			//actionMapView
-		].addLookupsByName();
+		];//.addLookupsByName();
 
 		return returnValues;
-	};
+	}
 
-	Ship.activityApproachPlayer = function(universe, world, place, actor)
+	activityApproachPlayer(universe, world, place, actor)
 	{
 		var entities = place.entities;
-		var target = entities["Player"];
-		var targetPos = target.locatable.loc.pos;
-		var actorLoc = actor.locatable.loc;
+		var target = place.entitiesByName.get("Player");
+		var targetPos = target.locatable().loc.pos;
+		var actorLoc = actor.locatable().loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 
@@ -152,7 +155,7 @@ function Ship(defnName)
 		}
 	}
 
-	Ship.actionToInputsMappings = function()
+	static actionToInputsMappings()
 	{
 		var returnValues =
 		[
@@ -162,12 +165,12 @@ function Ship(defnName)
 			new ActionToInputsMapping("TurnRight", ["ArrowRight", "Gamepad0Right"]),
 			new ActionToInputsMapping("Accelerate", ["ArrowUp", "Gamepad0Up"]),
 
-		].addLookupsMultiple(function(x) { return x.inputNames; } );
+		];//.addLookupsMultiple(function(x) { return x.inputNames; } );
 
 		return returnValues;
 	}
 
-	Ship.manyFromDefns = function(defns)
+	static manyFromDefns(defns)
 	{
 		var ships = [];
 
@@ -184,32 +187,32 @@ function Ship(defnName)
 
 	// instance methods
 
-	Ship.prototype.crewCurrentOverMax = function(world)
+	crewCurrentOverMax(world)
 	{
 		return this.crew + "/" + this.defn(world).crewMax;
 	}
 
-	Ship.prototype.defn = function(world)
+	defn(world)
 	{
-		return world.defns.shipDefns[this.defnName];
+		return world.defn.shipDefnByName(this.defnName);
 	}
 
-	Ship.prototype.energyCurrentOverMax = function(world)
+	energyCurrentOverMax(world)
 	{
 		return Math.floor(this.energy) + "/" + this.defn(world).energyMax;
 	}
 
-	Ship.prototype.fullName = function(world)
+	fullName(world)
 	{
 		return this.defn(world).factionName + " " + this.defnName;
 	}
 
-	Ship.prototype.fullNameAndCrew = function(world)
+	fullNameAndCrew(world)
 	{
 		return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
 	}
 
-	Ship.prototype.initialize = function(universe, world, place, entityShip)
+	initialize(universe, world, place, entityShip)
 	{
 		var defn = this.defn(world);
 
@@ -220,9 +223,9 @@ function Ship(defnName)
 		}
 	}
 
-	Ship.prototype.updateForTimerTick = function(universe, world, place, entityShip)
+	updateForTimerTick(universe, world, place, entityShip)
 	{
-		var ship = entityShip.ship;
+		var ship = entityship;
 		var shipDefn = ship.defn(world);
 		ship.energy += shipDefn.energyPerTick;
 		if (ship.energy > shipDefn.energyMax)
@@ -233,11 +236,17 @@ function Ship(defnName)
 
 	// movement
 
-	Ship.prototype.accelerate = function(world, entity)
+	accelerate(world, entity)
 	{
-		var ship = (entity.shipGroup != null ? entity.shipGroup.ships[0] : entity.ship);
+		var entityShipGroup = EntityExtensions.shipGroup(entity);
+		var ship =
+		(
+			entityShipGroup != null
+			? entityShipGroup.ships[0]
+			: EntityExtensions.ship(entity)
+		);
 		var shipDefn = ship.defn(world);
-		var shipLoc = entity.locatable.loc;
+		var shipLoc = entity.locatable().loc;
 		var shipForward = shipLoc.orientation.forward;
 		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
 		(
@@ -251,12 +260,13 @@ function Ship(defnName)
 		}
 	}
 
-	Ship.prototype.turnInDirection = function(world, entity, direction)
+	turnInDirection(world, entity, direction)
 	{
-		var entityLoc = entity.locatable.loc;
+		var entityLoc = entity.locatable().loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
-		var ship = (entity.ship == null ? entity.shipGroup.ships[0] : entity.ship);
+		var entityShip = EntityExtensions.ship(entity);
+		var ship = (entityShip == null ? EntityExtensions.shipGroup(entity).ships[0] : entityShip);
 		var shipDefn = ship.defn(world);
 		var turnsPerTick = shipDefn.turnsPerTick;
 		var entityForwardNew = Ship._polar.fromCoords
@@ -272,19 +282,19 @@ function Ship(defnName)
 		entityOrientation.forwardSet(entityForwardNew);
 	}
 
-	Ship.prototype.turnLeft = function(world, entity)
+	turnLeft(world, entity)
 	{
 		this.turnInDirection(world, entity, -1);
 	}
 
-	Ship.prototype.turnRight = function(world, entity)
+	turnRight(world, entity)
 	{
 		this.turnInDirection(world, entity, 1);
 	}
 
 	// controls
 
-	Ship.prototype.toControlSidebar = function(containerSidebarSize, indexTopOrBottom, world)
+	toControlSidebar(containerSidebarSize, indexTopOrBottom, world)
 	{
 		var ship = this;
 

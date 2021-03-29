@@ -1,18 +1,24 @@
 
-function VisualWrapped(sizeToWrapTo, child)
+class VisualWrapped
 {
-	this.sizeToWrapTo = sizeToWrapTo;
-	this.child = child;
-
-	this._offset = new Coords();
-	this._posSaved = new Coords();
-	this._tilePos = new Coords();
-}
-
-{
-	VisualWrapped.prototype.draw = function(universe, world, display, entity)
+	constructor(sizeToWrapTo, child)
 	{
-		var drawablePos = entity.locatable.loc.pos;
+		this.sizeToWrapTo = sizeToWrapTo;
+		this.child = child;
+
+		this._offset = new Coords();
+		this._posSaved = new Coords();
+		this._tilePos = new Coords();
+	}
+
+	draw(universe, world, place, entity, display)
+	{
+		// todo
+	}
+
+	drawImmediate(universe, world, place, entity, display)
+	{
+		var drawablePos = entity.locatable().loc.pos;
 		this._posSaved.overwriteWith(drawablePos);
 
 		var tilePos = this._tilePos;

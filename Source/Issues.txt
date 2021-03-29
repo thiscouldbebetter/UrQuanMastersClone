@@ -1,0 +1,10 @@
+Issues
+======
+
+Scripts in Conversation with Station All Need Updating.
+Cannot Return from Transcript Screen.
+Hyperspace View Doesn't Show Stars.
+Crash on Entering Planet Surface.
+Crash when Entering Station.
+Guard Drone Encountered Again at Same Spot, Even if it's Moved Away.
+

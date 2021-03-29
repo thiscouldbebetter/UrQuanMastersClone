@@ -1,12 +1,14 @@
 
-function ShipSpecialDefn(name, energyToUse, effectWhenInvoked)
+class ShipSpecialDefn
 {
-	this.name = name;
-	this.energyToUse = energyToUse;
-	this.effectWhenInvoked = effectWhenInvoked;
-}
-{
-	ShipSpecialDefn.prototype.activate = function(universe, world, place, actor)
+	constructor(name, energyToUse, effectWhenInvoked)
+	{
+		this.name = name;
+		this.energyToUse = energyToUse;
+		this.effectWhenInvoked = effectWhenInvoked;
+	}
+
+	activate(universe, world, place, actor)
 	{
 		this.effectWhenInvoked(universe, world, place, actor);
 	}

@@ -1,26 +1,27 @@
 
-function Combat(size, encounter, shipGroups)
+class Combat
 {
-	this.size = size;
-	this.encounter = encounter;
-	this.shipGroups = shipGroups;
-	this.shipsFighting = [];
+	constructor(size, encounter, shipGroups)
+	{
+		this.size = size;
+		this.encounter = encounter;
+		this.shipGroups = shipGroups;
+		this.shipsFighting = [];
 
-	this._differenceOfWrapAndNoWrap	= new Coords();
-	this._displacement = new Coords();
-	this._displacementAbsolute = new Coords();
-	this._displacementWrapped = new Coords();
-	this._displacementWrappedAbsolute = new Coords();
-	this._midpointBetweenPoints = new Coords();
-}
+		this._differenceOfWrapAndNoWrap	= new Coords();
+		this._displacement = new Coords();
+		this._displacementAbsolute = new Coords();
+		this._displacementWrapped = new Coords();
+		this._displacementWrappedAbsolute = new Coords();
+		this._midpointBetweenPoints = new Coords();
+	}
 
-{
-	Combat.prototype.enemyActivity = function(universe, world, place, actor)
+	enemyActivity(universe, world, place, actor)
 	{
 		var entitiesShips = place.entitiesShips();
 		var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
-		var targetPos = target.locatable.loc.pos;
-		var actorLoc = actor.locatable.loc;
+		var targetPos = target.locatable().loc.pos;
+		var actorLoc = actor.locatable().loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 		var combat = place.combat;
@@ -51,14 +52,14 @@ function Combat(size, encounter, shipGroups)
 		actor.ship.accelerate(world, actor);
 	}
 
-	Combat.prototype.exit = function(universe)
+	exit(universe)
 	{
 		var world = universe.world;
 		world.placeNext = this.encounter.placeToReturnTo;
 		universe.venueNext = new VenueWorld(world);
 	}
 
-	Combat.prototype.initialize = function(world)
+	initialize(world)
 	{
 		for (var i = 0; i < this.shipGroups.length; i++)
 		{
@@ -68,22 +69,22 @@ function Combat(size, encounter, shipGroups)
 		return this;
 	}
 
-	Combat.prototype.ship0HasNotBeenSelected = function()
+	ship0HasNotBeenSelected()
 	{
 		return (this.shipsFighting[0] == null);
 	}
 
-	Combat.prototype.ship1HasNotBeenSelected = function()
+	ship1HasNotBeenSelected()
 	{
 		return (this.shipsFighting[1] == null);
 	}
 
-	Combat.prototype.shipsHaveBeenSelected = function()
+	shipsHaveBeenSelected()
 	{
 		return ( this.shipsFighting[0] != null && this.shipsFighting[1] != null );
 	}
 
-	Combat.prototype.start = function(universe, ship0, ship1)
+	start(universe, ship0, ship1)
 	{
 		var world = universe.world;
 		world.placeNext = new PlaceCombat(world, this);
@@ -93,7 +94,7 @@ function Combat(size, encounter, shipGroups)
 
 	// wrapping
 
-	Combat.prototype.displacementOfPointsWrappedToRange = function(displacementToOverwrite, pos0, pos1, size)
+	displacementOfPointsWrappedToRange(displacementToOverwrite, pos0, pos1, size)
 	{
 		var displacement = pos1.clone().subtract(pos0);
 		var displacementMinSoFar = displacement.clone();
@@ -118,7 +119,7 @@ function Combat(size, encounter, shipGroups)
 		return displacementMinSoFar;
 	}
 
-	Combat.prototype.midpointOfPointsWrappedToRange = function(midpointToOverwrite, pos0, pos1, size)
+	midpointOfPointsWrappedToRange(midpointToOverwrite, pos0, pos1, size)
 	{
 		var displacement = this.displacementOfPointsWrappedToRange(midpointToOverwrite, pos0, pos1, size);
 		var midpoint = displacement.half().add(pos0);
@@ -127,7 +128,7 @@ function Combat(size, encounter, shipGroups)
 
 	// controls
 
-	Combat.prototype.toControlDebriefing = function(universe, size)
+	toControlDebriefing(universe, size)
 	{
 		var numberOfShipsLost = 0; // todo
 		var numberOfShipsDestroyed = 1;
@@ -146,7 +147,7 @@ function Combat(size, encounter, shipGroups)
 		return returnValue;
 	}
 
-	Combat.prototype.toControlShipSelect = function(universe, size)
+	toControlShipSelect(universe, size)
 	{
 		var combat = this;
 		var world = universe.world;

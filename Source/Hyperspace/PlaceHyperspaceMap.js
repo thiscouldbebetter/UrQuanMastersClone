@@ -1,21 +1,20 @@
 
-function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
+class PlaceHyperspaceMap extends Place
 {
-	this.placeHyperspaceToReturnTo = placeHyperspaceToReturnTo;
+	constructor(placeHyperspaceToReturnTo)
+	{
+		super(PlaceHyperspaceMap.name, PlaceHyperspaceMap.name, null, []);
 
-	Place.call(this, PlaceHyperspaceMap.name, PlaceHyperspaceMap.name, null, []);
+		this.placeHyperspaceToReturnTo = placeHyperspaceToReturnTo;
 
-	this._displacement = new Coords();
-	this._drawPos = new Coords();
-	this._reticlePosInverted = new Coords();
-}
-{
-	PlaceHyperspaceMap.prototype = Object.create(Place.prototype);
-	PlaceHyperspaceMap.prototype.constructor = Place;
+		this._displacement = new Coords();
+		this._drawPos = new Coords();
+		this._reticlePosInverted = new Coords();
+	}
 
 	// methods
 
-	PlaceHyperspaceMap.prototype.fuelFromPlayerShipGroupToReticle = function(world)
+	fuelFromPlayerShipGroupToReticle(world)
 	{
 		var returnValue = this._displacement.overwriteWith(this.reticlePos).subtract
 		(
@@ -25,7 +24,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		return returnValue;
 	}
 
-	PlaceHyperspaceMap.prototype.reticlePosAsStringXY = function()
+	reticlePosAsStringXY()
 	{
 		var hyperspaceSize = this.placeHyperspaceToReturnTo.hyperspace.size;
 
@@ -40,10 +39,9 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 	// Place
 
-	PlaceHyperspaceMap.prototype.draw_FromSuperclass = Place.prototype.draw;
-	PlaceHyperspaceMap.prototype.draw = function(universe, world)
+	draw(universe, world)
 	{
-		this.draw_FromSuperclass(universe, world);
+		super.draw(universe, world);
 
 		var display = this.displayMap;
 		if (display == null)
@@ -58,7 +56,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		var zeroes = Coords.Instances().Zeroes;
 		display.drawRectangle(zeroes, mapSize, "Black", "Gray");
 
-		var camera = this.camera;
+		var camera = this._camera;
 		var cameraPos = camera.loc.pos;
 		var magnificationFactor = camera.focalLength / camera.viewSize.x;
 		var drawPos = this._drawPos;
@@ -71,7 +69,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			var starsystemPos = starsystem.posInHyperspace;
 
 			drawPos.overwriteWith(starsystemPos);
-			this.camera.coordsTransformWorldToView(drawPos);
+			this._camera.coordsTransformWorldToView(drawPos);
 
 			var starRadiusApparent = starRadius * magnificationFactor;
 			if (starRadiusApparent < 1)
@@ -82,17 +80,17 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		}
 
 		var factionsKnownNames = world.player.factionsKnownNames;
-		var factions = world.defns.factions;
+		var worldDefn = world.defn;
 		for (var i = 0; i < factionsKnownNames.length; i++)
 		{
 			var factionName = factionsKnownNames[i];
-			var faction = factions[factionName];
+			var faction = worldDefn.factionByName[factionName];
 			var factionZone = faction.sphereOfInfluence;
 
 			if (factionZone != null)
 			{
 				drawPos.overwriteWith(factionZone.center);
-				this.camera.coordsTransformWorldToView(drawPos);
+				this._camera.coordsTransformWorldToView(drawPos);
 
 				var factionZoneRadiusScaled =
 					factionZone.radius * magnificationFactor;
@@ -116,9 +114,9 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
-		var playerPos = entityForPlayer.locatable.loc.pos;
+		var playerPos = entityForPlayer.locatable().loc.pos;
 		drawPos.overwriteWith(playerPos);
-		this.camera.coordsTransformWorldToView(drawPos);
+		this._camera.coordsTransformWorldToView(drawPos);
 		var locatorDimension = starRadius * 8 * magnificationFactor;
 		var locatorSize = new Coords(1, 1).multiplyScalar(locatorDimension);
 		display.drawRectangleCentered(drawPos, locatorSize, null, "Gray");
@@ -129,20 +127,19 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 		(
 			this.reticlePos
 		);
-		this.camera.coordsTransformWorldToView(drawPos);
+		this._camera.coordsTransformWorldToView(drawPos);
 		display.drawCrosshairs(drawPos, reticleRadius, "Gray");
 	}
 
-	PlaceHyperspaceMap.prototype.updateForTimerTick_FromSuperclass = Place.prototype.draw;
-	PlaceHyperspaceMap.prototype.updateForTimerTick = function(universe, world)
+	updateForTimerTick(universe, world)
 	{
-		this.updateForTimerTick_FromSuperclass(universe, world);
+		super.updateForTimerTick(universe, world);
 
 		if (this.reticlePos == null)
 		{
 			var entityForPlayer =
 				this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
-			var playerPos = entityForPlayer.locatable.loc.pos;
+			var playerPos = entityForPlayer.locatable().loc.pos;
 			this.reticlePos = playerPos.clone();
 		}
 
@@ -155,16 +152,16 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 		var hyperspaceSize = this.placeHyperspaceToReturnTo.hyperspace.size;
 
-		if (this.camera == null)
+		if (this._camera == null)
 		{
 			var visualMap = this.venueControls.controlRoot.children["visualMap"];
 			var cameraViewSize = visualMap.size.clone();
 
-			this.camera = new Camera
+			this._camera = new Camera
 			(
 				cameraViewSize,
 				cameraViewSize.x, // focalLength
-				new Location
+				new Disposition
 				(
 					new Coords
 					(
@@ -179,6 +176,8 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 					),
 				)
 			);
+			var cameraAsEntity = CameraHelper.toEntity(this._camera);
+			this.entitySpawn(universe, world, cameraAsEntity);
 		}
 
 		var inputHelper = universe.inputHelper;
@@ -212,7 +211,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			}
 			else if (inputPressedName == "PageDown")
 			{
-				var camera = this.camera;
+				var camera = this._camera;
 				var cameraViewSize = camera.viewSize;
 				var magnificationFactor = camera.focalLength / camera.viewSize.x;
 				if (magnificationFactor < 8)
@@ -235,7 +234,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 			}
 			else if (inputPressedName == "PageUp")
 			{
-				var camera = this.camera;
+				var camera = this._camera;
 				var cameraViewSize = camera.viewSize;
 				var magnificationFactor = camera.focalLength / camera.viewSize.x;
 				if (magnificationFactor > 1)
@@ -261,7 +260,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 	// controls
 
-	PlaceHyperspaceMap.prototype.toControl = function(universe, world)
+	toControl(universe, world)
 	{
 		var containerSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
@@ -286,7 +285,7 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 
 		var displayMain = universe.display;
 
-		var displayMap = new Display
+		var displayMap = new Display2D
 		(
 			[ containerMapSize ],
 			displayMain.fontName,
@@ -404,9 +403,12 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 						marginSize.y * 2 + titleSize.y
 					),
 					containerMapSize,
-					new VisualImageImmediate
+					DataBinding.fromContext
 					(
-						Image.fromSystemImage("[fromCanvas]", this.displayMap.canvas)
+						new VisualImageImmediate
+						(
+							Image.fromSystemImage("[fromCanvas]", this.displayMap.canvas)
+						)
 					)
 				),
 
@@ -421,10 +423,10 @@ function PlaceHyperspaceMap(placeHyperspaceToReturnTo)
 					fontHeight,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
+					(universe) =>
 					{
 						var world = universe.world;
-						var place = world.place;
+						var place = world.placeCurrent;
 						var placeNext = place.placeHyperspaceToReturnTo;
 						world.placeNext = placeNext;
 					},

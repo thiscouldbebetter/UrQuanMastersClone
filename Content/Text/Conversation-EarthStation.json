@@ -92,7 +92,7 @@
 
 { "name": "NeverMindWhoIAm", "defnName": "Display", "text": "Well, in any case, I guess we owe you." },
 { "name": "HowCanWeHelp", "defnName": "Display", "text": "What can we do to help?" },
-{ "defnName": "Script", "text": "function(cr) { cr.uni.world.defns.factions['Terran'].relationsWithPlayer = Faction.RelationsAllied; }" },
+{ "defnName": "Script", "text": "function(cr) { cr.uni.world.defn.factionByName('Terran').relationsWithPlayer = Faction.RelationsAllied; }" },
 { "defnName": "Display", "text": "This station has mineral and salvage refineries," },
 { "defnName": "Display", "text": "hyperspace fuel formularies," },
 { "defnName": "Display", "text": "and shipyards and ship component factories." },

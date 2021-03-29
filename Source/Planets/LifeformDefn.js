@@ -1,42 +1,48 @@
 
-function LifeformDefn
-(
-	name,
-	durability,
-	speed,
-	damagePerAttack,
-	value,
-	visual,
-	activity
-)
+class LifeformDefn
 {
-	this.name = name;
-	this.durability = durability;
-	this.speed = speed;
-	this.damagePerAttack = damagePerAttack;
-	this.value = value;
-	this.visual = visual;
-	this.activity = activity;
-}
-{
+	constructor
+	(
+		name,
+		durability,
+		speed,
+		damagePerAttack,
+		value,
+		visual,
+		activity
+	)
+	{
+		this.name = name;
+		this.durability = durability;
+		this.speed = speed;
+		this.damagePerAttack = damagePerAttack;
+		this.value = value;
+		this.visual = visual;
+		this.activity = activity;
+	}
+
 	// static methods
 
-	LifeformDefn.Instances = function()
+	static _instances;
+	static Instances()
 	{
 		if (LifeformDefn._instances == null)
 		{
-			LifeformDefn._instances = new LifeformDefn_Instances;
+			LifeformDefn._instances = new LifeformDefn_Instances();
 		}
 
 		return LifeformDefn._instances;
 	}
+}
 
-	function LifeformDefn_Instances()
+class LifeformDefn_Instances
+{
+	constructor()
 	{
 		var lifeformDimension = 10;
 
 		var ld = LifeformDefn;
-		var visual = function(colorFill, colorBorder)
+		var visual = (colorFill, colorBorder) =>
 		{
 			return new VisualRectangle
 			(
@@ -44,22 +50,22 @@ function LifeformDefn
 				colorFill, colorBorder
 			);
 		}
-		var r = "Red";
-		var o = "Orange";
-		var y = "Yellow";
-		var g = "Green";
-		var b = "Blue";
-		var v = "Violet";
-		var a = "Gray";
-		var w = "White";
-		var k = "Black";
-		var n = "Brown";
-		var c = "Cyan";
-		var p = "Pink";
+		var r = Color.byName("Red");
+		var o = Color.byName("Orange");
+		var y = Color.byName("Yellow");
+		var g = Color.byName("Green");
+		var b = Color.byName("Blue");
+		var v = Color.byName("Violet");
+		var a = Color.byName("Gray");
+		var w = Color.byName("White");
+		var k = Color.byName("Black");
+		var n = Color.byName("Brown");
+		var c = Color.byName("Cyan");
+		var p = Color.byName("Pink");
 
-		var lifeformActivityTodo = function(universe, world, place, actor)
+		var lifeformActivityTodo = (universe, world, place, actor) =>
 		{
-			var actorLoc = actor.locatable.loc;
+			var actorLoc = actor.locatable().loc;
 			actorLoc.vel.randomize().double().subtract(Coords.Instances().Ones).clearZ();
 		}
 
@@ -100,6 +106,6 @@ function LifeformDefn
 			new ld("FreakyBeast", 		15, 3, 3, 15, visual(n, p), activityPursue),
 		];
 
-		return this._All.addLookupsByName();
+		return this._All;//.addLookupsByName();
 	}
 }

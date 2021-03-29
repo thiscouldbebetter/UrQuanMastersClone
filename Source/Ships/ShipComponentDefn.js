@@ -1,13 +1,15 @@
 
-function ShipComponentDefn(name, categories, value, applyToFlagship)
+class ShipComponentDefn
 {
-	this.name = name;
-	this.categories = categories;
-	this.value = value;
-	this.applyToFlagship = applyToFlagship;
-}
-{
-	ShipComponentDefn.Categories = function()
+	constructor(name, categories, value, applyToFlagship)
+	{
+		this.name = name;
+		this.categories = categories;
+		this.value = value;
+		this.applyToFlagship = applyToFlagship;
+	}
+
+	static Categories()
 	{
 		this.Backbone = "Backbone";
 		this.Cargo = "Cargo";
@@ -33,9 +35,10 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 		];
 
 		return this;
-	};
+	}
 
-	ShipComponentDefn.Instances = function()
+	static _instances;
+	static Instances()
 	{
 		if (ShipComponentDefn._instances == null)
 		{
@@ -45,7 +48,22 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 		return ShipComponentDefn._instances;
 	}
 
-	function ShipComponentDefn_Instances()
+	static byName(shipComponentDefnName)
+	{
+		return ShipComponentDefn.Instances()._AllByName.get(shipComponentDefnName);
+	}
+
+	// instance methods
+
+	nameAndValue()
+	{
+		return this.name + "(" + this.value + ")";
+	}
+}
+
+class ShipComponentDefn_Instances
+{
+	constructor()
 	{
 		var categories = ShipComponentDefn.Categories();
 		var categoryBackbone = categories.Backbone;
@@ -122,7 +140,9 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 			this.IonCannon,
 			this.FusionThruster,
 			this.PowerPlant,
-		].addLookupsByName();
+		];
+
+		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 
 		this._AllBackbone =
 		[
@@ -131,13 +151,6 @@ function ShipComponentDefn(name, categories, value, applyToFlagship)
 			this.FuelTank,
 			this.IonCannon,
 			this.PowerPlant,
-		].addLookupsByName();
-	}
-
-	// instance methods
-
-	ShipComponentDefn.prototype.nameAndValue = function()
-	{
-		return this.name + "(" + this.value + ")";
+		];
 	}
 }

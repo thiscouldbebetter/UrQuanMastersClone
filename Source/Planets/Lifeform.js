@@ -1,19 +1,21 @@
 
-function Lifeform(defnName, pos)
+class Lifeform
 {
-	this.defnName = defnName;
-	this.pos = pos;
-}
-{
-	Lifeform.prototype.defn = function(world)
+	constructor(defnName, pos)
 	{
-		return world.defns.lifeformDefns[this.defnName];
+		this.defnName = defnName;
+		this.pos = pos;
 	}
 
-	Lifeform.prototype.toEntity = function(world, place)
+	defn(world)
+	{
+		return world.defn.lifeformDefnByName(this.defnName);
+	}
+
+	toEntity(world, place)
 	{
 		var lifeformDefn = this.defn(world);
-		var lifeformVisual = new VisualCamera(lifeformDefn.visual, () => place.camera);
+		var lifeformVisual = lifeformDefn.visual;
 		lifeformVisual = new VisualWrapped(place.size, lifeformVisual);
 		var lifeformCollider = new Sphere(new Coords(0, 0, 0), 5);
 		var returnValue = new Entity
@@ -22,7 +24,7 @@ function Lifeform(defnName, pos)
 			[
 				this,
 				new Actor(lifeformDefn.activity),
-				new Collidable(lifeformCollider),
+				CollidableHelper.fromCollider(lifeformCollider),
 				new Drawable(lifeformVisual),
 				new Killable
 				(
@@ -30,13 +32,13 @@ function Lifeform(defnName, pos)
 					function die(universe, world, place, entity)
 					{
 						var planet = place.planet;
-						var resource = new Resource("Biodata", 1, entity.locatable.loc.pos);
+						var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
 						var radius = entity.collidable.collider.radius;
 						var entityResource = resource.toEntity(world, place, radius);
 						place.entitiesToSpawn.push(entityResource);
 					}
 				),
-				new Locatable(new Location(this.pos)),
+				new Locatable(new Disposition(this.pos)),
 			]
 		);
 
