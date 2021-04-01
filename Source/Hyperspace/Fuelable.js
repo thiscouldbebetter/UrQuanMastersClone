@@ -1,24 +1,22 @@
-
-class Fuelable
-{
-	updateForTimerTick(universe, world, place, entityFuelable)
-	{
-		var entityLoc = entityFuelable.locatable().loc;
-		var entityVel = entityLoc.vel;
-		var entitySpeed = entityVel.magnitude();
-		var fuelConsumedPerSpeed = .1;
-		if (entitySpeed > 0)
-		{
-			var flagship = world.player.flagship;
-			var fuelToConsume = entitySpeed * fuelConsumedPerSpeed;
-			if (flagship.fuel >= fuelToConsume)
-			{
-				flagship.fuel -= fuelToConsume;
-			}
-			else
-			{
-				flagship.fuel = 0;
-			}
-		}
-	}
+"use strict";
+class Fuelable extends EntityProperty {
+    constructor() {
+        super();
+    }
+    updateForTimerTick(universe, world, place, entityFuelable) {
+        var entityLoc = entityFuelable.locatable().loc;
+        var entityVel = entityLoc.vel;
+        var entitySpeed = entityVel.magnitude();
+        var fuelConsumedPerSpeed = .1;
+        if (entitySpeed > 0) {
+            var flagship = world.player.flagship;
+            var fuelToConsume = entitySpeed * fuelConsumedPerSpeed;
+            if (flagship.fuel >= fuelToConsume) {
+                flagship.fuel -= fuelToConsume;
+            }
+            else {
+                flagship.fuel = 0;
+            }
+        }
+    }
 }

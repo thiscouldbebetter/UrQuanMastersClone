@@ -1,0 +1,14 @@
+Issues
+======
+
+Earth Station
+	Scripts in Conversation need updating.
+	Cannot Return from Transcript Screen.
+
+Hyperspace view doesn't show stars.
+
+Planet Surface
+	Doesn't scroll.
+	Can't launch from it.
+
+Guard Drone Encountered Again at Same Spot, Even if it's Moved Away.

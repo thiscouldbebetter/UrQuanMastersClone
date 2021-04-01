@@ -1,47 +1,35 @@
-
-class Lifeform
-{
-	constructor(defnName, pos)
-	{
-		this.defnName = defnName;
-		this.pos = pos;
-	}
-
-	defn(world)
-	{
-		return world.defn.lifeformDefnByName(this.defnName);
-	}
-
-	toEntity(world, place)
-	{
-		var lifeformDefn = this.defn(world);
-		var lifeformVisual = lifeformDefn.visual;
-		lifeformVisual = new VisualWrapped(place.size, lifeformVisual);
-		var lifeformCollider = new Sphere(new Coords(0, 0, 0), 5);
-		var returnValue = new Entity
-		(
-			"Lifeform" + this.defnName + Math.random(),
-			[
-				this,
-				new Actor(lifeformDefn.activity),
-				CollidableHelper.fromCollider(lifeformCollider),
-				new Drawable(lifeformVisual),
-				new Killable
-				(
-					lifeformDefn.durability,
-					function die(universe, world, place, entity)
-					{
-						var planet = place.planet;
-						var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
-						var radius = entity.collidable.collider.radius;
-						var entityResource = resource.toEntity(world, place, radius);
-						place.entitiesToSpawn.push(entityResource);
-					}
-				),
-				new Locatable(new Disposition(this.pos)),
-			]
-		);
-
-		return returnValue;
-	}
+"use strict";
+class Lifeform extends EntityProperty {
+    constructor(defnName, pos) {
+        super();
+        this.defnName = defnName;
+        this.pos = pos;
+    }
+    defn(world) {
+        return world.defnExtended().lifeformDefnByName(this.defnName);
+    }
+    toEntity(world, place) {
+        var lifeformDefn = this.defn(world);
+        var lifeformVisual = lifeformDefn.visual;
+        lifeformVisual = new VisualWrapped(place.size, lifeformVisual);
+        var lifeformCollider = new Sphere(Coords.create(), 5);
+        var lifeformActivity = new Activity(lifeformDefn.activityDefn.name, null);
+        var returnValue = new Entity("Lifeform" + this.defnName + Math.random(), [
+            this,
+            new Actor(lifeformActivity),
+            CollidableHelper.fromCollider(lifeformCollider),
+            Drawable.fromVisual(lifeformVisual),
+            new Killable(lifeformDefn.durability, null, // ?
+            (universe, world, placeAsPlace, entity) => // die
+             {
+                var place = placeAsPlace;
+                var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
+                var radius = entity.collidable().collider.radius;
+                var entityResource = resource.toEntity(world, place, radius);
+                place.entitiesToSpawn.push(entityResource);
+            }),
+            Locatable.fromPos(this.pos),
+        ]);
+        return returnValue;
+    }
 }

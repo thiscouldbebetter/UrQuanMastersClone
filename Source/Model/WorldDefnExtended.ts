@@ -1,7 +1,20 @@
 
 class WorldDefnExtended extends WorldDefn
 {
-	constructor(activityDefns, factions, lifeformDefns, placeDefns, shipDefns)
+	factions: Faction[];
+	lifeformDefns: LifeformDefn[];
+	shipDefns: ShipDefn[];
+
+	factionsByName: Map<string,Faction>;
+	lifeformDefnsByName: Map<string,LifeformDefn>;
+	shipDefnsByName: Map<string,ShipDefn>;
+
+	constructor
+	(
+		activityDefns: ActivityDefn[], factions: Faction[],
+		lifeformDefns: LifeformDefn[], placeDefns: PlaceDefn[],
+		shipDefns: ShipDefn[]
+	)
 	{
 		super( [ activityDefns, factions, lifeformDefns, placeDefns, shipDefns ] );
 
@@ -14,17 +27,17 @@ class WorldDefnExtended extends WorldDefn
 		this.shipDefnsByName = ArrayHelper.addLookupsByName(this.shipDefns);
 	}
 
-	factionByName(factionName)
+	factionByName(factionName: string): Faction
 	{
 		return this.factionsByName.get(factionName);
 	}
 
-	lifeformDefnByName(defnName)
+	lifeformDefnByName(defnName: string): LifeformDefn
 	{
 		return this.lifeformDefnsByName.get(defnName);
 	}
 
-	shipDefnByName(defnName)
+	shipDefnByName(defnName: string): ShipDefn
 	{
 		return this.shipDefnsByName.get(defnName);
 	}
