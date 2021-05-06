@@ -1,7 +1,6 @@
 "use strict";
-class Ship extends EntityProperty {
+class Ship {
     constructor(defnName) {
-        super();
         this.defnName = defnName;
     }
     // static methods
@@ -61,6 +60,7 @@ class Ship extends EntityProperty {
             Ship.actionAccelerate(),
             Ship.actionTurnLeft(),
             Ship.actionTurnRight(),
+            //actionMapView
         ]; //.addLookupsByName();
         return returnValues;
     }
@@ -121,6 +121,8 @@ class Ship extends EntityProperty {
     fullNameAndCrew(world) {
         return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
     }
+    // EntityProperty.
+    finalize(universe, world, place, entityShip) { }
     initialize(universe, world, place, entityShip) {
         var defn = this.defn(world);
         if (this.crew == null) {
@@ -157,7 +159,9 @@ class Ship extends EntityProperty {
         var entityOrientation = entityLoc.orientation;
         var entityForward = entityOrientation.forward;
         var entityShip = EntityExtensions.ship(entity);
-        var ship = (entityShip == null ? EntityExtensions.shipGroup(entity).ships[0] : entityShip);
+        var ship = (entityShip == null
+            ? EntityExtensions.shipGroup(entity).ships[0]
+            : entityShip);
         var shipDefn = ship.defn(world);
         var turnsPerTick = shipDefn.turnsPerTick;
         var entityForwardNew = Ship._polar.fromCoords(entityForward).addToAzimuthInTurns(turnsPerTick * direction).wrap().toCoords(entityForward);

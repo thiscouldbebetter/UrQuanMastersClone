@@ -1,5 +1,5 @@
 
-class Station extends EntityProperty implements Satellite
+class Station implements EntityProperty, Satellite
 {
 	name: string;
 	color: Color;
@@ -16,8 +16,6 @@ class Station extends EntityProperty implements Satellite
 		posAsPolar: Polar
 	)
 	{
-		super();
-
 		this.name = name;
 		this.color = color;
 		this.radiusOuter = radiusOuter;
@@ -66,4 +64,13 @@ class Station extends EntityProperty implements Satellite
 
 		return returnValue;
 	}
+
+	// EntityProperty.
+
+	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+
 }

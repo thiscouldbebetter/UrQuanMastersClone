@@ -180,7 +180,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target;
+            var targetEntityName = actor.actor().activity.target();
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -266,7 +266,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target;
+            var targetEntityName = actor.actor().activity.target();
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -291,7 +291,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target;
+            var targetEntityName = actor.actor().activity.target();
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -322,7 +322,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target;
+            var targetEntityName = actor.actor().activity.target();
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);

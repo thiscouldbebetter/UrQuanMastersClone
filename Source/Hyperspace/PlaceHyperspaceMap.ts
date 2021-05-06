@@ -196,7 +196,8 @@ class PlaceHyperspaceMap extends Place
 						new Coords(0, 1, 0)
 					),
 					null
-				)
+				),
+				null // entitiesInViewSort
 			);
 			var cameraAsEntity = CameraHelper.toEntity(this._camera);
 			this.entitySpawn(universe, world, cameraAsEntity);

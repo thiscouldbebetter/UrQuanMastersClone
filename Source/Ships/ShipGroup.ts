@@ -1,5 +1,5 @@
 
-class ShipGroup extends EntityProperty
+class ShipGroup implements EntityProperty
 {
 	name: string;
 	factionName: string;
@@ -10,8 +10,6 @@ class ShipGroup extends EntityProperty
 
 	constructor(name: string, factionName: string, pos: Coords, ships: Ship[])
 	{
-		super();
-
 		this.name = name;
 		this.factionName = factionName;
 		this.pos = pos;
@@ -35,13 +33,13 @@ class ShipGroup extends EntityProperty
 	{
 		var actor = entityActor.actor();
 
-		var targetPos = actor.activity.target as Coords;
+		var targetPos = actor.activity.target() as Coords;
 		if (targetPos == null)
 		{
 			var entityToTargetName = Player.name;
 			var target = place.entitiesByName.get(entityToTargetName);
 			targetPos = target.locatable().loc.pos;
-			actor.activity.target = targetPos;
+			actor.activity.targetSet(targetPos);
 		}
 
 		var actorLoc = entityActor.locatable().loc;
@@ -91,8 +89,8 @@ class ShipGroup extends EntityProperty
 	{
 		var actor = entityActor.actor();
 
-		actor.activity.target = new Coords(100000, 0, 0);
-		var targetPos = actor.activity.target;
+		var targetPos = new Coords(100000, 0, 0);
+		actor.activity.targetSet(targetPos);
 
 		var actorLoc = entityActor.locatable().loc;
 		var actorPos = actorLoc.pos;
@@ -119,15 +117,6 @@ class ShipGroup extends EntityProperty
 	faction(world: WorldExtended): Faction
 	{
 		return world.defnExtended().factionByName(this.factionName);
-	}
-
-	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
-	{
-		for (var i = 0; i < this.ships.length; i++)
-		{
-			var ship = this.ships[i];
-			ship.initialize(universe, world, place, entity);
-		}
 	}
 
 	toStringPosition(world: World): string
@@ -167,4 +156,20 @@ class ShipGroup extends EntityProperty
 
 		return shipCountsAsStrings.join("\n");
 	}
+
+	// EntityProperty.
+
+	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+
+	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
+	{
+		for (var i = 0; i < this.ships.length; i++)
+		{
+			var ship = this.ships[i];
+			ship.initialize(universe, world, place, entity);
+		}
+	}
+
+	updateForTimerTick(universe: Universe, world: World, place: Place, entity: Entity): void {}
+
 }

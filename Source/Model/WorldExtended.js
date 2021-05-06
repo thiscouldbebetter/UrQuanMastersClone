@@ -27,6 +27,8 @@ class WorldExtended extends World {
             Constrainable.name,
             Collidable.name,
             Boundable.name,
+            //Drawable.name,
+            //Camera.name
         ];
         var placeDefns = [
             PlaceDefn.from4(PlaceCombat.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),

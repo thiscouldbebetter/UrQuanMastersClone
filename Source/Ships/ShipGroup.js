@@ -1,7 +1,6 @@
 "use strict";
-class ShipGroup extends EntityProperty {
+class ShipGroup {
     constructor(name, factionName, pos, ships) {
-        super();
         this.name = name;
         this.factionName = factionName;
         this.pos = pos;
@@ -13,12 +12,12 @@ class ShipGroup extends EntityProperty {
     }
     static activityDefnApproachPlayer_Perform(universe, world, place, entityActor) {
         var actor = entityActor.actor();
-        var targetPos = actor.activity.target;
+        var targetPos = actor.activity.target();
         if (targetPos == null) {
             var entityToTargetName = Player.name;
             var target = place.entitiesByName.get(entityToTargetName);
             targetPos = target.locatable().loc.pos;
-            actor.activity.target = targetPos;
+            actor.activity.targetSet(targetPos);
         }
         var actorLoc = entityActor.locatable().loc;
         var actorPos = actorLoc.pos;
@@ -39,8 +38,8 @@ class ShipGroup extends EntityProperty {
     }
     static activityDefnLeave_Perform(universe, world, place, entityActor) {
         var actor = entityActor.actor();
-        actor.activity.target = new Coords(100000, 0, 0);
-        var targetPos = actor.activity.target;
+        var targetPos = new Coords(100000, 0, 0);
+        actor.activity.targetSet(targetPos);
         var actorLoc = entityActor.locatable().loc;
         var actorPos = actorLoc.pos;
         var actorVel = actorLoc.vel;
@@ -54,12 +53,6 @@ class ShipGroup extends EntityProperty {
     }
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
-    }
-    initialize(universe, world, place, entity) {
-        for (var i = 0; i < this.ships.length; i++) {
-            var ship = this.ships[i];
-            ship.initialize(universe, world, place, entity);
-        }
     }
     toStringPosition(world) {
         var hyperspaceSize = world.hyperspace.size;
@@ -86,4 +79,13 @@ class ShipGroup extends EntityProperty {
         }
         return shipCountsAsStrings.join("\n");
     }
+    // EntityProperty.
+    finalize(universe, world, place, entity) { }
+    initialize(universe, world, place, entity) {
+        for (var i = 0; i < this.ships.length; i++) {
+            var ship = this.ships[i];
+            ship.initialize(universe, world, place, entity);
+        }
+    }
+    updateForTimerTick(universe, world, place, entity) { }
 }

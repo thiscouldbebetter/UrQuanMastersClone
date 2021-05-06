@@ -1,7 +1,6 @@
 "use strict";
-class ShipAttackDefn extends EntityProperty {
+class ShipAttackDefn {
     constructor(name, energyToUse, projectileRadius, angleInTurns, speed, ticksToLive, diesOnImpact, damage, visualProjectile, visualImpact, effectWhenInvoked, perform, effectOnImpact) {
-        super();
         this.name = name;
         this.energyToUse = energyToUse;
         this.projectileRadius = projectileRadius;
@@ -78,4 +77,8 @@ class ShipAttackDefn extends EntityProperty {
             }
         }
     }
+    // EntityProperty.
+    finalize(universe, world, place, entity) { }
+    initialize(universe, world, place, entity) { }
+    updateForTimerTick(universe, world, place, entity) { }
 }

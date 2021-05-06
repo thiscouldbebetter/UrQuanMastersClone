@@ -1,7 +1,6 @@
 "use strict";
-class Lifeform extends EntityProperty {
+class Lifeform {
     constructor(defnName, pos) {
-        super();
         this.defnName = defnName;
         this.pos = pos;
     }
@@ -32,4 +31,8 @@ class Lifeform extends EntityProperty {
         ]);
         return returnValue;
     }
+    // EntityProperty.
+    finalize(u, w, p, e) { }
+    initialize(u, w, p, e) { }
+    updateForTimerTick(u, w, p, e) { }
 }

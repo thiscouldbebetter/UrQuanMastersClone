@@ -1,7 +1,6 @@
 "use strict";
-class Station extends EntityProperty {
+class Station {
     constructor(name, color, radiusOuter, factionName, posAsPolar) {
-        super();
         this.name = name;
         this.color = color;
         this.radiusOuter = radiusOuter;
@@ -27,4 +26,8 @@ class Station extends EntityProperty {
         ]);
         return returnValue;
     }
+    // EntityProperty.
+    finalize(u, w, p, e) { }
+    initialize(u, w, p, e) { }
+    updateForTimerTick(u, w, p, e) { }
 }

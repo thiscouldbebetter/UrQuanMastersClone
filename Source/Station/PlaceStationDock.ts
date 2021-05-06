@@ -198,7 +198,7 @@ class PlaceStationDock extends Place
 		var world = universe.world as WorldExtended;
 		var player = world.player;
 		var playerItemHolder = player.flagship.itemHolder;
-		var items = playerItemHolder.items();
+		var items = playerItemHolder.items;
 		var valueSumSoFar = 0;
 		for (var i = 0; i < items.length; i++)
 		{
@@ -1047,7 +1047,7 @@ class PlaceStationDock extends Place
 						containerRightSize.x - marginSize.x * 2,
 						containerRightSize.y - marginSize.y * 7 - labelSize.y * 4 - buttonSizeRight.y
 					), // size
-					DataBinding.fromContext(playerItemHolder.items()),
+					DataBinding.fromContext(playerItemHolder.items),
 					DataBinding.fromGet
 					(
 						(c: Item) => c.toString(null)

@@ -7,8 +7,6 @@ var RandomizerLCG = gf.RandomizerLCG;
 var ArrayHelper = gf.ArrayHelper;
 var NumberHelper = gf.NumberHelper;
 var StringHelper = gf.StringHelper;
-// hack
-var EntityProperty = gf.EntityProperty;
 // Controls.
 var ControlActionNames = gf.ControlActionNames;
 var ControlBase = gf.ControlBase;
@@ -60,9 +58,9 @@ var CollisionTracker = gf.CollisionTracker;
 var Constraint_FrictionDry = gf.Constraint_FrictionDry;
 var Constraint_FrictionXY = gf.Constraint_FrictionXY;
 var Constraint_SpeedMaxXY = gf.Constraint_SpeedMaxXY;
-var Constraint_TrimToRange = gf.Constraint_TrimToRange;
-var Constraint_WrapToRange = gf.Constraint_WrapToRange;
-var Constraint_WrapXTrimY = gf.Constraint_WrapXTrimY;
+var Constraint_TrimToPlaceSize = gf.Constraint_TrimToPlaceSize;
+var Constraint_WrapToPlaceSize = gf.Constraint_WrapToPlaceSize;
+var Constraint_WrapToPlaceSizeXTrimY = gf.Constraint_WrapToPlaceSizeXTrimY;
 var Coords = gf.Coords;
 var Disposition = gf.Disposition;
 var Orientation = gf.Orientation;

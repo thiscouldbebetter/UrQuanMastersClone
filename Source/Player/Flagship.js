@@ -9,7 +9,7 @@ class Flagship {
         this.numberOfLanders = numberOfLanders;
         this.crew = crew;
         this.fuel = fuel;
-        this.itemHolder = ItemHolder.fromItemEntities(items.map(x => x.toEntity()));
+        this.itemHolder = ItemHolder.fromItems(items);
         this.shipsMax = shipsMax;
         this.cachesCalculate();
     }

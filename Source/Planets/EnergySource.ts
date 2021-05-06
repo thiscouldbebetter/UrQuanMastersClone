@@ -1,5 +1,5 @@
 
-class EnergySource extends EntityProperty
+class EnergySource implements EntityProperty
 {
 	name: string;
 	pos: Coords;
@@ -8,8 +8,6 @@ class EnergySource extends EntityProperty
 
 	constructor(name: string, pos: Coords, visual: Visual, collideWithLander: any)
 	{
-		super();
-
 		this.name = name;
 		this.pos = pos;
 		this.visual = visual;
@@ -35,4 +33,12 @@ class EnergySource extends EntityProperty
 
 		return returnValue;
 	}
+
+	// EntityProperty.
+
+	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
 }

@@ -26,14 +26,15 @@ class PlacePlanetSurface extends Place {
         // constraints
         var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
         var constraintFriction = new Constraint_FrictionXY(0.1, null);
-        var constraintWrapXTrimY = new Constraint_WrapXTrimY(this.size);
+        var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
         // entities
         var entities = this.entitiesToSpawn;
         var entityDimension = 10;
         // camera
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
         null, // focalLength
-        new Disposition(Coords.create(), Orientation.Instances().ForwardZDownY.clone(), null));
+        Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
+        );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
         // background
@@ -76,7 +77,7 @@ class PlacePlanetSurface extends Place {
             var entityOtherItem = entityOther.item();
             var entityOtherEnergySource = EntityExtensions.energySource(entityOther);
             if (entityOtherItem != null) {
-                entityPlayer.itemHolder().itemEntityAdd(entityOther);
+                entityPlayer.itemHolder().itemAdd(entityOther.item());
                 place.entitiesToRemove.push(entityOther);
             }
             else if (entityOther.name.startsWith("Lifeform") == true) {
@@ -125,7 +126,7 @@ class PlacePlanetSurface extends Place {
         var entityLander = place.entitiesByName.get(Player.name);
         var itemHolderLander = entityLander.itemHolder();
         var itemHolderPlayer = world.player.flagship.itemHolder;
-        itemHolderLander.itemEntitiesAllTransferTo(itemHolderPlayer);
+        itemHolderLander.itemsAllTransferTo(itemHolderPlayer);
         var placePlanetOrbit = place.placePlanetOrbit;
         world.placeNext = placePlanetOrbit;
     }

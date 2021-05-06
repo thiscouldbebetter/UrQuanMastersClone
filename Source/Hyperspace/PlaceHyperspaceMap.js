@@ -97,7 +97,8 @@ class PlaceHyperspaceMap extends Place {
             var cameraViewSize = visualMap.size.clone();
             this._camera = new Camera(cameraViewSize, cameraViewSize.x, // focalLength
             new Disposition(new Coords(hyperspaceSize.x / 2, hyperspaceSize.y / 2, 0 - hyperspaceSize.x), // pos
-            new Orientation(new Coords(0, 0, 1), new Coords(0, 1, 0)), null));
+            new Orientation(new Coords(0, 0, 1), new Coords(0, 1, 0)), null), null // entitiesInViewSort
+            );
             var cameraAsEntity = CameraHelper.toEntity(this._camera);
             this.entitySpawn(universe, world, cameraAsEntity);
         }

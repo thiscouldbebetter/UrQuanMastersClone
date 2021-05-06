@@ -134,7 +134,7 @@ class PlaceStationDock extends Place {
         var world = universe.world;
         var player = world.player;
         var playerItemHolder = player.flagship.itemHolder;
-        var items = playerItemHolder.items();
+        var items = playerItemHolder.items;
         var valueSumSoFar = 0;
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
@@ -341,7 +341,7 @@ class PlaceStationDock extends Place {
             new ControlLabel("labelMinerals", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 3), labelSize, false, // isTextCentered
             "Minerals:", fontHeightShort),
             ControlList.from8("listMinerals", Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 4), Coords.fromXY(containerRightSize.x - marginSize.x * 2, containerRightSize.y - marginSize.y * 7 - labelSize.y * 4 - buttonSizeRight.y), // size
-            DataBinding.fromContext(playerItemHolder.items()), DataBinding.fromGet((c) => c.toString(null)), // bindingForItemText
+            DataBinding.fromContext(playerItemHolder.items), DataBinding.fromGet((c) => c.toString(null)), // bindingForItemText
             fontHeightShort, DataBinding.fromContext(null), // bindingForItemSelected
             DataBinding.fromContext(null) // bindingForItemValue
             ),

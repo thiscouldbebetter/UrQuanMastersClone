@@ -294,12 +294,11 @@ class PlacePlanetVicinity extends Place
 		(
 			Coords.fromXY(300, 300), // hack
 			null, // focalLength
-			new Disposition
+			Disposition.fromOrientation
 			(
-				Coords.create(),
 				Orientation.Instances().ForwardZDownY.clone(),
-				null
-			)
+			),
+			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
 		entities.push(cameraAsEntity);

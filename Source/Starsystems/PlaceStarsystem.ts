@@ -204,7 +204,7 @@ class PlaceStarsystem extends Place
 					Movable.create(),
 					new Actor
 					(
-						new Activity(enemyActivityDefn.name, "Player")
+						Activity.fromDefnNameAndTarget(enemyActivityDefn.name, "Player")
 					),
 				]
 			);
@@ -216,12 +216,11 @@ class PlaceStarsystem extends Place
 		(
 			new Coords(1, 1, 0).multiplyScalar(this.size.y),
 			null, // focalLength
-			new Disposition
+			Disposition.fromOrientation
 			(
-				Coords.create(),
 				Orientation.Instances().ForwardZDownY.clone(),
-				null
-			)
+			),
+			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
 		entities.push(cameraAsEntity);

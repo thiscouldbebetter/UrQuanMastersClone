@@ -1,5 +1,5 @@
 
-class Planet extends EntityProperty implements Satellite
+class Planet implements EntityProperty, Satellite
 {
 	name: string;
 	defnName: string;
@@ -45,8 +45,6 @@ class Planet extends EntityProperty implements Satellite
 		energySources: EnergySource[]
 	)
 	{
-		super();
-
 		this.name = name;
 		this.defnName = defnName;
 		this.radiusOuter = radiusOuter;
@@ -188,6 +186,8 @@ class Planet extends EntityProperty implements Satellite
 	}
 
 	// EntityProperty.
+
+	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
 
 	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
 	{

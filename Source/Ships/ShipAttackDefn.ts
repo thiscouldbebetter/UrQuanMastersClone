@@ -1,5 +1,5 @@
 
-class ShipAttackDefn extends EntityProperty
+class ShipAttackDefn implements EntityProperty
 {
 	name: string;
 	energyToUse: number;
@@ -34,8 +34,6 @@ class ShipAttackDefn extends EntityProperty
 		effectOnImpact: (u: Universe, w: World, p: Place, e: Entity) => void
 	)
 	{
-		super();
-
 		this.name = name;
 		this.energyToUse = energyToUse;
 		this.projectileRadius = projectileRadius;
@@ -175,4 +173,13 @@ class ShipAttackDefn extends EntityProperty
 			}
 		}
 	}
+
+	// EntityProperty.
+
+	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+
+	initialize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+
+	updateForTimerTick(universe: Universe, world: World, place: Place, entity: Entity): void {}
+
 }

@@ -69,12 +69,11 @@ class PlaceHyperspace extends Place
 		(
 			Coords.fromXY(300, 300), // hack
 			null, // focalLength
-			new Disposition
+			Disposition.fromOrientation
 			(
-				Coords.create(),
-				Orientation.Instances().ForwardZDownY.clone(),
-				null
-			)
+				Orientation.Instances().ForwardZDownY.clone()
+			),
+			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
 		entities.push(cameraAsEntity);
@@ -197,10 +196,8 @@ class PlaceHyperspace extends Place
 		var playerShipGroup = world.player.shipGroup;
 		var playerShip = playerShipGroup.ships[0];
 
-		//var constraintSpeedMax = new Constraint("SpeedMax", playerShipDefn.speedMax * 5);
 		var constraintFriction = new Constraint_FrictionDry(0.01);
-		//var constraintStopBelowSpeedMin = new Constraint("StopBelowSpeedMin", 0.015);
-		var constraintTrimToRange = new Constraint_TrimToRange(this.size);
+		var constraintTrimToRange = new Constraint_TrimToPlaceSize();
 
 		var playerEntity = new Entity
 		(
@@ -216,9 +213,7 @@ class PlaceHyperspace extends Place
 				),
 				new Constrainable
 				([
-					//constraintSpeedMax,
 					constraintFriction,
-					//constraintStopBelowSpeedMin,
 					constraintTrimToRange
 				]),
 				Drawable.fromVisual(playerVisual),

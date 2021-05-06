@@ -1,7 +1,6 @@
 "use strict";
-class EnergySource extends EntityProperty {
+class EnergySource {
     constructor(name, pos, visual, collideWithLander) {
-        super();
         this.name = name;
         this.pos = pos;
         this.visual = visual;
@@ -19,4 +18,8 @@ class EnergySource extends EntityProperty {
         ]);
         return returnValue;
     }
+    // EntityProperty.
+    finalize(u, w, p, e) { }
+    initialize(u, w, p, e) { }
+    updateForTimerTick(u, w, p, e) { }
 }

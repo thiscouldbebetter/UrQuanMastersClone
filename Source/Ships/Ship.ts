@@ -1,5 +1,5 @@
 
-class Ship extends EntityProperty
+class Ship implements EntityProperty
 {
 	defnName: string;
 
@@ -8,7 +8,6 @@ class Ship extends EntityProperty
 
 	constructor(defnName: string)
 	{
-		super();
 		this.defnName = defnName;
 	}
 
@@ -32,7 +31,7 @@ class Ship extends EntityProperty
 		);
 	}
 
-	static actionFire()
+	static actionFire(): Action
 	{
 		var returnValue = new Action
 		(
@@ -54,7 +53,7 @@ class Ship extends EntityProperty
 		return returnValue;
 	}
 
-	static actionSpecial()
+	static actionSpecial(): Action
 	{
 		var returnValue = new Action
 		(
@@ -76,7 +75,7 @@ class Ship extends EntityProperty
 		return returnValue;
 	}
 
-	static actionShowMenu()
+	static actionShowMenu(): Action
 	{
 		return new Action
 		(
@@ -96,7 +95,7 @@ class Ship extends EntityProperty
 		);
 	}
 
-	static actionTurnLeft()
+	static actionTurnLeft(): Action
 	{
 		return new Action
 		(
@@ -108,7 +107,7 @@ class Ship extends EntityProperty
 		);
 	}
 
-	static actionTurnRight()
+	static actionTurnRight(): Action
 	{
 		return new Action
 		(
@@ -134,7 +133,10 @@ class Ship extends EntityProperty
 		return returnValues;
 	}
 
-	activityApproachPlayer(universe: Universe, worldAsWorld: World, place: Place, actor: Entity)
+	activityApproachPlayer
+	(
+		universe: Universe, worldAsWorld: World, place: Place, actor: Entity
+	): void
 	{
 		var world = worldAsWorld as WorldExtended;
 
@@ -226,7 +228,15 @@ class Ship extends EntityProperty
 		return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
 	}
 
-	initialize(universe: Universe, world: World, place: Place, entityShip: Entity): void
+	// EntityProperty.
+
+	finalize(universe: Universe, world: World, place: Place, entityShip: Entity): void
+	{}
+
+	initialize
+	(
+		universe: Universe, world: World, place: Place, entityShip: Entity
+	): void
 	{
 		var defn = this.defn(world as WorldExtended);
 
@@ -237,7 +247,10 @@ class Ship extends EntityProperty
 		}
 	}
 
-	updateForTimerTick(universe: Universe, world: World, place: Place, entityShip: Entity): void
+	updateForTimerTick
+	(
+		universe: Universe, world: World, place: Place, entityShip: Entity
+	): void
 	{
 		var ship = EntityExtensions.ship(entityShip);
 		var shipDefn = ship.defn(world as WorldExtended);
@@ -274,13 +287,21 @@ class Ship extends EntityProperty
 		}
 	}
 
-	turnInDirection(world: WorldExtended, entity: Entity, direction: number): void
+	turnInDirection
+	(
+		world: WorldExtended, entity: Entity, direction: number
+	): void
 	{
 		var entityLoc = entity.locatable().loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
 		var entityShip = EntityExtensions.ship(entity);
-		var ship = (entityShip == null ? EntityExtensions.shipGroup(entity).ships[0] : entityShip);
+		var ship =
+		(
+			entityShip == null
+			? EntityExtensions.shipGroup(entity).ships[0]
+			: entityShip
+		);
 		var shipDefn = ship.defn(world);
 		var turnsPerTick = shipDefn.turnsPerTick;
 		var entityForwardNew = Ship._polar.fromCoords
@@ -301,7 +322,7 @@ class Ship extends EntityProperty
 		this.turnInDirection(world, entity, -1);
 	}
 
-	turnRight(world: WorldExtended, entity: Entity)
+	turnRight(world: WorldExtended, entity: Entity): void
 	{
 		this.turnInDirection(world, entity, 1);
 	}

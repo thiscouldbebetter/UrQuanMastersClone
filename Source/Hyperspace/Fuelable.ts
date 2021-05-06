@@ -1,15 +1,16 @@
 
-class Fuelable extends EntityProperty
+class Fuelable implements EntityProperty
 {
-	constructor()
-	{
-		super();
-	}
+	// EntityProperty.
+
+	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
 
 	updateForTimerTick
 	(
 		universe: Universe, world: World, place: Place, entityFuelable: Entity
-	)
+	): void
 	{
 		var entityLoc = entityFuelable.locatable().loc;
 		var entityVel = entityLoc.vel;

@@ -30,7 +30,8 @@ class PlaceCombat extends Place {
         // camera
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
         null, // focalLength
-        new Disposition(Coords.create(), Orientation.Instances().ForwardZDownY.clone(), null));
+        Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
+        );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         this.entitySpawn(null, world, cameraAsEntity);
         // entities
@@ -96,7 +97,7 @@ class PlaceCombat extends Place {
         var shipCollide = (universe, world, place, entityPlayer, entityOther) => {
             // todo
         };
-        var constraintWrapToRange = new Constraint_WrapToRange(this.size);
+        var constraintWrapToRange = new Constraint_WrapToPlaceSize();
         for (var i = 0; i < shipsFighting.length; i++) {
             var ship = shipsFighting[i];
             var shipPos = Coords.fromXY(.1 * (i == 0 ? -1 : 1), 0).multiply(this.size).add(planetPos);

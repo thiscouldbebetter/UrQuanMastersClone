@@ -1,7 +1,6 @@
 "use strict";
-class Starsystem extends EntityProperty {
+class Starsystem {
     constructor(name, starSizeIndex, starColor, posInHyperspace, sizeInner, factionName, planets, shipGroups) {
-        super();
         this.name = name;
         this.starSizeIndex = starSizeIndex;
         this.starColor = starColor;
@@ -71,6 +70,10 @@ class Starsystem extends EntityProperty {
         }
         planetWithStation.satellites.push(station);
     }
+    // EntityProperty.
+    finalize(u, w, p, e) { }
+    initialize(u, w, p, e) { }
+    updateForTimerTick(u, w, p, e) { }
 }
 Starsystem.StarColors = [
     "Red",

@@ -10,7 +10,8 @@ class PlacePlanetOrbit extends Place {
         entities.push(...resourceEntities);
         // todo - Lifeforms and energy sources.
         this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y), null, // focalLength
-        new Disposition(Coords.create(), Orientation.Instances().ForwardZDownY.clone(), null));
+        Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
+        );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
         this._drawPos = Coords.create();

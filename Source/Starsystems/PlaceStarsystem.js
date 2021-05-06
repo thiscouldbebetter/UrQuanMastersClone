@@ -109,12 +109,13 @@ class PlaceStarsystem extends Place {
                 new Killable(1, null, enemyKill),
                 new Locatable(enemyLoc),
                 Movable.create(),
-                new Actor(new Activity(enemyActivityDefn.name, "Player")),
+                new Actor(Activity.fromDefnNameAndTarget(enemyActivityDefn.name, "Player")),
             ]);
             entities.push(enemyEntity);
         }
         this._camera = new Camera(new Coords(1, 1, 0).multiplyScalar(this.size.y), null, // focalLength
-        new Disposition(Coords.create(), Orientation.Instances().ForwardZDownY.clone(), null));
+        Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
+        );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
         var wallsEntity = new Entity("Walls", [

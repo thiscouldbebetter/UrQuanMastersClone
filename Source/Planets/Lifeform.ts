@@ -1,13 +1,11 @@
 
-class Lifeform extends EntityProperty
+class Lifeform implements EntityProperty
 {
 	defnName: string;
 	pos: Coords;
 
 	constructor(defnName: string, pos: Coords)
 	{
-		super();
-
 		this.defnName = defnName;
 		this.pos = pos;
 	}
@@ -53,4 +51,13 @@ class Lifeform extends EntityProperty
 
 		return returnValue;
 	}
+
+	// EntityProperty.
+
+	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+
 }

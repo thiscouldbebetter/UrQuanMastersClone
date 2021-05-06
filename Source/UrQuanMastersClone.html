@@ -54,10 +54,6 @@
 <script type="text/javascript" src="Framework/Source/Display/Visuals/Animation/VisualAnimation.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Camera.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/CollisionHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/CollisionTracker.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Constraint.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Disposition.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Orientation.js"></script>
@@ -65,6 +61,15 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Quaternion.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/RangeExtent.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Rotation.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Collisions/Collision.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionTracker.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_FrictionDry.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_FrictionXY.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_SpeedMaxXY.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Arc.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Box.js"></script>
@@ -118,7 +123,6 @@
 
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/Goal.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Modellable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Playable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Universe.js"></script>
@@ -236,10 +240,11 @@
 <script type="text/javascript" src="Utility/CsvCompressor.js"></script>
 
 <script type="text/javascript" src="debug.js"></script>
-<script type="text/javascript" src="main.js"></script>
+
+<script type="text/javascript" src="Game.js"></script>
 
 <script type="text/javascript">
-main();
+new Game().start();
 </script>
 
 </body>

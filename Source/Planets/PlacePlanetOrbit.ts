@@ -33,12 +33,11 @@ class PlacePlanetOrbit extends Place
 		(
 			Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y),
 			null, // focalLength
-			new Disposition
+			Disposition.fromOrientation
 			(
-				Coords.create(),
-				Orientation.Instances().ForwardZDownY.clone(),
-				null
-			)
+				Orientation.Instances().ForwardZDownY.clone()
+			),
+			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
 		entities.push(cameraAsEntity);

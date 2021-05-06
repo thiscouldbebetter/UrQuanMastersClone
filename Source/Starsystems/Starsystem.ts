@@ -1,5 +1,5 @@
 
-class Starsystem extends EntityProperty
+class Starsystem implements EntityProperty
 {
 	name: string;
 	starSizeIndex: number;
@@ -22,8 +22,6 @@ class Starsystem extends EntityProperty
 		shipGroups: ShipGroup[]
 	)
 	{
-		super();
-
 		this.name = name;
 		this.starSizeIndex = starSizeIndex;
 		this.starColor = starColor;
@@ -166,4 +164,11 @@ class Starsystem extends EntityProperty
 		planetWithStation.satellites.push(station);
 	}
 
+	// EntityProperty.
+
+	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
 }

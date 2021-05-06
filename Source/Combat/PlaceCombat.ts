@@ -58,12 +58,11 @@ class PlaceCombat extends Place
 		(
 			Coords.fromXY(300, 300), // hack
 			null, // focalLength
-			new Disposition
+			Disposition.fromOrientation
 			(
-				Coords.create(),
-				Orientation.Instances().ForwardZDownY.clone(),
-				null
-			)
+				Orientation.Instances().ForwardZDownY.clone()
+			),
+			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
 		this.entitySpawn(null, world, cameraAsEntity);
@@ -176,7 +175,7 @@ class PlaceCombat extends Place
 			// todo
 		}
 
-		var constraintWrapToRange = new Constraint_WrapToRange(this.size);
+		var constraintWrapToRange = new Constraint_WrapToPlaceSize();
 
 		for (var i = 0; i < shipsFighting.length; i++)
 		{

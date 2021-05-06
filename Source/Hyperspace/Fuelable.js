@@ -1,8 +1,8 @@
 "use strict";
-class Fuelable extends EntityProperty {
-    constructor() {
-        super();
-    }
+class Fuelable {
+    // EntityProperty.
+    finalize(u, w, p, e) { }
+    initialize(u, w, p, e) { }
     updateForTimerTick(universe, world, place, entityFuelable) {
         var entityLoc = entityFuelable.locatable().loc;
         var entityVel = entityLoc.vel;

@@ -1,7 +1,6 @@
 "use strict";
-class Planet extends EntityProperty {
+class Planet {
     constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, hasLife, energySources) {
-        super();
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
@@ -80,6 +79,7 @@ class Planet extends EntityProperty {
         return returnValue;
     }
     // EntityProperty.
+    finalize(universe, world, place, entity) { }
     initialize(universe, world, place, entity) {
         var randomizer = universe.randomizer;
         this.mineralsGenerate(randomizer);

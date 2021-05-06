@@ -1,5 +1,5 @@
 
-class Faction extends EntityProperty
+class Faction implements EntityProperty
 {
 	name: string;
 	nameOriginal: string;
@@ -19,8 +19,6 @@ class Faction extends EntityProperty
 		shipDefnName: string, shipGroupActivity: Activity
 	)
 	{
-		super();
-
 		this.name = name;
 		this.nameOriginal = nameOriginal;
 		this.color = color;
@@ -35,4 +33,12 @@ class Faction extends EntityProperty
 	static RelationsAllied = "Allied";
 	static RelationsHostile = "Hostile";
 	static RelationsNeutral = "Neutral";
+
+	// EntityProperty.
+
+	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+
+	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
 }
