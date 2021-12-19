@@ -12,9 +12,11 @@ class Faction {
         this.shipGroupActivity = shipGroupActivity;
     }
     // EntityProperty.
-    finalize(u, w, p, e) { }
-    initialize(u, w, p, e) { }
-    updateForTimerTick(u, w, p, e) { }
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    // Equatable.
+    equals(other) { return false; }
 }
 Faction.RelationsAllied = "Allied";
 Faction.RelationsHostile = "Hostile";

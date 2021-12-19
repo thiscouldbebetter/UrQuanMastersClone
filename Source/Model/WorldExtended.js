@@ -171,17 +171,18 @@ class WorldExtended extends World {
     draw(universe) {
         this.placeCurrent.draw(universe, universe.world, universe.display);
     }
-    initialize(universe) {
-        this.placeCurrent.initialize(universe, this);
+    initialize(uwpe) {
+        this.placeCurrent.initialize(uwpe.worldSet(this));
     }
-    updateForTimerTick(universe) {
+    updateForTimerTick(uwpe) {
+        uwpe.worldSet(this);
         if (this.placeNext != null) {
-            this.placeCurrent.finalize(universe, this);
+            this.placeCurrent.finalize(uwpe);
             this.placeCurrent = this.placeNext;
-            this.placeCurrent.initialize(universe, this);
+            this.placeCurrent.initialize(uwpe);
             this.placeNext = null;
         }
-        this.placeCurrent.updateForTimerTick(universe, this);
+        this.placeCurrent.updateForTimerTick(uwpe);
         this.timerTicksSoFar++;
     }
     toControl(universe) {

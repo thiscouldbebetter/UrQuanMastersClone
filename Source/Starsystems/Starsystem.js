@@ -71,9 +71,11 @@ class Starsystem {
         planetWithStation.satellites.push(station);
     }
     // EntityProperty.
-    finalize(u, w, p, e) { }
-    initialize(u, w, p, e) { }
-    updateForTimerTick(u, w, p, e) { }
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    // Equatable.
+    equals(other) { return false; }
 }
 Starsystem.StarColors = [
     "Red",

@@ -29,7 +29,7 @@ class PlaceEncounter extends Place {
         var mediaLibrary = universe.mediaLibrary;
         var conversationDefnAsJSON = mediaLibrary.textStringGetByName(conversationResourceName).value;
         var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-        var contentTextStringName = conversationDefn.contentTextStringName;
+        var contentTextStringName = conversationDefnName; // conversationDefn.contentTextStringName;
         if (contentTextStringName != null) {
             var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
             conversationDefn.expandFromContentTextString(contentTextString);
@@ -39,7 +39,8 @@ class PlaceEncounter extends Place {
          {
             encounter.returnToPlace(world);
             universe.venueNext = venueToReturnTo;
-        }, null, // universe
+        }, null, // ?
+        null, // ?
         null // ?
         );
         var conversationSize = universe.display.sizeDefault().clone();
@@ -54,10 +55,11 @@ class PlaceEncounter extends Place {
             this.venueControls.draw(universe);
         }
     }
-    updateForTimerTick(universe, worldAsWorld) {
-        var world = worldAsWorld;
-        super.updateForTimerTick(universe, world);
+    updateForTimerTick(uwpe) {
+        var universe = uwpe.universe;
+        super.updateForTimerTick(uwpe);
         if (this.venueControls == null) {
+            var world = uwpe.world;
             var encounter = this.encounter;
             var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
             var shipGroupOtherDescription = shipGroupOther.toStringDescription();

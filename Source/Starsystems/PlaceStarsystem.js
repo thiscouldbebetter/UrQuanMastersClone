@@ -60,7 +60,7 @@ class PlaceStarsystem extends Place {
             Drawable.fromVisual(playerVisual),
             ItemHolder.create(),
             new Locatable(playerLoc),
-            Movable.create(),
+            Movable.default(),
             new Playable(),
             playerShipGroup,
             playerShipGroup.ships[0]
@@ -85,14 +85,18 @@ class PlaceStarsystem extends Place {
             var enemyShip = new Ship(enemyShipDefnName);
             var enemyShipGroup = new ShipGroup("Enemy", "Enemy", // factionName
             Coords.create(), [enemyShip]);
-            var enemyKill = (universe, world, place, entity) => {
+            var enemyKill = (uwpe) => {
+                var place = uwpe.place;
+                var entity = uwpe.entity;
                 place.entityRemove(entity);
                 var starsystem = place.starsystem;
                 var shipGroup = EntityExtensions.shipGroup(entity);
                 ArrayHelper.remove(starsystem.shipGroups, shipGroup);
             };
-            var enemyActivityDefnPerform = (universe, world, place, actor) => // activity
+            var enemyActivityDefnPerform = (uwpe) => // activity
              {
+                var place = uwpe.place;
+                var actor = uwpe.entity;
                 var entityToTargetName = "todo";
                 var target = place.entitiesByName.get(entityToTargetName);
                 var actorLoc = actor.locatable().loc;
@@ -108,8 +112,8 @@ class PlaceStarsystem extends Place {
                 Drawable.fromVisual(enemyVisual),
                 new Killable(1, null, enemyKill),
                 new Locatable(enemyLoc),
-                Movable.create(),
-                new Actor(Activity.fromDefnNameAndTarget(enemyActivityDefn.name, "Player")),
+                Movable.default(),
+                new Actor(Activity.fromDefnNameAndTargetEntity(enemyActivityDefn.name, new Entity("Player", []))),
             ]);
             entities.push(enemyEntity);
         }

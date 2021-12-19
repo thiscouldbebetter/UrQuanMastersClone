@@ -116,7 +116,7 @@ class PlaceHyperspace extends Place {
             new Fuelable(),
             ItemHolder.create(),
             new Locatable(playerLoc),
-            Movable.create(),
+            Movable.default(),
             new Playable(),
             playerShipGroup,
             playerShip

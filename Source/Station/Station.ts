@@ -1,5 +1,5 @@
 
-class Station implements EntityProperty, Satellite
+class Station implements EntityProperty<Station>, Satellite
 {
 	name: string;
 	color: Color;
@@ -67,10 +67,12 @@ class Station implements EntityProperty, Satellite
 
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+	// Equatable.
 
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	equals(other: Station): boolean { return false; }
 
 }

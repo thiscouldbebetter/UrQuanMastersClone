@@ -22,9 +22,9 @@ class Game {
         ], 
         // sounds
         [
-            new Sound("Sound", "../Content/Audio/Effects/Sound.wav"),
-            new Sound("Music_Music", "../Content/Audio/Music/Music.mp3"),
-            new Sound("Music_Title", "../Content/Audio/Music/Music.mp3"),
+            new SoundFromFile("Sound", "../Content/Audio/Effects/Sound.wav"),
+            new SoundFromFile("Music_Music", "../Content/Audio/Music/Music.mp3"),
+            new SoundFromFile("Music_Title", "../Content/Audio/Music/Music.mp3"),
         ], 
         // videos
         [
@@ -78,7 +78,7 @@ class Game {
         );
         var timerHelper = new TimerHelper(24);
         var controlBuilder = ControlBuilder.default();
-        var universe = Universe.create("SpaceAdventureClone", "0.0.0-20210504", timerHelper, display, mediaLibrary, controlBuilder, WorldExtended.create);
+        var universe = Universe.create("SpaceAdventureClone", "0.0.0-20211219", timerHelper, display, mediaLibrary, controlBuilder, WorldCreator.fromWorldCreate(WorldExtended.create));
         universe.initialize(() => universe.start());
         var controlSlideshowIntro = universe.controlBuilder.slideshow(universe, displaySizeInPixelsDefault, [
             ["Black", "At first, it was black."],
@@ -196,7 +196,8 @@ class Game {
         var playerPos = starsystemSol.posInHyperspace.clone();
         var playerLoc = Disposition.fromPos(playerPos);
         var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
-        placeHyperspace.updateForTimerTick(universe, world);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+        placeHyperspace.updateForTimerTick(uwpe);
         var placeMap = new PlaceHyperspaceMap(placeHyperspace);
         world.placeNext = placeMap;
     }

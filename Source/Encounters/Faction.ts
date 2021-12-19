@@ -1,5 +1,5 @@
 
-class Faction implements EntityProperty
+class Faction implements EntityPropertyBase
 {
 	name: string;
 	nameOriginal: string;
@@ -36,9 +36,13 @@ class Faction implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable.
+
+	equals(other: Faction): boolean { return false; } 
 }

@@ -1,5 +1,5 @@
 
-class ShipGroup implements EntityProperty
+class ShipGroup implements EntityPropertyBase
 {
 	name: string;
 	factionName: string;
@@ -28,19 +28,22 @@ class ShipGroup implements EntityProperty
 
 	static activityDefnApproachPlayer_Perform
 	(
-		universe: Universe, world: World, place: Place, entityActor: Entity
+		uwpe: UniverseWorldPlaceEntities
 	): void
 	{
+		var entityActor = uwpe.entity;
+
 		var actor = entityActor.actor();
 
-		var targetPos = actor.activity.target() as Coords;
-		if (targetPos == null)
+		var target = actor.activity.target();
+		if (target == null)
 		{
 			var entityToTargetName = Player.name;
-			var target = place.entitiesByName.get(entityToTargetName);
-			targetPos = target.locatable().loc.pos;
-			actor.activity.targetSet(targetPos);
+			target = place.entitiesByName.get(entityToTargetName);
+			actor.activity.targetEntitySet(target);
 		}
+
+		var targetPos = target.locatable().loc.pos;
 
 		var actorLoc = entityActor.locatable().loc;
 		var actorPos = actorLoc.pos;
@@ -159,9 +162,9 @@ class ShipGroup implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
 		for (var i = 0; i < this.ships.length; i++)
 		{
@@ -170,6 +173,6 @@ class ShipGroup implements EntityProperty
 		}
 	}
 
-	updateForTimerTick(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 }

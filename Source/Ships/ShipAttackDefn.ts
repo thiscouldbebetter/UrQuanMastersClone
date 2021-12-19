@@ -9,8 +9,8 @@ class ShipAttackDefn implements EntityProperty
 	ticksToLive: number;
 	diesOnImpact: boolean;
 	damage: number;
-	visualProjectile: Visual;
-	visualImpact: Visual;
+	visualProjectile: VisualBase;
+	visualImpact: VisualBase;
 	effectWhenInvoked: any;
 	perform: (u: Universe, w: World, p: Place, e: Entity) => void;
 	effectOnImpact: (u: Universe, w: World, p: Place, e: Entity) => void;
@@ -27,8 +27,8 @@ class ShipAttackDefn implements EntityProperty
 		ticksToLive: number,
 		diesOnImpact: boolean,
 		damage: number,
-		visualProjectile: Visual,
-		visualImpact: Visual,
+		visualProjectile: VisualBase,
+		visualImpact: VisualBase,
 		effectWhenInvoked: any,
 		perform: (u: Universe, w: World, p: Place, e: Entity) => void,
 		effectOnImpact: (u: Universe, w: World, p: Place, e: Entity) => void

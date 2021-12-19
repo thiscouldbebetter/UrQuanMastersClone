@@ -101,8 +101,7 @@ var InputHelper = gf.InputHelper;
 var Font = gf.Font;
 var Image2 = gf.Image2;
 var MediaLibrary = gf.MediaLibrary;
-var Sound = gf.Sound;
-var SoundHelper = gf.SoundHelper;
+var SoundFromFile = gf.SoundFromFile;
 var TextString = gf.TextString;
 var VenueVideo = gf.VenueVideo;
 var Video = gf.Video;
@@ -119,6 +118,7 @@ var Universe = gf.Universe;
 var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 var VenueWorld = gf.VenueWorld;
 var World = gf.World;
+var WorldCreator = gf.WorldCreator;
 var WorldDefn = gf.WorldDefn;
 // Model - Actors.
 var Action = gf.Action;

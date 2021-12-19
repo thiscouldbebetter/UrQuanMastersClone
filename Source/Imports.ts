@@ -50,6 +50,7 @@ import VenueLayered = gf.VenueLayered;
 // Display - Visuals.
 
 import Visual = gf.Visual;
+import VisualBase = gf.VisualBase;
 import VisualAnchor = gf.VisualAnchor;
 import VisualCircle = gf.VisualCircle;
 import VisualCircleGradient = gf.VisualCircleGradient;
@@ -120,7 +121,9 @@ import Mesh = gf.Mesh;
 // Geometry - Transforms.
 
 import Transform = gf.Transform;
+import TransformBase = gf.TransformBase;
 import Transformable = gf.Transformable;
+import TransformableBase = gf.TransformableBase;
 import Transform_Locate = gf.Transform_Locate;
 import Transform_Orient = gf.Transform_Orient;
 import Transform_Rotate2D = gf.Transform_Rotate2D;
@@ -140,6 +143,7 @@ import Font = gf.Font;
 import Image2 = gf.Image2;
 import MediaLibrary = gf.MediaLibrary;
 import Sound = gf.Sound;
+import SoundFromFile = gf.SoundFromFile;
 import SoundHelper = gf.SoundHelper;
 import TextString = gf.TextString;
 import VenueVideo = gf.VenueVideo;
@@ -151,6 +155,7 @@ import VisualSound = gf.VisualSound;
 
 import Entity = gf.Entity;
 import EntityBuilder = gf.EntityBuilder;
+import EntityPropertyBase = gf.EntityPropertyBase;
 import Ephemeral = gf.Ephemeral;
 import Namable = gf.Namable;
 import Place = gf.Place;
@@ -161,6 +166,7 @@ import UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 import Venue = gf.Venue;
 import VenueWorld = gf.VenueWorld;
 import World = gf.World;
+import WorldCreator = gf.WorldCreator;
 import WorldDefn = gf.WorldDefn;
 
 // Model - Actors.

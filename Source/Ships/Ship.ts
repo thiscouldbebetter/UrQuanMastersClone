@@ -1,5 +1,5 @@
 
-class Ship implements EntityProperty
+class Ship implements EntityProperty<Ship>
 {
 	defnName: string;
 
@@ -22,9 +22,11 @@ class Ship implements EntityProperty
 		return new Action
 		(
 			"Accelerate",
-			(universe: Universe, worldAsWorld: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var world = worldAsWorld as WorldExtended;
+				var world = uwpe.world as WorldExtended;
+				var actor = uwpe.entity;
+
 				var ship = EntityExtensions.ship(actor);
 				ship.accelerate(world, actor);
 			}
@@ -36,9 +38,13 @@ class Ship implements EntityProperty
 		var returnValue = new Action
 		(
 			"Fire",
-			(universe: Universe, worldAsWorld: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var world = worldAsWorld as WorldExtended;
+				var universe = uwpe.universe;
+				var world = uwpe.world as WorldExtended;
+				var place = uwpe.place;
+				var actor = uwpe.entity;
+
 				var ship = EntityExtensions.ship(actor);
 				var shipDefn = ship.defn(world);
 				var attackDefn = shipDefn.attackDefn;
@@ -58,9 +64,13 @@ class Ship implements EntityProperty
 		var returnValue = new Action
 		(
 			"Special",
-			(universe: Universe, worldAsWorld: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var world = worldAsWorld as WorldExtended;
+				var universe = uwpe.universe;
+				var world = uwpe.world as WorldExtended;
+				var place = uwpe.place;
+				var actor = uwpe.entity;
+
 				var ship = EntityExtensions.ship(actor);
 				var shipDefn = ship.defn(world);
 				var specialDefn = shipDefn.specialDefn;
@@ -80,8 +90,10 @@ class Ship implements EntityProperty
 		return new Action
 		(
 			"ShowMenu",
-			(universe: Universe, world: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
+				var universe = uwpe.universe;
+
 				var venueNext: Venue = VenueControls.fromControl
 				(
 					universe.controlBuilder.gameAndSettings1(universe)
@@ -100,9 +112,12 @@ class Ship implements EntityProperty
 		return new Action
 		(
 			"TurnLeft",
-			(universe: Universe, world: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				EntityExtensions.ship(actor).turnLeft(world as WorldExtended, actor);
+				var world = uwpe.world as WorldExtended;
+				var actor = uwpe.entity;
+
+				EntityExtensions.ship(actor).turnLeft(world, actor);
 			}
 		);
 	}
@@ -112,9 +127,12 @@ class Ship implements EntityProperty
 		return new Action
 		(
 			"TurnRight",
-			(universe: Universe, world: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				EntityExtensions.ship(actor).turnRight(world as WorldExtended, actor);
+				var world = uwpe.world as WorldExtended;
+				var actor = uwpe.entity;
+				
+				EntityExtensions.ship(actor).turnRight(world, actor);
 			}
 		);
 	}
@@ -177,9 +195,9 @@ class Ship implements EntityProperty
 		[
 			new ActionToInputsMapping("ShowMenu", ["Escape"], null),
 
-			new ActionToInputsMapping("TurnLeft", ["ArrowLeft", "Gamepad0Left"], null),
-			new ActionToInputsMapping("TurnRight", ["ArrowRight", "Gamepad0Right"], null),
-			new ActionToInputsMapping("Accelerate", ["ArrowUp", "Gamepad0Up"], null),
+			new ActionToInputsMapping("TurnLeft", [ "a", "ArrowLeft", "Gamepad0Left"], null),
+			new ActionToInputsMapping("TurnRight", [ "d", "ArrowRight", "Gamepad0Right"], null),
+			new ActionToInputsMapping("Accelerate", [ "w", "ArrowUp", "Gamepad0Up"], null),
 
 		];//.addLookupsMultiple(function(x) { return x.inputNames; } );
 
@@ -230,14 +248,15 @@ class Ship implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(universe: Universe, world: World, place: Place, entityShip: Entity): void
-	{}
-
-	initialize
-	(
-		universe: Universe, world: World, place: Place, entityShip: Entity
-	): void
+	finalize(uwpe: UniverseWorldPlaceEntities): void
 	{
+		// Do nothing.
+	}
+
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var world = uwpe.world;
+
 		var defn = this.defn(world as WorldExtended);
 
 		if (this.crew == null)
@@ -247,11 +266,11 @@ class Ship implements EntityProperty
 		}
 	}
 
-	updateForTimerTick
-	(
-		universe: Universe, world: World, place: Place, entityShip: Entity
-	): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var world = uwpe.world;
+		var entityShip = uwpe.entity;
+
 		var ship = EntityExtensions.ship(entityShip);
 		var shipDefn = ship.defn(world as WorldExtended);
 		ship.energy += shipDefn.energyPerTick;
@@ -372,7 +391,8 @@ class Ship implements EntityProperty
 					), // pos
 					labelSizeShort,
 					true, // isTextCentered
-					defn.factionName,
+					false, // isTextCenteredVertically
+					DataBinding.fromContext(defn.factionName),
 					fontHeightShort
 				),
 
@@ -386,7 +406,8 @@ class Ship implements EntityProperty
 					), // pos
 					labelSizeShort,
 					false, // isTextCentered
-					"Crew:",
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Crew:"),
 					fontHeightShort
 				),
 
@@ -400,6 +421,7 @@ class Ship implements EntityProperty
 					), // pos
 					labelSizeShort,
 					false, // isTextCentered
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						ship, (c: Ship) => c.crewCurrentOverMax(world)
@@ -413,7 +435,8 @@ class Ship implements EntityProperty
 					Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
 					labelSizeShort,
 					false, // isTextCentered
-					"Energy:",
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Energy:"),
 					fontHeightShort
 				),
 
@@ -427,6 +450,7 @@ class Ship implements EntityProperty
 					), // pos
 					labelSizeShort,
 					false, // isTextCentered
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						ship, (c: Ship) => c.energyCurrentOverMax(world)
@@ -438,4 +462,8 @@ class Ship implements EntityProperty
 
 		return returnValue;
 	}
+
+	// Equatable.
+
+	equals(other: Ship): boolean { return false; }
 }

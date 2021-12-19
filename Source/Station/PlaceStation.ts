@@ -76,8 +76,9 @@ class PlaceStation extends Place
 				world.placeCurrent = placeStation.placePlanetVicinity;
 				universe.venueNext = new VenueWorld(world);
 			},
-			null, // ?
-			null // ?
+			null, // entityPlayer
+			null, // entityTalker
+			null // contentsById
 		);
 		var conversationAsControl = conversation.toControl(size, universe);
 		universe.venueNext = new VenueControls(conversationAsControl, null);
@@ -91,13 +92,15 @@ class PlaceStation extends Place
 		this.venueControls.draw(universe);
 	}
 
-	updateForTimerTick(universe: Universe, world: World): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		super.updateForTimerTick(universe, world);
+		super.updateForTimerTick(uwpe.placeSet(this));
 		if (this.venueControls == null)
 		{
 			var messageToShow = "[Station]";
 			var placeStation = this;
+
+			var universe = uwpe.universe;
 
 			var controlRoot = universe.controlBuilder.choice
 			(

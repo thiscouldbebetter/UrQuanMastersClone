@@ -9,7 +9,7 @@ class ConversationRunExtended extends ConversationRun
 		entityTalker: Entity
 	)
 	{
-		super(defn, quit, entityPlayer, entityTalker);
+		super(defn, quit, entityPlayer, entityTalker, null);
 	}
 
 	transcript(universe: Universe): void
@@ -84,7 +84,7 @@ class ConversationRunExtended extends ConversationRun
 							"visualNonplayer",
 							Coords.Instances().Zeroes,
 							paneSizeTopAndBottom,
-							DataBinding.fromContext<Visual>(visualNonplayer)
+							DataBinding.fromContext<VisualBase>(visualNonplayer)
 						),
 
 						new ControlLabel
@@ -97,6 +97,7 @@ class ConversationRunExtended extends ConversationRun
 							), // pos
 							paneSizeTopAndBottom,
 							true, // isTextCentered
+							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
 								conversationRun,
@@ -134,7 +135,7 @@ class ConversationRunExtended extends ConversationRun
 							// bindingForItemText
 							DataBinding.fromGet
 							(
-								(c: TalkNode) => c.text // bindingExpression
+								(c: TalkNode) => c.content // bindingExpression
 							),
 							fontHeight,
 							new DataBinding
@@ -161,12 +162,11 @@ class ConversationRunExtended extends ConversationRun
 							"Next",
 							fontHeight,
 							true, // hasBorder,
-							true, // isEnabled
-							(universe: Universe) => // click
+							DataBinding.fromTrue(), // isEnabled
+							() => // click
 							{
 								conversationRun.next(universe);
 							},
-							universe, // context
 							false // canBeHeldDown
 						),
 
@@ -183,12 +183,11 @@ class ConversationRunExtended extends ConversationRun
 							"Transcript",
 							fontHeight,
 							true, // hasBorder,
-							true, // isEnabled
-							(universe: Universe) => // click
+							DataBinding.fromTrue(), // isEnabled
+							() => // click
 							{
 								conversationRun.transcript(universe);
 							},
-							universe, // context
 							false // canBeHeldDown
 						),
 
@@ -205,12 +204,11 @@ class ConversationRunExtended extends ConversationRun
 							"Leave",
 							fontHeight,
 							true, // hasBorder,
-							true, // isEnabled
+							DataBinding.fromTrue(), // isEnabled
 							() =>
 							{
 								conversationRun.quit();
 							},
-							universe, // context
 							false // canBeHeldDown
 						)
 					]

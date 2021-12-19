@@ -1,7 +1,8 @@
 "use strict";
 class WorldDefnExtended extends WorldDefn {
     constructor(activityDefns, factions, lifeformDefns, placeDefns, shipDefns) {
-        super([activityDefns, factions, lifeformDefns, placeDefns, shipDefns]);
+        super(null, // actions
+        activityDefns, null, null, placeDefns, null);
         this.factions = factions;
         this.lifeformDefns = lifeformDefns;
         this.shipDefns = shipDefns;

@@ -1,7 +1,7 @@
 "use strict";
 class ConversationRunExtended extends ConversationRun {
     constructor(defn, quit, entityPlayer, entityTalker) {
-        super(defn, quit, entityPlayer, entityTalker);
+        super(defn, quit, entityPlayer, entityTalker, null);
     }
     transcript(universe) {
         var venueCurrent = universe.venueCurrent;
@@ -38,6 +38,7 @@ class ConversationRunExtended extends ConversationRun {
                 ControlVisual.from4("visualNonplayer", Coords.Instances().Zeroes, paneSizeTopAndBottom, DataBinding.fromContext(visualNonplayer)),
                 new ControlLabel("labelNonplayerStatement", Coords.fromXY(paneSizeTopAndBottomHalf.x, fontHeight), // pos
                 paneSizeTopAndBottom, true, // isTextCentered
+                false, // isTextCenteredVertically
                 DataBinding.fromContextAndGet(conversationRun, (c) => c.scopeCurrent.displayTextCurrent), fontHeight),
             ]),
             ControlContainer.from4("containerPlayer", 
@@ -48,38 +49,35 @@ class ConversationRunExtended extends ConversationRun {
                 // items
                 DataBinding.fromContextAndGet(conversationRun, (c) => c.scopeCurrent.talkNodesForOptionsActive()), 
                 // bindingForItemText
-                DataBinding.fromGet((c) => c.text // bindingExpression
+                DataBinding.fromGet((c) => c.content // bindingExpression
                 ), fontHeight, new DataBinding(conversationRun, (c) => c.scopeCurrent.talkNodeForOptionSelected, (c, v) => c.scopeCurrent.talkNodeForOptionSelected = v), // bindingForItemSelected
                 DataBinding.fromContext(null) // bindingForItemValue
                 ),
                 new ControlButton("buttonNext", 
                 // pos
                 Coords.fromXY(marginSize.x, paneSizeTopAndBottom.y - marginSize.y - buttonHeight), buttonSize, "Next", fontHeight, true, // hasBorder,
-                true, // isEnabled
-                (universe) => // click
+                DataBinding.fromTrue(), // isEnabled
+                () => // click
                  {
                     conversationRun.next(universe);
-                }, universe, // context
-                false // canBeHeldDown
+                }, false // canBeHeldDown
                 ),
                 new ControlButton("buttonTranscript", 
                 // pos
                 Coords.fromXY(marginSize.x * 2 + buttonSize.x, paneSizeTopAndBottom.y - marginSize.y - buttonHeight), buttonSize, "Transcript", fontHeight, true, // hasBorder,
-                true, // isEnabled
-                (universe) => // click
+                DataBinding.fromTrue(), // isEnabled
+                () => // click
                  {
                     conversationRun.transcript(universe);
-                }, universe, // context
-                false // canBeHeldDown
+                }, false // canBeHeldDown
                 ),
                 new ControlButton("buttonLeave", 
                 // pos
                 Coords.fromXY(marginSize.x * 3 + buttonSize.x * 2, paneSizeTopAndBottom.y - marginSize.y - buttonHeight), buttonSize, "Leave", fontHeight, true, // hasBorder,
-                true, // isEnabled
+                DataBinding.fromTrue(), // isEnabled
                 () => {
                     conversationRun.quit();
-                }, universe, // context
-                false // canBeHeldDown
+                }, false // canBeHeldDown
                 )
             ]),
             ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), // todo

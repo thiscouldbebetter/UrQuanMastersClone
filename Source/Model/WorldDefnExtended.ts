@@ -16,7 +16,15 @@ class WorldDefnExtended extends WorldDefn
 		shipDefns: ShipDefn[]
 	)
 	{
-		super( [ activityDefns, factions, lifeformDefns, placeDefns, shipDefns ] );
+		super
+		(
+			null, // actions
+			activityDefns,
+			null,
+			null,
+			placeDefns,
+			null
+		);
 
 		this.factions = factions;
 		this.lifeformDefns = lifeformDefns;

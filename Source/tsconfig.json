@@ -60,7 +60,7 @@
   [
     "Framework/Source/Imports.ts",
     "Framework/Source/Demo/",
-    "Framework/Source/Stub/",
+    "Framework/Stub/",
     "Framework/Tests/"
   ]
 }

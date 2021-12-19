@@ -1,5 +1,5 @@
 
-class Starsystem implements EntityProperty
+class Starsystem implements EntityProperty<Starsystem>
 {
 	name: string;
 	starSizeIndex: number;
@@ -166,9 +166,10 @@ class Starsystem implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
-
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	// Equatable.
+	equals(other: Starsystem): boolean { return false; }
 }

@@ -104,7 +104,7 @@ class PlacePlanetVicinity extends Place
 		var playerActivityDefnName = Player.activityDefn().name;
 		var playerActivity = new Activity(playerActivityDefnName, null);
 
-		var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+		var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
 		var playerColor = Color.byName("Gray");
 
 		var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
@@ -114,10 +114,12 @@ class PlacePlanetVicinity extends Place
 			playerVisualBody,
 		]);
 
-		var playerCollide = (universe: Universe, worldAsWorld: World, placeAsPlace: Place, entityPlayer: Entity, entityOther: Entity) =>
+		var playerCollide = (uwpe: UniverseWorldPlaceEntities) =>
 		{
-			var world = worldAsWorld as WorldExtended;
-			var place = placeAsPlace as PlacePlanetVicinity;
+			var world = uwpe.world as WorldExtended;
+			var place = uwpe.place as PlacePlanetVicinity;
+			var entity = uwpe.entity;
+			var entityOther = uwpe.entity2;
 
 			var entityOtherName = entityOther.name;
 
@@ -221,7 +223,7 @@ class PlacePlanetVicinity extends Place
 				Drawable.fromVisual(playerVisual),
 				ItemHolder.create(),
 				new Locatable(playerLoc),
-				Movable.create(),
+				Movable.default(),
 				new Playable(),
 				world.player.shipGroup.ships[0],
 				world.player.shipGroup
@@ -281,7 +283,7 @@ class PlacePlanetVicinity extends Place
 					Drawable.fromVisual(enemyVisual),
 					new Killable(1, null, enemyKill),
 					new Locatable(enemyLoc),
-					Movable.create(),
+					Movable.default(),
 					new Talker("todo"),
 					shipGroup,
 				]

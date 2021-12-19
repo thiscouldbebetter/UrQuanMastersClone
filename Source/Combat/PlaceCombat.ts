@@ -22,9 +22,10 @@ class PlaceCombat extends Place
 		var actionExit = new Action
 		(
 			"Exit",
-			(universe: Universe, world: World, placeAsPlace: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var place = placeAsPlace as PlaceCombat;
+				var world = uwpe.world as WorldExtended;
+				var place = uwpe.place as PlaceCombat;
 				var encounter = place.combat.encounter;
 				encounter.returnToPlace(world);
 			}
@@ -65,7 +66,13 @@ class PlaceCombat extends Place
 			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
-		this.entitySpawn(null, world, cameraAsEntity);
+		this.entitySpawn
+		(
+			new UniverseWorldPlaceEntities
+			(
+				null, world, null, cameraAsEntity, null
+			)
+		);
 
 		// entities
 
@@ -87,8 +94,11 @@ class PlaceCombat extends Place
 		);
 		var planetCollider = new Sphere(Coords.create(), planetRadius);
 
-		var planetCollide = (universe: Universe, world: World, place: Place, entityPlanet: Entity, entityOther: Entity) =>
+		var planetCollide = (uwpe: UniverseWorldPlaceEntities) =>
 		{
+			var entityPlanet = uwpe.entity;
+			var entityOther = uwpe.entity2;
+
 			var planetPos = entityPlanet.locatable().loc.pos;
 
 			var otherLoc = entityOther.locatable().loc;
@@ -111,10 +121,12 @@ class PlaceCombat extends Place
 
 		var planetActivityGravitatePerform =
 		(
-			universe: Universe, world: World, placeAsPlace: Place, actor: Entity
+			uwpe: UniverseWorldPlaceEntities
 		) =>
 		{
-			var place = placeAsPlace as PlaceCombat;
+			var place = uwpe.place as PlaceCombat;
+			var actor = uwpe.entity;
+
 			var planet = actor;
 			var planetPos = planet.locatable().loc.pos;
 
@@ -170,7 +182,7 @@ class PlaceCombat extends Place
 
 		var shipsFighting = this.combat.shipsFighting;
 
-		var shipCollide = (universe: Universe, world: World, place: Place, entityPlayer: Entity, entityOther: Entity) =>
+		var shipCollide = (uwpe: UniverseWorldPlaceEntities) =>
 		{
 			// todo
 		}
@@ -183,7 +195,7 @@ class PlaceCombat extends Place
 
 			var shipPos = Coords.fromXY(.1 * (i == 0 ? -1 : 1), 0).multiply(this.size).add(planetPos);
 			var shipLoc = Disposition.fromPos(shipPos);
-			var shipCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+			var shipCollider = new Sphere(Coords.zeroes(), entityDimension / 2);
 
 			var shipDefn = ship.defn(world);
 			var shipVisualBody = shipDefn.visual;
@@ -192,7 +204,7 @@ class PlaceCombat extends Place
 				this.size, shipVisualBody
 			);
 
-			var shipEntityProperties = new Array<EntityProperty>
+			var shipEntityProperties = new Array<EntityPropertyBase>
 			(
 				ship,
 				new Locatable(shipLoc),
@@ -261,8 +273,11 @@ class PlaceCombat extends Place
 		return this._actionToInputsMappings;
 	}
 
-	roundOver(universe: Universe, world: World, place: PlaceCombat, entity: Entity)
+	roundOver(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var universe = uwpe.universe;
+		var place = uwpe.place as PlaceCombat;
+
 		var combat = place.combat;
 		var shipGroups = combat.shipGroups;
 
@@ -286,9 +301,10 @@ class PlaceCombat extends Place
 		}
 	}
 
-	shipDie(universe: Universe, world: World, placeAsPlace: Place, entityShipToDie: Entity)
+	shipDie(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var place = placeAsPlace as PlaceCombat;
+		var place = uwpe.place as PlaceCombat;
+		var entityShipToDie = uwpe.entity;
 
 		var ship = EntityExtensions.ship(entityShipToDie);
 		var combat = place.combat;
@@ -367,8 +383,8 @@ class PlaceCombat extends Place
 		this.venueControls.draw(universe);
 	}
 
-	updateForTimerTick(universe: Universe, world: World): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		super.updateForTimerTick(universe, world);
+		super.updateForTimerTick(uwpe);
 	}
 }

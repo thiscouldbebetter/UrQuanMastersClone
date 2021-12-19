@@ -14,7 +14,7 @@ class PlaceEncounter extends Place
 
 	// methods
 
-	fight(universe: Universe)
+	fight(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
 		var placeEncounter = world.placeCurrent as PlaceEncounter;
@@ -43,7 +43,7 @@ class PlaceEncounter extends Place
 		var conversationDefnAsJSON =
 			mediaLibrary.textStringGetByName(conversationResourceName).value;
 		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-		var contentTextStringName = conversationDefn.contentTextStringName;
+		var contentTextStringName = conversationDefnName; // conversationDefn.contentTextStringName;
 		if (contentTextStringName != null)
 		{
 			var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
@@ -58,7 +58,8 @@ class PlaceEncounter extends Place
 				encounter.returnToPlace(world);
 				universe.venueNext = venueToReturnTo;
 			},
-			null, // universe
+			null, // ?
+			null, // ?
 			null // ?
 		);
 		var conversationSize = universe.display.sizeDefault().clone();
@@ -81,14 +82,16 @@ class PlaceEncounter extends Place
 		}
 	}
 
-	updateForTimerTick(universe: Universe, worldAsWorld: World)
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = worldAsWorld as WorldExtended;
+		var universe = uwpe.universe;
 
-		super.updateForTimerTick(universe, world);
+		super.updateForTimerTick(uwpe);
 
 		if (this.venueControls == null)
 		{
+			var world = uwpe.world as WorldExtended;
+
 			var encounter = this.encounter;
 			var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
 			var shipGroupOtherDescription = shipGroupOther.toStringDescription()

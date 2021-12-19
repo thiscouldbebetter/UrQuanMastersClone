@@ -12,7 +12,7 @@ class ShipDefn
 	energyPerTick: number;
 	energyMax: number;
 	value: number;
-	visual: Visual;
+	visual: VisualBase;
 	attackDefn: ShipAttackDefn;
 	specialDefn: ShipSpecialDefn;
 
@@ -31,7 +31,7 @@ class ShipDefn
 		energyPerTick: number,
 		energyMax: number,
 		value: number,
-		visual: Visual,
+		visual: VisualBase,
 		attackDefn: ShipAttackDefn,
 		specialDefn: ShipSpecialDefn
 	)
@@ -298,7 +298,7 @@ class ShipDefn_Instances
 			{
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.target() as string;
+				var targetEntityName = actor.actor().activity.targetEntity().name;
 				var target = place.entitiesByName.get(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -378,7 +378,7 @@ class ShipDefn_Instances
 				var returnValue =
 				(
 					isCloaked ? shipInfernusVisualCloaked : shipInfernusVisualBase
-				) as Visual;
+				) as VisualBase;
 				return returnValue;
 			}
 		);
@@ -513,7 +513,7 @@ class ShipDefn_Instances
 			{
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.target() as string;
+				var targetEntityName = actor.actor().activity.targetEntity().name;
 				var target = place.entitiesByName.get(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);

@@ -5,7 +5,7 @@ class Conversation
 
 	statementIndexCurrent: number;
 	isDone: boolean;
-	_statementCurrent: Reference;
+	_statementCurrent: Reference<string>;
 
 	constructor(statements: string[])
 	{
@@ -29,7 +29,7 @@ class Conversation
 		return returnValue;
 	}
 
-	statementAdvance(): Reference
+	statementAdvance(): Reference<string>
 	{
 		if (this.statementIndexCurrent == null)
 		{
@@ -49,7 +49,7 @@ class Conversation
 		return this.statementCurrent();
 	}
 
-	statementCurrent(): Reference
+	statementCurrent(): Reference<string>
 	{
 		var statementNext = (this.isDone ? "[Done]" : this.statements[this.statementIndexCurrent]);
 		this._statementCurrent.value = statementNext;

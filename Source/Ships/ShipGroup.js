@@ -10,15 +10,16 @@ class ShipGroup {
     static activityDefnApproachPlayer() {
         return new ActivityDefn("ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform);
     }
-    static activityDefnApproachPlayer_Perform(universe, world, place, entityActor) {
+    static activityDefnApproachPlayer_Perform(uwpe) {
+        var entityActor = uwpe.entity;
         var actor = entityActor.actor();
-        var targetPos = actor.activity.target();
-        if (targetPos == null) {
+        var target = actor.activity.target();
+        if (target == null) {
             var entityToTargetName = Player.name;
-            var target = place.entitiesByName.get(entityToTargetName);
-            targetPos = target.locatable().loc.pos;
-            actor.activity.targetSet(targetPos);
+            target = place.entitiesByName.get(entityToTargetName);
+            actor.activity.targetEntitySet(target);
         }
+        var targetPos = target.locatable().loc.pos;
         var actorLoc = entityActor.locatable().loc;
         var actorPos = actorLoc.pos;
         var actorVel = actorLoc.vel;
@@ -80,12 +81,12 @@ class ShipGroup {
         return shipCountsAsStrings.join("\n");
     }
     // EntityProperty.
-    finalize(universe, world, place, entity) { }
-    initialize(universe, world, place, entity) {
+    finalize(uwpe) { }
+    initialize(uwpe) {
         for (var i = 0; i < this.ships.length; i++) {
             var ship = this.ships[i];
             ship.initialize(universe, world, place, entity);
         }
     }
-    updateForTimerTick(universe, world, place, entity) { }
+    updateForTimerTick(uwpe) { }
 }

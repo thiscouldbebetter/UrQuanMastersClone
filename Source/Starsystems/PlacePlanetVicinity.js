@@ -49,15 +49,17 @@ class PlacePlanetVicinity extends Place {
         // player
         var playerActivityDefnName = Player.activityDefn().name;
         var playerActivity = new Activity(playerActivityDefnName, null);
-        var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+        var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
         var playerColor = Color.byName("Gray");
         var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
         var playerVisual = new VisualGroup([
             playerVisualBody,
         ]);
-        var playerCollide = (universe, worldAsWorld, placeAsPlace, entityPlayer, entityOther) => {
-            var world = worldAsWorld;
-            var place = placeAsPlace;
+        var playerCollide = (uwpe) => {
+            var world = uwpe.world;
+            var place = uwpe.place;
+            var entity = uwpe.entity;
+            var entityOther = uwpe.entity2;
             var entityOtherName = entityOther.name;
             if (entityOtherName.startsWith("Wall")) {
                 var planet = place.planet;
@@ -115,7 +117,7 @@ class PlacePlanetVicinity extends Place {
             Drawable.fromVisual(playerVisual),
             ItemHolder.create(),
             new Locatable(playerLoc),
-            Movable.create(),
+            Movable.default(),
             new Playable(),
             world.player.shipGroup.ships[0],
             world.player.shipGroup
@@ -153,7 +155,7 @@ class PlacePlanetVicinity extends Place {
                 Drawable.fromVisual(enemyVisual),
                 new Killable(1, null, enemyKill),
                 new Locatable(enemyLoc),
-                Movable.create(),
+                Movable.default(),
                 new Talker("todo"),
                 shipGroup,
             ]);

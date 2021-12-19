@@ -36,11 +36,12 @@ class Combat
 
 	enemyActivityDefnPerform
 	(
-		universe: Universe, worldAsWorld: World, placeAsPlace: Place, actor: Entity
+		uwpe: UniverseWorldPlaceEntities
 	)
 	{
-		var world = worldAsWorld as WorldExtended;
-		var place = placeAsPlace as PlaceCombat;
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place as PlaceCombat;
+		var actor = uwpe.entity;
 
 		var actorShip = EntityExtensions.ship(actor);
 
@@ -87,10 +88,15 @@ class Combat
 
 	initialize(universe: Universe, world: World, place: Place)
 	{
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, place, null, null
+		);
+
 		for (var i = 0; i < this.shipGroups.length; i++)
 		{
 			var shipGroup = this.shipGroups[i];
-			shipGroup.initialize(universe, world, place, null);
+			shipGroup.initialize(uwpe);
 		}
 		return this;
 	}
@@ -211,7 +217,10 @@ class Combat
 				titleSize.y + headingSize.y + marginSize.y * 3
 			),
 			listSize,
-			DataBinding.fromContext(shipsYours),
+			DataBinding.fromContextAndGet
+			(
+				combat, (c: Combat) => shipsYours
+			),
 			bindingForOptionText,
 			fontHeight,
 			null, // bindingForItemSelected
@@ -231,7 +240,10 @@ class Combat
 				titleSize.y + headingSize.y + marginSize.y * 3
 			),
 			listSize,
-			DataBinding.fromContext(shipsTheirs),
+			DataBinding.fromContextAndGet
+			(
+				combat, (c: Combat) => shipsTheirs
+			),
 			bindingForOptionText,
 			fontHeight,
 			null, // bindingForItemSelected
@@ -254,7 +266,8 @@ class Combat
 					Coords.fromXY(size.x / 2, marginSize.y + fontHeightTitle / 2),
 					titleSize,
 					true, // isTextCentered
-					"Ship Select",
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Ship Select"),
 					fontHeightTitle
 				),
 
@@ -264,7 +277,8 @@ class Combat
 					Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2),
 					titleSize,
 					false, // isTextCentered
-					this.shipGroups[0].name + ":",
+					false, // isTextCenteredVertically
+					DataBinding.fromContext(this.shipGroups[0].name + ":"),
 					fontHeight
 				),
 
@@ -286,12 +300,11 @@ class Combat
 					(
 						combat, (c: Combat) => c.ship0HasNotBeenSelected()
 					), // isEnabled,
-					(universe: Universe) =>
+					() =>
 					{
-						var shipYours = listShipsYours.itemSelected(null);
+						var shipYours = listShipsYours.itemSelected();
 						combat.shipsFighting[0] = shipYours;
 					},
-					universe, // context
 					false // canBeHeldDown
 				),
 
@@ -311,7 +324,7 @@ class Combat
 					(
 						combat, (c: Combat) => c.ship0HasNotBeenSelected()
 					), // isEnabled,
-					(universe: Universe) =>
+					() =>
 					{
 						var shipGroupIndex = 0;
 						var shipGroup = combat.shipGroups[shipGroupIndex];
@@ -319,7 +332,6 @@ class Combat
 						combat.shipsFighting[shipGroupIndex] = ship;
 						listShipsYours._itemSelected = null;
 					},
-					universe, // context
 					false // canBeHeldDown
 				),
 
@@ -333,7 +345,8 @@ class Combat
 					),
 					titleSize,
 					false, // isTextCentered
-					this.shipGroups[1].name + ":",
+					false, // isTextCenteredVertically
+					DataBinding.fromContext(this.shipGroups[1].name + ":"),
 					fontHeight
 				),
 
@@ -355,12 +368,11 @@ class Combat
 					(
 						combat, (c: Combat) => c.ship1HasNotBeenSelected()
 					), // isEnabled,
-					(universe: Universe) =>
+					() =>
 					{
-						var shipTheirs = listShipsTheirs.itemSelected(null);
+						var shipTheirs = listShipsTheirs.itemSelected();
 						combat.shipsFighting[1] = shipTheirs;
 					},
-					universe, // context
 					false // canBeHeldDown
 				),
 
@@ -381,7 +393,7 @@ class Combat
 						combat,
 						(c: Combat) => c.ship1HasNotBeenSelected()
 					), // isEnabled,
-					(universe: Universe) =>
+					() =>
 					{
 						var shipGroupIndex = 1;
 						var shipGroup = combat.shipGroups[shipGroupIndex];
@@ -389,7 +401,6 @@ class Combat
 						combat.shipsFighting[shipGroupIndex] = ship;
 						listShipsTheirs._itemSelected = null;
 					},
-					universe, // context
 					false // canBeHeldDown
 				),
 
@@ -405,7 +416,7 @@ class Combat
 					(
 						combat, (c: Combat) => c.shipsHaveBeenSelected()
 					), // isEnabled,
-					(universe: Universe) =>
+					() =>
 					{
 						var shipYours = combat.shipsFighting[0];
 						var shipTheirs = combat.shipsFighting[1];
@@ -415,7 +426,6 @@ class Combat
 							combat.start(universe);
 						}
 					},
-					universe, // context
 					false // canBeHeldDown
 				),
 			]
