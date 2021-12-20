@@ -35,15 +35,16 @@ class ShipGroup implements EntityPropertyBase
 
 		var actor = entityActor.actor();
 
-		var target = actor.activity.target();
-		if (target == null)
+		var targetEntity = actor.activity.targetEntity();
+		if (targetEntity == null)
 		{
+			var place = uwpe.place;
 			var entityToTargetName = Player.name;
-			target = place.entitiesByName.get(entityToTargetName);
-			actor.activity.targetEntitySet(target);
+			targetEntity = place.entitiesByName.get(entityToTargetName);
+			actor.activity.targetEntitySet(targetEntity);
 		}
 
-		var targetPos = target.locatable().loc.pos;
+		var targetPos = targetEntity.locatable().loc.pos;
 
 		var actorLoc = entityActor.locatable().loc;
 		var actorPos = actorLoc.pos;
@@ -72,8 +73,8 @@ class ShipGroup implements EntityPropertyBase
 		return new ActivityDefn
 		(
 			"Die",
-			(u: Universe, w: World, p: Place, e: Entity) =>
-				e.killable().integrityAdd(-10000)
+			(uwpe: UniverseWorldPlaceEntities) =>
+				uwpe.entity.killable().integrityAdd(-10000)
 		);
 	}
 
@@ -87,13 +88,16 @@ class ShipGroup implements EntityPropertyBase
 
 	static activityDefnLeave_Perform
 	(
-		universe: Universe, world: World, place: Place, entityActor: Entity
+		uwpe: UniverseWorldPlaceEntities
 	): void
 	{
+		var entityActor = uwpe.entity;
 		var actor = entityActor.actor();
 
-		var targetPos = new Coords(100000, 0, 0);
-		actor.activity.targetSet(targetPos);
+		var targetPos = new Coords(100000, 0, 0); // hack
+		var targetLocatable = Locatable.fromPos(targetPos);
+		var targetEntity = new Entity("Target", [ targetLocatable ]);
+		actor.activity.targetEntitySet(targetEntity);
 
 		var actorLoc = entityActor.locatable().loc;
 		var actorPos = actorLoc.pos;
@@ -169,10 +173,13 @@ class ShipGroup implements EntityPropertyBase
 		for (var i = 0; i < this.ships.length; i++)
 		{
 			var ship = this.ships[i];
-			ship.initialize(universe, world, place, entity);
+			ship.initialize(uwpe);
 		}
 	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
+	// Equatable.
+
+	equals(other: ShipGroup): boolean { return false; }
 }

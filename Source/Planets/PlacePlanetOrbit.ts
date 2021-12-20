@@ -90,7 +90,7 @@ class PlacePlanetOrbit extends Place
 
 		var display = universe.display;
 
-		super.draw(uwpe, display);
+		super.draw(universe, world, display);
 		this.venueControls.draw(universe);
 
 		var controlContainer =
@@ -525,7 +525,7 @@ class PlacePlanetOrbit extends Place
 				new ControlLabel
 				(
 					"labelOrbit",
-					Coords.fromXY(containerMainSize.x / 2, marginSize.y + titleSize.y / 2),
+					Coords.fromXY(0, marginSize.y),
 					titleSize,
 					true, // isTextCentered
 					false, // isTextCenteredVertically
@@ -576,7 +576,7 @@ class PlacePlanetOrbit extends Place
 					fontHeightShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
-					this.returnToPlaceParent.bind(this)
+					() => placePlanetOrbit.returnToPlaceParent(universe)
 				),
 			]
 		);

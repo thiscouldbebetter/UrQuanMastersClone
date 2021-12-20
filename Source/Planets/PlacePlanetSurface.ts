@@ -142,7 +142,7 @@ class PlacePlanetSurface extends Place
 		var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
 		var playerColor = Color.byName("Gray");
 
-		var playerVisual: Visual = ShipDefn.visual
+		var playerVisual: VisualBase = ShipDefn.visual
 		(
 			entityDimension, playerColor, Color.byName("Black")
 		);
@@ -150,11 +150,14 @@ class PlacePlanetSurface extends Place
 
 		var playerCollide =
 		(
-			universe: Universe, worldAsWorld: World, place: Place,
-			entityPlayer: Entity, entityOther: Entity
+			uwpe: UniverseWorldPlaceEntities
 		) =>
 		{
-			var world = worldAsWorld as WorldExtended;
+			var universe = uwpe.universe;
+			var world = uwpe.world as WorldExtended;
+			var place = uwpe.place;
+			var entityPlayer = uwpe.entity;
+			var entityOther = uwpe.entity2;
 
 			var entityOtherItem = entityOther.item();
 			var entityOtherEnergySource =
@@ -277,6 +280,11 @@ class PlacePlanetSurface extends Place
 
 	drawMap(universe: Universe, world: World)
 	{
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, this, null, null
+		);
+
 		var containerSidebar =
 			this.venueControls.controlRoot as ControlContainer;
 		var controlMap = containerSidebar.childByName("containerMap");
@@ -314,7 +322,7 @@ class PlacePlanetSurface extends Place
 
 				contactPos.overwriteWith(drawPos);
 				var contactVisual = contactDrawable.visual;
-				contactVisual.draw(universe, world, this, contact, display);
+				contactVisual.draw(uwpe.entitySet(contact), display);
 				contactPos.overwriteWith(contactPosSaved);
 			}
 		}
@@ -347,8 +355,9 @@ class PlacePlanetSurface extends Place
 					"labelMap",
 					Coords.fromXY(marginSize.x, marginSize.y),
 					labelSize,
-					false, // isTextCentered,
-					"Map:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Map:"),
 					fontHeight
 				),
 
@@ -363,7 +372,7 @@ class PlacePlanetSurface extends Place
 							"visualMap",
 							Coords.fromXY(0, 0),
 							minimapSize,
-							DataBinding.fromContext<Visual>
+							DataBinding.fromContext<VisualBase>
 							(
 								VisualRectangle.fromSizeAndColorFill
 								(
@@ -379,8 +388,9 @@ class PlacePlanetSurface extends Place
 					"labelLander",
 					Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y),
 					labelSize,
-					false, // isTextCentered,
-					"Lander:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Lander:"),
 					fontHeight
 				),
 
@@ -399,8 +409,9 @@ class PlacePlanetSurface extends Place
 							"labelCrew",
 							Coords.fromXY(marginSize.x, marginSize.y),
 							labelSize,
-							false, // isTextCentered
-							"Crew:",
+							false, // isTextCenteredHorizontally
+							false, // isTextCenteredVertically
+							DataBinding.fromContext("Crew:"),
 							fontHeight
 						),
 
@@ -409,7 +420,8 @@ class PlacePlanetSurface extends Place
 							"infoCrew",
 							Coords.fromXY(marginSize.x * 5, marginSize.y),
 							labelSize,
-							false, // isTextCentered
+							false, // isTextCenteredHorizontally
+							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
 								lander, (c: Lander) => c.crewCurrentOverMax()
@@ -422,8 +434,9 @@ class PlacePlanetSurface extends Place
 							"labelCargo",
 							Coords.fromXY(marginSize.x, marginSize.y * 2),
 							labelSize,
-							false, // isTextCentered
-							"Cargo:",
+							false, // isTextCenteredHorizontally
+							false, // isTextCenteredVertically
+							DataBinding.fromContext("Cargo:"),
 							fontHeight
 						),
 
@@ -432,7 +445,8 @@ class PlacePlanetSurface extends Place
 							"infoCargo",
 							Coords.fromXY(marginSize.x * 5, marginSize.y * 2),
 							labelSize,
-							false, // isTextCentered
+							false, // isTextCenteredHorizontally
+							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
 								lander, (c: Lander) => c.cargoCurrentOverMax()
@@ -445,8 +459,9 @@ class PlacePlanetSurface extends Place
 							"labelData",
 							Coords.fromXY(marginSize.x, marginSize.y * 3),
 							labelSize,
-							false, // isTextCentered
-							"Data:",
+							false, // isTextCenteredHorizontally
+							false, // isTextCenteredVertically
+							DataBinding.fromContext("Data:"),
 							fontHeight
 						),
 
@@ -455,7 +470,8 @@ class PlacePlanetSurface extends Place
 							"infoData",
 							Coords.fromXY(marginSize.x * 5, marginSize.y * 3),
 							labelSize,
-							false, // isTextCentered
+							false, // isTextCenteredHorizontally
+							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
 								lander, (c: Lander) => c.dataCurrentOverMax()
@@ -478,8 +494,8 @@ class PlacePlanetSurface extends Place
 					"Launch",
 					fontHeight,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => {}
+					DataBinding.fromTrue(), // isEnabled
+					() => {}
 				),
 
 			]

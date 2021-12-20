@@ -72,7 +72,7 @@ class PlaceHyperspaceMap extends Place
 		var zeroes = Coords.Instances().Zeroes;
 		display.drawRectangle
 		(
-			zeroes, mapSize, Color.byName("Black"), Color.byName("Gray"), null
+			zeroes, mapSize, Color.byName("Black"), Color.byName("Gray")
 		);
 
 		var camera = this._camera;
@@ -140,20 +140,31 @@ class PlaceHyperspaceMap extends Place
 		this._camera.coordsTransformWorldToView(drawPos);
 		var locatorDimension = starRadius * 8 * magnificationFactor;
 		var locatorSize = Coords.fromXY(1, 1).multiplyScalar(locatorDimension);
-		display.drawRectangleCentered(drawPos, locatorSize, null, Color.byName("Gray"));
+		var reticleColor = Color.byName("Gray");
+		display.drawRectangleCentered(drawPos, locatorSize, null, reticleColor);
 
 		var reticleRadius = locatorDimension * 2;
 
 		drawPos.overwriteWith(this.reticlePos);
 		this._camera.coordsTransformWorldToView(drawPos);
-		display.drawCrosshairs(drawPos, reticleRadius, Color.byName("Gray"));
+
+		display.drawCrosshairs
+		(
+			drawPos, // center
+			4, // numberOfLines
+			reticleRadius, // radiusOuter
+			0, // radiusInner,
+			reticleColor,
+			null // lineThickness
+		);
 	}
 
-	updateForTimerTick(universe: Universe, worldAsWorld: World)
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities)
 	{
-		var world = worldAsWorld as WorldExtended;
+		super.updateForTimerTick(uwpe);
 
-		super.updateForTimerTick(universe, world);
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
 
 		if (this.reticlePos == null)
 		{
@@ -200,7 +211,8 @@ class PlaceHyperspaceMap extends Place
 				null // entitiesInViewSort
 			);
 			var cameraAsEntity = CameraHelper.toEntity(this._camera);
-			this.entitySpawn(universe, world, cameraAsEntity);
+			var uwpeCamera = uwpe.clone().entitySet(cameraAsEntity);
+			this.entitySpawn(uwpeCamera);
 		}
 
 		var inputHelper = universe.inputHelper;
@@ -340,8 +352,9 @@ class PlaceHyperspaceMap extends Place
 						marginSize.y
 					),
 					titleSize,
-					true, // isTextCentered
-					"Reticle",
+					true, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Reticle"),
 					fontHeightShort
 				),
 
@@ -350,8 +363,9 @@ class PlaceHyperspaceMap extends Place
 					"labelPos",
 					Coords.fromXY(marginSize.x, marginSize.y * 2),
 					titleSize,
-					false, // isTextCentered
-					"Pos:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Pos:"),
 					fontHeightShort
 				),
 
@@ -360,7 +374,8 @@ class PlaceHyperspaceMap extends Place
 					"infoPos",
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 2),
 					titleSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this,
@@ -374,8 +389,9 @@ class PlaceHyperspaceMap extends Place
 					"labelFuel",
 					Coords.fromXY(marginSize.x, marginSize.y * 3),
 					titleSize,
-					false, // isTextCentered
-					"Fuel:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Fuel:"),
 					fontHeightShort
 				),
 
@@ -384,12 +400,13 @@ class PlaceHyperspaceMap extends Place
 					"infoFuel",
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 3),
 					titleSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this,
 						(c: PlaceHyperspaceMap) =>
-							c.fuelFromPlayerShipGroupToReticle(world)
+							"" + c.fuelFromPlayerShipGroupToReticle(world)
 					),
 					fontHeightShort
 				),
@@ -428,7 +445,8 @@ class PlaceHyperspaceMap extends Place
 					),
 					titleSize,
 					true, // isTextCentered
-					"Hyperspace Map",
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Hyperspace Map"),
 					fontHeight
 				),
 
@@ -441,7 +459,7 @@ class PlaceHyperspaceMap extends Place
 						marginSize.y * 2 + titleSize.y
 					),
 					containerMapSize,
-					DataBinding.fromContext<Visual>
+					DataBinding.fromContext<VisualBase>
 					(
 						new VisualImageImmediate
 						(
@@ -456,7 +474,7 @@ class PlaceHyperspaceMap extends Place
 
 				containerSidebar,
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonBack",
 					marginSize,
@@ -464,15 +482,14 @@ class PlaceHyperspaceMap extends Place
 					"<",
 					fontHeight,
 					true, // hasBorder,
-					true, // isEnabled,
-					(universe: Universe) =>
+					DataBinding.fromTrue(), // isEnabled,
+					() =>
 					{
 						var world = universe.world;
 						var place = world.placeCurrent as PlaceHyperspaceMap;
 						var placeNext = place.placeHyperspaceToReturnTo;
 						world.placeNext = placeNext;
-					},
-					universe // context
+					}
 				),
 			]
 		);

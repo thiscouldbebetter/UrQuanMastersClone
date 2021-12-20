@@ -35,7 +35,9 @@ class LifeformDefn_Instances {
         var n = Color.byName("Brown");
         var c = Color.byName("Cyan");
         var p = Color.byName("Pink");
-        var lifeformActivityDefnTodoPerform = (universe, world, place, actor) => {
+        var lifeformActivityDefnTodoPerform = (uwpe) => {
+            var universe = uwpe.universe;
+            var actor = uwpe.entity;
             var actorLoc = actor.locatable().loc;
             actorLoc.vel.randomize(universe.randomizer).double().subtract(Coords.Instances().Ones).clearZ();
         };

@@ -79,13 +79,16 @@ class Planet {
         return returnValue;
     }
     // EntityProperty.
-    finalize(universe, world, place, entity) { }
-    initialize(universe, world, place, entity) {
+    finalize(uwpe) { }
+    initialize(uwpe) {
+        var universe = uwpe.universe;
         var randomizer = universe.randomizer;
         this.mineralsGenerate(randomizer);
         this.lifeformsGenerate(randomizer);
     }
-    updateForTimerTick(universe, world, place, entity) {
+    updateForTimerTick(uwpe) {
         // Do nothing.
     }
+    // Equatable.
+    equals(other) { return false; }
 }

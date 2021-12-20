@@ -22,6 +22,7 @@ import ControlActionNames = gf.ControlActionNames;
 import ControlBase = gf.ControlBase;
 import ControlBuilder = gf.ControlBuilder;
 import ControlButton = gf.ControlButton;
+import ControlColorScheme = gf.ControlColorScheme;
 import ControlContainer = gf.ControlContainer;
 import ControlContainerTransparent = gf.ControlContainerTransparent;
 import ControlLabel = gf.ControlLabel;
@@ -76,6 +77,7 @@ import VisualAnimation = gf.VisualAnimation;
 // Geometry.
 
 import Camera = gf.Camera;
+import Collision = gf.Collision;
 import CollisionHelper = gf.CollisionHelper;
 import CollisionTracker = gf.CollisionTracker;
 import Constraint_FrictionDry = gf.Constraint_FrictionDry;

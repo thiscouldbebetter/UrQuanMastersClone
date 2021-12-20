@@ -112,7 +112,10 @@ class ShipDefn
 		*/
 
 		// Don't use a VisualDirectional, because the path is being transformed anyway!
-		var returnValue = new VisualPolygon(visualPath, colorFill, colorBorder);
+		var returnValue = new VisualPolygon
+		(
+			visualPath, colorFill, colorBorder, true // shouldUseEntityOrientation
+		);
 
 		return returnValue;
 	}
@@ -371,7 +374,7 @@ class ShipDefn_Instances
 		var shipInfernusVisualCloaked = ShipDefn.visual(shipDimension, colorBlack, colorBlack);
 		var shipInfernusVisual = new VisualDynamic
 		(
-			(universe: Universe, world: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
 				// var ship = EntityExtensions.ship(entity);
 				var isCloaked = false; // ship.isCloaked;
@@ -435,7 +438,7 @@ class ShipDefn_Instances
 			{
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.target() as string;
+				var targetEntityName = actor.actor().activity.targetEntity().name;
 				var target = place.entitiesByName.get(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -468,7 +471,7 @@ class ShipDefn_Instances
 			{
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.target() as string;
+				var targetEntityName = actor.actor().activity.targetEntity().name;
 				var target = place.entitiesByName.get(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);

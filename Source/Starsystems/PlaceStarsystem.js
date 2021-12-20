@@ -80,7 +80,9 @@ class PlaceStarsystem extends Place {
             var enemyCollider = Mesh.fromFace(new Coords(0, 0, 0), // center
             enemyColliderAsFace, 1 // thickness
             );
-            var enemyVisual = new VisualPolygon(new Path(enemyColliderAsFace.vertices), enemyColor, null);
+            var enemyVisual = new VisualPolygon(new Path(enemyColliderAsFace.vertices), enemyColor, null, // ?
+            false // shouldUseEntityOrientation
+            );
             var enemyShipDefnName = "Flagship"; // todo
             var enemyShip = new Ship(enemyShipDefnName);
             var enemyShipGroup = new ShipGroup("Enemy", "Enemy", // factionName
@@ -145,9 +147,12 @@ class PlaceStarsystem extends Place {
     actionToInputsMappings() {
         return this._actionToInputsMappings;
     }
-    playerCollide(universe, worldAsWorld, placeAsPlace, entityPlayer, entityOther) {
-        var world = worldAsWorld;
-        var place = placeAsPlace;
+    playerCollide(uwpe) {
+        var universe = uwpe.universe;
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var entityPlayer = uwpe.entity;
+        var entityOther = uwpe.entity2;
         var entityOtherName = entityOther.name;
         if (entityOtherName.startsWith("Enemy")) {
             var shipGroupOther = EntityExtensions.shipGroup(entityOther);
@@ -182,7 +187,7 @@ class PlaceStarsystem extends Place {
     // Place overrides
     draw(universe, world) {
         var display = universe.display;
-        display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+        display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
         var player = this.entitiesByName.get(Player.name);
         if (player == null) {
             return; // hack

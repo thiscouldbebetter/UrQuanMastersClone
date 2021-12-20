@@ -1,12 +1,12 @@
 
-class EnergySource implements EntityProperty
+class EnergySource implements EntityProperty<EnergySource>
 {
 	name: string;
 	pos: Coords;
-	visual: Visual;
+	visual: VisualBase;
 	collideWithLander: any;
 
-	constructor(name: string, pos: Coords, visual: Visual, collideWithLander: any)
+	constructor(name: string, pos: Coords, visual: VisualBase, collideWithLander: any)
 	{
 		this.name = name;
 		this.pos = pos;
@@ -14,9 +14,9 @@ class EnergySource implements EntityProperty
 		this.collideWithLander = collideWithLander;
 	}
 
-	toEntity(world: WorldExtended, place: Place)
+	toEntity(world: WorldExtended, place: Place): Entity
 	{
-		var visual: Visual =
+		var visual: VisualBase =
 			VisualCircle.fromRadiusAndColorFill(10, Color.byName("Cyan"));
 		visual = new VisualWrapped(place.size, visual);
 		var energySourceCollider = new Sphere(Coords.create(), 5);
@@ -36,9 +36,11 @@ class EnergySource implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+	// Equatable.
 
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	equals(other: EnergySource): boolean { return false; }
 }

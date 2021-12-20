@@ -1,5 +1,5 @@
 
-class Lifeform implements EntityProperty
+class Lifeform implements EntityProperty<Lifeform>
 {
 	defnName: string;
 	pos: Coords;
@@ -34,9 +34,12 @@ class Lifeform implements EntityProperty
 				(
 					lifeformDefn.durability,
 					null, // ?
-					(universe: Universe, world: World, placeAsPlace: Place, entity: Entity) => // die
+					(uwpe: UniverseWorldPlaceEntities) => // die
 					{
-						var place = placeAsPlace as PlacePlanetOrbit;
+						var world = uwpe.world as WorldExtended;
+						var place = uwpe.place as PlacePlanetOrbit;
+						var entity = uwpe.entity;
+
 						var resource =
 							new Resource("Biodata", 1, entity.locatable().loc.pos);
 						var radius = (entity.collidable().collider as Sphere).radius;
@@ -54,10 +57,10 @@ class Lifeform implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
-
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	equals(other: Lifeform): boolean { return false; }
 
 }

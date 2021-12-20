@@ -29,7 +29,7 @@ class Resource
 			null
 		);
 		var resourceRadius = resourceRadiusBase * Math.sqrt(resourceQuantity);
-		var resourceVisual: Visual = new VisualCircleGradient
+		var resourceVisual: VisualBase = new VisualCircleGradient
 		(
 			resourceRadius, resourceGradient, null
 		);

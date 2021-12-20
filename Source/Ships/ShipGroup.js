@@ -13,13 +13,14 @@ class ShipGroup {
     static activityDefnApproachPlayer_Perform(uwpe) {
         var entityActor = uwpe.entity;
         var actor = entityActor.actor();
-        var target = actor.activity.target();
-        if (target == null) {
+        var targetEntity = actor.activity.targetEntity();
+        if (targetEntity == null) {
+            var place = uwpe.place;
             var entityToTargetName = Player.name;
-            target = place.entitiesByName.get(entityToTargetName);
-            actor.activity.targetEntitySet(target);
+            targetEntity = place.entitiesByName.get(entityToTargetName);
+            actor.activity.targetEntitySet(targetEntity);
         }
-        var targetPos = target.locatable().loc.pos;
+        var targetPos = targetEntity.locatable().loc.pos;
         var actorLoc = entityActor.locatable().loc;
         var actorPos = actorLoc.pos;
         var actorVel = actorLoc.vel;
@@ -32,15 +33,18 @@ class ShipGroup {
         }
     }
     static activityDefnDie() {
-        return new ActivityDefn("Die", (u, w, p, e) => e.killable().integrityAdd(-10000));
+        return new ActivityDefn("Die", (uwpe) => uwpe.entity.killable().integrityAdd(-10000));
     }
     static activityDefnLeave() {
         return new ActivityDefn("Leave", ShipGroup.activityDefnLeave_Perform);
     }
-    static activityDefnLeave_Perform(universe, world, place, entityActor) {
+    static activityDefnLeave_Perform(uwpe) {
+        var entityActor = uwpe.entity;
         var actor = entityActor.actor();
-        var targetPos = new Coords(100000, 0, 0);
-        actor.activity.targetSet(targetPos);
+        var targetPos = new Coords(100000, 0, 0); // hack
+        var targetLocatable = Locatable.fromPos(targetPos);
+        var targetEntity = new Entity("Target", [targetLocatable]);
+        actor.activity.targetEntitySet(targetEntity);
         var actorLoc = entityActor.locatable().loc;
         var actorPos = actorLoc.pos;
         var actorVel = actorLoc.vel;
@@ -85,8 +89,10 @@ class ShipGroup {
     initialize(uwpe) {
         for (var i = 0; i < this.ships.length; i++) {
             var ship = this.ships[i];
-            ship.initialize(universe, world, place, entity);
+            ship.initialize(uwpe);
         }
     }
     updateForTimerTick(uwpe) { }
+    // Equatable.
+    equals(other) { return false; }
 }

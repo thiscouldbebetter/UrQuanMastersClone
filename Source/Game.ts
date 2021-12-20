@@ -7,7 +7,7 @@ class Game
 
 		var contentPathPrefixComms = "../Content/Import/sc2/content/base/comm/"
 
-		var conversationPlaceholderPath = "../Content/Text/Conversation-Placeholder.json";
+		var conversationPlaceholderPath = "../Content/Text/Conversation/Placeholder.json";
 
 		var imageDirectory = "../Content/Images/";
 
@@ -23,6 +23,7 @@ class Game
 
 				// opening
 				new Image2("Opening", imageDirectory + "Opening.png"),
+				new Image2("Producer", imageDirectory + "Producer.png"),
 				new Image2("Title", imageDirectory + "Title.png"),
 
 				// slides
@@ -34,6 +35,7 @@ class Game
 			[
 				new SoundFromFile("Sound", "../Content/Audio/Effects/Sound.wav"),
 				new SoundFromFile("Music_Music", "../Content/Audio/Music/Music.mp3"),
+				new SoundFromFile("Music_Producer", "../Content/Audio/Music/Music.mp3"),
 				new SoundFromFile("Music_Title", "../Content/Audio/Music/Music.mp3"),
 			],
 			// videos
@@ -49,11 +51,11 @@ class Game
 				//new TextString("Instructions", "../Content/Text/Instructions.txt"),
 				new TextString("StarsAndPlanets", "../Content/Text/PlanetDatabase.csv"),
 
-				new TextString("Conversation-LahkemupGuardDrone", "../Content/Text/Conversation-LahkemupGuardDrone.json"),
+				new TextString("Conversation-LahkemupGuardDrone", "../Content/Text/Conversation/LahkemupGuardDrone.json"),
 				new TextString("Conversation-Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
-				new TextString("Conversation-EarthStation", "../Content/Text/Conversation-EarthStation.json"),
+				new TextString("Conversation-EarthStation", "../Content/Text/Conversation/EarthStation.json"),
 
-				new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation-Placeholder-Content.txt"),
+				new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation/Placeholder-Content.txt"),
 
 				new TextString("Conversation-Amorfus", conversationPlaceholderPath),
 				new TextString("Conversation-Araknoid", conversationPlaceholderPath),

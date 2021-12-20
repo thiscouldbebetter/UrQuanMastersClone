@@ -149,7 +149,10 @@ class PlaceStarsystem extends Place
 
 			var enemyVisual = new VisualPolygon
 			(
-				new Path(enemyColliderAsFace.vertices), enemyColor, null
+				new Path(enemyColliderAsFace.vertices),
+				enemyColor,
+				null, // ?
+				false // shouldUseEntityOrientation
 			);
 
 			var enemyShipDefnName = "Flagship"; // todo
@@ -284,14 +287,13 @@ class PlaceStarsystem extends Place
 		return this._actionToInputsMappings;
 	}
 
-	playerCollide
-	(
-		universe: Universe, worldAsWorld: World, placeAsPlace: Place,
-		entityPlayer: Entity, entityOther: Entity
-	): void
+	playerCollide(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = worldAsWorld as WorldExtended;
-		var place = placeAsPlace as PlaceStarsystem;
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place as PlaceStarsystem;
+		var entityPlayer = uwpe.entity;
+		var entityOther = uwpe.entity2;
 
 		var entityOtherName = entityOther.name;
 
@@ -362,7 +364,7 @@ class PlaceStarsystem extends Place
 	{
 		var display = universe.display;
 
-		display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+		display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
 
 		var player = this.entitiesByName.get(Player.name);
 		if (player == null)

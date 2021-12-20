@@ -43,7 +43,7 @@ class PlacePlanetOrbit extends Place {
     draw(universe, world) {
         var uwpe = new UniverseWorldPlaceEntities(universe, world, this, null, null);
         var display = universe.display;
-        super.draw(uwpe, display);
+        super.draw(universe, world, display);
         this.venueControls.draw(universe);
         var controlContainer = this.venueControls.controlRoot;
         var controlMap = controlContainer.childByName("containerMap");
@@ -189,7 +189,7 @@ class PlacePlanetOrbit extends Place {
         ]);
         var controlRoot = ControlContainer.from4("containerPlanetOrbit", Coords.fromXY(0, 0), // pos
         containerMainSize, [
-            new ControlLabel("labelOrbit", Coords.fromXY(containerMainSize.x / 2, marginSize.y + titleSize.y / 2), titleSize, true, // isTextCentered
+            new ControlLabel("labelOrbit", Coords.fromXY(0, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Orbit"), fontHeight),
             containerInfo,
@@ -202,7 +202,7 @@ class PlacePlanetOrbit extends Place {
             containerRight,
             ControlButton.from8("buttonBack", marginSize, buttonBackSize, "<", fontHeightShort, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
-            this.returnToPlaceParent.bind(this)),
+            () => placePlanetOrbit.returnToPlaceParent(universe)),
         ]);
         return controlRoot;
     }

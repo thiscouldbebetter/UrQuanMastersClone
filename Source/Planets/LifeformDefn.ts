@@ -6,7 +6,7 @@ class LifeformDefn
 	speed: number;
 	damagePerAttack: number;
 	value: number;
-	visual: Visual;
+	visual: VisualBase;
 	activityDefn: ActivityDefn;
 
 	constructor
@@ -16,7 +16,7 @@ class LifeformDefn
 		speed: number,
 		damagePerAttack: number,
 		value: number,
-		visual: Visual,
+		visual: VisualBase,
 		activityDefn: ActivityDefn
 	)
 	{
@@ -73,8 +73,11 @@ class LifeformDefn_Instances
 		var c = Color.byName("Cyan");
 		var p = Color.byName("Pink");
 
-		var lifeformActivityDefnTodoPerform = (universe: Universe, world: World, place: Place, actor: Entity) =>
+		var lifeformActivityDefnTodoPerform = (uwpe: UniverseWorldPlaceEntities) =>
 		{
+			var universe = uwpe.universe;
+			var actor = uwpe.entity;
+
 			var actorLoc = actor.locatable().loc;
 			actorLoc.vel.randomize
 			(
@@ -84,6 +87,7 @@ class LifeformDefn_Instances
 				Coords.Instances().Ones
 			).clearZ();
 		};
+
 		var lifeformActivityDefnTodo = new ActivityDefn
 		(
 			"Todo",

@@ -52,8 +52,11 @@ class ShipAttackDefn {
         var projectileEntity = new Entity("Projectile" + Math.random(), projectileEntityProperties);
         place.entitiesToSpawn.push(projectileEntity);
     }
-    projectileCollide(universe, worldAsWorld, place, entityProjectile, entityOther) {
-        var world = worldAsWorld;
+    projectileCollide(uwpe) {
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var entityProjectile = uwpe.entity;
+        var entityOther = uwpe.entity2;
         var ship = EntityExtensions.ship(entityProjectile);
         var shipDefn = ship.defn(world);
         var attackDefn = shipDefn.attackDefn;
@@ -78,7 +81,9 @@ class ShipAttackDefn {
         }
     }
     // EntityProperty.
-    finalize(universe, world, place, entity) { }
-    initialize(universe, world, place, entity) { }
-    updateForTimerTick(universe, world, place, entity) { }
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    // Equatable.
+    equals(other) { return false; }
 }

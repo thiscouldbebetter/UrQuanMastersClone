@@ -72,8 +72,12 @@ class PlacePlanetSurface extends Place {
         var playerColor = Color.byName("Gray");
         var playerVisual = ShipDefn.visual(entityDimension, playerColor, Color.byName("Black"));
         playerVisual = new VisualWrapped(this.size, playerVisual);
-        var playerCollide = (universe, worldAsWorld, place, entityPlayer, entityOther) => {
-            var world = worldAsWorld;
+        var playerCollide = (uwpe) => {
+            var universe = uwpe.universe;
+            var world = uwpe.world;
+            var place = uwpe.place;
+            var entityPlayer = uwpe.entity;
+            var entityOther = uwpe.entity2;
             var entityOtherItem = entityOther.item();
             var entityOtherEnergySource = EntityExtensions.energySource(entityOther);
             if (entityOtherItem != null) {
@@ -146,6 +150,7 @@ class PlacePlanetSurface extends Place {
         this.drawMap(universe, world);
     }
     drawMap(universe, world) {
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, this, null, null);
         var containerSidebar = this.venueControls.controlRoot;
         var controlMap = containerSidebar.childByName("containerMap");
         var mapPos = containerSidebar.pos.clone().add(controlMap.pos);
@@ -163,7 +168,7 @@ class PlacePlanetSurface extends Place {
                 var drawPos = this._drawPos.overwriteWith(contactPos).divide(surfaceSize).multiply(mapSize).add(mapPos);
                 contactPos.overwriteWith(drawPos);
                 var contactVisual = contactDrawable.visual;
-                contactVisual.draw(universe, world, this, contact, display);
+                contactVisual.draw(uwpe.entitySet(contact), display);
                 contactPos.overwriteWith(contactPosSaved);
             }
         }
@@ -183,34 +188,42 @@ class PlacePlanetSurface extends Place {
         containerSidebarSize, 
         // children
         [
-            new ControlLabel("labelMap", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCentered,
-            "Map:", fontHeight),
+            new ControlLabel("labelMap", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Map:"), fontHeight),
             ControlContainer.from4("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
             minimapSize, [
                 ControlVisual.from4("visualMap", Coords.fromXY(0, 0), minimapSize, DataBinding.fromContext(VisualRectangle.fromSizeAndColorFill(minimapSize, Color.byName("Gray"))))
             ]),
-            new ControlLabel("labelLander", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, false, // isTextCentered,
-            "Lander:", fontHeight),
+            new ControlLabel("labelLander", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Lander:"), fontHeight),
             ControlContainer.from4("containerLander", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 2 + minimapSize.y), // pos
             containerLanderSize, [
-                new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCentered
-                "Crew:", fontHeight),
-                new ControlLabel("infoCrew", Coords.fromXY(marginSize.x * 5, marginSize.y), labelSize, false, // isTextCentered
+                new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCenteredHorizontally
+                false, // isTextCenteredVertically
+                DataBinding.fromContext("Crew:"), fontHeight),
+                new ControlLabel("infoCrew", Coords.fromXY(marginSize.x * 5, marginSize.y), labelSize, false, // isTextCenteredHorizontally
+                false, // isTextCenteredVertically
                 DataBinding.fromContextAndGet(lander, (c) => c.crewCurrentOverMax()), fontHeight),
-                new ControlLabel("labelCargo", Coords.fromXY(marginSize.x, marginSize.y * 2), labelSize, false, // isTextCentered
-                "Cargo:", fontHeight),
-                new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, marginSize.y * 2), labelSize, false, // isTextCentered
+                new ControlLabel("labelCargo", Coords.fromXY(marginSize.x, marginSize.y * 2), labelSize, false, // isTextCenteredHorizontally
+                false, // isTextCenteredVertically
+                DataBinding.fromContext("Cargo:"), fontHeight),
+                new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, marginSize.y * 2), labelSize, false, // isTextCenteredHorizontally
+                false, // isTextCenteredVertically
                 DataBinding.fromContextAndGet(lander, (c) => c.cargoCurrentOverMax()), fontHeight),
-                new ControlLabel("labelData", Coords.fromXY(marginSize.x, marginSize.y * 3), labelSize, false, // isTextCentered
-                "Data:", fontHeight),
-                new ControlLabel("infoData", Coords.fromXY(marginSize.x * 5, marginSize.y * 3), labelSize, false, // isTextCentered
+                new ControlLabel("labelData", Coords.fromXY(marginSize.x, marginSize.y * 3), labelSize, false, // isTextCenteredHorizontally
+                false, // isTextCenteredVertically
+                DataBinding.fromContext("Data:"), fontHeight),
+                new ControlLabel("infoData", Coords.fromXY(marginSize.x * 5, marginSize.y * 3), labelSize, false, // isTextCenteredHorizontally
+                false, // isTextCenteredVertically
                 DataBinding.fromContextAndGet(lander, (c) => c.dataCurrentOverMax()), fontHeight),
             ] // children
             ),
             ControlButton.from8("buttonLeave", Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y), // pos
             Coords.fromXY(containerLanderSize.x, labelSize.y * 2), "Launch", fontHeight, true, // hasBorder
-            true, // isEnabled
-            (universe) => { }),
+            DataBinding.fromTrue(), // isEnabled
+            () => { }),
         ]);
         return containerSidebar;
     }

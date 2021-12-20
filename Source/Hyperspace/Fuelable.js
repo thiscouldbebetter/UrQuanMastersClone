@@ -1,9 +1,11 @@
 "use strict";
 class Fuelable {
     // EntityProperty.
-    finalize(u, w, p, e) { }
-    initialize(u, w, p, e) { }
-    updateForTimerTick(universe, world, place, entityFuelable) {
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) {
+        var world = uwpe.world;
+        var entityFuelable = uwpe.entity;
         var entityLoc = entityFuelable.locatable().loc;
         var entityVel = entityLoc.vel;
         var entitySpeed = entityVel.magnitude();
@@ -19,4 +21,6 @@ class Fuelable {
             }
         }
     }
+    // Equatable.
+    equals(other) { return false; }
 }

@@ -19,9 +19,11 @@ class Lifeform {
             CollidableHelper.fromCollider(lifeformCollider),
             Drawable.fromVisual(lifeformVisual),
             new Killable(lifeformDefn.durability, null, // ?
-            (universe, world, placeAsPlace, entity) => // die
+            (uwpe) => // die
              {
-                var place = placeAsPlace;
+                var world = uwpe.world;
+                var place = uwpe.place;
+                var entity = uwpe.entity;
                 var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
                 var radius = entity.collidable().collider.radius;
                 var entityResource = resource.toEntity(world, place, radius);
@@ -32,7 +34,8 @@ class Lifeform {
         return returnValue;
     }
     // EntityProperty.
-    finalize(u, w, p, e) { }
-    initialize(u, w, p, e) { }
-    updateForTimerTick(u, w, p, e) { }
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    equals(other) { return false; }
 }

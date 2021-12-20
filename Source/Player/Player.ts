@@ -38,8 +38,12 @@ class Player
 		return new ActivityDefn
 		(
 			"AcceptUserInput",
-			(universe: Universe, world: World, place: Place, entity: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
+				var universe = uwpe.universe;
+				var world = uwpe.world;
+				var place = uwpe.place;
+
 				var inputHelper = universe.inputHelper;
 				var placeDefn = place.defn(world);
 				var actionsByName = placeDefn.actionsByName;
@@ -52,7 +56,7 @@ class Player
 				for (var i = 0; i < actionsToPerform.length; i++)
 				{
 					var action = actionsToPerform[i];
-					action.perform(universe, world, place, entity);
+					action.perform(uwpe);
 				}
 			}
 		);
@@ -102,13 +106,13 @@ class Player
 		return this._factionsKnown;
 	}
 
-	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var ships = this.shipGroup.ships;
 		for (var i = 0; i < ships.length; i++)
 		{
 			var ship = ships[i];
-			ship.initialize(universe, world, place, entity);
+			ship.initialize(uwpe);
 		}
 	}
 
@@ -196,10 +200,11 @@ class Player
 				new ControlLabel
 				(
 					"labelFlagship",
-					Coords.fromXY(containerFlagshipSize.x / 2, labelSize.y),
+					Coords.fromXY(0, labelSize.y), // pos
 					labelSize,
-					true, // isTextCentered,
-					flagship.name,
+					true, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext(flagship.name),
 					fontHeight
 				),
 
@@ -208,8 +213,9 @@ class Player
 					"labelCrew",
 					Coords.fromXY(marginSize.x, labelSize.y * 2),
 					labelSize,
-					false, // isTextCentered
-					"Crew:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Crew:"),
 					fontHeight
 				),
 
@@ -218,7 +224,8 @@ class Player
 					"infoCrew",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 2),
 					labelSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						flagship, (c: Flagship) => c.crewCurrentOverMax()
@@ -231,8 +238,9 @@ class Player
 					"labelFuel",
 					Coords.fromXY(marginSize.x, labelSize.y * 3),
 					labelSize,
-					false, // isTextCentered
-					"Fuel:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Fuel:"),
 					fontHeight
 				),
 
@@ -241,7 +249,8 @@ class Player
 					"infoFuel",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 3),
 					labelSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						flagship, (c: Flagship) => c.fuelCurrentOverMax()
@@ -254,8 +263,9 @@ class Player
 					"labelLanders",
 					Coords.fromXY(marginSize.x, labelSize.y * 4),
 					labelSize,
-					false, // isTextCentered
-					"Landers:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Landers:"),
 					fontHeight
 				),
 
@@ -264,10 +274,11 @@ class Player
 					"infoLanders",
 					Coords.fromXY(marginSize.x * 6, labelSize.y * 4),
 					labelSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
-						flagship, (c: Flagship) => c.numberOfLanders
+						flagship, (c: Flagship) => "" + c.numberOfLanders
 					),
 					fontHeight
 				),
@@ -277,8 +288,9 @@ class Player
 					"labelCargo",
 					Coords.fromXY(marginSize.x, labelSize.y * 5),
 					labelSize,
-					false, // isTextCentered
-					"Cargo:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Cargo:"),
 					fontHeight
 				),
 
@@ -287,7 +299,8 @@ class Player
 					"infoCargo",
 					Coords.fromXY(marginSize.x * 5, labelSize.y * 5),
 					labelSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						flagship, (c: Flagship) => c.cargoCurrentOverMax()
@@ -300,8 +313,9 @@ class Player
 					"labelPosition",
 					Coords.fromXY(marginSize.x, labelSize.y * 6),
 					labelSize,
-					false, // isTextCentered
-					"Pos:",
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Pos:"),
 					fontHeight
 				),
 
@@ -310,7 +324,8 @@ class Player
 					"infoPosition",
 					Coords.fromXY(marginSize.x * 5, labelSize.y * 6),
 					labelSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this.shipGroup, (c: ShipGroup) => c.toStringPosition(world)

@@ -58,20 +58,23 @@ class PlacePlanetVicinity extends Place {
         var playerCollide = (uwpe) => {
             var world = uwpe.world;
             var place = uwpe.place;
-            var entity = uwpe.entity;
+            var entityPlayer = uwpe.entity;
             var entityOther = uwpe.entity2;
             var entityOtherName = entityOther.name;
             if (entityOtherName.startsWith("Wall")) {
                 var planet = place.planet;
                 var placeStarsystem = place.placeStarsystem;
                 var starsystem = placeStarsystem.starsystem;
-                var posNext = planet.posAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half()); /*.add
-                (
-                    new Coords(3, 0).multiplyScalar(planet.radiusOuter)
-                );*/
+                var posNext = planet.posAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
                 var dispositionNext = new Disposition(posNext, entityPlayer.locatable().loc.orientation.clone(), null);
-                //entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther); // Doesn't work.
                 world.placeNext = new PlaceStarsystem(world, starsystem, dispositionNext, planet);
+                todo;
+                /*
+                var entityPlanet = placeStarsystem.entityByName(planet.name);
+                var playerCollidable = entityPlayer.collidable();
+                playerCollidable.entitiesAlreadyCollidedWith.push(entityPlanet);
+                playerCollidable.colliderLocateForEntity(entityPlayer); // hack
+                */
             }
             else {
                 var entityOtherPlanet = EntityExtensions.planet(entityOther);
@@ -140,8 +143,12 @@ class PlacePlanetVicinity extends Place {
             var enemyCollider = Mesh.fromFace(new Coords(0, 0, 0), // center
             enemyColliderAsFace, 1 // thickness
             );
-            var enemyVisual = new VisualPolygon(new Path(enemyColliderAsFace.vertices), enemyColor, null);
-            var enemyKill = (universe, world, place, entity) => {
+            var enemyVisual = new VisualPolygon(new Path(enemyColliderAsFace.vertices), enemyColor, null, // ?
+            false // shouldUseEntityOrientation
+            );
+            var enemyKill = (uwpe) => {
+                var place = uwpe.place;
+                var entity = uwpe.entity;
                 place.entityRemove(entity);
                 var planet = place.planet;
                 var shipGroup = EntityExtensions.shipGroup(entity);
@@ -183,7 +190,7 @@ class PlacePlanetVicinity extends Place {
     }
     draw(universe, world) {
         var display = universe.display;
-        display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+        display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
         var player = this.entitiesByName.get(Player.name);
         var playerLoc = player.locatable().loc;
         var camera = this._camera;

@@ -1,5 +1,5 @@
 
-class Planet implements EntityProperty, Satellite
+class Planet implements EntityProperty<Planet>, Satellite
 {
 	name: string;
 	defnName: string;
@@ -187,18 +187,23 @@ class Planet implements EntityProperty, Satellite
 
 	// EntityProperty.
 
-	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var universe = uwpe.universe;
 		var randomizer = universe.randomizer;
 		this.mineralsGenerate(randomizer);
 		this.lifeformsGenerate(randomizer);
 	}
 
-	updateForTimerTick(universe: Universe, world: World, place: Place, entity: Entity): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		// Do nothing.
 	}
+
+	// Equatable.
+
+	equals(other: Planet): boolean { return false; }
 }
 

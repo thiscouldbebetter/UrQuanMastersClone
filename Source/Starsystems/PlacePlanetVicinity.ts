@@ -15,7 +15,10 @@ class PlacePlanetVicinity extends Place
 
 	constructor
 	(
-		worldAsWorld: World, size: Coords, planet: Planet, playerLoc: Disposition,
+		worldAsWorld: World,
+		size: Coords,
+		planet: Planet,
+		playerLoc: Disposition,
 		placeStarsystem: PlaceStarsystem
 	)
 	{
@@ -118,7 +121,7 @@ class PlacePlanetVicinity extends Place
 		{
 			var world = uwpe.world as WorldExtended;
 			var place = uwpe.place as PlacePlanetVicinity;
-			var entity = uwpe.entity;
+			var entityPlayer = uwpe.entity;
 			var entityOther = uwpe.entity2;
 
 			var entityOtherName = entityOther.name;
@@ -131,21 +134,25 @@ class PlacePlanetVicinity extends Place
 				var posNext = planet.posAsPolar.toCoords(Coords.create()).add
 				(
 					starsystem.sizeInner.clone().half()
-				);/*.add
-				(
-					new Coords(3, 0).multiplyScalar(planet.radiusOuter)
-				);*/
+				);
 				var dispositionNext = new Disposition
 				(
 					posNext,
 					entityPlayer.locatable().loc.orientation.clone(),
 					null
 				);
-				//entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther); // Doesn't work.
 				world.placeNext = new PlaceStarsystem
 				(
 					world, starsystem, dispositionNext, planet
 				);
+
+				todo
+				/*
+				var entityPlanet = placeStarsystem.entityByName(planet.name);
+				var playerCollidable = entityPlayer.collidable();
+				playerCollidable.entitiesAlreadyCollidedWith.push(entityPlanet);
+				playerCollidable.colliderLocateForEntity(entityPlayer); // hack
+				*/
 			}
 			else
 			{
@@ -261,11 +268,16 @@ class PlacePlanetVicinity extends Place
 
 			var enemyVisual = new VisualPolygon
 			(
-				new Path(enemyColliderAsFace.vertices), enemyColor, null
+				new Path(enemyColliderAsFace.vertices), enemyColor,
+				null, // ?
+				false // shouldUseEntityOrientation
 			);
 
-			var enemyKill = (universe: Universe, world: World, place: Place, entity: Entity) =>
+			var enemyKill = (uwpe: UniverseWorldPlaceEntities) =>
 			{
+				var place = uwpe.place;
+				var entity = uwpe.entity;
+
 				place.entityRemove(entity);
 				var planet = (place as PlacePlanetVicinity).planet;
 				var shipGroup = EntityExtensions.shipGroup(entity);
@@ -345,7 +357,7 @@ class PlacePlanetVicinity extends Place
 	{
 		var display = universe.display;
 
-		display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+		display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
 
 		var player = this.entitiesByName.get(Player.name);
 		var playerLoc = player.locatable().loc;

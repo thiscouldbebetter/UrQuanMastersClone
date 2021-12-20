@@ -12,6 +12,7 @@ var ControlActionNames = gf.ControlActionNames;
 var ControlBase = gf.ControlBase;
 var ControlBuilder = gf.ControlBuilder;
 var ControlButton = gf.ControlButton;
+var ControlColorScheme = gf.ControlColorScheme;
 var ControlContainer = gf.ControlContainer;
 var ControlContainerTransparent = gf.ControlContainerTransparent;
 var ControlLabel = gf.ControlLabel;
@@ -53,6 +54,7 @@ var VisualText = gf.VisualText;
 var VisualAnimation = gf.VisualAnimation;
 // Geometry.
 var Camera = gf.Camera;
+var Collision = gf.Collision;
 var CollisionHelper = gf.CollisionHelper;
 var CollisionTracker = gf.CollisionTracker;
 var Constraint_FrictionDry = gf.Constraint_FrictionDry;
