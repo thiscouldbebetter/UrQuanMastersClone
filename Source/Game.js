@@ -5,12 +5,14 @@ class Game {
         var contentPathPrefixComms = "../Content/Import/sc2/content/base/comm/";
         var conversationPlaceholderPath = "../Content/Text/Conversation/Placeholder.json";
         var imageDirectory = "../Content/Images/";
+        var conversation = "Conversation-";
+        var conversationContent = conversation + "Content-";
         var mediaLibrary = new MediaLibrary(
         // images
         [
             new Image2("Conversation", imageDirectory + "Conversation.png"),
-            new Image2("Conversation-EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
-            new Image2("Conversation-Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
+            new Image2(conversation + "EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
+            new Image2(conversation + "Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
             new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
             // opening
             new Image2("Opening", imageDirectory + "Opening.png"),
@@ -40,31 +42,32 @@ class Game {
         [
             //new TextString("Instructions", "../Content/Text/Instructions.txt"),
             new TextString("StarsAndPlanets", "../Content/Text/PlanetDatabase.csv"),
-            new TextString("Conversation-LahkemupGuardDrone", "../Content/Text/Conversation/LahkemupGuardDrone.json"),
-            new TextString("Conversation-Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
-            new TextString("Conversation-EarthStation", "../Content/Text/Conversation/EarthStation.json"),
+            new TextString(conversation + "LahkemupGuardDrone", "../Content/Text/Conversation/LahkemupGuardDrone.json"),
+            new TextString(conversationContent + "LahkemupGuardDrone", "../Content/Text/Conversation/LahkemupGuardDrone-Content.txt"),
+            new TextString(conversation + "Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
+            new TextString(conversation + "EarthStation", "../Content/Text/Conversation/EarthStation.json"),
             new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation/Placeholder-Content.txt"),
-            new TextString("Conversation-Amorfus", conversationPlaceholderPath),
-            new TextString("Conversation-Araknoid", conversationPlaceholderPath),
-            new TextString("Conversation-Daskapital", conversationPlaceholderPath),
-            new TextString("Conversation-Ellfyn", conversationPlaceholderPath),
-            new TextString("Conversation-Hyphae", conversationPlaceholderPath),
-            new TextString("Conversation-Kehlemal", conversationPlaceholderPath),
-            new TextString("Conversation-Lahkemup", conversationPlaceholderPath),
-            new TextString("Conversation-Mauluska", conversationPlaceholderPath),
-            new TextString("Conversation-Moroz", conversationPlaceholderPath),
-            new TextString("Conversation-Muuncaf", conversationPlaceholderPath),
-            new TextString("Conversation-Mazonae", conversationPlaceholderPath),
-            new TextString("Conversation-Murch", conversationPlaceholderPath),
-            new TextString("Conversation-Outsider", conversationPlaceholderPath),
-            new TextString("Conversation-Raptor", conversationPlaceholderPath),
-            new TextString("Conversation-Silikonix", conversationPlaceholderPath),
-            new TextString("Conversation-Supial", conversationPlaceholderPath),
-            new TextString("Conversation-Tempestrial", conversationPlaceholderPath),
-            new TextString("Conversation-Triunion", conversationPlaceholderPath),
-            new TextString("Conversation-Twyggan", conversationPlaceholderPath),
-            new TextString("Conversation-Ugglegruj", conversationPlaceholderPath),
-            new TextString("Conversation-Warpig", conversationPlaceholderPath),
+            new TextString(conversation + "Amorfus", conversationPlaceholderPath),
+            new TextString(conversation + "Araknoid", conversationPlaceholderPath),
+            new TextString(conversation + "Daskapital", conversationPlaceholderPath),
+            new TextString(conversation + "Ellfyn", conversationPlaceholderPath),
+            new TextString(conversation + "Hyphae", conversationPlaceholderPath),
+            new TextString(conversation + "Kehlemal", conversationPlaceholderPath),
+            new TextString(conversation + "Lahkemup", conversationPlaceholderPath),
+            new TextString(conversation + "Mauluska", conversationPlaceholderPath),
+            new TextString(conversation + "Moroz", conversationPlaceholderPath),
+            new TextString(conversation + "Muuncaf", conversationPlaceholderPath),
+            new TextString(conversation + "Mazonae", conversationPlaceholderPath),
+            new TextString(conversation + "Murch", conversationPlaceholderPath),
+            new TextString(conversation + "Outsider", conversationPlaceholderPath),
+            new TextString(conversation + "Raptor", conversationPlaceholderPath),
+            new TextString(conversation + "Silikonix", conversationPlaceholderPath),
+            new TextString(conversation + "Supial", conversationPlaceholderPath),
+            new TextString(conversation + "Tempestrial", conversationPlaceholderPath),
+            new TextString(conversation + "Triunion", conversationPlaceholderPath),
+            new TextString(conversation + "Twyggan", conversationPlaceholderPath),
+            new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),
+            new TextString(conversation + "Warpig", conversationPlaceholderPath),
         ]);
         var displaySizeInPixelsDefault = new Coords(400, 300, 1);
         var display = new Display2D(
@@ -81,7 +84,6 @@ class Game {
         var timerHelper = new TimerHelper(24);
         var controlBuilder = ControlBuilder.default();
         var universe = Universe.create("SpaceAdventureClone", "0.0.0-20211219", timerHelper, display, mediaLibrary, controlBuilder, WorldCreator.fromWorldCreate(WorldExtended.create));
-        universe.initialize(() => universe.start());
         var controlSlideshowIntro = universe.controlBuilder.slideshow(universe, displaySizeInPixelsDefault, [
             ["Black", "At first, it was black."],
             ["Red", "Then, it turned red."],
@@ -94,14 +96,16 @@ class Game {
         );
         universe.venueNext =
             controlBuilder.venueTransitionalFromTo(null, universe.venueNext);
+        var universeDebugOrStart;
         if (universe.debuggingModeName != null) {
-            this.debug(universe);
+            universeDebugOrStart = () => this.debug(universe);
         }
+        else {
+            universeDebugOrStart = () => universe.start();
+        }
+        universe.initialize(universeDebugOrStart);
     }
     debug(universe) {
-        universe.mediaLibrary.waitForItemsAllToLoad(this.debug_MediaLoaded.bind(this, universe));
-    }
-    debug_MediaLoaded(universe) {
         var world = WorldExtended.create(universe);
         universe.world = world;
         universe.venueNext = new VenueWorld(world);
@@ -127,6 +131,7 @@ class Game {
         else if (debuggingModeName == "StarsystemSol") {
             this.debug_StarsystemSol(universe);
         }
+        universe.start();
     }
     debug_Combat(universe) {
         var displaySize = universe.display.sizeInPixels;

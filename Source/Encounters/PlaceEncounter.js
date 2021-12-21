@@ -29,10 +29,18 @@ class PlaceEncounter extends Place {
         var mediaLibrary = universe.mediaLibrary;
         var conversationDefnAsJSON = mediaLibrary.textStringGetByName(conversationResourceName).value;
         var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-        var contentTextStringName = conversationDefnName; // conversationDefn.contentTextStringName;
-        if (contentTextStringName != null) {
-            var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
-            conversationDefn.expandFromContentTextString(contentTextString);
+        var contentTextStringName = "Conversation-Content-" + conversationDefnName;
+        var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
+        if (contentTextString != null) {
+            var contentBlocks = contentTextString.value.split("\n\n");
+            var contentsById = new Map(contentBlocks.map(nodeAsBlock => {
+                var indexOfNewlineFirst = nodeAsBlock.indexOf("\n");
+                var contentId = nodeAsBlock.substr(0, indexOfNewlineFirst).split("\t")[0];
+                var restOfBlock = nodeAsBlock.substr(indexOfNewlineFirst + 1);
+                return [contentId, restOfBlock];
+            }));
+            conversationDefn.contentSubstitute(contentsById);
+            conversationDefn.displayNodesExpandByLines();
         }
         var venueToReturnTo = universe.venueCurrent;
         var conversation = new ConversationRun(conversationDefn, () => // quit

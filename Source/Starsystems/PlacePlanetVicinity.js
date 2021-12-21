@@ -68,12 +68,19 @@ class PlacePlanetVicinity extends Place {
                 var posNext = planet.posAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
                 var dispositionNext = new Disposition(posNext, entityPlayer.locatable().loc.orientation.clone(), null);
                 world.placeNext = new PlaceStarsystem(world, starsystem, dispositionNext, planet);
-                todo;
                 /*
+                // hack
+
                 var entityPlanet = placeStarsystem.entityByName(planet.name);
+
                 var playerCollidable = entityPlayer.collidable();
+                var planetCollidable = entityPlanet.collidable();
+
                 playerCollidable.entitiesAlreadyCollidedWith.push(entityPlanet);
-                playerCollidable.colliderLocateForEntity(entityPlayer); // hack
+                planetCollidable.entitiesAlreadyCollidedWith.push(entityPlayer);
+
+                playerCollidable.colliderLocateForEntity(entityPlayer);
+                planetCollidable.colliderLocateForEntity(entityPlanet);
                 */
             }
             else {
