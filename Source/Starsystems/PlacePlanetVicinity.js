@@ -68,20 +68,6 @@ class PlacePlanetVicinity extends Place {
                 var posNext = planet.posAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
                 var dispositionNext = new Disposition(posNext, entityPlayer.locatable().loc.orientation.clone(), null);
                 world.placeNext = new PlaceStarsystem(world, starsystem, dispositionNext, planet);
-                /*
-                // hack
-
-                var entityPlanet = placeStarsystem.entityByName(planet.name);
-
-                var playerCollidable = entityPlayer.collidable();
-                var planetCollidable = entityPlanet.collidable();
-
-                playerCollidable.entitiesAlreadyCollidedWith.push(entityPlanet);
-                planetCollidable.entitiesAlreadyCollidedWith.push(entityPlayer);
-
-                playerCollidable.colliderLocateForEntity(entityPlayer);
-                planetCollidable.colliderLocateForEntity(entityPlanet);
-                */
             }
             else {
                 var entityOtherPlanet = EntityExtensions.planet(entityOther);
@@ -96,9 +82,9 @@ class PlacePlanetVicinity extends Place {
                     world.placeNext = new PlacePlanetOrbit(world, entityOtherPlanet, place);
                 }
                 else if (entityOtherShipGroup != null) {
-                    entityOther.collidable().ticksUntilCanCollide = 50; // hack
+                    entityOther.collidable().ticksUntilCanCollide = 1000; // hack
                     var shipGroup = entityOtherShipGroup;
-                    var encounter = new Encounter(place.planet, shipGroup.factionName, entityOther, place, entityPlayer.locatable().loc.pos);
+                    var encounter = new Encounter(place.planet, shipGroup.factionName, entityPlayer, entityOther, place, entityPlayer.locatable().loc.pos);
                     var placeEncounter = new PlaceEncounter(world, encounter);
                     world.placeNext = placeEncounter;
                 }
@@ -110,7 +96,7 @@ class PlacePlanetVicinity extends Place {
                     }
                     else {
                         entityOther.collidable().ticksUntilCanCollide = 50; // hack
-                        var encounter = new Encounter(this.planet, station.factionName, entityOther, place, entityPlayer.locatable().loc.pos);
+                        var encounter = new Encounter(this.planet, station.factionName, entityPlayer, entityOther, place, entityPlayer.locatable().loc.pos);
                         var placeEncounter = new PlaceEncounter(world, encounter);
                         world.placeNext = placeEncounter;
                     }

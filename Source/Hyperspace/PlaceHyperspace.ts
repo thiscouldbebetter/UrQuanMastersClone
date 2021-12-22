@@ -252,7 +252,7 @@ class PlaceHyperspace extends Place
 			this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64)
 		);
 		var entityForCollisionTracker = collisionTracker.toEntity();
-		entities.push(entityForCollisionTracker);
+		entities.splice(0, 0, entityForCollisionTracker); // hack - Must come before stationary entities.
 
 		var containerSidebar = this.toControlSidebar(universe);
 		this.venueControls = VenueControls.fromControl(containerSidebar);
@@ -379,6 +379,7 @@ class PlaceHyperspace extends Place
 			(
 				planetClosest,
 				shipGroupOther.factionName,
+				entityPlayer,
 				entityOther,
 				place,
 				playerPos
@@ -414,6 +415,7 @@ class PlaceHyperspace extends Place
 				CollidableHelper.fromCollider(new Sphere(Coords.create(), 5)),
 				Drawable.fromVisual(ship0.defn(world).visual),
 				Locatable.fromPos(shipGroupPos),
+				Movable.default(),
 				shipGroup,
 				ship0
 			]
@@ -449,7 +451,7 @@ class PlaceHyperspace extends Place
 			display.fontHeightInPixels,
 			Color.byName("Yellow"),
 			Color.byName("GreenDark"),
-			null
+			true // isInvisible
 		);
 
 		var imageSensors = this.displaySensors.initialize(null).toImage();
@@ -501,6 +503,7 @@ class PlaceHyperspace extends Place
 	draw_Sensors(): void
 	{
 		this.displaySensors.clear();
+		this.displaySensors.drawBackground(null, null);
 
 		var sensorRange = this._camera.viewSize.clone().double();
 		var controlSize = this.displaySensors.sizeInPixels;
@@ -536,6 +539,7 @@ class PlaceHyperspace extends Place
 
 		var ships = this.hyperspace.shipGroups;
 		var shipSize = Coords.fromXY(1, 1).multiplyScalar(2 * starRadius);
+		var shipSizeHalf = shipSize.clone().half();
 		var shipColor = starColor;
 		for (var i = 0; i < ships.length; i++)
 		{
@@ -555,6 +559,9 @@ class PlaceHyperspace extends Place
 			).add
 			(
 				controlSizeHalf
+			).subtract
+			(
+				shipSizeHalf
 			);
 			this.displaySensors.drawRectangle(drawPos, shipSize, shipColor, null);
 		}

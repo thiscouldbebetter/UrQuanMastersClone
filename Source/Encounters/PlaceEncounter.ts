@@ -68,17 +68,21 @@ class PlaceEncounter extends Place
 			conversationDefn.contentSubstitute(contentsById);
 			conversationDefn.displayNodesExpandByLines();
 		}
+
 		var venueToReturnTo = universe.venueCurrent;
+
+		var conversationQuit = () =>
+		{
+			encounter.returnToPlace(world);
+			universe.venueNext = venueToReturnTo;
+		};
+
 		var conversation = new ConversationRun
 		(
 			conversationDefn,
-			() => // quit
-			{
-				encounter.returnToPlace(world);
-				universe.venueNext = venueToReturnTo;
-			},
-			null, // ?
-			null, // ?
+			conversationQuit,
+			encounter.entityPlayer,
+			encounter.entityOther,
 			null // ?
 		);
 		var conversationSize = universe.display.sizeDefault().clone();
@@ -113,7 +117,7 @@ class PlaceEncounter extends Place
 
 			var encounter = this.encounter;
 			var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
-			var shipGroupOtherDescription = shipGroupOther.toStringDescription()
+			var shipGroupOtherDescription = shipGroupOther.toStringDescription();
 
 			var newline = "\n";
 			var messageToShow =
@@ -132,12 +136,12 @@ class PlaceEncounter extends Place
 			}
 
 			var choiceNames = [ "Talk" ];
-			var choiceActions = [ this.talk.bind(this) ];
+			var choiceActions = [ () => this.talk(universe) ];
 
 			if (faction.relationsWithPlayer == Faction.RelationsHostile)
 			{
 				choiceNames.push("Fight");
-				choiceActions.push(this.fight);
+				choiceActions.push( () => this.fight(universe) );
 			}
 
 			var controlRoot = universe.controlBuilder.choice

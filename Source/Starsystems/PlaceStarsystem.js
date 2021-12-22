@@ -156,7 +156,7 @@ class PlaceStarsystem extends Place {
         var entityOtherName = entityOther.name;
         if (entityOtherName.startsWith("Enemy")) {
             var shipGroupOther = EntityExtensions.shipGroup(entityOther);
-            var encounter = new Encounter(ArrayHelper.random(place.starsystem.planets, universe.randomizer), shipGroupOther.factionName, entityOther, place, entityPlayer.locatable().loc.pos);
+            var encounter = new Encounter(ArrayHelper.random(place.starsystem.planets, universe.randomizer), shipGroupOther.factionName, entityPlayer, entityOther, place, entityPlayer.locatable().loc.pos);
             var placeEncounter = new PlaceEncounter(world, encounter);
             world.placeNext = placeEncounter;
         }

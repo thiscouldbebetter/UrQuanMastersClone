@@ -3,18 +3,24 @@ class Encounter
 {
 	planet: Planet;
 	factionName: string;
+	entityPlayer: Entity;
 	entityOther: Entity;
 	placeToReturnTo: Place;
 	posToReturnTo: Coords;
 
 	constructor
 	(
-		planet: Planet, factionName: string, entityOther: Entity,
-		placeToReturnTo: Place, posToReturnTo: Coords
+		planet: Planet,
+		factionName: string,
+		entityPlayer: Entity,
+		entityOther: Entity,
+		placeToReturnTo: Place,
+		posToReturnTo: Coords
 	)
 	{
 		this.planet = planet;
 		this.factionName = factionName;
+		this.entityPlayer = entityPlayer;
 		this.entityOther = entityOther;
 		this.placeToReturnTo = placeToReturnTo;
 		this.posToReturnTo = posToReturnTo;

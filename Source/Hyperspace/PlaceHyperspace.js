@@ -133,7 +133,7 @@ class PlaceHyperspace extends Place {
         // CollisionTracker.
         var collisionTracker = new CollisionTracker(this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64));
         var entityForCollisionTracker = collisionTracker.toEntity();
-        entities.push(entityForCollisionTracker);
+        entities.splice(0, 0, entityForCollisionTracker); // hack - Must come before stationary entities.
         var containerSidebar = this.toControlSidebar(universe);
         this.venueControls = VenueControls.fromControl(containerSidebar);
         // Helper variables.
@@ -198,7 +198,7 @@ class PlaceHyperspace extends Place {
             var playerPos = entityPlayer.locatable().loc.pos;
             var starsystemClosest = place.hyperspace.starsystemClosestTo(playerPos);
             var planetClosest = ArrayHelper.random(starsystemClosest.planets, universe.randomizer);
-            var encounter = new Encounter(planetClosest, shipGroupOther.factionName, entityOther, place, playerPos);
+            var encounter = new Encounter(planetClosest, shipGroupOther.factionName, entityPlayer, entityOther, place, playerPos);
             var placeEncounter = new PlaceEncounter(world, encounter);
             world.placeNext = placeEncounter;
             place.entitiesToRemove.push(entityOther);
@@ -218,6 +218,7 @@ class PlaceHyperspace extends Place {
             CollidableHelper.fromCollider(new Sphere(Coords.create(), 5)),
             Drawable.fromVisual(ship0.defn(world).visual),
             Locatable.fromPos(shipGroupPos),
+            Movable.default(),
             shipGroup,
             ship0
         ]);
@@ -230,7 +231,8 @@ class PlaceHyperspace extends Place {
         var marginWidth = 8;
         var size = Coords.fromXY(1, 1).multiplyScalar(containerSidebar.size.x - marginWidth * 2);
         var display = universe.display;
-        this.displaySensors = new Display2D([size], display.fontName, display.fontHeightInPixels, Color.byName("Yellow"), Color.byName("GreenDark"), null);
+        this.displaySensors = new Display2D([size], display.fontName, display.fontHeightInPixels, Color.byName("Yellow"), Color.byName("GreenDark"), true // isInvisible
+        );
         var imageSensors = this.displaySensors.initialize(null).toImage();
         var controlVisualSensors = ControlVisual.from4("controlVisualSensors", Coords.fromXY(8, 152), // pos
         size, DataBinding.fromContext(new VisualImageImmediate(imageSensors, null)));
@@ -251,6 +253,7 @@ class PlaceHyperspace extends Place {
     }
     draw_Sensors() {
         this.displaySensors.clear();
+        this.displaySensors.drawBackground(null, null);
         var sensorRange = this._camera.viewSize.clone().double();
         var controlSize = this.displaySensors.sizeInPixels;
         var controlSizeHalf = controlSize.clone().half();
@@ -266,10 +269,11 @@ class PlaceHyperspace extends Place {
         }
         var ships = this.hyperspace.shipGroups;
         var shipSize = Coords.fromXY(1, 1).multiplyScalar(2 * starRadius);
+        var shipSizeHalf = shipSize.clone().half();
         var shipColor = starColor;
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
-            drawPos.overwriteWith(ship.pos).subtract(cameraPos).divide(sensorRange).multiply(controlSize).add(controlSizeHalf);
+            drawPos.overwriteWith(ship.pos).subtract(cameraPos).divide(sensorRange).multiply(controlSize).add(controlSizeHalf).subtract(shipSizeHalf);
             this.displaySensors.drawRectangle(drawPos, shipSize, shipColor, null);
         }
         var drawPos = controlSizeHalf;

@@ -145,21 +145,6 @@ class PlacePlanetVicinity extends Place
 				(
 					world, starsystem, dispositionNext, planet
 				);
-
-				/*
-				// hack
-
-				var entityPlanet = placeStarsystem.entityByName(planet.name);
-
-				var playerCollidable = entityPlayer.collidable();
-				var planetCollidable = entityPlanet.collidable();
-
-				playerCollidable.entitiesAlreadyCollidedWith.push(entityPlanet);
-				planetCollidable.entitiesAlreadyCollidedWith.push(entityPlayer);
-
-				playerCollidable.colliderLocateForEntity(entityPlayer);
-				planetCollidable.colliderLocateForEntity(entityPlanet);
-				*/
 			}
 			else
 			{
@@ -180,12 +165,13 @@ class PlacePlanetVicinity extends Place
 				}
 				else if (entityOtherShipGroup != null)
 				{
-					entityOther.collidable().ticksUntilCanCollide = 50; // hack
+					entityOther.collidable().ticksUntilCanCollide = 100; // hack
 					var shipGroup = entityOtherShipGroup;
 					var encounter = new Encounter
 					(
 						place.planet,
 						shipGroup.factionName,
+						entityPlayer,
 						entityOther,
 						place,
 						entityPlayer.locatable().loc.pos
@@ -208,6 +194,7 @@ class PlacePlanetVicinity extends Place
 						(
 							this.planet,
 							station.factionName,
+							entityPlayer,
 							entityOther,
 							place,
 							entityPlayer.locatable().loc.pos

@@ -77,7 +77,7 @@ class ShipGroup {
             shipCountsByDefnName.set(shipDefnName, shipCountForDefnName);
         }
         var shipCountsAsStrings = [];
-        for (var shipDefnName in shipCountsByDefnName) {
+        for (var shipDefnName of shipCountsByDefnName.keys()) {
             var shipCount = shipCountsByDefnName.get(shipDefnName);
             var shipCountAsString = shipCount + " " + shipDefnName;
             shipCountsAsStrings.push(shipCountAsString);

@@ -7,11 +7,13 @@ class CameraHelper {
         var collidable = Collidable.fromCollider(viewCollider);
         var boundable = new Boundable(viewCollider.clone());
         var locatable = new Locatable(camera.loc);
+        var movable = Movable.default();
         return new Entity(Camera.name, [
             camera,
             boundable,
             collidable,
-            locatable
+            locatable,
+            movable
         ]);
     }
 }
