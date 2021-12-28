@@ -179,7 +179,7 @@ class PlacePlanetVicinity extends Place
 
 			var damagerColor = Color.byName("Red");
 			var enemyColor = damagerColor;
-			var enemyPos = Coords.create().randomize(null).multiply(this.size);
+			var enemyPos = this.size.clone().half();
 			var enemyLoc = Disposition.fromPos(enemyPos);
 
 			var enemyColliderAsFace = new Face

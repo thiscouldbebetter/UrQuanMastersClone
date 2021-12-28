@@ -190,6 +190,10 @@ class Game
 		{
 			this.debug_StarsystemSol(universe);
 		}
+		else if (debuggingModeName == "Station")
+		{
+			this.debug_Station(universe);
+		}
 
 		universe.start();
 	}
@@ -332,5 +336,24 @@ class Game
 		var place = starsystemSol.toPlace(world, playerLoc, null);
 		world.placeNext = place;
 	}
+
+	debug_Station(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+
+		var player = world.player;
+		player.credit = 0;
+		var resourceDefns = ResourceDefn.Instances();
+		var playerItemHolder = player.flagship.itemHolder;
+		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
+
+		var starsystemSol = world.hyperspace.starsystemByName("Sol");
+		var planetEarth = starsystemSol.planets[2];
+		var station = planetEarth.satellites[0] as Station;
+		var placePlanetVicinity = planetEarth.toPlace(universe.world as WorldExtended);
+		var placeStation = new PlaceStation(world, station, placePlanetVicinity);
+		world.placeNext = placeStation;
+	}
+
 }
 

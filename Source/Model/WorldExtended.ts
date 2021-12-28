@@ -103,7 +103,7 @@ class WorldExtended extends World
 			"Terran",
 			null, // nameOriginal
 			null, // color
-			Faction.RelationsAllied, // todo
+			Faction.RelationsNeutral, // todo
 			true, // talksImmediately
 			"EarthStation", // conversationDefnName
 			null, // sphereOfInfluence

@@ -6,6 +6,7 @@
 
 { "defnName": "Display", "name": "#(SEND_MESSAGE)"},
 { "defnName": "Quit" },
+{ "name": "Finalize", "defnName": "DoNothing" },
 { "defnName": "Script", "content": "(u, cr) => cr.talker().actor().activity.defnNameSet('Leave')" }
 
     ]

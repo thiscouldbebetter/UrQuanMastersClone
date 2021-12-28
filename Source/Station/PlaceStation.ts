@@ -87,6 +87,7 @@ class PlaceStation extends Place
 			null, // entityTalker
 			null // contentsById
 		);
+		conversation.initialize(universe);
 		var conversationAsControl = conversation.toControl(size, universe);
 		universe.venueNext = new VenueControls(conversationAsControl, null);
 	}

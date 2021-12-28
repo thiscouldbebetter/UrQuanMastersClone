@@ -49,7 +49,7 @@ class WorldExtended extends World {
         // special
         var factionTerran = new Faction("Terran", null, // nameOriginal
         null, // color
-        Faction.RelationsAllied, // todo
+        Faction.RelationsNeutral, // todo
         true, // talksImmediately
         "EarthStation", // conversationDefnName
         null, // sphereOfInfluence

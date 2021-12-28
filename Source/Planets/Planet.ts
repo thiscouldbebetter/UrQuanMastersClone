@@ -185,7 +185,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return returnValue;
 	}
 
-	toPlace(world: WorldExtended): Place
+	toPlace(world: WorldExtended): PlacePlanetVicinity
 	{
 		return new PlacePlanetVicinity
 		(

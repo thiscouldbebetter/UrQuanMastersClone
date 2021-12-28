@@ -131,6 +131,9 @@ class Game {
         else if (debuggingModeName == "StarsystemSol") {
             this.debug_StarsystemSol(universe);
         }
+        else if (debuggingModeName == "Station") {
+            this.debug_Station(universe);
+        }
         universe.start();
     }
     debug_Combat(universe) {
@@ -232,5 +235,19 @@ class Game {
         var playerLoc = Disposition.fromPosAndOrientation(playerPos, new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1)));
         var place = starsystemSol.toPlace(world, playerLoc, null);
         world.placeNext = place;
+    }
+    debug_Station(universe) {
+        var world = universe.world;
+        var player = world.player;
+        player.credit = 0;
+        var resourceDefns = ResourceDefn.Instances();
+        var playerItemHolder = player.flagship.itemHolder;
+        playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
+        var starsystemSol = world.hyperspace.starsystemByName("Sol");
+        var planetEarth = starsystemSol.planets[2];
+        var station = planetEarth.satellites[0];
+        var placePlanetVicinity = planetEarth.toPlace(universe.world);
+        var placeStation = new PlaceStation(world, station, placePlanetVicinity);
+        world.placeNext = placeStation;
     }
 }
