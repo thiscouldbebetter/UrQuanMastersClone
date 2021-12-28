@@ -25,7 +25,7 @@ class EnergySource implements EntityProperty<EnergySource>
 			this.name,
 			[
 				this,
-				CollidableHelper.fromCollider(energySourceCollider),
+				Collidable.fromCollider(energySourceCollider),
 				Drawable.fromVisual(visual),
 				Locatable.fromPos(this.pos),
 			]

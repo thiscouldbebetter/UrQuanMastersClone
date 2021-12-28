@@ -25,7 +25,7 @@ class Resource {
         var resourceEntity = new Entity("Resource" + Math.random(), [
             new Item(resourceDefnName, resourceQuantity),
             Locatable.fromPos(resourcePos),
-            CollidableHelper.fromCollider(resourceCollider),
+            Collidable.fromCollider(resourceCollider),
             Drawable.fromVisual(resourceVisual)
         ]);
         return resourceEntity;

@@ -1,7 +1,9 @@
 "use strict";
 class PlaceCombat extends Place {
     constructor(worldAsWorld, combat) {
-        super(PlaceCombat.name, PlaceCombat.name, combat.size, []);
+        super(PlaceCombat.name, PlaceCombat.name, null, // parentName
+        combat.size, null // entities
+        );
         var world = worldAsWorld;
         this.combat = combat;
         this.size = this.combat.size;

@@ -51,7 +51,7 @@ class Resource
 			[
 				new Item(resourceDefnName, resourceQuantity),
 				Locatable.fromPos(resourcePos),
-				CollidableHelper.fromCollider(resourceCollider),
+				Collidable.fromCollider(resourceCollider),
 				Drawable.fromVisual(resourceVisual)
 			]
 		);

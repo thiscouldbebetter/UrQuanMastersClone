@@ -329,7 +329,7 @@ class Game
 			playerPos,
 			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
 		);
-		var place = new PlaceStarsystem(world, starsystemSol, playerLoc, null);
+		var place = starsystemSol.toPlace(world, playerLoc, null);
 		world.placeNext = place;
 	}
 }

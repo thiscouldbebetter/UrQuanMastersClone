@@ -10,8 +10,10 @@ class Hyperspace
 
 	constructor
 	(
-		size: Coords, starsystemRadiusOuter: number,
-		starsystems: Starsystem[], shipGroups: ShipGroup[]
+		size: Coords,
+		starsystemRadiusOuter: number,
+		starsystems: Starsystem[],
+		shipGroups: ShipGroup[]
 	)
 	{
 		this.size = size;
@@ -354,5 +356,17 @@ class Hyperspace
 		}
 
 		return starsystemClosestSoFar;
+	}
+
+	toPlace(universe: Universe): PlaceHyperspace
+	{
+		return new PlaceHyperspace
+		(
+			universe,
+			this,
+			null, // starsystemDeparted
+			null //playerLoc
+		);
+
 	}
 }

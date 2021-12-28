@@ -1,7 +1,10 @@
 "use strict";
 class PlaceEncounter extends Place {
     constructor(world, encounter) {
-        super(PlaceEncounter.name, PlaceEncounter.name, null, new Array());
+        super(PlaceEncounter.name, PlaceEncounter.name, null, // parentName
+        null, // size
+        null // entities
+        );
         this.encounter = encounter;
     }
     // methods
@@ -65,21 +68,21 @@ class PlaceEncounter extends Place {
         var universe = uwpe.universe;
         super.updateForTimerTick(uwpe);
         if (this.venueControls == null) {
-            var world = uwpe.world;
             var encounter = this.encounter;
-            var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
-            var shipGroupOtherDescription = shipGroupOther.toStringDescription();
-            var newline = "\n";
-            var messageToShow = "Encounter" + newline
-                + "with " + shipGroupOtherDescription + newline
-                + "near " + encounter.planet.name;
             var factionName = encounter.factionName;
+            var world = uwpe.world;
             var worldDefn = world.defnExtended();
             var faction = worldDefn.factionByName(factionName);
             if (faction.talksImmediately) {
                 this.talk(universe);
                 return; // hack
             }
+            var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
+            var shipGroupOtherDescription = shipGroupOther.toStringDescription();
+            var newline = "\n";
+            var messageToShow = "Encounter" + newline
+                + "with " + shipGroupOtherDescription + newline
+                + "near " + encounter.planet.name;
             var choiceNames = ["Talk"];
             var choiceActions = [() => this.talk(universe)];
             if (faction.relationsWithPlayer == Faction.RelationsHostile) {

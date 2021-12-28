@@ -1,7 +1,8 @@
 "use strict";
 class PlaceHyperspace extends Place {
     constructor(universe, hyperspace, starsystemDeparted, playerLoc) {
-        super(PlaceHyperspace.name, PlaceHyperspace.name, hyperspace.size, new Array());
+        super(PlaceHyperspace.name, PlaceHyperspace.name, null, // parentName
+        hyperspace.size, null);
         this.hyperspace = hyperspace;
         var actionMapView = new Action("MapView", (uwpe) => {
             var world = uwpe.world;
@@ -65,7 +66,7 @@ class PlaceHyperspace extends Place {
             var starVisual = starVisualsForSizesByColorName.get(starColor.name)[starSizeIndex];
             var starEntity = new Entity(starsystem.name, [
                 new Boundable(Box.fromSize(starSize)),
-                CollidableHelper.fromCollider(starCollider),
+                Collidable.fromCollider(starCollider),
                 Drawable.fromVisual(starVisual),
                 new Locatable(Disposition.fromPos(starPos)),
                 starsystem
@@ -81,7 +82,7 @@ class PlaceHyperspace extends Place {
             var factionCollider = faction.sphereOfInfluence;
             if (factionCollider != null) {
                 var factionEntity = new Entity("Faction" + faction.name, [
-                    CollidableHelper.fromCollider(factionCollider),
+                    Collidable.fromCollider(factionCollider),
                     faction,
                     Locatable.create()
                 ]);
@@ -95,41 +96,43 @@ class PlaceHyperspace extends Place {
             var entityShipGroup = this.shipGroupToEntity(world, this, shipGroup);
             entities.push(entityShipGroup);
         }
-        // player
-        var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
-        var playerColor = Color.byName("Gray");
-        var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-        var playerVisual = new VisualGroup([
-            playerVisualBody,
-        ]);
-        var playerShipGroup = world.player.shipGroup;
-        var playerShip = playerShipGroup.ships[0];
-        var constraintFriction = new Constraint_FrictionDry(0.01);
-        var constraintTrimToRange = new Constraint_TrimToPlaceSize();
-        var playerEntity = new Entity(Player.name, [
-            new Actor(new Activity(Player.activityDefn().name, null)),
-            new Collidable(null, // ticks
-            playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
-            this.playerCollide),
-            new Constrainable([
-                constraintFriction,
-                constraintTrimToRange
-            ]),
-            Drawable.fromVisual(playerVisual),
-            new Fuelable(),
-            ItemHolder.create(),
-            new Locatable(playerLoc),
-            Movable.default(),
-            new Playable(),
-            playerShipGroup,
-            playerShip
-        ]);
-        if (starsystemDeparted != null) {
-            var starsystemName = starsystemDeparted.name;
-            var entityForStarsystemDeparted = this.entitiesByName.get(starsystemName);
-            playerEntity.collidable().entitiesAlreadyCollidedWith.push(entityForStarsystemDeparted);
+        if (playerLoc != null) {
+            // player
+            var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
+            var playerColor = Color.byName("Gray");
+            var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
+            var playerVisual = new VisualGroup([
+                playerVisualBody,
+            ]);
+            var playerShipGroup = world.player.shipGroup;
+            var playerShip = playerShipGroup.ships[0];
+            var constraintFriction = new Constraint_FrictionDry(0.01);
+            var constraintTrimToRange = new Constraint_TrimToPlaceSize();
+            var playerEntity = new Entity(Player.name, [
+                new Actor(new Activity(Player.activityDefn().name, null)),
+                new Collidable(null, // ticks
+                playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
+                this.playerCollide),
+                new Constrainable([
+                    constraintFriction,
+                    constraintTrimToRange
+                ]),
+                Drawable.fromVisual(playerVisual),
+                new Fuelable(),
+                ItemHolder.create(),
+                new Locatable(playerLoc),
+                Movable.default(),
+                new Playable(),
+                playerShipGroup,
+                playerShip
+            ]);
+            if (starsystemDeparted != null) {
+                var starsystemName = starsystemDeparted.name;
+                var entityForStarsystemDeparted = this.entitiesByName.get(starsystemName);
+                playerEntity.collidable().entitiesAlreadyCollidedWith.push(entityForStarsystemDeparted);
+            }
+            entities.push(playerEntity);
         }
-        entities.push(playerEntity);
         // CollisionTracker.
         var collisionTracker = new CollisionTracker(this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64));
         var entityForCollisionTracker = collisionTracker.toEntity();
@@ -191,7 +194,8 @@ class PlaceHyperspace extends Place {
             var playerPosNextAsPolar = Polar.create().fromCoords(playerOrientation.forward).addToAzimuthInTurns(.5).wrap();
             playerPosNextAsPolar.radius = starsystem.sizeInner.x * .45;
             var playerPosNext = playerPosNextAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
-            world.placeNext = new PlaceStarsystem(world, starsystem, new Disposition(playerPosNext, playerOrientation.clone(), null), null);
+            world.placeNext = starsystem.toPlace(world, Disposition.fromPosAndOrientation(playerPosNext, playerOrientation.clone()), null // planet
+            );
         }
         else if (entityOtherShipGroup != null) {
             var shipGroupOther = entityOtherShipGroup;
@@ -215,7 +219,7 @@ class PlaceHyperspace extends Place {
         var entityShipGroup = new Entity(shipGroup.name + Math.random(), [
             new Actor(new Activity(ShipGroup.activityDefnApproachPlayer().name, null)),
             //faction,
-            CollidableHelper.fromCollider(new Sphere(Coords.create(), 5)),
+            Collidable.fromCollider(new Sphere(Coords.create(), 5)),
             Drawable.fromVisual(ship0.defn(world).visual),
             Locatable.fromPos(shipGroupPos),
             Movable.default(),

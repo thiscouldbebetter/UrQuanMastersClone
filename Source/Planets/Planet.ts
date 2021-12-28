@@ -175,7 +175,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		(
 			this.name,
 			[
-				CollidableHelper.fromCollider(collider),
+				Collidable.fromCollider(collider),
 				Drawable.fromVisual(visual),
 				this, // planet
 				Locatable.fromPos(pos),
@@ -183,6 +183,17 @@ class Planet implements EntityProperty<Planet>, Satellite
 		);
 
 		return returnValue;
+	}
+
+	toPlace(world: WorldExtended): Place
+	{
+		return new PlacePlanetVicinity
+		(
+			world,
+			this,
+			null, // playerLoc
+			null // placeStarsystem
+		);
 	}
 
 	// EntityProperty.

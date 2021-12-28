@@ -12,9 +12,19 @@ class PlacePlanetOrbit extends Place
 	_camera: Camera;
 	_drawPos: Coords;
 
-	constructor(world: World, planet: Planet, placePlanetVicinity: PlacePlanetVicinity)
+	constructor
+	(
+		world: World, planet: Planet, placePlanetVicinity: PlacePlanetVicinity
+	)
 	{
-		super(PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, []);
+		super
+		(
+			PlacePlanetOrbit.name,
+			PlacePlanetOrbit.name,
+			null, // parentName
+			null, // size
+			null // entities
+		);
 
 		this.planet = planet;
 		this.placePlanetVicinity = placePlanetVicinity;

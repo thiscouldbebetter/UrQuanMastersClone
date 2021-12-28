@@ -19,7 +19,7 @@ class Station {
         ]);
         var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
         var returnValue = new Entity(this.name, [
-            CollidableHelper.fromCollider(collider),
+            Collidable.fromCollider(collider),
             Drawable.fromVisual(visual),
             new Locatable(Disposition.fromPos(pos)),
             this

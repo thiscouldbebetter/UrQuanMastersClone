@@ -1,7 +1,10 @@
 "use strict";
 class PlacePlanetOrbit extends Place {
     constructor(world, planet, placePlanetVicinity) {
-        super(PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, []);
+        super(PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, // parentName
+        null, // size
+        null // entities
+        );
         this.planet = planet;
         this.placePlanetVicinity = placePlanetVicinity;
         var entities = this.entitiesToSpawn;

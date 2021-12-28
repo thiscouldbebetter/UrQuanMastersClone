@@ -7,7 +7,14 @@ class PlaceEncounter extends Place
 
 	constructor(world: World, encounter: Encounter)
 	{
-		super(PlaceEncounter.name, PlaceEncounter.name, null, new Array<Entity>());
+		super
+		(
+			PlaceEncounter.name,
+			PlaceEncounter.name,
+			null, // parentName
+			null, // size
+			null // entities
+		);
 
 		this.encounter = encounter;
 	}
@@ -113,19 +120,10 @@ class PlaceEncounter extends Place
 
 		if (this.venueControls == null)
 		{
-			var world = uwpe.world as WorldExtended;
-
 			var encounter = this.encounter;
-			var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
-			var shipGroupOtherDescription = shipGroupOther.toStringDescription();
-
-			var newline = "\n";
-			var messageToShow =
-				"Encounter" + newline
-				+ "with " + shipGroupOtherDescription + newline
-				+ "near " + encounter.planet.name;
 
 			var factionName = encounter.factionName;
+			var world = uwpe.world as WorldExtended;
 			var worldDefn = world.defnExtended();
 			var faction = worldDefn.factionByName(factionName);
 
@@ -134,6 +132,17 @@ class PlaceEncounter extends Place
 				this.talk(universe);
 				return; // hack
 			}
+
+			var shipGroupOther =
+				EntityExtensions.shipGroup(encounter.entityOther);
+			var shipGroupOtherDescription =
+				shipGroupOther.toStringDescription();
+
+			var newline = "\n";
+			var messageToShow =
+				"Encounter" + newline
+				+ "with " + shipGroupOtherDescription + newline
+				+ "near " + encounter.planet.name;
 
 			var choiceNames = [ "Talk" ];
 			var choiceActions = [ () => this.talk(universe) ];

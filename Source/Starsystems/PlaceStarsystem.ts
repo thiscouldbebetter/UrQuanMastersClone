@@ -15,11 +15,20 @@ class PlaceStarsystem extends Place
 
 	constructor
 	(
-		world: WorldExtended, starsystem: Starsystem, playerLoc: Disposition,
+		world: WorldExtended,
+		starsystem: Starsystem,
+		playerLoc: Disposition,
 		planetDeparted: Planet
 	)
 	{
-		super(PlaceStarsystem.name, PlaceStarsystem.name, Coords.fromXY(300, 300), []);
+		super
+		(
+			PlaceStarsystem.name,
+			PlaceStarsystem.name,
+			null, // parentName
+			Coords.fromXY(300, 300), // size
+			null // entities
+		);
 
 		this.starsystem = starsystem;
 		this.size = this.starsystem.sizeInner;
@@ -73,56 +82,72 @@ class PlaceStarsystem extends Place
 			entities.push(planetEntity);
 		}
 
-		// player
-
-		var playerActivityDefnName = Player.activityDefn().name;
-		var playerActivity = new Activity(playerActivityDefnName, null);
-		var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
-		var playerColor = Color.byName("Gray");
-
-		var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-
-		var playerVisual = new VisualGroup
-		([
-			playerVisualBody,
-		]);
-
 		var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
 
-		var playerShipGroup = world.player.shipGroup;
-
-		var playerCollidable = new Collidable
-		(
-			null, // ticks
-			playerCollider,
-			[ Collidable.name ], // entityPropertyNamesToCollideWith
-			this.playerCollide
-		);
-		if (planetDeparted != null)
+		if (playerLoc != null)
 		{
-			var entityForPlanetDeparted =
-				entities.filter(x => EntityExtensions.planet(x) == planetDeparted)[0];
-			playerCollidable.entitiesAlreadyCollidedWith.push(entityForPlanetDeparted);
+			// player - Can this be merged with similar code in PlacePlanetVicinity?
+
+			var playerActivityDefnName = Player.activityDefn().name;
+			var playerActivity = new Activity(playerActivityDefnName, null);
+			var playerActor = new Actor(playerActivity);
+
+			var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+			var playerCollidable = new Collidable
+			(
+				null, // ticks
+				playerCollider,
+				[ Collidable.name ], // entityPropertyNamesToCollideWith
+				this.playerCollide
+			);
+
+			var playerConstrainable = new Constrainable([constraintSpeedMax])
+
+			var playerColor = Color.byName("Gray");
+			var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
+			var playerVisual = new VisualGroup
+			([
+				playerVisualBody
+			]);
+			var playerDrawable = Drawable.fromVisual(playerVisual);
+
+			var playerItemHolder = ItemHolder.create();
+
+			var playerLocatable = new Locatable(playerLoc);
+
+			var playerMovable = Movable.default();
+
+			var playerPlayable = new Playable();
+
+			var playerShipGroup = world.player.shipGroup;
+			var playerShip = playerShipGroup.ships[0];
+
+			var playerEntity = new Entity
+			(
+				Player.name,
+				[
+					playerActor,
+					playerCollidable,
+					playerConstrainable,
+					playerDrawable,
+					playerItemHolder,
+					playerLocatable,
+					playerMovable,
+					playerPlayable,
+					playerShip,
+					playerShipGroup
+				]
+			);
+
+			if (planetDeparted != null)
+			{
+				var entityForPlanetDeparted =
+					entities.filter(x => EntityExtensions.planet(x) == planetDeparted)[0];
+				playerCollidable.entitiesAlreadyCollidedWith.push(entityForPlanetDeparted);
+			}
+
+			entities.push(playerEntity);
 		}
-
-		var playerEntity = new Entity
-		(
-			Player.name,
-			[
-				new Actor(playerActivity),
-				new Constrainable([constraintSpeedMax]),
-				playerCollidable,
-				Drawable.fromVisual(playerVisual),
-				ItemHolder.create(),
-				new Locatable(playerLoc),
-				Movable.default(),
-				new Playable(),
-				playerShipGroup,
-				playerShipGroup.ships[0]
-			]
-		);
-
-		entities.push(playerEntity);
 
 		if (starsystem.factionName != null)
 		{
@@ -130,7 +155,7 @@ class PlaceStarsystem extends Place
 
 			var damagerColor = Color.byName("Red");
 			var enemyColor = damagerColor;
-			var enemyPos = this.size.clone().subtract(playerLoc.pos);
+			var enemyPos = Coords.create().randomize(null).multiply(this.size);
 			var enemyLoc = Disposition.fromPos(enemyPos);
 
 			var enemyColliderAsFace = new Face
@@ -205,7 +230,7 @@ class PlaceStarsystem extends Place
 				[
 					enemyShipGroup,
 					new Constrainable([constraintSpeedMax]),
-					CollidableHelper.fromCollider(enemyCollider),
+					Collidable.fromCollider(enemyCollider),
 					new Damager(null),
 					Drawable.fromVisual(enemyVisual),
 					new Killable(1, null, enemyKill),
@@ -245,7 +270,7 @@ class PlaceStarsystem extends Place
 				(
 					Disposition.fromPos(this.size.clone().half() )
 				),
-				CollidableHelper.fromCollider
+				Collidable.fromCollider
 				(
 					new ShapeInverse
 					(
@@ -322,7 +347,12 @@ class PlaceStarsystem extends Place
 				universe,
 				hyperspace,
 				place.starsystem, // starsystemDeparted
-				new Disposition(playerPosNext, playerLoc.orientation.clone(), null)
+				new Disposition
+				(
+					playerPosNext,
+					playerLoc.orientation.clone(),
+					Hyperspace.name
+				)
 			);
 		}
 		else if (entityOtherName.startsWith("Sun"))
@@ -353,7 +383,7 @@ class PlaceStarsystem extends Place
 				var playerLocNext = new Disposition(playerPosNext, playerOrientation, null);
 				world.placeNext = new PlacePlanetVicinity
 				(
-					world, sizeNext, planet, playerLocNext, place
+					world, planet, playerLocNext, place
 				);
 			}
 		}

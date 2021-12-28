@@ -1,7 +1,10 @@
 "use strict";
 class PlaceStationDock extends Place {
     constructor(world, placeStation) {
-        super(PlaceStationDock.name, PlaceStationDock.name, null, []);
+        super(PlaceStationDock.name, PlaceStationDock.name, null, // parentName
+        null, // size
+        null // entities
+        );
         this.placeStation = placeStation;
         this.crewValuePerUnit = 3;
         this.fuelValuePerUnit = 20;

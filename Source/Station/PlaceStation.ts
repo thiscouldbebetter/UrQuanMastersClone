@@ -15,7 +15,14 @@ class PlaceStation extends Place
 		placePlanetVicinity: PlacePlanetVicinity
 	)
 	{
-		super(PlaceStation.name, PlaceStation.name, null, []);
+		super
+		(
+			PlaceStation.name,
+			PlaceStation.name,
+			null, // parentName
+			null, // size
+			null // entities
+		);
 		this.station = station;
 		this.placePlanetVicinity = placePlanetVicinity;
 	}
@@ -51,7 +58,7 @@ class PlaceStation extends Place
 		var playerLocNext = Disposition.fromPos(playerPosNext);
 		var placeNext = new PlacePlanetVicinity
 		(
-			world, size, planet, playerLocNext, placePrev.placeStarsystem
+			world, planet, playerLocNext, placePrev.placeStarsystem
 		);
 		world.placeNext = placeNext;
 	}
@@ -95,12 +102,13 @@ class PlaceStation extends Place
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		super.updateForTimerTick(uwpe.placeSet(this));
+
+		var universe = uwpe.universe;
+
 		if (this.venueControls == null)
 		{
 			var messageToShow = "[Station]";
 			var placeStation = this;
-
-			var universe = uwpe.universe;
 
 			var controlRoot = universe.controlBuilder.choice
 			(
@@ -109,17 +117,17 @@ class PlaceStation extends Place
 				DataBinding.fromContext(messageToShow),
 				[ "Talk", "Dock", "Leave", ],
 				[
-					(universe: Universe) => // talk
+					() => // talk
 					{
 						placeStation.talk(universe);
 					},
 
-					(universe: Universe) => // dock
+					() => // dock
 					{
 						placeStation.dock(universe);
 					},
 
-					(universe: Universe) => // leave
+					() => // leave
 					{
 						placeStation.leave(universe);
 					}

@@ -11,6 +11,16 @@ class Faction {
         this.shipDefnName = shipDefnName;
         this.shipGroupActivity = shipGroupActivity;
     }
+    starsystems(world) {
+        // Tersely-named alias method.
+        return this.starsystemsInSphereOfInfluence(world);
+    }
+    starsystemsInSphereOfInfluence(world) {
+        var hyperspace = world.hyperspace;
+        var sphere = this.sphereOfInfluence;
+        var starsystemsInSphereOfInfluence = hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
+        return starsystemsInSphereOfInfluence;
+    }
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }

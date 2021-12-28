@@ -55,7 +55,7 @@ class Station implements EntityProperty<Station>, Satellite
 		(
 			this.name,
 			[
-				CollidableHelper.fromCollider(collider),
+				Collidable.fromCollider(collider),
 				Drawable.fromVisual(visual),
 				new Locatable(Disposition.fromPos(pos)),
 				this

@@ -15,7 +15,14 @@ class PlaceHyperspaceMap extends Place
 
 	constructor(placeHyperspaceToReturnTo: PlaceHyperspace)
 	{
-		super(PlaceHyperspaceMap.name, PlaceHyperspaceMap.name, null, []);
+		super
+		(
+			PlaceHyperspaceMap.name,
+			PlaceHyperspaceMap.name,
+			null, // parentName
+			null, // size
+			null // entities
+		);
 
 		this.placeHyperspaceToReturnTo = placeHyperspaceToReturnTo;
 

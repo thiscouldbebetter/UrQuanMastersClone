@@ -1,11 +1,16 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, defn, player, hyperspace, starsystemStart) {
-        super(name, dateCreated, defn, []);
+    constructor(name, dateCreated, defn, hyperspace, factions, player, starsystemStart) {
+        super(name, dateCreated, defn, [] // places
+        );
         this.timerTicksSoFar = 0;
-        this.player = player;
         this.hyperspace = hyperspace;
-        this.placeCurrent = new PlaceStarsystem(this, starsystemStart, new Disposition(Coords.fromXY(.5, .95).multiply(starsystemStart.sizeInner), new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1)), null), null);
+        this.factions = factions;
+        this.player = player;
+        this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
+        this.placeCurrent = starsystemStart.toPlace(this, // world
+        Disposition.fromPosAndOrientation(Coords.fromXY(.5, .95).multiply(starsystemStart.sizeInner), new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))), null // planet?
+        );
         //this.place.entitiesSpawn(null, this);
     }
     static create(universe) {
@@ -161,7 +166,7 @@ class WorldExtended extends World {
         ], // factionsKnownNames
         playerShipGroup);
         var returnValue = new WorldExtended("World-" + nowAsString, now, // dateCreated
-        defn, player, hyperspace, starsystemStart);
+        defn, hyperspace, factions, player, starsystemStart);
         return returnValue;
     }
     // instance methods
@@ -171,8 +176,33 @@ class WorldExtended extends World {
     draw(universe) {
         this.placeCurrent.draw(universe, universe.world, universe.display);
     }
+    factionByName(factionName) {
+        return this.factionsByName.get(factionName);
+    }
     initialize(uwpe) {
         this.placeCurrent.initialize(uwpe.worldSet(this));
+    }
+    placeByName(placeName) {
+        var returnPlace;
+        var placeNameParts = placeName.split(":");
+        var placeTypeName = placeNameParts[0];
+        var placeNameActual = placeNameParts[1];
+        if (placeTypeName == PlaceHyperspace.name) {
+            throw new Error("todo");
+        }
+        else if (placeTypeName == PlacePlanetVicinity.name) {
+            var planetName = placeNameActual;
+            var starsystem = this.hyperspace.starsystems.find(x => x.planets.some(y => y.name == planetName));
+            var planet = starsystem.planets.find(x => x.name == planetName);
+            returnPlace = planet.toPlace(this);
+        }
+        else if (placeTypeName == PlaceStarsystem.name) {
+            throw new Error("todo");
+        }
+        else {
+            throw new Error("Unrecognized place type: " + placeTypeName);
+        }
+        return returnPlace;
     }
     updateForTimerTick(uwpe) {
         uwpe.worldSet(this);

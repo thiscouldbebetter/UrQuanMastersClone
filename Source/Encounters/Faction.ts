@@ -34,6 +34,21 @@ class Faction implements EntityPropertyBase
 	static RelationsHostile = "Hostile";
 	static RelationsNeutral = "Neutral";
 
+	starsystems(world: WorldExtended): Starsystem[]
+	{
+		// Tersely-named alias method.
+		return this.starsystemsInSphereOfInfluence(world);
+	}
+
+	starsystemsInSphereOfInfluence(world: WorldExtended): Starsystem[]
+	{
+		var hyperspace = world.hyperspace;
+		var sphere = this.sphereOfInfluence;
+		var starsystemsInSphereOfInfluence =
+			hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
+		return starsystemsInSphereOfInfluence;
+	}
+
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}

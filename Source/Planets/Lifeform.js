@@ -16,7 +16,7 @@ class Lifeform {
         var returnValue = new Entity("Lifeform" + this.defnName + Math.random(), [
             this,
             new Actor(lifeformActivity),
-            CollidableHelper.fromCollider(lifeformCollider),
+            Collidable.fromCollider(lifeformCollider),
             Drawable.fromVisual(lifeformVisual),
             new Killable(lifeformDefn.durability, null, // ?
             (uwpe) => // die

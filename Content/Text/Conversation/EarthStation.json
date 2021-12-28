@@ -3,7 +3,7 @@
     "imageName": "Conversation-EarthStation",
     "talkNodes": [
 
-{ "defnName": "VariableLoad", "text": "IsAllied", "next": "(cr.uni.world.defns.factions['Terran'].relationsWithPlayer == Faction.RelationsAllied)" },
+{ "defnName": "VariableLoad", "text": "IsAllied", "next": "(u.world.defns.factions['Terran'].relationsWithPlayer == Faction.RelationsAllied)" },
 { "defnName": "JumpIfTrue", "text": "IsAllied", "next": "WhatCanWeDoForYouToday" },
 
 { "defnName": "VariableLoad", "text": "RadioactivesDelivered", "next": "cr.uni.world.player.vars['RadioactivesDelivered']" },

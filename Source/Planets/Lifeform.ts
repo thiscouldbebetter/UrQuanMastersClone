@@ -28,7 +28,7 @@ class Lifeform implements EntityProperty<Lifeform>
 			[
 				this,
 				new Actor(lifeformActivity),
-				CollidableHelper.fromCollider(lifeformCollider),
+				Collidable.fromCollider(lifeformCollider),
 				Drawable.fromVisual(lifeformVisual),
 				new Killable
 				(

@@ -164,6 +164,16 @@ class Starsystem implements EntityProperty<Starsystem>
 		planetWithStation.satellites.push(station);
 	}
 
+	toPlace
+	(
+		world: WorldExtended,
+		playerLoc: Disposition,
+		planetDeparted: Planet
+	): PlaceStarsystem
+	{
+		return new PlaceStarsystem(world, this, playerLoc, planetDeparted);
+	}
+
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}

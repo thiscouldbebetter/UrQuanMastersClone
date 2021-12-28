@@ -74,7 +74,7 @@ class ShipGroup implements EntityPropertyBase
 		(
 			"Die",
 			(uwpe: UniverseWorldPlaceEntities) =>
-				uwpe.entity.killable().integrityAdd(-10000)
+				uwpe.entity.killable().kill()
 		);
 	}
 
@@ -93,31 +93,39 @@ class ShipGroup implements EntityPropertyBase
 	{
 		var entityActor = uwpe.entity;
 		var actor = entityActor.actor();
-
-		var targetPos = new Coords(100000, 0, 0); // hack
-		var targetLocatable = Locatable.fromPos(targetPos);
-		var targetEntity = new Entity("Target", [ targetLocatable ]);
-		actor.activity.targetEntitySet(targetEntity);
-
 		var actorLoc = entityActor.locatable().loc;
+		var actorPlace = actorLoc.place(uwpe.world);
 		var actorPos = actorLoc.pos;
-		var actorVel = actorLoc.vel;
+		var activity = actor.activity;
+		var entityTarget = activity.targetEntity();
 
-		actorVel.overwriteWith
-		(
-			targetPos
-		).subtract
-		(
-			actorPos
-		);
-
-		if (actorVel.magnitude() < 1)
+		var targetPos: Coords;
+		if (entityTarget == null)
 		{
-			actorPos.overwriteWith(targetPos);
+			var actorForward = actorLoc.orientation.forward;
+			var placeSize = actorPlace.size;
+			targetPos = actorPos.clone().add
+			(
+				actorForward.clone().multiply(placeSize)
+			);
+			entityTarget = Locatable.fromPos(targetPos).toEntity();
 		}
 		else
 		{
-			actorVel.normalize();
+			targetPos = entityTarget.locatable().loc.pos;
+		}
+
+		var displacementToTarget = targetPos.clone().subtract(actorPos);
+		var distanceToTarget = displacementToTarget.magnitude();
+		var distanceMin = 4;
+		if (distanceToTarget < distanceMin)
+		{
+			actorPos.overwriteWith(targetPos);
+			actorPlace.entityToRemoveAdd(entityActor);
+		}
+		else
+		{
+			actorLoc.vel.add(displacementToTarget.normalize()); // todo - * acceleration.
 		}
 	}
 

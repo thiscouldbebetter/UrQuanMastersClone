@@ -12,7 +12,7 @@ class EnergySource {
         var energySourceCollider = new Sphere(Coords.create(), 5);
         var returnValue = new Entity(this.name, [
             this,
-            CollidableHelper.fromCollider(energySourceCollider),
+            Collidable.fromCollider(energySourceCollider),
             Drawable.fromVisual(visual),
             Locatable.fromPos(this.pos),
         ]);

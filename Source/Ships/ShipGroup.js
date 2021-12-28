@@ -33,7 +33,7 @@ class ShipGroup {
         }
     }
     static activityDefnDie() {
-        return new ActivityDefn("Die", (uwpe) => uwpe.entity.killable().integrityAdd(-10000));
+        return new ActivityDefn("Die", (uwpe) => uwpe.entity.killable().kill());
     }
     static activityDefnLeave() {
         return new ActivityDefn("Leave", ShipGroup.activityDefnLeave_Perform);
@@ -41,19 +41,30 @@ class ShipGroup {
     static activityDefnLeave_Perform(uwpe) {
         var entityActor = uwpe.entity;
         var actor = entityActor.actor();
-        var targetPos = new Coords(100000, 0, 0); // hack
-        var targetLocatable = Locatable.fromPos(targetPos);
-        var targetEntity = new Entity("Target", [targetLocatable]);
-        actor.activity.targetEntitySet(targetEntity);
         var actorLoc = entityActor.locatable().loc;
+        var actorPlace = actorLoc.place(uwpe.world);
         var actorPos = actorLoc.pos;
-        var actorVel = actorLoc.vel;
-        actorVel.overwriteWith(targetPos).subtract(actorPos);
-        if (actorVel.magnitude() < 1) {
-            actorPos.overwriteWith(targetPos);
+        var activity = actor.activity;
+        var entityTarget = activity.targetEntity();
+        var targetPos;
+        if (entityTarget == null) {
+            var actorForward = actorLoc.orientation.forward;
+            var placeSize = actorPlace.size;
+            targetPos = actorPos.clone().add(actorForward.clone().multiply(placeSize));
+            entityTarget = Locatable.fromPos(targetPos).toEntity();
         }
         else {
-            actorVel.normalize();
+            targetPos = entityTarget.locatable().loc.pos;
+        }
+        var displacementToTarget = targetPos.clone().subtract(actorPos);
+        var distanceToTarget = displacementToTarget.magnitude();
+        var distanceMin = 4;
+        if (distanceToTarget < distanceMin) {
+            actorPos.overwriteWith(targetPos);
+            actorPlace.entityToRemoveAdd(entityActor);
+        }
+        else {
+            actorLoc.vel.add(displacementToTarget.normalize()); // todo - * acceleration.
         }
     }
     faction(world) {

@@ -71,12 +71,17 @@ class Planet {
         ]);
         var collider = new Sphere(Coords.create(), this.radiusOuter);
         var returnValue = new Entity(this.name, [
-            CollidableHelper.fromCollider(collider),
+            Collidable.fromCollider(collider),
             Drawable.fromVisual(visual),
             this,
             Locatable.fromPos(pos),
         ]);
         return returnValue;
+    }
+    toPlace(world) {
+        return new PlacePlanetVicinity(world, this, null, // playerLoc
+        null // placeStarsystem
+        );
     }
     // EntityProperty.
     finalize(uwpe) { }

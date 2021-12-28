@@ -1,7 +1,10 @@
 "use strict";
 class PlaceHyperspaceMap extends Place {
     constructor(placeHyperspaceToReturnTo) {
-        super(PlaceHyperspaceMap.name, PlaceHyperspaceMap.name, null, []);
+        super(PlaceHyperspaceMap.name, PlaceHyperspaceMap.name, null, // parentName
+        null, // size
+        null // entities
+        );
         this.placeHyperspaceToReturnTo = placeHyperspaceToReturnTo;
         this._displacement = Coords.create();
         this._drawPos = Coords.create();

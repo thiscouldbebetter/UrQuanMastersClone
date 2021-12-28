@@ -18,7 +18,14 @@ class PlaceStationDock extends Place
 
 	constructor(world: World, placeStation: PlaceStation)
 	{
-		super(PlaceStationDock.name, PlaceStationDock.name, null, []);
+		super
+		(
+			PlaceStationDock.name,
+			PlaceStationDock.name,
+			null, // parentName
+			null, // size
+			null // entities
+		);
 		this.placeStation = placeStation;
 
 		this.crewValuePerUnit = 3;

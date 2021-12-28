@@ -12,9 +12,21 @@ class PlacePlanetSurface extends Place
 	_camera: Camera;
 	_drawPos: Coords;
 
-	constructor(worldAsWorld: World, planet: Planet, placePlanetOrbit: PlacePlanetOrbit)
+	constructor
+	(
+		worldAsWorld: World,
+		planet: Planet,
+		placePlanetOrbit: PlacePlanetOrbit
+	)
 	{
-		super(PlacePlanetSurface.name, PlacePlanetSurface.name, Coords.fromXY(300, 300), []);
+		super
+		(
+			PlacePlanetSurface.name,
+			PlacePlanetSurface.name,
+			null, // parentName
+			Coords.fromXY(300, 300),
+			null // entities
+		);
 
 		var world = worldAsWorld as WorldExtended;
 

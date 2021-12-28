@@ -1,7 +1,10 @@
 "use strict";
 class PlaceStation extends Place {
     constructor(world, station, placePlanetVicinity) {
-        super(PlaceStation.name, PlaceStation.name, null, []);
+        super(PlaceStation.name, PlaceStation.name, null, // parentName
+        null, // size
+        null // entities
+        );
         this.station = station;
         this.placePlanetVicinity = placePlanetVicinity;
     }
@@ -21,7 +24,7 @@ class PlaceStation extends Place {
         var station = place.station;
         var playerPosNext = station.posAsPolar.toCoords(Coords.create()).add(size.clone().half()).add(Coords.fromXY(3, 0).multiplyScalar(10));
         var playerLocNext = Disposition.fromPos(playerPosNext);
-        var placeNext = new PlacePlanetVicinity(world, size, planet, playerLocNext, placePrev.placeStarsystem);
+        var placeNext = new PlacePlanetVicinity(world, planet, playerLocNext, placePrev.placeStarsystem);
         world.placeNext = placeNext;
     }
     talk(universe) {
@@ -52,20 +55,20 @@ class PlaceStation extends Place {
     }
     updateForTimerTick(uwpe) {
         super.updateForTimerTick(uwpe.placeSet(this));
+        var universe = uwpe.universe;
         if (this.venueControls == null) {
             var messageToShow = "[Station]";
             var placeStation = this;
-            var universe = uwpe.universe;
             var controlRoot = universe.controlBuilder.choice(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), ["Talk", "Dock", "Leave",], [
-                (universe) => // talk
+                () => // talk
                  {
                     placeStation.talk(universe);
                 },
-                (universe) => // dock
+                () => // dock
                  {
                     placeStation.dock(universe);
                 },
-                (universe) => // leave
+                () => // leave
                  {
                     placeStation.leave(universe);
                 }

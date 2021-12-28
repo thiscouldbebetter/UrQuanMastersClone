@@ -70,6 +70,9 @@ class Starsystem {
         }
         planetWithStation.satellites.push(station);
     }
+    toPlace(world, playerLoc, planetDeparted) {
+        return new PlaceStarsystem(world, this, playerLoc, planetDeparted);
+    }
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }

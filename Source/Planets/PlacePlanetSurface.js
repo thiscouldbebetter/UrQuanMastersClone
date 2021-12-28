@@ -1,7 +1,9 @@
 "use strict";
 class PlacePlanetSurface extends Place {
     constructor(worldAsWorld, planet, placePlanetOrbit) {
-        super(PlacePlanetSurface.name, PlacePlanetSurface.name, Coords.fromXY(300, 300), []);
+        super(PlacePlanetSurface.name, PlacePlanetSurface.name, null, // parentName
+        Coords.fromXY(300, 300), null // entities
+        );
         var world = worldAsWorld;
         this.planet = planet;
         this.size = this.planet.sizeSurface;
