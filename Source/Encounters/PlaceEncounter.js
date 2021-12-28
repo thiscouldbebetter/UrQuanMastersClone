@@ -52,6 +52,7 @@ class PlaceEncounter extends Place {
         };
         var conversation = new ConversationRun(conversationDefn, conversationQuit, encounter.entityPlayer, encounter.entityOther, null // ?
         );
+        conversation.initialize(universe);
         var conversationSize = universe.display.sizeDefault().clone();
         var conversationAsControl = conversation.toControl(conversationSize, universe);
         var venueNext = VenueControls.fromControl(conversationAsControl);

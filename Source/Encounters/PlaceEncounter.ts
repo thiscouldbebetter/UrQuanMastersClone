@@ -92,6 +92,7 @@ class PlaceEncounter extends Place
 			encounter.entityOther,
 			null // ?
 		);
+		conversation.initialize(universe);
 		var conversationSize = universe.display.sizeDefault().clone();
 		var conversationAsControl =
 			conversation.toControl(conversationSize, universe);

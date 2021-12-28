@@ -72,9 +72,36 @@ class PlaceStation extends Place
 		var faction = world.defnExtended().factionByName(factionName);
 		var conversationDefnName = faction.conversationDefnName;
 		var conversationResourceName = "Conversation-" + conversationDefnName;
+		var mediaLibrary = universe.mediaLibrary;
 		var conversationDefnAsJSON =
-			universe.mediaLibrary.textStringGetByName(conversationResourceName).value;
+			mediaLibrary.textStringGetByName(conversationResourceName).value;
 		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+		var contentTextStringName = "Conversation-Content-" + conversationDefnName;
+		var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
+		if (contentTextString != null)
+		{
+			var contentBlocks = contentTextString.value.split("\n\n");
+
+			var contentsById = new Map
+			(
+				contentBlocks.map
+				(
+					nodeAsBlock =>
+					{
+						var indexOfNewlineFirst = nodeAsBlock.indexOf("\n");
+						var contentId = nodeAsBlock.substr
+						(
+							0, indexOfNewlineFirst
+						).split("\t")[0];
+						var restOfBlock = nodeAsBlock.substr(indexOfNewlineFirst + 1);
+						return [ contentId, restOfBlock ];
+					}
+				)
+			);
+			conversationDefn.contentSubstitute(contentsById);
+			conversationDefn.displayNodesExpandByLines();
+		}
+
 		var conversation = new ConversationRun
 		(
 			conversationDefn,

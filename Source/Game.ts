@@ -58,6 +58,7 @@ class Game
 				new TextString(conversationContent + "LahkemupGuardDrone", "../Content/Text/Conversation/LahkemupGuardDrone-Content.txt"),
 				new TextString(conversation + "Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
 				new TextString(conversation + "EarthStation", "../Content/Text/Conversation/EarthStation.json"),
+				new TextString(conversationContent + "EarthStation", "../Content/Text/Conversation/EarthStation-Content.txt"),
 
 				new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation/Placeholder-Content.txt"),
 
