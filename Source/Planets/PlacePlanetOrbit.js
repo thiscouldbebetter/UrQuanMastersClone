@@ -2,16 +2,20 @@
 class PlacePlanetOrbit extends Place {
     constructor(world, planet, placePlanetVicinity) {
         super(PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, // parentName
-        null, // size
+        planet.sizeSurface, // size
         null // entities
         );
         this.planet = planet;
         this.placePlanetVicinity = placePlanetVicinity;
         var entities = this.entitiesToSpawn;
+        // Resources.
         var resourceRadiusBase = 5; // todo
         var resourceEntities = this.planet.resources.map(x => x.toEntity(world, this, resourceRadiusBase));
         entities.push(...resourceEntities);
-        // todo - Lifeforms and energy sources.
+        // Lifeforms.
+        var lifeformEntities = this.planet.lifeforms.map(x => x.toEntity(world, this.planet));
+        entities.push(...lifeformEntities);
+        // todo - Energy sources.
         this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y), null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );

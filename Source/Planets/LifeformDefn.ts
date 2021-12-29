@@ -7,7 +7,7 @@ class LifeformDefn
 	damagePerAttack: number;
 	value: number;
 	visual: VisualBase;
-	activityDefn: ActivityDefn;
+	activityDefnName: string;
 
 	constructor
 	(
@@ -17,7 +17,7 @@ class LifeformDefn
 		damagePerAttack: number,
 		value: number,
 		visual: VisualBase,
-		activityDefn: ActivityDefn
+		activityDefnName: string
 	)
 	{
 		this.name = name;
@@ -26,7 +26,7 @@ class LifeformDefn
 		this.damagePerAttack = damagePerAttack;
 		this.value = value;
 		this.visual = visual;
-		this.activityDefn = activityDefn;
+		this.activityDefnName = activityDefnName;
 	}
 
 	// static methods
@@ -73,31 +73,10 @@ class LifeformDefn_Instances
 		var c = Color.byName("Cyan");
 		var p = Color.byName("Pink");
 
-		var lifeformActivityDefnTodoPerform = (uwpe: UniverseWorldPlaceEntities) =>
-		{
-			var universe = uwpe.universe;
-			var actor = uwpe.entity;
-
-			var actorLoc = actor.locatable().loc;
-			actorLoc.vel.randomize
-			(
-				universe.randomizer
-			).double().subtract
-			(
-				Coords.Instances().Ones
-			).clearZ();
-		};
-
-		var lifeformActivityDefnTodo = new ActivityDefn
-		(
-			"Todo",
-			lifeformActivityDefnTodoPerform
-		);
-
-		var activityDefnAvoid = lifeformActivityDefnTodo;
-		var activityDefnNone = lifeformActivityDefnTodo;
-		var activityDefnPursue = lifeformActivityDefnTodo;
-		var activityDefnWander = lifeformActivityDefnTodo;
+		var activityDefnAvoid = Lifeform.activityDefnAvoidPlayer().name;
+		var activityDefnNone = Lifeform.activityDefnDoNothing().name;
+		var activityDefnPursue = Lifeform.activityDefnApproachPlayer().name;
+		var activityDefnWander = Lifeform.activityDefnMoveToRandomPosition().name;
 
 		this._All =
 		[

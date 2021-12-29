@@ -22,7 +22,8 @@ class ShipGroup implements EntityPropertyBase
 	{
 		return new ActivityDefn
 		(
-			"ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform
+			"Ship_ApproachPlayer",
+			ShipGroup.activityDefnApproachPlayer_Perform
 		);
 	}
 

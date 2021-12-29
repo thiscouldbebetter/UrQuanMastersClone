@@ -120,7 +120,7 @@ class PlacePlanetSurface extends Place
 			var lifeforms = planet.lifeforms;
 			var lifeformEntities = lifeforms.map
 			(
-				(x: Lifeform) => x.toEntity(world, this)
+				(x: Lifeform) => x.toEntity(world, planet)
 			);
 			entities.push(...lifeformEntities);
 		}
@@ -160,48 +160,12 @@ class PlacePlanetSurface extends Place
 		);
 		playerVisual = new VisualWrapped(this.size, playerVisual);
 
-		var playerCollide =
-		(
-			uwpe: UniverseWorldPlaceEntities
-		) =>
-		{
-			var universe = uwpe.universe;
-			var world = uwpe.world as WorldExtended;
-			var place = uwpe.place;
-			var entityPlayer = uwpe.entity;
-			var entityOther = uwpe.entity2;
-
-			var entityOtherItem = entityOther.item();
-			var entityOtherEnergySource =
-				EntityExtensions.energySource(entityOther);
-
-			if (entityOtherItem != null)
-			{
-				entityPlayer.itemHolder().itemAdd(entityOther.item());
-				place.entitiesToRemove.push(entityOther);
-			}
-			else if (entityOther.name.startsWith("Lifeform") == true)
-			{
-				var lifeformDefn =
-					EntityExtensions.lifeform(entityOther).defn(world);
-				var damage = lifeformDefn.damagePerAttack;
-				if (damage > 0)
-				{
-					var chanceOfDamagePerTick = .05;
-					if (Math.random() < chanceOfDamagePerTick)
-					{
-						entityPlayer.killable().integrity -= damage;
-					}
-				}
-			}
-			else if (entityOtherEnergySource != null)
-			{
-				var energySource = entityOtherEnergySource;
-				energySource.collideWithLander(universe, world, place, entityOther, entityPlayer)
-			}
-		}
-
 		var playerShipLander = new Ship("Lander");
+
+		var crewAvailableForLander = 12; // todo
+		var playerKillable = new Killable(crewAvailableForLander, this.playerDie.bind(this), null);
+
+		var playerLander = Lander.fromKillableCrew(playerKillable);
 
 		var playerEntity = new Entity
 		(
@@ -213,16 +177,18 @@ class PlacePlanetSurface extends Place
 					null, // ticks
 					playerCollider,
 					[ Collidable.name ], // entityPropertyNamesToCollideWith
-					playerCollide
+					this.playerCollide
 				),
 				new Constrainable
 				([
 					constraintFriction, constraintSpeedMax, constraintWrapXTrimY
 				]),
 				Drawable.fromVisual(playerVisual),
-				ItemHolder.create(),
-				new Killable(1, this.playerDie.bind(this), null),
+				playerKillable,
+				playerLander,
 				new Locatable(playerLoc),
+				new Mappable(playerVisual),
+				Movable.default(),
 				new Playable(),
 				playerShipLander
 			]
@@ -230,7 +196,7 @@ class PlacePlanetSurface extends Place
 
 		entities.push(playerEntity);
 
-		var containerSidebar = this.toControlSidebar();
+		var containerSidebar = this.toControlSidebar(world, playerEntity);
 		this.venueControls = VenueControls.fromControl(containerSidebar);
 
 		//this.propertyNamesToProcess.push("ship");
@@ -247,15 +213,77 @@ class PlacePlanetSurface extends Place
 		return this._actionToInputsMappings;
 	}
 
-	exit(universe: Universe, world: WorldExtended, place: PlacePlanetSurface, actor: Entity): void
+	exit
+	(
+		universe: Universe, world: WorldExtended, place: PlacePlanetSurface, actor: Entity
+	): void
 	{
 		var entityLander = place.entitiesByName.get(Player.name);
-		var itemHolderLander = entityLander.itemHolder();
+		var lander = Lander.fromEntity(entityLander);
+		var itemHoldersForLander = [ lander.itemHolderCargo, lander.itemHolderLifeforms ];
+
 		var itemHolderPlayer = world.player.flagship.itemHolder;
-		itemHolderLander.itemsAllTransferTo(itemHolderPlayer);
+
+		for (var i = 0; i < itemHoldersForLander.length; i++)
+		{
+			var itemHolderLander = itemHoldersForLander[i];
+			itemHolderLander.itemsAllTransferTo(itemHolderPlayer);
+		}
 
 		var placePlanetOrbit = place.placePlanetOrbit;
 		world.placeNext = placePlanetOrbit;
+	}
+
+	playerCollide(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place;
+		var entityPlayer = uwpe.entity;
+		var entityOther = uwpe.entity2;
+
+		var lander = Lander.fromEntity(entityPlayer);
+
+		var entityOtherName = entityOther.name;
+		var entityOtherItem = entityOther.item();
+		var entityOtherEnergySource =
+			EntityExtensions.energySource(entityOther);
+
+		if (entityOtherItem != null)
+		{
+			var itemHolder: ItemHolder = null;
+
+			if (entityOtherName.startsWith(Resource.name))
+			{
+				itemHolder = lander.itemHolderCargo;
+			}
+			else
+			{
+				throw new Error("todo");
+			}
+
+			itemHolder.itemAdd(entityOther.item());
+			place.entitiesToRemove.push(entityOther);
+		}
+		else if (entityOtherName.startsWith(Lifeform.name))
+		{
+			var lifeformDefn =
+				EntityExtensions.lifeform(entityOther).defn(world);
+			var damage = lifeformDefn.damagePerAttack;
+			if (damage > 0)
+			{
+				var chanceOfDamagePerTick = .05;
+				if (Math.random() < chanceOfDamagePerTick)
+				{
+					lander.killableCrew.integritySubtract(damage);
+				}
+			}
+		}
+		else if (entityOtherEnergySource != null)
+		{
+			var energySource = entityOtherEnergySource;
+			energySource.collideWithLander(universe, world, place, entityOther, entityPlayer);
+		}
 	}
 
 	playerDie(universe: Universe, world: WorldExtended, place: Place, entityPlayer: Entity): void
@@ -307,13 +335,14 @@ class PlacePlanetSurface extends Place
 
 		var scanContacts = this.entities;
 		var contactPosSaved = Coords.create();
+
 		for (var i = 0; i < scanContacts.length; i++)
 		{
 			var contact = scanContacts[i];
 
-			var contactDrawable = contact.drawable();
+			var contactMappable = Mappable.fromEntity(contact);
 
-			if (contactDrawable != null)
+			if (contactMappable != null)
 			{
 				var contactPos = contact.locatable().loc.pos;
 				contactPosSaved.overwriteWith(contactPos);
@@ -333,7 +362,7 @@ class PlacePlanetSurface extends Place
 				);
 
 				contactPos.overwriteWith(drawPos);
-				var contactVisual = contactDrawable.visual;
+				var contactVisual = contactMappable.visual;
 				contactVisual.draw(uwpe.entitySet(contact), display);
 				contactPos.overwriteWith(contactPosSaved);
 			}
@@ -342,7 +371,7 @@ class PlacePlanetSurface extends Place
 
 	// controls
 
-	toControlSidebar(): ControlBase
+	toControlSidebar(world: World, entityPlayer: Entity): ControlBase
 	{
 		var containerSidebarSize = Coords.fromXY(100, 300); // hack
 		var marginWidth = 10;
@@ -353,7 +382,7 @@ class PlacePlanetSurface extends Place
 		var minimapSize = Coords.fromXY(1, .5).multiplyScalar(childControlWidth);
 		var containerLanderSize = Coords.fromXY(1, 2).multiplyScalar(childControlWidth);
 
-		var lander = new Lander(); // todo
+		var lander = Lander.fromEntity(entityPlayer); // todo
 
 		var containerSidebar = ControlContainer.from4
 		(
@@ -461,7 +490,7 @@ class PlacePlanetSurface extends Place
 							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
-								lander, (c: Lander) => c.cargoCurrentOverMax()
+								lander, (c: Lander) => c.cargoCurrentOverMax(world)
 							),
 							fontHeight
 						),
@@ -473,7 +502,7 @@ class PlacePlanetSurface extends Place
 							labelSize,
 							false, // isTextCenteredHorizontally
 							false, // isTextCenteredVertically
-							DataBinding.fromContext("Data:"),
+							DataBinding.fromContext("Biodata:"),
 							fontHeight
 						),
 
@@ -486,7 +515,7 @@ class PlacePlanetSurface extends Place
 							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
-								lander, (c: Lander) => c.dataCurrentOverMax()
+								lander, (c: Lander) => c.lifeformsCurrentOverMax(world)
 							),
 							fontHeight
 						),

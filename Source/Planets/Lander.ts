@@ -1,18 +1,54 @@
 
-class Lander
+class Lander implements EntityPropertyBase
 {
-	cargoCurrentOverMax(): string
+	itemHolderCargo: ItemHolder;
+	itemHolderLifeforms: ItemHolder;
+	killableCrew: Killable;
+
+	constructor
+	(
+		itemHolderCargo: ItemHolder,
+		itemHolderLifeforms: ItemHolder,
+		killableCrew: Killable
+	)
 	{
-		return "nn/mm"; // todo
+		this.itemHolderCargo = itemHolderCargo || ItemHolder.fromMassMax(50);
+		this.itemHolderLifeforms = itemHolderLifeforms || ItemHolder.fromMassMax(50);
+		this.killableCrew = killableCrew || Killable.fromIntegrityMax(12);
+	}
+
+	static fromKillableCrew(killableCrew: Killable): Lander
+	{
+		return new Lander(null, null, killableCrew);
+	}
+
+	static fromEntity(entity: Entity): Lander
+	{
+		return entity.propertyByName(Lander.name) as Lander;
+	}
+
+	cargoCurrentOverMax(world: World): string
+	{
+		return this.itemHolderCargo.massOfAllItemsOverMax(world);
 	}
 
 	crewCurrentOverMax(): string
 	{
-		return "nn/mm"; // todo
+		return this.killableCrew.integrityCurrentOverMax();
 	}
 
-	dataCurrentOverMax(): string
+	lifeformsCurrentOverMax(world: World): string
 	{
-		return "nn/mm"; // todo
+		return this.itemHolderLifeforms.massOfAllItemsOverMax(world);
 	}
+
+	// EntityProperty.
+
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable.
+
+	equals(other: Lander) { return false; }
 }

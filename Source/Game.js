@@ -126,6 +126,9 @@ class Game {
         else if (debuggingModeName == "Planet") {
             this.debug_Planet(universe);
         }
+        else if (debuggingModeName == "Planet2") {
+            this.debug_Planet2(universe);
+        }
         else if (debuggingModeName == "PlanetEnergy") {
             this.debug_PlanetEnergy(universe);
         }
@@ -214,8 +217,20 @@ class Game {
     }
     debug_Planet(universe) {
         var world = universe.world;
-        var starsystem = world.hyperspace.starsystems[1]; // Eta Giclas
+        var starsystem = world.hyperspace.starsystems.find(x => x.name == "Sol");
+        var planet = starsystem.planets[0]; // Mercury
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+        planet.initialize(uwpe);
+        var placePlanetVicinity = null;
+        var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
+        world.placeNext = placePlanetOrbit;
+    }
+    debug_Planet2(universe) {
+        var world = universe.world;
+        var starsystem = world.hyperspace.starsystems.find(x => x.name == "Eta Giclas");
         var planet = starsystem.planets[4]; // E Giclas V
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+        planet.initialize(uwpe);
         var placePlanetVicinity = null;
         var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
         world.placeNext = placePlanetOrbit;

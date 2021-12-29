@@ -22,7 +22,7 @@ class PlacePlanetOrbit extends Place
 			PlacePlanetOrbit.name,
 			PlacePlanetOrbit.name,
 			null, // parentName
-			null, // size
+			planet.sizeSurface, // size
 			null // entities
 		);
 
@@ -30,6 +30,9 @@ class PlacePlanetOrbit extends Place
 		this.placePlanetVicinity = placePlanetVicinity;
 
 		var entities = this.entitiesToSpawn;
+
+		// Resources.
+
 		var resourceRadiusBase = 5; // todo
 		var resourceEntities = this.planet.resources.map
 		(
@@ -37,7 +40,15 @@ class PlacePlanetOrbit extends Place
 		);
 		entities.push(...resourceEntities);
 
-		// todo - Lifeforms and energy sources.
+		// Lifeforms.
+
+		var lifeformEntities = this.planet.lifeforms.map
+		(
+			x => x.toEntity(world, this.planet)
+		);
+		entities.push(...lifeformEntities);
+
+		// todo - Energy sources.
 
 		this._camera = new Camera
 		(

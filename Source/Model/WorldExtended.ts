@@ -60,9 +60,13 @@ class WorldExtended extends World
 		var activityDefns =
 		[
 			Player.activityDefn(),
+			Lifeform.activityDefnApproachPlayer(),
 			ShipGroup.activityDefnApproachPlayer(),
+			Lifeform.activityDefnAvoidPlayer(),
 			ShipGroup.activityDefnDie(),
-			ShipGroup.activityDefnLeave()
+			Lifeform.activityDefnDoNothing(),
+			ShipGroup.activityDefnLeave(),
+			Lifeform.activityDefnMoveToRandomPosition()
 		];
 
 		var actions = Ship.actions();
@@ -213,9 +217,16 @@ class WorldExtended extends World
 
 		var lifeformDefns = LifeformDefn.Instances()._All;
 
+		var resourceDefns = ResourceDefn.Instances()._All;
+
 		var defn = new WorldDefnExtended
 		(
-			activityDefns, factions, lifeformDefns, placeDefns, shipDefns
+			activityDefns,
+			factions,
+			lifeformDefns,
+			placeDefns,
+			resourceDefns,
+			shipDefns
 		);
 
 		var mediaLibrary = universe.mediaLibrary;

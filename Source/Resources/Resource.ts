@@ -12,7 +12,12 @@ class Resource
 		this.pos = pos;
 	}
 
-	toEntity(world: World, place: PlacePlanetOrbit, resourceRadiusBase: number): Entity
+	toEntity
+	(
+		world: World,
+		place: PlacePlanetOrbit,
+		resourceRadiusBase: number
+	): Entity
 	{
 		var resource = this;
 
@@ -33,6 +38,10 @@ class Resource
 		(
 			resourceRadius, resourceGradient, null
 		);
+		var resourceVisualOnMinimap = new VisualCircleGradient
+		(
+			resourceRadius / 2, resourceGradient, null
+		);
 		var camera = place.camera();
 		if (camera != null)
 		{
@@ -43,7 +52,7 @@ class Resource
 		}
 
 		var resourcePos = resource.pos;
-		var resourceCollider = new Sphere(new Coords(0, 0, 0), resourceRadius);
+		var resourceCollider = new Sphere(Coords.zeroes(), resourceRadius);
 
 		var resourceEntity = new Entity
 		(
@@ -52,7 +61,8 @@ class Resource
 				new Item(resourceDefnName, resourceQuantity),
 				Locatable.fromPos(resourcePos),
 				Collidable.fromCollider(resourceCollider),
-				Drawable.fromVisual(resourceVisual)
+				Drawable.fromVisual(resourceVisual),
+				new Mappable(resourceVisualOnMinimap)
 			]
 		);
 

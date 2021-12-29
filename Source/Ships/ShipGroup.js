@@ -8,7 +8,7 @@ class ShipGroup {
         this._posInverted = Coords.create();
     }
     static activityDefnApproachPlayer() {
-        return new ActivityDefn("ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform);
+        return new ActivityDefn("Ship_ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform);
     }
     static activityDefnApproachPlayer_Perform(uwpe) {
         var entityActor = uwpe.entity;

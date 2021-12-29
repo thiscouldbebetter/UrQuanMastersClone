@@ -19,9 +19,13 @@ class WorldExtended extends World {
         // todo
         var activityDefns = [
             Player.activityDefn(),
+            Lifeform.activityDefnApproachPlayer(),
             ShipGroup.activityDefnApproachPlayer(),
+            Lifeform.activityDefnAvoidPlayer(),
             ShipGroup.activityDefnDie(),
-            ShipGroup.activityDefnLeave()
+            Lifeform.activityDefnDoNothing(),
+            ShipGroup.activityDefnLeave(),
+            Lifeform.activityDefnMoveToRandomPosition()
         ];
         var actions = Ship.actions();
         var actionToInputsMappings = Ship.actionToInputsMappings();
@@ -125,7 +129,8 @@ class WorldExtended extends World {
         ];
         var shipDefns = ShipDefn.Instances(universe)._All;
         var lifeformDefns = LifeformDefn.Instances()._All;
-        var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, shipDefns);
+        var resourceDefns = ResourceDefn.Instances()._All;
+        var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, resourceDefns, shipDefns);
         var mediaLibrary = universe.mediaLibrary;
         var starsAndPlanetsAsStringCSVCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
         var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, 10, // starsystemRadiusOuter

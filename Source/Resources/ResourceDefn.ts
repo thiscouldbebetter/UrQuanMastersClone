@@ -6,9 +6,14 @@ class ResourceDefn
 	color: Color;
 	valuePerUnit: number;
 
+	_itemDefn: ItemDefn;
+
 	constructor
 	(
-		name: string, nameFriendly: string, color: Color, valuePerUnit: number
+		name: string,
+		nameFriendly: string,
+		color: Color,
+		valuePerUnit: number
 	)
 	{
 		this.name = name;
@@ -31,6 +36,18 @@ class ResourceDefn
 	static byName(name: string)
 	{
 		return ResourceDefn.Instances()._AllByName.get(name);
+	}
+
+	toItemDefn(): ItemDefn
+	{
+		if (this._itemDefn == null)
+		{
+			this._itemDefn = ItemDefn.fromNameMassValueAndVisual
+			(
+				this.name, 1, this.valuePerUnit, VisualCircle.fromRadiusAndColorFill(3, this.color)
+			)
+		}
+		return this._itemDefn;
 	}
 }
 
