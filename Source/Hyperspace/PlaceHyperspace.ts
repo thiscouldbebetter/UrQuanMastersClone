@@ -219,6 +219,7 @@ class PlaceHyperspace extends Place
 					new Actor(new Activity(Player.activityDefn().name, null) ),
 					new Collidable
 					(
+						false, // canCollideAgainWithoutSeparating
 						null, // ticks
 						playerCollider,
 						[ Collidable.name ], // entityPropertyNamesToCollideWith

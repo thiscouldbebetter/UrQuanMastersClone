@@ -110,7 +110,8 @@ class PlaceHyperspace extends Place {
             var constraintTrimToRange = new Constraint_TrimToPlaceSize();
             var playerEntity = new Entity(Player.name, [
                 new Actor(new Activity(Player.activityDefn().name, null)),
-                new Collidable(null, // ticks
+                new Collidable(false, // canCollideAgainWithoutSeparating
+                null, // ticks
                 playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
                 this.playerCollide),
                 new Constrainable([

@@ -10,29 +10,39 @@ class Lifeform {
     toEntity(worldAsWorld, planet) {
         var world = worldAsWorld;
         var lifeformDefn = this.defn(world);
+        var lifeformActivity = new Activity(lifeformDefn.activityDefnName, null);
+        var lifeformActor = new Actor(lifeformActivity);
+        var lifeformCollider = new Sphere(Coords.create(), 5);
+        var lifeformCollidable = Collidable.fromCollider(lifeformCollider);
+        lifeformCollidable.canCollideAgainWithoutSeparating = true;
+        var lifeformDamager = Damager.default();
         var lifeformVisual = lifeformDefn.visual;
         lifeformVisual = new VisualWrapped(planet.sizeSurface, lifeformVisual);
-        var lifeformCollider = new Sphere(Coords.create(), 5);
-        var lifeformActivity = new Activity(lifeformDefn.activityDefnName, null);
+        var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
+        var lifeformKillable = new Killable(lifeformDefn.durability, null, // ?
+        (uwpe) => // die
+         {
+            var world = uwpe.world;
+            var place = uwpe.place;
+            var entity = uwpe.entity;
+            var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
+            var radius = entity.collidable().collider.radius;
+            var entityResource = resource.toEntity(world, place, radius);
+            place.entitiesToSpawn.push(entityResource);
+        });
+        var lifeformLocatable = Locatable.fromPos(this.pos);
+        var lifeformMappable = new Mappable(lifeformVisual);
+        var lifeformMovable = Movable.fromSpeedMax(lifeformDefn.speed / 4);
         var returnValue = new Entity("Lifeform" + this.defnName + Math.random(), [
             this,
-            new Actor(lifeformActivity),
-            Collidable.fromCollider(lifeformCollider),
-            Drawable.fromVisual(lifeformVisual),
-            new Killable(lifeformDefn.durability, null, // ?
-            (uwpe) => // die
-             {
-                var world = uwpe.world;
-                var place = uwpe.place;
-                var entity = uwpe.entity;
-                var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
-                var radius = entity.collidable().collider.radius;
-                var entityResource = resource.toEntity(world, place, radius);
-                place.entitiesToSpawn.push(entityResource);
-            }),
-            Locatable.fromPos(this.pos),
-            new Mappable(lifeformVisual),
-            Movable.fromSpeedMax(lifeformDefn.speed)
+            lifeformActor,
+            lifeformCollidable,
+            lifeformDamager,
+            lifeformDrawable,
+            lifeformKillable,
+            lifeformLocatable,
+            lifeformMappable,
+            lifeformMovable
         ]);
         return returnValue;
     }
@@ -50,7 +60,7 @@ class Lifeform {
                 var actorPos = actorLoc.pos;
                 var displacementToTarget = targetPos.clone().subtract(actorPos);
                 var distanceToTarget = displacementToTarget.magnitude();
-                var detectionDistanceMax = 100; // todo
+                var detectionDistanceMax = 150; // todo
                 if (distanceToTarget > detectionDistanceMax) {
                     Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
                 }
@@ -80,7 +90,7 @@ class Lifeform {
                 var actorPos = actorLoc.pos;
                 var displacementToTarget = targetPos.clone().subtract(actorPos);
                 var distanceToTarget = displacementToTarget.magnitude();
-                var detectionDistanceMax = 100; // todo
+                var detectionDistanceMax = 150; // todo
                 var distancePerTick = entityActor.movable().speedMax;
                 if (distanceToTarget > detectionDistanceMax) {
                     Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);

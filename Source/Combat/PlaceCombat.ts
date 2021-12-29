@@ -175,6 +175,7 @@ class PlaceCombat extends Place
 				Locatable.fromPos(planetPos),
 				new Collidable
 				(
+					false, // canCollideAgainWithoutSeparating
 					null, // ticks
 					planetCollider,
 					[ Collidable.name ], // entityPropertyNamesToCollideWith
@@ -218,6 +219,7 @@ class PlaceCombat extends Place
 				new Constrainable([constraintWrapToRange]),
 				new Collidable
 				(
+					false, // canCollideAgainWithoutSeparating
 					null, // ticks
 					shipCollider,
 					[ Collidable.name ], // entityPropertyNamesToCollideWith

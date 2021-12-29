@@ -27,7 +27,8 @@ class PlaceStarsystem extends Place {
         var sunCollider = new Sphere(Coords.create(), sunRadius);
         var sunEntity = new Entity("Sun", [
             new Locatable(Disposition.fromPos(sunPos)),
-            new Collidable(null, sunCollider, [Collidable.name], null),
+            new Collidable(false, // canCollideAgainWithoutSeparating
+            null, sunCollider, [Collidable.name], null),
             Drawable.fromVisual(sunVisual)
         ]);
         entities.push(sunEntity);
@@ -45,7 +46,8 @@ class PlaceStarsystem extends Place {
             var playerActivity = new Activity(playerActivityDefnName, null);
             var playerActor = new Actor(playerActivity);
             var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
-            var playerCollidable = new Collidable(null, // ticks
+            var playerCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
+            null, // ticks
             playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             this.playerCollide);
             var playerConstrainable = new Constrainable([constraintSpeedMax]);
@@ -123,7 +125,6 @@ class PlaceStarsystem extends Place {
                 enemyShipGroup,
                 new Constrainable([constraintSpeedMax]),
                 Collidable.fromCollider(enemyCollider),
-                new Damager(null),
                 Drawable.fromVisual(enemyVisual),
                 new Killable(1, null, enemyKill),
                 new Locatable(enemyLoc),

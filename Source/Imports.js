@@ -112,6 +112,7 @@ var VisualSound = gf.VisualSound;
 // Model.
 var Entity = gf.Entity;
 var EntityBuilder = gf.EntityBuilder;
+var EntityGenerator = gf.EntityGenerator;
 var Ephemeral = gf.Ephemeral;
 var Place = gf.Place;
 var PlaceDefn = gf.PlaceDefn;

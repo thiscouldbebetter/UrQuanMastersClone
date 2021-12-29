@@ -120,6 +120,7 @@ class PlacePlanetVicinity extends Place
 			var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
 			var playerCollidable = new Collidable
 			(
+				false, // canCollideAgainWithoutSeparating
 				null, // ticks
 				playerCollider,
 				[ Collidable.name ], // entityPropertyNamesToCollideWith
@@ -200,8 +201,6 @@ class PlacePlanetVicinity extends Place
 			var enemyConstrainable =
 				new Constrainable([constraintSpeedMax]);
 
-			var enemyDamager = new Damager(null);
-
 			var enemyVisual = new VisualPolygon
 			(
 				new Path(enemyColliderAsFace.vertices), enemyColor,
@@ -236,7 +235,6 @@ class PlacePlanetVicinity extends Place
 					enemyActor,
 					enemyCollidable,
 					enemyConstrainable,
-					enemyDamager,
 					enemyDrawable,
 					enemyKillable,
 					enemyLocatable,

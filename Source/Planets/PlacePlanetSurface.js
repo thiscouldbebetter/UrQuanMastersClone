@@ -8,7 +8,7 @@ class PlacePlanetSurface extends Place {
         this.planet = planet;
         this.size = this.planet.sizeSurface;
         this.placePlanetOrbit = placePlanetOrbit;
-        var actionExit = new Action("Exit", this.exit.bind(this));
+        var actionExit = new Action("Exit", this.exit);
         var actionFire = Ship.actionFire();
         this.actions =
             [
@@ -68,37 +68,58 @@ class PlacePlanetSurface extends Place {
         // player
         var playerActivityDefnName = Player.activityDefn().name;
         var playerActivity = new Activity(playerActivityDefnName, null);
-        var playerPos = this.size.clone().half(); // todo
-        var playerLoc = Disposition.fromPos(playerPos);
+        var playerActor = new Actor(playerActivity);
         var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
+        var playerCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
+        null, // ticks
+        playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
+        this.playerCollide);
+        var playerConstrainable = new Constrainable([
+            constraintFriction, constraintSpeedMax, constraintWrapXTrimY
+        ]);
         var playerColor = Color.byName("Gray");
         var playerVisual = ShipDefn.visual(entityDimension, playerColor, Color.byName("Black"));
         playerVisual = new VisualWrapped(this.size, playerVisual);
-        var playerShipLander = new Ship("Lander");
+        var playerDrawable = Drawable.fromVisual(playerVisual);
         var crewAvailableForLander = 12; // todo
-        var playerKillable = new Killable(crewAvailableForLander, this.playerDie.bind(this), null);
+        var playerKillable = new Killable(crewAvailableForLander, null, this.playerDie);
         var playerLander = Lander.fromKillableCrew(playerKillable);
+        var playerPos = this.size.clone().half(); // todo
+        var playerLoc = Disposition.fromPos(playerPos);
+        var playerLocatable = new Locatable(playerLoc);
+        var playerMappable = new Mappable(playerVisual);
+        var playerMovable = Movable.default();
+        var playerPlayable = new Playable();
+        var playerShipLander = new Ship("Lander");
         var playerEntity = new Entity("Player", [
-            new Actor(playerActivity),
-            new Collidable(null, // ticks
-            playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
-            this.playerCollide),
-            new Constrainable([
-                constraintFriction, constraintSpeedMax, constraintWrapXTrimY
-            ]),
-            Drawable.fromVisual(playerVisual),
+            playerActor,
+            playerCollidable,
+            playerConstrainable,
+            playerDrawable,
             playerKillable,
             playerLander,
-            new Locatable(playerLoc),
-            new Mappable(playerVisual),
-            Movable.default(),
-            new Playable(),
+            playerLocatable,
+            playerMappable,
+            playerMovable,
+            playerPlayable,
             playerShipLander
         ]);
         entities.push(playerEntity);
         var containerSidebar = this.toControlSidebar(world, playerEntity);
         this.venueControls = VenueControls.fromControl(containerSidebar);
         //this.propertyNamesToProcess.push("ship");
+        // Environmental hazards.
+        var entityHazard = new Entity("Hazard", [
+            Collidable.default(),
+            Drawable.default(),
+            Ephemeral.fromTicksToLive(20),
+            Locatable.create()
+        ]);
+        var hazardGenerator = new EntityGenerator(entityHazard, new RangeExtent(5, 10), // ticksPerGenerationAsRange
+        new RangeExtent(0, 10), // entitiesPerGenerationAsRange
+        1000 // entitiesGeneratedMax
+        );
+        entities.push(hazardGenerator.toEntity());
         // Helper variables.
         this._drawPos = Coords.create();
     }
@@ -106,7 +127,9 @@ class PlacePlanetSurface extends Place {
     actionToInputsMappings() {
         return this._actionToInputsMappings;
     }
-    exit(universe, world, place, actor) {
+    exit(uwpe) {
+        var world = uwpe.world;
+        var place = uwpe.place;
         var entityLander = place.entitiesByName.get(Player.name);
         var lander = Lander.fromEntity(entityLander);
         var itemHoldersForLander = [lander.itemHolderCargo, lander.itemHolderLifeforms];
@@ -140,22 +163,19 @@ class PlacePlanetSurface extends Place {
             place.entitiesToRemove.push(entityOther);
         }
         else if (entityOtherName.startsWith(Lifeform.name)) {
-            var lifeformDefn = EntityExtensions.lifeform(entityOther).defn(world);
-            var damage = lifeformDefn.damagePerAttack;
-            if (damage > 0) {
-                var chanceOfDamagePerTick = .05;
-                if (Math.random() < chanceOfDamagePerTick) {
-                    lander.killableCrew.integritySubtract(damage);
-                }
-            }
+            var lifeformDamager = entityOther.damager();
+            var damage = lifeformDamager.damageToApply(universe);
+            var playerKillable = entityPlayer.killable();
+            playerKillable.damageApply(uwpe.entitiesSwap(), damage);
+            uwpe.entitiesSwap();
         }
         else if (entityOtherEnergySource != null) {
             var energySource = entityOtherEnergySource;
             energySource.collideWithLander(universe, world, place, entityOther, entityPlayer);
         }
     }
-    playerDie(universe, world, place, entityPlayer) {
-        this.exit(universe, world, place, entityPlayer);
+    playerDie(uwpe) {
+        this.exit(uwpe);
     }
     // Place overrides
     draw(universe, world) {

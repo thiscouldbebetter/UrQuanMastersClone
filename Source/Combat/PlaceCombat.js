@@ -92,7 +92,8 @@ class PlaceCombat extends Place {
         var planetActivityGravitate = new Activity(planetActivityDefnGravitate.name, null);
         var planetEntity = new Entity("Planet", [
             Locatable.fromPos(planetPos),
-            new Collidable(null, // ticks
+            new Collidable(false, // canCollideAgainWithoutSeparating
+            null, // ticks
             planetCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             planetCollide),
             Drawable.fromVisual(planetVisual),
@@ -112,7 +113,8 @@ class PlaceCombat extends Place {
             var shipDefn = ship.defn(world);
             var shipVisualBody = shipDefn.visual;
             var shipVisual = new VisualWrapped(this.size, shipVisualBody);
-            var shipEntityProperties = new Array(ship, new Locatable(shipLoc), new Constrainable([constraintWrapToRange]), new Collidable(null, // ticks
+            var shipEntityProperties = new Array(ship, new Locatable(shipLoc), new Constrainable([constraintWrapToRange]), new Collidable(false, // canCollideAgainWithoutSeparating
+            null, // ticks
             shipCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             shipCollide), Drawable.fromVisual(shipVisual), ItemHolder.create(), new Killable(ship.crew, null, this.shipDie));
             if (i == 0) {

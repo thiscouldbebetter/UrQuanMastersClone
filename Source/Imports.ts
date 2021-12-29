@@ -157,6 +157,7 @@ import VisualSound = gf.VisualSound;
 
 import Entity = gf.Entity;
 import EntityBuilder = gf.EntityBuilder;
+import EntityGenerator = gf.EntityGenerator;
 import EntityPropertyBase = gf.EntityPropertyBase;
 import Ephemeral = gf.Ephemeral;
 import Namable = gf.Namable;

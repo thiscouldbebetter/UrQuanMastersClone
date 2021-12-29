@@ -65,7 +65,11 @@ class PlaceStarsystem extends Place
 			"Sun",
 			[
 				new Locatable(Disposition.fromPos(sunPos) ),
-				new Collidable(null, sunCollider, [ Collidable.name ], null),
+				new Collidable
+				(
+					false, // canCollideAgainWithoutSeparating
+					null, sunCollider, [ Collidable.name ], null
+				),
 				Drawable.fromVisual(sunVisual)
 			]
 		);
@@ -95,6 +99,7 @@ class PlaceStarsystem extends Place
 			var playerCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
 			var playerCollidable = new Collidable
 			(
+				false, // canCollideAgainWithoutSeparating
 				null, // ticks
 				playerCollider,
 				[ Collidable.name ], // entityPropertyNamesToCollideWith
@@ -231,7 +236,6 @@ class PlaceStarsystem extends Place
 					enemyShipGroup,
 					new Constrainable([constraintSpeedMax]),
 					Collidable.fromCollider(enemyCollider),
-					new Damager(null),
 					Drawable.fromVisual(enemyVisual),
 					new Killable(1, null, enemyKill),
 					new Locatable(enemyLoc),

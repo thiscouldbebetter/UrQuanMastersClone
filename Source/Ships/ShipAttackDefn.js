@@ -34,7 +34,8 @@ class ShipAttackDefn {
         var projectileLoc = Disposition.fromPos(projectilePos);
         projectileLoc.vel.overwriteWith(projectileDirection).multiplyScalar(this.speed);
         var projectileCollider = new Sphere(Coords.create(), attackDefn.projectileRadius);
-        var projectileEntityProperties = new Array(this, new Locatable(projectileLoc), new Collidable(null, // ticks
+        var projectileEntityProperties = new Array(this, new Locatable(projectileLoc), new Collidable(false, // canCollideAgainWithoutSeparating
+        null, // ticks
         projectileCollider, [Killable.name], this.projectileCollide), Drawable.fromVisual(projectileVisual), new Killable(1, null, null));
         if (this.ticksToLive != null) {
             projectileEntityProperties.push(new Ephemeral(this.ticksToLive, null));

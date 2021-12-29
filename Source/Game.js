@@ -5,23 +5,54 @@ class Game {
         var contentPathPrefixComms = "../Content/Import/sc2/content/base/comm/";
         var conversationPlaceholderPath = "../Content/Text/Conversation/Placeholder.json";
         var imageDirectory = "../Content/Images/";
+        var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
+        var png = ".png";
         var conversation = "Conversation-";
         var conversationContent = conversation + "Content-";
         var mediaLibrary = new MediaLibrary(
         // images
         [
+            // conversation 
             new Image2("Conversation", imageDirectory + "Conversation.png"),
             new Image2(conversation + "EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
             new Image2(conversation + "Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
-            new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
             // opening
             new Image2("Opening", imageDirectory + "Opening.png"),
             new Image2("Producer", imageDirectory + "Producer.png"),
             new Image2("Title", imageDirectory + "Title.png"),
-            // slides
+            // opening - slides
             new Image2("Black", imageDirectory + "Slides/Black-1x1px.png"),
             new Image2("Red", imageDirectory + "Slides/Red-1x1px.png"),
             new Image2("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
+            // planets
+            new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
+            // planets-lifeforms
+            new Image2("RadarBlossom", imageDirectoryLifeforms + "01-RadarBlossom" + png),
+            new Image2("LavaPool", imageDirectoryLifeforms + "02-LavaPool" + png),
+            new Image2("SquirtPod", imageDirectoryLifeforms + "03-SquirtPod" + png),
+            new Image2("ClapperBush", imageDirectoryLifeforms + "04-ClapperBush" + png),
+            new Image2("CarouselTree", imageDirectoryLifeforms + "05-CarouselTree" + png),
+            new Image2("BlueTube", imageDirectoryLifeforms + "06-BlueTube" + png),
+            new Image2("BrassNeedler", imageDirectoryLifeforms + "07-BrassNeedler" + png),
+            new Image2("CreepingBean", imageDirectoryLifeforms + "08-CreepingBean" + png),
+            new Image2("LightningAnemone", imageDirectoryLifeforms + "09-LightningAnemone" + png),
+            new Image2("Radiooculopod", imageDirectoryLifeforms + "10-Radiooculopod" + png),
+            new Image2("SwarmsOfThings", imageDirectoryLifeforms + "11-SwarmsOfThings" + png),
+            new Image2("ElasticSphere", imageDirectoryLifeforms + "12-ElasticSphere" + png),
+            new Image2("TriopticSquid", imageDirectoryLifeforms + "13-TriopticSquid" + png),
+            new Image2("LeapingLizard", imageDirectoryLifeforms + "14-LeapingLizard" + png),
+            new Image2("BloodyBathmat", imageDirectoryLifeforms + "15-BloodyBathmat" + png),
+            new Image2("BiteyMouse", imageDirectoryLifeforms + "16-BiteyMouse" + png),
+            new Image2("SmushedDuckling", imageDirectoryLifeforms + "17-SmushedDuckling" + png),
+            new Image2("FungusAmungus", imageDirectoryLifeforms + "18-FungusAmungus" + png),
+            new Image2("WaddleEye", imageDirectoryLifeforms + "19-WaddleEye" + png),
+            new Image2("SpuriousEaglet", imageDirectoryLifeforms + "20-SpuriousEaglet" + png),
+            new Image2("CottonCandycane", imageDirectoryLifeforms + "21-CottonCandycane" + png),
+            new Image2("BulgingEyeworm", imageDirectoryLifeforms + "22-BulgingEyeworm" + png),
+            new Image2("PopperUpper", imageDirectoryLifeforms + "23-PopperUpper" + png),
+            new Image2("BioDecoy", imageDirectoryLifeforms + "24-Biodecoy" + png),
+            new Image2("MauluskaGourmand", imageDirectoryLifeforms + "25-MauluskaGourmand" + png),
+            new Image2("FreakyBeast", imageDirectoryLifeforms + "26-FreakyBeast" + png),
         ], 
         // sounds
         [

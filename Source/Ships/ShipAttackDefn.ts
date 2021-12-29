@@ -92,6 +92,7 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 			new Locatable(projectileLoc),
 			new Collidable
 			(
+				false, // canCollideAgainWithoutSeparating
 				null, // ticks
 				projectileCollider,
 				[ Killable.name ],
