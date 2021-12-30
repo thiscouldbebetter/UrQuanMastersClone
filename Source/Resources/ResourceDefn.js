@@ -15,6 +15,12 @@ class ResourceDefn {
     static byName(name) {
         return ResourceDefn.Instances()._AllByName.get(name);
     }
+    toItemDefn() {
+        if (this._itemDefn == null) {
+            this._itemDefn = ItemDefn.fromNameMassValueAndVisual(this.name, 1, this.valuePerUnit, VisualCircle.fromRadiusAndColorFill(3, this.color));
+        }
+        return this._itemDefn;
+    }
 }
 class ResourceDefn_Instances {
     constructor() {

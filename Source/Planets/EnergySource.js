@@ -12,14 +12,16 @@ class EnergySource {
         var energySourceCollider = new Sphere(Coords.create(), 5);
         var returnValue = new Entity(this.name, [
             this,
-            CollidableHelper.fromCollider(energySourceCollider),
+            Collidable.fromCollider(energySourceCollider),
             Drawable.fromVisual(visual),
             Locatable.fromPos(this.pos),
         ]);
         return returnValue;
     }
     // EntityProperty.
-    finalize(u, w, p, e) { }
-    initialize(u, w, p, e) { }
-    updateForTimerTick(u, w, p, e) { }
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    // Equatable.
+    equals(other) { return false; }
 }

@@ -1,5 +1,5 @@
 
-class Faction implements EntityProperty
+class Faction implements EntityPropertyBase
 {
 	name: string;
 	nameOriginal: string;
@@ -34,11 +34,30 @@ class Faction implements EntityProperty
 	static RelationsHostile = "Hostile";
 	static RelationsNeutral = "Neutral";
 
+	starsystems(world: WorldExtended): Starsystem[]
+	{
+		// Tersely-named alias method.
+		return this.starsystemsInSphereOfInfluence(world);
+	}
+
+	starsystemsInSphereOfInfluence(world: WorldExtended): Starsystem[]
+	{
+		var hyperspace = world.hyperspace;
+		var sphere = this.sphereOfInfluence;
+		var starsystemsInSphereOfInfluence =
+			hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
+		return starsystemsInSphereOfInfluence;
+	}
+
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable.
+
+	equals(other: Faction): boolean { return false; } 
 }

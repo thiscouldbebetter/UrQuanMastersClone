@@ -60,7 +60,8 @@ class ShipDefn {
         );
         */
         // Don't use a VisualDirectional, because the path is being transformed anyway!
-        var returnValue = new VisualPolygon(visualPath, colorFill, colorBorder);
+        var returnValue = new VisualPolygon(visualPath, colorFill, colorBorder, true // shouldUseEntityOrientation
+        );
         return returnValue;
     }
     // instance methods
@@ -133,7 +134,8 @@ class ShipDefn_Instances {
         );
         var adTodo = attackDefnTodo;
         var heads = 16;
-        var shipImagesDirectory = "../Content/Import/sc2/content/base/ships/";
+        var contentDirectoryPath = universe.mediaLibrary.contentDirectoryPath;
+        var shipImagesDirectory = contentDirectoryPath + "Import/sc2/content/base/ships/";
         var shipDimension = 16;
         var shipSize = Coords.fromXY(1, 1).multiplyScalar(shipDimension);
         var sv = (shipName, shipImageFilePrefix) => {
@@ -180,7 +182,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target();
+            var targetEntityName = actor.actor().activity.targetEntity().name;
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -225,7 +227,7 @@ class ShipDefn_Instances {
         });
         var shipInfernusVisualBase = sv("Infernus", "ilwrath/avenger");
         var shipInfernusVisualCloaked = ShipDefn.visual(shipDimension, colorBlack, colorBlack);
-        var shipInfernusVisual = new VisualDynamic((universe, world, place, actor) => {
+        var shipInfernusVisual = new VisualDynamic((uwpe) => {
             // var ship = EntityExtensions.ship(entity);
             var isCloaked = false; // ship.isCloaked;
             var returnValue = (isCloaked ? shipInfernusVisualCloaked : shipInfernusVisualBase);
@@ -266,7 +268,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target();
+            var targetEntityName = actor.actor().activity.targetEntity().name;
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -291,7 +293,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target();
+            var targetEntityName = actor.actor().activity.targetEntity().name;
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -322,7 +324,7 @@ class ShipDefn_Instances {
          {
             var actorLoc = actor.locatable().loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.target();
+            var targetEntityName = actor.actor().activity.targetEntity().name;
             var target = place.entitiesByName.get(targetEntityName);
             var targetPos = target.locatable().loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);

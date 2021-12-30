@@ -1,3 +1,0 @@
-Arrow keys to move.
-Enter key to fire.
-Escape for menu.

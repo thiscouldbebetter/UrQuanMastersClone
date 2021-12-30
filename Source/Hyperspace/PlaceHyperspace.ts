@@ -15,14 +15,19 @@ class PlaceHyperspace extends Place
 
 	constructor
 	(
-		universe: Universe, hyperspace: Hyperspace,
-		starsystemDeparted: Starsystem, playerLoc: Disposition
+		universe: Universe,
+		hyperspace: Hyperspace,
+		starsystemDeparted: Starsystem,
+		playerLoc: Disposition
 	)
 	{
 		super
 		(
-			PlaceHyperspace.name, PlaceHyperspace.name,
-			hyperspace.size, new Array<Entity>()
+			PlaceHyperspace.name,
+			PlaceHyperspace.name,
+			null, // parentName
+			hyperspace.size,
+			null
 		);
 
 		this.hyperspace = hyperspace;
@@ -30,8 +35,11 @@ class PlaceHyperspace extends Place
 		var actionMapView = new Action
 		(
 			"MapView",
-			(universe: Universe, world: World, place: Place, actor: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
+				var world = uwpe.world;
+				var place = uwpe.place;
+
 				world.placeNext = new PlaceHyperspaceMap(place as PlaceHyperspace);
 			}
 		);
@@ -114,7 +122,10 @@ class PlaceHyperspace extends Place
 			for (var j = 0; j < 3; j++)
 			{
 				var starVisualPathForSize = starVisualPathsForSizes[j];
-				var starVisual = new VisualPolygon(starVisualPathForSize, starColor, null);
+				var starVisual = new VisualPolygon
+				(
+					starVisualPathForSize, starColor, null, false // shouldUseEntityOrientation
+				);
 				starVisualsForSizes.push(starVisual);
 			}
 			starVisualsForSizesByColorName.set(starColor.name, starVisualsForSizes);
@@ -137,7 +148,7 @@ class PlaceHyperspace extends Place
 				starsystem.name,
 				[
 					new Boundable(Box.fromSize(starSize) ),
-					CollidableHelper.fromCollider(starCollider),
+					Collidable.fromCollider(starCollider),
 					Drawable.fromVisual(starVisual),
 					new Locatable(Disposition.fromPos(starPos) ),
 					starsystem
@@ -162,7 +173,7 @@ class PlaceHyperspace extends Place
 				(
 					"Faction" + faction.name,
 					[
-						CollidableHelper.fromCollider(factionCollider),
+						Collidable.fromCollider(factionCollider),
 						faction,
 						Locatable.create()
 					]
@@ -181,63 +192,67 @@ class PlaceHyperspace extends Place
 			entities.push(entityShipGroup);
 		}
 
-		// player
-
-		var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
-		var playerColor = Color.byName("Gray");
-
-		var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-
-		var playerVisual = new VisualGroup
-		([
-			playerVisualBody,
-		]);
-
-		var playerShipGroup = world.player.shipGroup;
-		var playerShip = playerShipGroup.ships[0];
-
-		var constraintFriction = new Constraint_FrictionDry(0.01);
-		var constraintTrimToRange = new Constraint_TrimToPlaceSize();
-
-		var playerEntity = new Entity
-		(
-			Player.name,
-			[
-				new Actor(new Activity(Player.activityDefn().name, null) ),
-				new Collidable
-				(
-					null, // ticks
-					playerCollider,
-					[ Collidable.name ], // entityPropertyNamesToCollideWith
-					this.playerCollide
-				),
-				new Constrainable
-				([
-					constraintFriction,
-					constraintTrimToRange
-				]),
-				Drawable.fromVisual(playerVisual),
-				new Fuelable(),
-				ItemHolder.create(),
-				new Locatable(playerLoc),
-				Movable.create(),
-				new Playable(),
-				playerShipGroup,
-				playerShip
-			]
-		);
-
-		if (starsystemDeparted != null)
+		if (playerLoc != null)
 		{
-			var starsystemName = starsystemDeparted.name;
-			var entityForStarsystemDeparted = this.entitiesByName.get(starsystemName);
-			playerEntity.collidable().entitiesAlreadyCollidedWith.push
-			(
-				entityForStarsystemDeparted
-			);
-		}
+			// player
 
-		entities.push(playerEntity);
+			var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
+			var playerColor = Color.byName("Gray");
+
+			var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
+
+			var playerVisual = new VisualGroup
+			([
+				playerVisualBody,
+			]);
+
+			var playerShipGroup = world.player.shipGroup;
+			var playerShip = playerShipGroup.ships[0];
+
+			var constraintFriction = new Constraint_FrictionDry(0.01);
+			var constraintTrimToRange = new Constraint_TrimToPlaceSize();
+
+			var playerEntity = new Entity
+			(
+				Player.name,
+				[
+					new Actor(new Activity(Player.activityDefn().name, null) ),
+					new Collidable
+					(
+						false, // canCollideAgainWithoutSeparating
+						null, // ticks
+						playerCollider,
+						[ Collidable.name ], // entityPropertyNamesToCollideWith
+						this.playerCollide
+					),
+					new Constrainable
+					([
+						constraintFriction,
+						constraintTrimToRange
+					]),
+					Drawable.fromVisual(playerVisual),
+					new Fuelable(),
+					ItemHolder.create(),
+					new Locatable(playerLoc),
+					Movable.default(),
+					new Playable(),
+					playerShipGroup,
+					playerShip
+				]
+			);
+
+			if (starsystemDeparted != null)
+			{
+				var starsystemName = starsystemDeparted.name;
+				var entityForStarsystemDeparted = this.entitiesByName.get(starsystemName);
+				playerEntity.collidable().entitiesAlreadyCollidedWith.push
+				(
+					entityForStarsystemDeparted
+				);
+			}
+
+			entities.push(playerEntity);
+		}
 
 		// CollisionTracker.
 
@@ -246,7 +261,7 @@ class PlaceHyperspace extends Place
 			this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64)
 		);
 		var entityForCollisionTracker = collisionTracker.toEntity();
-		entities.push(entityForCollisionTracker);
+		entities.splice(0, 0, entityForCollisionTracker); // hack - Must come before stationary entities.
 
 		var containerSidebar = this.toControlSidebar(universe);
 		this.venueControls = VenueControls.fromControl(containerSidebar);
@@ -277,7 +292,7 @@ class PlaceHyperspace extends Place
 	factionShipGroupSpawnIfNeeded
 	(
 		universe: Universe, world: World, placeAsPlace: Place, entityPlayer: Entity, entityOther: Entity
-	)
+	): void
 	{
 		var place = placeAsPlace as PlaceHyperspace;
 
@@ -300,7 +315,8 @@ class PlaceHyperspace extends Place
 		if (numberOfShipGroupsExistingForFaction < shipGroupsPerFaction)
 		{
 			var factionSphereOfInfluence = faction.sphereOfInfluence;
-			var shipGroupPos = factionSphereOfInfluence.pointRandom().clearZ();
+			var shipGroupPos =
+				factionSphereOfInfluence.pointRandom(universe.randomizer).clearZ();
 
 			var shipDefnName = faction.shipDefnName; // todo
 			var factionName = faction.name;
@@ -321,12 +337,14 @@ class PlaceHyperspace extends Place
 
 	playerCollide
 	(
-		universe: Universe, worldAsWorld: World, placeAsPlace: Place,
-		entityPlayer: Entity, entityOther: Entity
-	)
+		uwpe: UniverseWorldPlaceEntities, collision: Collision
+	): void
 	{
-		var world = worldAsWorld as WorldExtended;
-		var place = placeAsPlace as PlaceHyperspace;
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place as PlaceHyperspace;
+		var entityPlayer = uwpe.entity;
+		var entityOther = uwpe.entity2;
 
 		var entityOtherStarsystem = EntityExtensions.starsystem(entityOther);
 		var entityOtherShipGroup = EntityExtensions.shipGroup(entityOther);
@@ -347,17 +365,15 @@ class PlaceHyperspace extends Place
 				starsystem.sizeInner.clone().half()
 			);
 
-			world.placeNext = new PlaceStarsystem
+			world.placeNext = starsystem.toPlace
 			(
 				world,
-				starsystem,
-				new Disposition
+				Disposition.fromPosAndOrientation
 				(
 					playerPosNext,
-					playerOrientation.clone(),
-					null
+					playerOrientation.clone()
 				),
-				null
+				null // planet
 			);
 		}
 		else if (entityOtherShipGroup != null)
@@ -370,6 +386,7 @@ class PlaceHyperspace extends Place
 			(
 				planetClosest,
 				shipGroupOther.factionName,
+				entityPlayer,
 				entityOther,
 				place,
 				playerPos
@@ -382,7 +399,10 @@ class PlaceHyperspace extends Place
 		}
 		else if (entityOtherFaction != null)
 		{
-			place.factionShipGroupSpawnIfNeeded(universe, world, place, entityPlayer, entityOther);
+			place.factionShipGroupSpawnIfNeeded
+			(
+				universe, world, place, entityPlayer, entityOther
+			);
 		}
 	}
 
@@ -399,9 +419,10 @@ class PlaceHyperspace extends Place
 			[
 				new Actor(new Activity(ShipGroup.activityDefnApproachPlayer().name, null) ),
 				//faction,
-				CollidableHelper.fromCollider(new Sphere(Coords.create(), 5)),
+				Collidable.fromCollider(new Sphere(Coords.create(), 5)),
 				Drawable.fromVisual(ship0.defn(world).visual),
 				Locatable.fromPos(shipGroupPos),
+				Movable.default(),
 				shipGroup,
 				ship0
 			]
@@ -437,7 +458,7 @@ class PlaceHyperspace extends Place
 			display.fontHeightInPixels,
 			Color.byName("Yellow"),
 			Color.byName("GreenDark"),
-			null
+			true // isInvisible
 		);
 
 		var imageSensors = this.displaySensors.initialize(null).toImage();
@@ -447,7 +468,7 @@ class PlaceHyperspace extends Place
 			"controlVisualSensors",
 			Coords.fromXY(8, 152), // pos
 			size,
-			DataBinding.fromContext<Visual>
+			DataBinding.fromContext<VisualBase>
 			(
 				new VisualImageImmediate(imageSensors, null)
 			)
@@ -489,6 +510,7 @@ class PlaceHyperspace extends Place
 	draw_Sensors(): void
 	{
 		this.displaySensors.clear();
+		this.displaySensors.drawBackground(null, null);
 
 		var sensorRange = this._camera.viewSize.clone().double();
 		var controlSize = this.displaySensors.sizeInPixels;
@@ -524,6 +546,7 @@ class PlaceHyperspace extends Place
 
 		var ships = this.hyperspace.shipGroups;
 		var shipSize = Coords.fromXY(1, 1).multiplyScalar(2 * starRadius);
+		var shipSizeHalf = shipSize.clone().half();
 		var shipColor = starColor;
 		for (var i = 0; i < ships.length; i++)
 		{
@@ -543,11 +566,22 @@ class PlaceHyperspace extends Place
 			).add
 			(
 				controlSizeHalf
+			).subtract
+			(
+				shipSizeHalf
 			);
-			this.displaySensors.drawRectangle(drawPos, shipSize, shipColor, null, null);
+			this.displaySensors.drawRectangle(drawPos, shipSize, shipColor, null);
 		}
 
 		var drawPos = controlSizeHalf;
-		this.displaySensors.drawCrosshairs(drawPos, starRadius * 4, shipColor)
+		this.displaySensors.drawCrosshairs
+		(
+			drawPos, // center
+			4, // numberOfLines
+			starRadius * 4, // radiusOuter
+			null, // radiusInner
+			shipColor,
+			null // lineThickness
+		);
 	}
 }

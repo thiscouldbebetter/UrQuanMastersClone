@@ -1,83 +1,139 @@
 
 class Game
 {
-	start()
+	mediaLibraryBuild(contentDirectoryPath: string): MediaLibrary
 	{
-		//localStorage.clear();
 
-		var contentPathPrefixComms = "../Content/Import/sc2/content/base/comm/"
+		var imageDirectory = contentDirectoryPath + "Images/";
+		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
+		var png = ".png";
 
-		var conversationPlaceholderPath = "../Content/Text/Conversation-Placeholder.json";
+		var audioDirectory = contentDirectoryPath + "Audio/";
 
-		var imageDirectory = "../Content/Images/";
+		var textDirectory = contentDirectoryPath + "Text/";
+
+		var conversation = "Conversation-";
+		var content = "-Content";
+		var conversationDirectory = textDirectory + "Conversation/";
+		var conversationPlaceholderPath =
+			conversationDirectory + "Placeholder.json";
+		var contentPathPrefixComms =
+			contentDirectoryPath + "Import/sc2/content/base/comm/"
 
 		var mediaLibrary = new MediaLibrary
 		(
+			contentDirectoryPath,
+
 			// images
 			[
+				// conversation 
 				new Image2("Conversation", imageDirectory + "Conversation.png"),
-				new Image2("Conversation-EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
-				new Image2("Conversation-Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
-
-				new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
+				new Image2(conversation + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
+				new Image2(conversation + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
 
 				// opening
 				new Image2("Opening", imageDirectory + "Opening.png"),
+				new Image2("Producer", imageDirectory + "Producer.png"),
 				new Image2("Title", imageDirectory + "Title.png"),
 
-				// slides
+				// opening - slides
 				new Image2("Black", imageDirectory + "Slides/Black-1x1px.png"),
 				new Image2("Red", imageDirectory + "Slides/Red-1x1px.png"),
 				new Image2("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
+
+				// planets
+				new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
+
+				// planets-lifeforms
+				new Image2("RadarBlossom", 		imageDirectoryLifeforms + "01-RadarBlossom" 	+ png),
+				new Image2("LavaPool", 			imageDirectoryLifeforms + "02-LavaPool" 		+ png),
+				new Image2("SquirtPod", 		imageDirectoryLifeforms + "03-SquirtPod" 		+ png),
+				new Image2("ClapperBush", 		imageDirectoryLifeforms + "04-ClapperBush" 		+ png),
+				new Image2("CarouselTree", 		imageDirectoryLifeforms + "05-CarouselTree" 	+ png),
+				new Image2("BlueTube", 			imageDirectoryLifeforms + "06-BlueTube" 		+ png),
+				new Image2("BrassNeedler", 		imageDirectoryLifeforms + "07-BrassNeedler" 	+ png),
+				new Image2("CreepingBean", 		imageDirectoryLifeforms + "08-CreepingBean" 	+ png),
+				new Image2("LightningAnemone", 	imageDirectoryLifeforms + "09-LightningAnemone" + png),
+				new Image2("Radiooculopod", 	imageDirectoryLifeforms + "10-Radiooculopod" 	+ png),
+				new Image2("SwarmsOfThings", 	imageDirectoryLifeforms + "11-SwarmsOfThings" 	+ png),
+				new Image2("ElasticSphere", 	imageDirectoryLifeforms + "12-ElasticSphere" 	+ png),
+				new Image2("TriopticSquid", 	imageDirectoryLifeforms + "13-TriopticSquid" 	+ png),
+				new Image2("LeapingLizard", 	imageDirectoryLifeforms + "14-LeapingLizard" 	+ png),
+				new Image2("BloodyBathmat", 	imageDirectoryLifeforms + "15-BloodyBathmat" 	+ png),
+				new Image2("BiteyMouse", 		imageDirectoryLifeforms + "16-BiteyMouse" 		+ png),
+				new Image2("SmushedDuckling", 	imageDirectoryLifeforms + "17-SmushedDuckling" 	+ png),
+				new Image2("FungusAmungus", 	imageDirectoryLifeforms + "18-FungusAmungus" 	+ png),
+				new Image2("WaddleEye", 		imageDirectoryLifeforms + "19-WaddleEye" 		+ png),
+				new Image2("SpuriousEaglet", 	imageDirectoryLifeforms + "20-SpuriousEaglet" 	+ png),
+				new Image2("CottonCandycane", 	imageDirectoryLifeforms + "21-CottonCandycane" + png),
+				new Image2("BulgingEyeworm", 	imageDirectoryLifeforms + "22-BulgingEyeworm" 	+ png),
+				new Image2("PopperUpper", 		imageDirectoryLifeforms + "23-PopperUpper" 		+ png),
+
+				new Image2("BioDecoy", 			imageDirectoryLifeforms + "24-Biodecoy" 		+ png),
+				new Image2("MauluskaGourmand", 	imageDirectoryLifeforms + "25-MauluskaGourmand" + png),
+				new Image2("FreakyBeast", 		imageDirectoryLifeforms + "26-FreakyBeast" 		+ png),
 			],
 			// sounds
 			[
-				new Sound("Sound", "../Content/Audio/Effects/Sound.wav"),
-				new Sound("Music_Music", "../Content/Audio/Music/Music.mp3"),
-				new Sound("Music_Title", "../Content/Audio/Music/Music.mp3"),
+				new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
+				new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
+				new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
+				new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
 			],
 			// videos
 			[
-				new Video("Movie", "../Content/Video/Movie.webm"),
+				new Video("Movie", contentDirectoryPath + "Video/Movie.webm"),
 			],
 			// fonts
 			[
-				new Font("Font", "../Content/Fonts/Font.ttf"),
+				new Font("Font", contentDirectoryPath + "Fonts/Font.ttf"),
 			],
 			// textStrings
 			[
 				//new TextString("Instructions", "../Content/Text/Instructions.txt"),
-				new TextString("StarsAndPlanets", "../Content/Text/PlanetDatabase.csv"),
+				new TextString("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
 
-				new TextString("Conversation-LahkemupGuardDrone", "../Content/Text/Conversation-LahkemupGuardDrone.json"),
-				new TextString("Conversation-Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
-				new TextString("Conversation-EarthStation", "../Content/Text/Conversation-EarthStation.json"),
+				new TextString(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
+				new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
+				new TextString(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
+				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
+				new TextString(conversation + "EarthStation" + content, conversationDirectory + "EarthStation-Content.txt"),
 
-				new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation-Placeholder-Content.txt"),
+				new TextString("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
 
-				new TextString("Conversation-Amorfus", conversationPlaceholderPath),
-				new TextString("Conversation-Araknoid", conversationPlaceholderPath),
-				new TextString("Conversation-Daskapital", conversationPlaceholderPath),
-				new TextString("Conversation-Ellfyn", conversationPlaceholderPath),
-				new TextString("Conversation-Hyphae", conversationPlaceholderPath),
-				new TextString("Conversation-Kehlemal", conversationPlaceholderPath),
-				new TextString("Conversation-Lahkemup", conversationPlaceholderPath),
-				new TextString("Conversation-Mauluska", conversationPlaceholderPath),
-				new TextString("Conversation-Moroz", conversationPlaceholderPath),
-				new TextString("Conversation-Muuncaf", conversationPlaceholderPath),
-				new TextString("Conversation-Mazonae", conversationPlaceholderPath),
-				new TextString("Conversation-Murch", conversationPlaceholderPath),
-				new TextString("Conversation-Outsider", conversationPlaceholderPath),
-				new TextString("Conversation-Raptor", conversationPlaceholderPath),
-				new TextString("Conversation-Silikonix", conversationPlaceholderPath),
-				new TextString("Conversation-Supial", conversationPlaceholderPath),
-				new TextString("Conversation-Tempestrial", conversationPlaceholderPath),
-				new TextString("Conversation-Triunion", conversationPlaceholderPath),
-				new TextString("Conversation-Twyggan", conversationPlaceholderPath),
-				new TextString("Conversation-Ugglegruj", conversationPlaceholderPath),
-				new TextString("Conversation-Warpig", conversationPlaceholderPath),
+				new TextString(conversation + "Amorfus", conversationPlaceholderPath),
+				new TextString(conversation + "Araknoid", conversationPlaceholderPath),
+				new TextString(conversation + "Daskapital", conversationPlaceholderPath),
+				new TextString(conversation + "Ellfyn", conversationPlaceholderPath),
+				new TextString(conversation + "Hyphae", conversationPlaceholderPath),
+				new TextString(conversation + "Kehlemal", conversationPlaceholderPath),
+				new TextString(conversation + "Lahkemup", conversationPlaceholderPath),
+				new TextString(conversation + "Mauluska", conversationPlaceholderPath),
+				new TextString(conversation + "Moroz", conversationPlaceholderPath),
+				new TextString(conversation + "Muuncaf", conversationPlaceholderPath),
+				new TextString(conversation + "Mazonae", conversationPlaceholderPath),
+				new TextString(conversation + "Murch", conversationPlaceholderPath),
+				new TextString(conversation + "Outsider", conversationPlaceholderPath),
+				new TextString(conversation + "Raptor", conversationPlaceholderPath),
+				new TextString(conversation + "Silikonix", conversationPlaceholderPath),
+				new TextString(conversation + "Supial", conversationPlaceholderPath),
+				new TextString(conversation + "Tempestrial", conversationPlaceholderPath),
+				new TextString(conversation + "Triunion", conversationPlaceholderPath),
+				new TextString(conversation + "Twyggan", conversationPlaceholderPath),
+				new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),
+				new TextString(conversation + "Warpig", conversationPlaceholderPath),
 			]
 		);
+
+		return mediaLibrary
+	}
+
+	start(): void
+	{
+		//localStorage.clear();
+
+		var contentDirectoryPath = "../Content/";
+		var mediaLibrary = this.mediaLibraryBuild(contentDirectoryPath);
 
 		var displaySizeInPixelsDefault = new Coords(400, 300, 1);
 
@@ -102,17 +158,12 @@ class Game
 		var universe = Universe.create
 		(
 			"SpaceAdventureClone",
-			"0.0.0-20210504",
+			"0.0.0-20211219",
 			timerHelper,
 			display,
 			mediaLibrary,
 			controlBuilder,
-			WorldExtended.create
-		);
-
-		universe.initialize
-		(
-			() => universe.start()
+			WorldCreator.fromWorldCreate(WorldExtended.create)
 		);
 
 		var controlSlideshowIntro = universe.controlBuilder.slideshow
@@ -136,21 +187,24 @@ class Game
 		universe.venueNext =
 			controlBuilder.venueTransitionalFromTo(null, universe.venueNext);
 
+		var universeDebugOrStart;
 		if (universe.debuggingModeName != null)
 		{
-			this.debug(universe);
+			universeDebugOrStart = () => this.debug(universe);
 		}
+		else
+		{
+			universeDebugOrStart = () => universe.start();
+		}
+
+		universe.initialize
+		(
+			universeDebugOrStart
+		);
+
 	}
 
 	debug(universe: Universe)
-	{
-		universe.mediaLibrary.waitForItemsAllToLoad
-		(
-			this.debug_MediaLoaded.bind(this, universe)
-		);
-	}
-
-	debug_MediaLoaded(universe: Universe)
 	{
 		var world = WorldExtended.create(universe);
 		universe.world = world;
@@ -178,6 +232,10 @@ class Game
 		{
 			this.debug_Planet(universe);
 		}
+		else if (debuggingModeName == "Planet2")
+		{
+			this.debug_Planet2(universe);
+		}
 		else if (debuggingModeName == "PlanetEnergy")
 		{
 			this.debug_PlanetEnergy(universe);
@@ -186,6 +244,12 @@ class Game
 		{
 			this.debug_StarsystemSol(universe);
 		}
+		else if (debuggingModeName == "Station")
+		{
+			this.debug_Station(universe);
+		}
+
+		universe.start();
 	}
 
 	debug_Combat(universe: Universe): void
@@ -283,7 +347,11 @@ class Game
 		var playerPos = starsystemSol.posInHyperspace.clone();
 		var playerLoc = Disposition.fromPos(playerPos);
 		var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
-		placeHyperspace.updateForTimerTick(universe, world);
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, null, null
+		);
+		placeHyperspace.updateForTimerTick(uwpe);
 		var placeMap = new PlaceHyperspaceMap(placeHyperspace);
 		world.placeNext = placeMap;
 	}
@@ -291,8 +359,28 @@ class Game
 	debug_Planet(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var starsystem = world.hyperspace.starsystems[1]; // Eta Giclas
+		var starsystem = world.hyperspace.starsystems.find(x => x.name == "Sol");
+		var planet = starsystem.planets[0]; // Mercury
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, null, null
+		);
+		planet.initialize(uwpe);
+		var placePlanetVicinity = null;
+		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
+		world.placeNext = placePlanetOrbit;
+	}
+
+	debug_Planet2(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+		var starsystem = world.hyperspace.starsystems.find(x => x.name == "Eta Giclas");
 		var planet = starsystem.planets[4]; // E Giclas V
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, null, null
+		);
+		planet.initialize(uwpe);
 		var placePlanetVicinity = null;
 		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
 		world.placeNext = placePlanetOrbit;
@@ -319,8 +407,27 @@ class Game
 			playerPos,
 			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
 		);
-		var place = new PlaceStarsystem(world, starsystemSol, playerLoc, null);
+		var place = starsystemSol.toPlace(world, playerLoc, null);
 		world.placeNext = place;
 	}
+
+	debug_Station(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+
+		var player = world.player;
+		player.credit = 0;
+		var resourceDefns = ResourceDefn.Instances();
+		var playerItemHolder = player.flagship.itemHolder;
+		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
+
+		var starsystemSol = world.hyperspace.starsystemByName("Sol");
+		var planetEarth = starsystemSol.planets[2];
+		var station = planetEarth.satellites[0] as Station;
+		var placePlanetVicinity = planetEarth.toPlace(universe.world as WorldExtended);
+		var placeStation = new PlaceStation(world, station, placePlanetVicinity);
+		world.placeNext = placeStation;
+	}
+
 }
 

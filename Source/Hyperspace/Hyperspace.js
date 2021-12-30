@@ -185,4 +185,9 @@ class Hyperspace {
         }
         return starsystemClosestSoFar;
     }
+    toPlace(universe) {
+        return new PlaceHyperspace(universe, this, null, // starsystemDeparted
+        null //playerLoc
+        );
+    }
 }

@@ -1,27 +1,38 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, defn, player, hyperspace, starsystemStart) {
-        super(name, dateCreated, defn, []);
+    constructor(name, dateCreated, defn, hyperspace, factions, player, starsystemStart) {
+        super(name, dateCreated, defn, [] // places
+        );
         this.timerTicksSoFar = 0;
-        this.player = player;
         this.hyperspace = hyperspace;
-        this.placeCurrent = new PlaceStarsystem(this, starsystemStart, new Disposition(Coords.fromXY(.5, .95).multiply(starsystemStart.sizeInner), new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1)), null), null);
+        this.factions = factions;
+        this.player = player;
+        this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
+        this.placeCurrent = starsystemStart.toPlace(this, // world
+        Disposition.fromPosAndOrientation(Coords.fromXY(.5, .95).multiply(starsystemStart.sizeInner), new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))), null // planet?
+        );
         //this.place.entitiesSpawn(null, this);
     }
     static create(universe) {
         var now = DateTime.now();
         var nowAsString = now.toStringMMDD_HHMM_SS();
-        // todo
         var activityDefns = [
             Player.activityDefn(),
+            Lifeform.activityDefnApproachPlayer(),
             ShipGroup.activityDefnApproachPlayer(),
+            ShipGroup.activityDefnApproachTarget(),
+            Lifeform.activityDefnAvoidPlayer(),
             ShipGroup.activityDefnDie(),
-            ShipGroup.activityDefnLeave()
+            Lifeform.activityDefnDoNothing(),
+            ShipGroup.activityDefnLeave(),
+            Lifeform.activityDefnMoveToRandomPosition()
         ];
         var actions = Ship.actions();
         var actionToInputsMappings = Ship.actionToInputsMappings();
         var entityPropertyNamesToProcess = [
             Actor.name,
+            Damager.name,
+            Ephemeral.name,
             Playable.name,
             Locatable.name,
             Constrainable.name,
@@ -35,7 +46,7 @@ class WorldExtended extends World {
             PlaceDefn.from4(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
             PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
             PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from4(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
             PlaceDefn.from4(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
             PlaceDefn.from4(PlaceStarsystem.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
             PlaceDefn.from4(PlaceStation.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
@@ -44,7 +55,7 @@ class WorldExtended extends World {
         // special
         var factionTerran = new Faction("Terran", null, // nameOriginal
         null, // color
-        Faction.RelationsAllied, // todo
+        Faction.RelationsNeutral, // todo
         true, // talksImmediately
         "EarthStation", // conversationDefnName
         null, // sphereOfInfluence
@@ -120,7 +131,8 @@ class WorldExtended extends World {
         ];
         var shipDefns = ShipDefn.Instances(universe)._All;
         var lifeformDefns = LifeformDefn.Instances()._All;
-        var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, shipDefns);
+        var resourceDefns = ResourceDefn.Instances()._All;
+        var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, resourceDefns, shipDefns);
         var mediaLibrary = universe.mediaLibrary;
         var starsAndPlanetsAsStringCSVCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
         var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, 10, // starsystemRadiusOuter
@@ -161,7 +173,7 @@ class WorldExtended extends World {
         ], // factionsKnownNames
         playerShipGroup);
         var returnValue = new WorldExtended("World-" + nowAsString, now, // dateCreated
-        defn, player, hyperspace, starsystemStart);
+        defn, hyperspace, factions, player, starsystemStart);
         return returnValue;
     }
     // instance methods
@@ -171,17 +183,43 @@ class WorldExtended extends World {
     draw(universe) {
         this.placeCurrent.draw(universe, universe.world, universe.display);
     }
-    initialize(universe) {
-        this.placeCurrent.initialize(universe, this);
+    factionByName(factionName) {
+        return this.factionsByName.get(factionName);
     }
-    updateForTimerTick(universe) {
+    initialize(uwpe) {
+        this.placeCurrent.initialize(uwpe.worldSet(this));
+    }
+    placeByName(placeName) {
+        var returnPlace;
+        var placeNameParts = placeName.split(":");
+        var placeTypeName = placeNameParts[0];
+        var placeNameActual = placeNameParts[1];
+        if (placeTypeName == PlaceHyperspace.name) {
+            throw new Error("todo");
+        }
+        else if (placeTypeName == PlacePlanetVicinity.name) {
+            var planetName = placeNameActual;
+            var starsystem = this.hyperspace.starsystems.find(x => x.planets.some(y => y.name == planetName));
+            var planet = starsystem.planets.find(x => x.name == planetName);
+            returnPlace = planet.toPlace(this);
+        }
+        else if (placeTypeName == PlaceStarsystem.name) {
+            throw new Error("todo");
+        }
+        else {
+            throw new Error("Unrecognized place type: " + placeTypeName);
+        }
+        return returnPlace;
+    }
+    updateForTimerTick(uwpe) {
+        uwpe.worldSet(this);
         if (this.placeNext != null) {
-            this.placeCurrent.finalize(universe, this);
+            this.placeCurrent.finalize(uwpe);
             this.placeCurrent = this.placeNext;
-            this.placeCurrent.initialize(universe, this);
+            this.placeCurrent.initialize(uwpe);
             this.placeNext = null;
         }
-        this.placeCurrent.updateForTimerTick(universe, this);
+        this.placeCurrent.updateForTimerTick(uwpe);
         this.timerTicksSoFar++;
     }
     toControl(universe) {

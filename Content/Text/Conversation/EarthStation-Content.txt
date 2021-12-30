@@ -1,0 +1,156 @@
+#(ARE_YOU_THE_RESUPPLY_SHIP)
+Are you the resupply ship?
+I can't tell: our sensors are on the fritz.
+It's not just the sensors, either.
+We are almost out of EVERYTHING,
+and that includes oxygen, by the way.
+We need refueling, and we need it now.
+I repeat: are you the Empire resupply ship?
+Where have you guys BEEN all this time?
+
+#(NO_WERE_NOT_THE_RESUPPLY_SHIP)
+We're not the resupply ship.
+
+#(YES_WE_ARE_THE_RESUPPLY_SHIP)
+Yes, we're the resupply ship.
+
+#(WE_NEED_RADIOACTIVES)
+What did you say?
+Sorry, I can't make out what you're saying.
+Our antenna array took a micrometeor last month,
+and there's been no parts to rebuild it.
+We keep fixing it, and it keeps breaking.
+Look, it doesn't matter.
+Whoever you are, we need help, badly.
+If you're receiving this, PLEASE,
+bring us some radioactives for our reactor.
+I swear we'll make it worth your while...
+...somehow or other.
+
+#(ILL_GET_YOU_RADIOACTIVES)
+We're leaving now to find the fuel you need.
+
+#(I_WONT_GET_YOU_RADIOACTIVES)
+We aren't running any errands for beggars.
+
+#(TRANSFER_RADIOACTIVES)
+[Transfer the radioactives.]
+
+#(PLEASE_JUST_BRING_US_RADIOACTIVES)
+If you're saying something, I can't hear you.
+Just please, bring us the radioactives we need.
+Any amount at all would be enough for us right now.
+
+#(HAVE_YOU_BROUGHT_THE_RADIOACTIVES)
+You're back.
+Have you brought the radioactives we need?
+
+#(YES)
+Yes.
+
+#(NO)
+No.
+
+#(HURRY_UP_WITH_THE_RADIOACTIVES)
+Please hurry, we desperately need them.
+
+#(IF_YOU_HAVE_RADIOACTIVES_TRANSFER_THEM)
+Did you say yes?
+If you have them, can you transfer them over?
+
+#(RADIOACTIVES_RECEIVED_SYSTEMS_RESTORED_WHO_ARE_YOU_REALLY)
+We're receiving the radioactives now.
+Our technicians will load them into the reactor immediately.
+We should be back online in moment or two...
+...stand by...
+...ah, there we are.  Sensors are powering up now.
+I should be able to see your ship in a... few...
+...uh...
+...okay, you're sure as hell not the Empire resupply ship.
+So who ARE you?
+
+#(IM_FROM_THE_COALITION)
+I'm from the Freedom Coalition.
+
+#(NEVER_MIND_WHO_I_AM)
+Never mind who I am.  You promised me your help.,
+
+#(THE_COALITION_DOESNT_EXIST_ANYMORE)
+The Freedom Coalition?  That hasn't existed for 20 years.
+
+#(WE_GOT_SHIPWRECKED)
+We got shipwrecked during the war, and have been hiding out.
+
+#(WHAT_ARE_YOU_DOING_HERE_NOW)
+Oh.  Well, what are you doing here now?
+
+#(WE_RECENTLY_FOUND_THIS_SHIP)
+We recently built--well, found, really--this ship.
+
+#(WHAT_DO_YOU_WANT_FROM_US)
+I see.  And what do you want from us?
+
+#(I_WANT_YOU_TO_HELP_FIGHT_THE_LAHKEMUP)
+I want you to help me bring down the Lahk-emup Empire.
+
+#(I_SEE)
+I... see.
+
+#(YOU_NEED_MORE_THAN_ONE_SHIP)
+You know, I used to have dreams, too.
+But you'd need a whole lot more than one ship
+to take on the Lahk-emup.
+The Coalition had a whole fleet,
+thousands of ships,
+and we still lost the war.
+
+#(I_GUESS_WE_OWE_YOU)
+Well, in any case, I guess we owe you.
+
+#(HOW_CAN_WE_HELP)
+What can we do to help?
+
+#(THIS_STATION_OFFERS_THESE_SERVICES)
+This station has mineral and salvage refineries,
+hyperspace fuel formularies,
+and shipyards and ship component factories.
+What we don't have, though, is raw materials,
+so you'll need to bring us resources,
+like minerals or salvage,
+before we can make anything of value.
+Also, we have far more crew than we strictly need,
+some of whom might be itching for a berth on your ship
+after the last couple decades of enslavement.
+So:
+
+#(WHAT_CAN_WE_DO_FOR_YOU_TODAY)
+What can we do for you today, captain?"
+
+#(I_HAVE_MINERALS)
+I have some raw materials for processing.
+
+#(I_NEED_FUEL)
+I'd like to buy some fuel.
+
+#(I_NEED_REPAIRS)
+I'd like to get my ship refitted.
+
+#(I_NEED_CREW)
+I'd like to hire some crew.
+
+#(I_NEED_INFORMATION)
+I'd like some information, please.
+
+#(IM_LEAVING_NOW)
+"Nothing, commander.  See you later.
+
+#(VISIT_THE_DOCKS)
+That can be taken care of at the docks.
+You can use them at any time simply by visiting the station.
+
+#(I_HAVE_NO_INFORMATION_RIGHT_NOW)
+I don't have any information right now.
+Come back later.
+
+#(GOODBYE)
+Fair sailing and good hunting, captain.

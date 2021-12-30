@@ -1,5 +1,5 @@
 
-class Planet implements EntityProperty, Satellite
+class Planet implements EntityProperty<Planet>, Satellite
 {
 	name: string;
 	defnName: string;
@@ -175,7 +175,7 @@ class Planet implements EntityProperty, Satellite
 		(
 			this.name,
 			[
-				CollidableHelper.fromCollider(collider),
+				Collidable.fromCollider(collider),
 				Drawable.fromVisual(visual),
 				this, // planet
 				Locatable.fromPos(pos),
@@ -185,20 +185,36 @@ class Planet implements EntityProperty, Satellite
 		return returnValue;
 	}
 
+	toPlace(world: WorldExtended): PlacePlanetVicinity
+	{
+		return new PlacePlanetVicinity
+		(
+			world,
+			this,
+			null, // playerLoc
+			null // placeStarsystem
+		);
+	}
+
 	// EntityProperty.
 
-	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var universe = uwpe.universe;
 		var randomizer = universe.randomizer;
 		this.mineralsGenerate(randomizer);
 		this.lifeformsGenerate(randomizer);
 	}
 
-	updateForTimerTick(universe: Universe, world: World, place: Place, entity: Entity): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		// Do nothing.
 	}
+
+	// Equatable.
+
+	equals(other: Planet): boolean { return false; }
 }
 

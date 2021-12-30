@@ -1,5 +1,5 @@
 
-class ShipAttackDefn implements EntityProperty
+class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 {
 	name: string;
 	energyToUse: number;
@@ -9,8 +9,8 @@ class ShipAttackDefn implements EntityProperty
 	ticksToLive: number;
 	diesOnImpact: boolean;
 	damage: number;
-	visualProjectile: Visual;
-	visualImpact: Visual;
+	visualProjectile: VisualBase;
+	visualImpact: VisualBase;
 	effectWhenInvoked: any;
 	perform: (u: Universe, w: World, p: Place, e: Entity) => void;
 	effectOnImpact: (u: Universe, w: World, p: Place, e: Entity) => void;
@@ -27,8 +27,8 @@ class ShipAttackDefn implements EntityProperty
 		ticksToLive: number,
 		diesOnImpact: boolean,
 		damage: number,
-		visualProjectile: Visual,
-		visualImpact: Visual,
+		visualProjectile: VisualBase,
+		visualImpact: VisualBase,
 		effectWhenInvoked: any,
 		perform: (u: Universe, w: World, p: Place, e: Entity) => void,
 		effectOnImpact: (u: Universe, w: World, p: Place, e: Entity) => void
@@ -86,12 +86,13 @@ class ShipAttackDefn implements EntityProperty
 		var projectileCollider =
 			new Sphere(Coords.create(), attackDefn.projectileRadius);
 
-		var projectileEntityProperties = new Array<EntityProperty>
+		var projectileEntityProperties = new Array<EntityPropertyBase>
 		(
 			this,
 			new Locatable(projectileLoc),
 			new Collidable
 			(
+				false, // canCollideAgainWithoutSeparating
 				null, // ticks
 				projectileCollider,
 				[ Killable.name ],
@@ -128,13 +129,12 @@ class ShipAttackDefn implements EntityProperty
 		place.entitiesToSpawn.push(projectileEntity);
 	}
 
-	projectileCollide
-	(
-		universe: Universe, worldAsWorld: World, place: Place,
-		entityProjectile: Entity, entityOther: Entity
-	): void
+	projectileCollide(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = worldAsWorld as WorldExtended;
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place;
+		var entityProjectile = uwpe.entity;
+		var entityOther = uwpe.entity2;
 
 		var ship = EntityExtensions.ship(entityProjectile);
 		var shipDefn = ship.defn(world);
@@ -176,10 +176,11 @@ class ShipAttackDefn implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	// Equatable.
 
-	updateForTimerTick(universe: Universe, world: World, place: Place, entity: Entity): void {}
-
+	equals(other: ShipAttackDefn): boolean { return false; } 
 }

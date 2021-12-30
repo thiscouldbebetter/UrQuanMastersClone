@@ -1,12 +1,15 @@
 "use strict";
 class PlaceCombat extends Place {
     constructor(worldAsWorld, combat) {
-        super(PlaceCombat.name, PlaceCombat.name, combat.size, []);
+        super(PlaceCombat.name, PlaceCombat.name, null, // parentName
+        combat.size, null // entities
+        );
         var world = worldAsWorld;
         this.combat = combat;
         this.size = this.combat.size;
-        var actionExit = new Action("Exit", (universe, world, placeAsPlace, actor) => {
-            var place = placeAsPlace;
+        var actionExit = new Action("Exit", (uwpe) => {
+            var world = uwpe.world;
+            var place = uwpe.place;
             var encounter = place.combat.encounter;
             encounter.returnToPlace(world);
         });
@@ -33,7 +36,7 @@ class PlaceCombat extends Place {
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
-        this.entitySpawn(null, world, cameraAsEntity);
+        this.entitySpawn(new UniverseWorldPlaceEntities(null, world, null, cameraAsEntity, null));
         // entities
         var entityDimension = 10;
         var entities = this.entities;
@@ -44,7 +47,9 @@ class PlaceCombat extends Place {
         var planetColor = Color.byName("Cyan");
         var planetVisual = new VisualWrapped(this.size, VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor));
         var planetCollider = new Sphere(Coords.create(), planetRadius);
-        var planetCollide = (universe, world, place, entityPlanet, entityOther) => {
+        var planetCollide = (uwpe) => {
+            var entityPlanet = uwpe.entity;
+            var entityOther = uwpe.entity2;
             var planetPos = entityPlanet.locatable().loc.pos;
             var otherLoc = entityOther.locatable().loc;
             var otherPos = otherLoc.pos;
@@ -60,8 +65,9 @@ class PlaceCombat extends Place {
                 otherLoc.vel.add(impulse.double());
             }
         };
-        var planetActivityGravitatePerform = (universe, world, placeAsPlace, actor) => {
-            var place = placeAsPlace;
+        var planetActivityGravitatePerform = (uwpe) => {
+            var place = uwpe.place;
+            var actor = uwpe.entity;
             var planet = actor;
             var planetPos = planet.locatable().loc.pos;
             var combat = place.combat;
@@ -86,7 +92,8 @@ class PlaceCombat extends Place {
         var planetActivityGravitate = new Activity(planetActivityDefnGravitate.name, null);
         var planetEntity = new Entity("Planet", [
             Locatable.fromPos(planetPos),
-            new Collidable(null, // ticks
+            new Collidable(false, // canCollideAgainWithoutSeparating
+            null, // ticks
             planetCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             planetCollide),
             Drawable.fromVisual(planetVisual),
@@ -94,7 +101,7 @@ class PlaceCombat extends Place {
         ]);
         entities.push(planetEntity);
         var shipsFighting = this.combat.shipsFighting;
-        var shipCollide = (universe, world, place, entityPlayer, entityOther) => {
+        var shipCollide = (uwpe) => {
             // todo
         };
         var constraintWrapToRange = new Constraint_WrapToPlaceSize();
@@ -102,11 +109,12 @@ class PlaceCombat extends Place {
             var ship = shipsFighting[i];
             var shipPos = Coords.fromXY(.1 * (i == 0 ? -1 : 1), 0).multiply(this.size).add(planetPos);
             var shipLoc = Disposition.fromPos(shipPos);
-            var shipCollider = new Sphere(new Coords(0, 0, 0), entityDimension / 2);
+            var shipCollider = new Sphere(Coords.zeroes(), entityDimension / 2);
             var shipDefn = ship.defn(world);
             var shipVisualBody = shipDefn.visual;
             var shipVisual = new VisualWrapped(this.size, shipVisualBody);
-            var shipEntityProperties = new Array(ship, new Locatable(shipLoc), new Constrainable([constraintWrapToRange]), new Collidable(null, // ticks
+            var shipEntityProperties = new Array(ship, new Locatable(shipLoc), new Constrainable([constraintWrapToRange]), new Collidable(false, // canCollideAgainWithoutSeparating
+            null, // ticks
             shipCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             shipCollide), Drawable.fromVisual(shipVisual), ItemHolder.create(), new Killable(ship.crew, null, this.shipDie));
             if (i == 0) {
@@ -134,7 +142,9 @@ class PlaceCombat extends Place {
     actionToInputsMappings() {
         return this._actionToInputsMappings;
     }
-    roundOver(universe, world, place, entity) {
+    roundOver(uwpe) {
+        var universe = uwpe.universe;
+        var place = uwpe.place;
         var combat = place.combat;
         var shipGroups = combat.shipGroups;
         if (shipGroups[0].ships.length == 0) {
@@ -151,8 +161,9 @@ class PlaceCombat extends Place {
             universe.venueNext = venueNext;
         }
     }
-    shipDie(universe, world, placeAsPlace, entityShipToDie) {
-        var place = placeAsPlace;
+    shipDie(uwpe) {
+        var place = uwpe.place;
+        var entityShipToDie = uwpe.entity;
         var ship = EntityExtensions.ship(entityShipToDie);
         var combat = place.combat;
         ArrayHelper.remove(combat.shipsFighting, ship);
@@ -198,7 +209,7 @@ class PlaceCombat extends Place {
         super.draw(universe, world, display);
         this.venueControls.draw(universe);
     }
-    updateForTimerTick(universe, world) {
-        super.updateForTimerTick(universe, world);
+    updateForTimerTick(uwpe) {
+        super.updateForTimerTick(uwpe);
     }
 }

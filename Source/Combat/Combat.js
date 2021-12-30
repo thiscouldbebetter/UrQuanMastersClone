@@ -15,9 +15,10 @@ class Combat {
     enemyActivityDefn() {
         return new ActivityDefn("Enemy", this.enemyActivityDefnPerform);
     }
-    enemyActivityDefnPerform(universe, worldAsWorld, placeAsPlace, actor) {
-        var world = worldAsWorld;
-        var place = placeAsPlace;
+    enemyActivityDefnPerform(uwpe) {
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var actor = uwpe.entity;
         var actorShip = EntityExtensions.ship(actor);
         var entitiesShips = place.entitiesShips();
         var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
@@ -45,9 +46,10 @@ class Combat {
         universe.venueNext = new VenueWorld(world);
     }
     initialize(universe, world, place) {
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, place, null, null);
         for (var i = 0; i < this.shipGroups.length; i++) {
             var shipGroup = this.shipGroups[i];
-            shipGroup.initialize(universe, world, place, null);
+            shipGroup.initialize(uwpe);
         }
         return this;
     }
@@ -119,71 +121,69 @@ class Combat {
         var buttonSizeFight = Coords.fromXY(titleSize.x, buttonHeight);
         var listSize = Coords.fromXY(headingSize.x, size.y - titleSize.y - headingSize.y - buttonHeight * 2 - marginSize.y * 6);
         var bindingForOptionText = DataBinding.fromGet((c) => c.fullNameAndCrew(world));
-        var listShipsYours = ControlList.from9("listShipsYours", Coords.fromXY(marginSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContext(shipsYours), bindingForOptionText, fontHeight, null, // bindingForItemSelected
+        var listShipsYours = ControlList.from9("listShipsYours", Coords.fromXY(marginSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContextAndGet(combat, (c) => shipsYours), bindingForOptionText, fontHeight, null, // bindingForItemSelected
         null, // bindingForItemValue
         DataBinding.fromContextAndGet(combat, (c) => c.ship0HasNotBeenSelected()) // isEnabled
         );
-        var listShipsTheirs = ControlList.from9("listShipsTheirs", Coords.fromXY(marginSize.x * 2 + listSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContext(shipsTheirs), bindingForOptionText, fontHeight, null, // bindingForItemSelected
+        var listShipsTheirs = ControlList.from9("listShipsTheirs", Coords.fromXY(marginSize.x * 2 + listSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContextAndGet(combat, (c) => shipsTheirs), bindingForOptionText, fontHeight, null, // bindingForItemSelected
         null, // bindingForItemValue
         DataBinding.fromContextAndGet(combat, (c) => c.ship1HasNotBeenSelected()) // isEnabled
         );
         var returnValue = ControlContainer.from4("containerShipSelect", Coords.Instances().Zeroes, size, [
             new ControlLabel("labelTitle", Coords.fromXY(size.x / 2, marginSize.y + fontHeightTitle / 2), titleSize, true, // isTextCentered
-            "Ship Select", fontHeightTitle),
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Ship Select"), fontHeightTitle),
             new ControlLabel("labelYours", Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2), titleSize, false, // isTextCentered
-            this.shipGroups[0].name + ":", fontHeight),
+            false, // isTextCenteredVertically
+            DataBinding.fromContext(this.shipGroups[0].name + ":"), fontHeight),
             listShipsYours,
             new ControlButton("buttonSelectYours", Coords.fromXY(marginSize.x, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, "Select", fontHeight, true, // hasBorder
             DataBinding.fromContextAndGet(combat, (c) => c.ship0HasNotBeenSelected()), // isEnabled,
-            (universe) => {
-                var shipYours = listShipsYours.itemSelected(null);
+            () => {
+                var shipYours = listShipsYours.itemSelected();
                 combat.shipsFighting[0] = shipYours;
-            }, universe, // context
-            false // canBeHeldDown
+            }, false // canBeHeldDown
             ),
             new ControlButton("buttonRandomYours", Coords.fromXY(marginSize.x * 2 + buttonSizeSelect.x, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, "Random", fontHeight, true, // hasBorder
             DataBinding.fromContextAndGet(combat, (c) => c.ship0HasNotBeenSelected()), // isEnabled,
-            (universe) => {
+            () => {
                 var shipGroupIndex = 0;
                 var shipGroup = combat.shipGroups[shipGroupIndex];
                 var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
                 combat.shipsFighting[shipGroupIndex] = ship;
                 listShipsYours._itemSelected = null;
-            }, universe, // context
-            false // canBeHeldDown
+            }, false // canBeHeldDown
             ),
             new ControlLabel("labelTheirs", Coords.fromXY(listSize.x + marginSize.x * 2, titleSize.y + marginSize.y * 2), titleSize, false, // isTextCentered
-            this.shipGroups[1].name + ":", fontHeight),
+            false, // isTextCenteredVertically
+            DataBinding.fromContext(this.shipGroups[1].name + ":"), fontHeight),
             listShipsTheirs,
             new ControlButton("buttonSelectTheirs", Coords.fromXY(marginSize.x * 2 + listSize.x, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, "Select", fontHeight, true, // hasBorder
             DataBinding.fromContextAndGet(combat, (c) => c.ship1HasNotBeenSelected()), // isEnabled,
-            (universe) => {
-                var shipTheirs = listShipsTheirs.itemSelected(null);
+            () => {
+                var shipTheirs = listShipsTheirs.itemSelected();
                 combat.shipsFighting[1] = shipTheirs;
-            }, universe, // context
-            false // canBeHeldDown
+            }, false // canBeHeldDown
             ),
             new ControlButton("buttonRandomTheirs", Coords.fromXY(marginSize.x * 4 + buttonSizeSelect.x * 3, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, "Random", fontHeight, true, // hasBorder
             DataBinding.fromContextAndGet(combat, (c) => c.ship1HasNotBeenSelected()), // isEnabled,
-            (universe) => {
+            () => {
                 var shipGroupIndex = 1;
                 var shipGroup = combat.shipGroups[shipGroupIndex];
                 var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
                 combat.shipsFighting[shipGroupIndex] = ship;
                 listShipsTheirs._itemSelected = null;
-            }, universe, // context
-            false // canBeHeldDown
+            }, false // canBeHeldDown
             ),
             new ControlButton("buttonFight", Coords.fromXY(marginSize.x, size.y - marginSize.y - buttonSizeFight.y), buttonSizeFight, "Fight", fontHeight, true, // hasBorder
             DataBinding.fromContextAndGet(combat, (c) => c.shipsHaveBeenSelected()), // isEnabled,
-            (universe) => {
+            () => {
                 var shipYours = combat.shipsFighting[0];
                 var shipTheirs = combat.shipsFighting[1];
                 if (shipYours != null && shipTheirs != null) {
                     combat.start(universe);
                 }
-            }, universe, // context
-            false // canBeHeldDown
+            }, false // canBeHeldDown
             ),
         ]);
         return returnValue;

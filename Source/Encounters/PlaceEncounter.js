@@ -1,7 +1,10 @@
 "use strict";
 class PlaceEncounter extends Place {
     constructor(world, encounter) {
-        super(PlaceEncounter.name, PlaceEncounter.name, null, new Array());
+        super(PlaceEncounter.name, PlaceEncounter.name, null, // parentName
+        null, // size
+        null // entities
+        );
         this.encounter = encounter;
     }
     // methods
@@ -26,26 +29,17 @@ class PlaceEncounter extends Place {
         var faction = this.encounter.faction(world);
         var conversationDefnName = faction.conversationDefnName;
         var conversationResourceName = "Conversation-" + conversationDefnName;
-        var mediaLibrary = universe.mediaLibrary;
-        var conversationDefnAsJSON = mediaLibrary.textStringGetByName(conversationResourceName).value;
-        var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-        var contentTextStringName = conversationDefn.contentTextStringName;
-        if (contentTextStringName != null) {
-            var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
-            conversationDefn.expandFromContentTextString(contentTextString);
-        }
         var venueToReturnTo = universe.venueCurrent;
-        var conversation = new ConversationRun(conversationDefn, () => // quit
-         {
+        var conversationQuit = () => {
             encounter.returnToPlace(world);
             universe.venueNext = venueToReturnTo;
-        }, null, // universe
-        null // ?
-        );
-        var conversationSize = universe.display.sizeDefault().clone();
-        var conversationAsControl = conversation.toControl(conversationSize, universe);
-        var venueNext = VenueControls.fromControl(conversationAsControl);
-        universe.venueNext = venueNext;
+        };
+        var entityTalker = encounter.entityOther;
+        var talker = entityTalker.talker();
+        talker.conversationDefnName = conversationResourceName;
+        talker.quit = conversationQuit;
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, this, entityTalker, null);
+        talker.talk(uwpe);
     }
     // Place
     draw(universe, world) {
@@ -54,29 +48,30 @@ class PlaceEncounter extends Place {
             this.venueControls.draw(universe);
         }
     }
-    updateForTimerTick(universe, worldAsWorld) {
-        var world = worldAsWorld;
-        super.updateForTimerTick(universe, world);
+    updateForTimerTick(uwpe) {
+        var universe = uwpe.universe;
+        super.updateForTimerTick(uwpe);
         if (this.venueControls == null) {
             var encounter = this.encounter;
-            var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
-            var shipGroupOtherDescription = shipGroupOther.toStringDescription();
-            var newline = "\n";
-            var messageToShow = "Encounter" + newline
-                + "with " + shipGroupOtherDescription + newline
-                + "near " + encounter.planet.name;
             var factionName = encounter.factionName;
+            var world = uwpe.world;
             var worldDefn = world.defnExtended();
             var faction = worldDefn.factionByName(factionName);
             if (faction.talksImmediately) {
                 this.talk(universe);
                 return; // hack
             }
+            var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
+            var shipGroupOtherDescription = shipGroupOther.toStringDescription();
+            var newline = "\n";
+            var messageToShow = "Encounter" + newline
+                + "with " + shipGroupOtherDescription + newline
+                + "near " + encounter.planet.name;
             var choiceNames = ["Talk"];
-            var choiceActions = [this.talk.bind(this)];
+            var choiceActions = [() => this.talk(universe)];
             if (faction.relationsWithPlayer == Faction.RelationsHostile) {
                 choiceNames.push("Fight");
-                choiceActions.push(this.fight);
+                choiceActions.push(() => this.fight(universe));
             }
             var controlRoot = universe.controlBuilder.choice(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), choiceNames, choiceActions, null // ?
             );

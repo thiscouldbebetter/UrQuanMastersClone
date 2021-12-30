@@ -11,7 +11,10 @@ class Player {
         this.vars = this.variableLookup;
     }
     static activityDefn() {
-        return new ActivityDefn("AcceptUserInput", (universe, world, place, entity) => {
+        return new ActivityDefn("AcceptUserInput", (uwpe) => {
+            var universe = uwpe.universe;
+            var world = uwpe.world;
+            var place = uwpe.place;
             var inputHelper = universe.inputHelper;
             var placeDefn = place.defn(world);
             var actionsByName = placeDefn.actionsByName;
@@ -19,7 +22,7 @@ class Player {
             var actionsToPerform = inputHelper.actionsFromInput(actionsByName, actionToInputsMappingsByInputName);
             for (var i = 0; i < actionsToPerform.length; i++) {
                 var action = actionsToPerform[i];
-                action.perform(universe, world, place, entity);
+                action.perform(uwpe);
             }
         });
     }
@@ -51,11 +54,11 @@ class Player {
         }
         return this._factionsKnown;
     }
-    initialize(universe, world, place, entity) {
+    initialize(uwpe) {
         var ships = this.shipGroup.ships;
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
-            ship.initialize(universe, world, place, entity);
+            ship.initialize(uwpe);
         }
     }
     shipComponentDefnsKnown() {
@@ -111,27 +114,39 @@ class Player {
         containerFlagshipSize, 
         // children
         [
-            new ControlLabel("labelFlagship", Coords.fromXY(containerFlagshipSize.x / 2, labelSize.y), labelSize, true, // isTextCentered,
-            flagship.name, fontHeight),
-            new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, false, // isTextCentered
-            "Crew:", fontHeight),
-            new ControlLabel("infoCrew", Coords.fromXY(marginSize.x * 4, labelSize.y * 2), labelSize, false, // isTextCentered
+            new ControlLabel("labelFlagship", Coords.fromXY(0, labelSize.y), // pos
+            labelSize, true, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext(flagship.name), fontHeight),
+            new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Crew:"), fontHeight),
+            new ControlLabel("infoCrew", Coords.fromXY(marginSize.x * 4, labelSize.y * 2), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(flagship, (c) => c.crewCurrentOverMax()), fontHeight),
-            new ControlLabel("labelFuel", Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, false, // isTextCentered
-            "Fuel:", fontHeight),
-            new ControlLabel("infoFuel", Coords.fromXY(marginSize.x * 4, labelSize.y * 3), labelSize, false, // isTextCentered
+            new ControlLabel("labelFuel", Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Fuel:"), fontHeight),
+            new ControlLabel("infoFuel", Coords.fromXY(marginSize.x * 4, labelSize.y * 3), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(flagship, (c) => c.fuelCurrentOverMax()), fontHeight),
-            new ControlLabel("labelLanders", Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, false, // isTextCentered
-            "Landers:", fontHeight),
-            new ControlLabel("infoLanders", Coords.fromXY(marginSize.x * 6, labelSize.y * 4), labelSize, false, // isTextCentered
-            DataBinding.fromContextAndGet(flagship, (c) => c.numberOfLanders), fontHeight),
-            new ControlLabel("labelCargo", Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, false, // isTextCentered
-            "Cargo:", fontHeight),
-            new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, labelSize.y * 5), labelSize, false, // isTextCentered
+            new ControlLabel("labelLanders", Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Landers:"), fontHeight),
+            new ControlLabel("infoLanders", Coords.fromXY(marginSize.x * 6, labelSize.y * 4), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContextAndGet(flagship, (c) => "" + c.numberOfLanders), fontHeight),
+            new ControlLabel("labelCargo", Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Cargo:"), fontHeight),
+            new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, labelSize.y * 5), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax()), fontHeight),
-            new ControlLabel("labelPosition", Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, false, // isTextCentered
-            "Pos:", fontHeight),
-            new ControlLabel("infoPosition", Coords.fromXY(marginSize.x * 5, labelSize.y * 6), labelSize, false, // isTextCentered
+            new ControlLabel("labelPosition", Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Pos:"), fontHeight),
+            new ControlLabel("infoPosition", Coords.fromXY(marginSize.x * 5, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(this.shipGroup, (c) => c.toStringPosition(world)), fontHeight),
         ]);
         /*

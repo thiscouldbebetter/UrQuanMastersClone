@@ -1,8 +1,9 @@
 "use strict";
 class Encounter {
-    constructor(planet, factionName, entityOther, placeToReturnTo, posToReturnTo) {
+    constructor(planet, factionName, entityPlayer, entityOther, placeToReturnTo, posToReturnTo) {
         this.planet = planet;
         this.factionName = factionName;
+        this.entityPlayer = entityPlayer;
         this.entityOther = entityOther;
         this.placeToReturnTo = placeToReturnTo;
         this.posToReturnTo = posToReturnTo;

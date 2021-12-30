@@ -1,0 +1,97 @@
+{
+    "name": "EarthStation",
+    "imageName": "Conversation-EarthStation",
+    "talkNodes": [
+
+{ "defnName": "VariableLoad", "content": "IsAllied", "next": "u.world.defn.factionByName('Terran').relationsWithPlayer == Faction.RelationsAllied" },
+{ "defnName": "JumpIfTrue", "content": "IsAllied", "next": "WhatCanWeDoForYouToday" },
+
+{ "defnName": "VariableLoad", "content": "RadioactivesDelivered", "next": "u.world.player.vars.get('RadioactivesDelivered')" },
+{ "defnName": "JumpIfTrue", "content": "RadioactivesDelivered", "next": "WhatCanWeDoForYouToday" },
+
+{ "defnName": "VariableLoad", "content": "RadioactivesRequested", "next": "u.world.player.vars.get('RadioactivesRequested')" },
+{ "defnName": "JumpIfTrue", "content": "RadioactivesRequested", "next": "YoureBack" },
+
+{ "defnName": "Display", "name": "#(ARE_YOU_THE_RESUPPLY_SHIP)"},
+{ "defnName": "Option", "next": "#(WE_NEED_RADIOACTIVES)", "content": "We're not the resupply ship." },
+{ "defnName": "Option", "next": "#(WE_NEED_RADIOACTIVES)", "content": "Yes, we're the resupply ship." },
+{ "defnName": "Prompt", "content": true },
+
+{ "name": "#(WE_NEED_RADIOACTIVES)", "defnName": "Display" },
+{ "defnName": "VariableSet", "content": "RadioactivesRequested", "next": "true" },
+{ "defnName": "VariableStore", "content": "RadioactivesRequested", "next": "u.world.player.vars.set('RadioactivesRequested',[value])" },
+{ "name": "RadioactivesPlease", "defnName": "Option", "next": "#(PLEASE_JUST_BRING_US_RADIOACTIVES)", "content": "We're leaving now to find the fuel you need." },
+{ "defnName": "Option", "next": "#(PLEASE_JUST_BRING_US_RADIOACTIVES)", "content": "We aren't running any errands for beggars." },
+{ "defnName": "Option", "next": "Radioactives.Transfer", "content": "[Transfer the radioactives.]", "isDisabled":"u.world.player.flagship.itemHolder.hasItemWithDefnName('Radioactives') == false" },
+{ "defnName": "Prompt", "content": true },
+
+{ "name": "#(PLEASE_JUST_BRING_US_RADIOACTIVES)", "defnName": "Display" },
+{ "defnName": "Quit" },
+
+{ "name": "YoureBack", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(HAVE_YOU_BROUGHT_THE_RADIOACTIVES)" },
+{ "defnName": "Option", "next": "Radioactives.Yes", "content": "Yes." },
+{ "defnName": "Option", "next": "Radioactives.No", "content": "No." },
+{ "defnName": "Prompt", "content": true },
+{ "name": "Radioactives.No", "defnName": "DoNothing" },
+{ "defnName": "Display", "content": "#(HURRY_UP_WITH_THE_RADIOACTIVES)" },
+{ "defnName": "Quit" },
+{ "name": "Radioactives.Yes", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(IF_YOU_HAVE_RADIOACTIVES_TRANSFER_THEM)" },
+{ "defnName": "Goto", "next": "Radioactives.Transfer" },
+
+{ "name": "Radioactives.Transfer", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(RADIOACTIVES_RECEIVED_SYSTEMS_RESTORED_WHO_ARE_YOU_REALLY)" },
+{ "defnName": "VariableSet", "content": "RadioactivesDelivered", "next": "true" },
+{ "defnName": "VariableStore", "content": "RadioactivesDelivered", "next": "u.world.player.vars.get('RadioactivesDelivered')" },
+{ "defnName": "Option", "next": "ImFromTheCoalition", "content": "I'm from the Freedom Coalition." },
+{ "defnName": "Option", "next": "NeverMindWhoIAm", "content": "Never mind who I am.  You promised me your help." },
+{ "defnName": "Prompt", "content": true },
+
+{ "name": "ImFromTheCoalition", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(THE_COALITION_DOESNT_EXIST_ANYMORE)" },
+{ "defnName": "Option", "next": "Shipwrecked", "content": "We got shipwrecked during the war, and have been hiding out." },
+{ "defnName": "Prompt", "content": true },
+
+{ "name": "Shipwrecked", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(WHAT_ARE_YOU_DOING_HERE_NOW)" },
+{ "defnName": "Option", "next": "NewShip", "content": "We recently built--well, found, really--this ship." },
+{ "defnName": "Prompt", "content": true },
+
+{ "name": "NewShip", "defnName": "DoNothing" },
+{ "defnName": "Display", "content": "#(WHAT_DO_YOU_WANT_FROM_US)" },
+{ "defnName": "Option", "next": "FightTheLahkemup", "content": "I want you to help me bring down the Lahk-emup Empire." },
+{ "defnName": "Prompt", "content": true },
+
+{ "name": "FightTheLahkemup", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(YOU_NEED_MORE_THAN_ONE_SHIP)" },
+
+{ "name": "NeverMindWhoIAm", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(I_GUESS_WE_OWE_YOU)" },
+
+{ "defnName": "Display", "name": "#(HOW_CAN_WE_HELP)" },
+{ "defnName": "Script", "content": "u.world.defn.factionByName('Terran').relationsWithPlayer = Faction.RelationsAllied" },
+{ "defnName": "Display", "name": "#(THIS_STATION_OFFERS_THESE_SERVICES)" },
+
+{ "name": "WhatCanWeDoForYouToday", "defnName": "Display", "content": "What can we do for you today, captain?" },
+{ "defnName": "Option", "next": "Docks", "content": "I have some raw materials for processing." },
+{ "defnName": "Option", "next": "Docks", "content": "I'd like to buy some fuel." },
+{ "defnName": "Option", "next": "Docks", "content": "I'd like to get my ship refitted." },
+{ "defnName": "Option", "next": "Docks", "content": "I'd like to hire some crew." },
+{ "defnName": "Option", "next": "Information", "content": "I'd like some information, please." },
+{ "defnName": "Option", "next": "Goodbye", "content": "Nothing, commander.  See you later." },
+{ "defnName": "Prompt" },
+
+{ "name":"Docks", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(VISIT_THE_DOCKS)" },
+{ "defnName": "Prompt" },
+
+{ "name":"Information", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(I_HAVE_NO_INFORMATION_RIGHT_NOW)" },
+{ "defnName": "Prompt" },
+
+{ "name": "Goodbye", "defnName": "DoNothing" },
+{ "defnName": "Display", "name": "#(GOODBYE)" },
+{ "defnName": "Quit" }
+    ]
+}

@@ -21,7 +21,8 @@ class VisualWrapped {
         return this; // todo
     }
     // Visual.
-    draw(universe, world, place, entity, display) {
+    draw(uwpe, display) {
+        var entity = uwpe.entity;
         var drawablePos = entity.locatable().loc.pos;
         this._posSaved.overwriteWith(drawablePos);
         var tilePos = this._tilePos;
@@ -30,7 +31,7 @@ class VisualWrapped {
             for (var x = -1; x <= 1; x++) {
                 tilePos.x = x;
                 drawablePos.add(this._offset.overwriteWith(this.sizeToWrapTo).multiply(tilePos));
-                this.child.draw(universe, world, place, entity, display);
+                this.child.draw(uwpe, display);
                 drawablePos.overwriteWith(this._posSaved);
             }
         }

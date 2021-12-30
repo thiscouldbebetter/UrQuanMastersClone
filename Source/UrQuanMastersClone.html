@@ -12,6 +12,7 @@
 <script type="text/javascript" src="Framework/Source/Controls/ControlBase.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlButton.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlColorScheme.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlContainer.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlContainerTransparent.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlLabel.js"></script>
@@ -70,6 +71,8 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_FrictionDry.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_FrictionXY.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_SpeedMaxXY.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_TrimToPlaceSize.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeXTrimY.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Arc.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Box.js"></script>
@@ -92,9 +95,9 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Sphere.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Wedge.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/Map.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapCell.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapLocated.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapOfCells.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 
@@ -110,6 +113,7 @@
 <script type="text/javascript" src="Framework/Source/Input/Input.js"></script>
 <script type="text/javascript" src="Framework/Source/Input/InputHelper.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Media/Audible.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Font.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Image.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/MediaLibrary.js"></script>
@@ -123,11 +127,14 @@
 
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/EntityGenerator.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Modellable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Playable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Universe.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/UniverseWorldPlaceEntities.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/VenueWorld.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/World.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/WorldCreator.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/WorldDefn.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Actors/Action.js"></script>
@@ -135,6 +142,7 @@
 <script type="text/javascript" src="Framework/Source/Model/Actors/ActivityDefn.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Actors/Actor.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Model/Combat/Damage.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Combat/Damager.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Combat/Killable.js"></script>
 
@@ -173,6 +181,7 @@
 
 <script type="text/javascript" src="Framework/Source/Utility/DateTime.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/Debug.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/DiceRoll.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/IDHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/PlatformHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/RandomizerSystem.js"></script>
@@ -187,13 +196,11 @@
 <script type="text/javascript" src="Combat/Combat.js"></script>
 <script type="text/javascript" src="Combat/PlaceCombat.js"></script>
 
-<script type="text/javascript" src="Encounters/ConversationRun.js"></script>
 <script type="text/javascript" src="Encounters/Encounter.js"></script>
 <script type="text/javascript" src="Encounters/Faction.js"></script>
 <script type="text/javascript" src="Encounters/PlaceEncounter.js"></script>
 
 <script type="text/javascript" src="Helpers/CameraHelper.js"></script>
-<script type="text/javascript" src="Helpers/CollidableHelper.js"></script>
 <script type="text/javascript" src="Helpers/EntityExtensions.js"></script>
 
 <script type="text/javascript" src="Hyperspace/Fuelable.js"></script>
@@ -208,6 +215,7 @@
 <script type="text/javascript" src="Planets/Lander.js"></script>
 <script type="text/javascript" src="Planets/Lifeform.js"></script>
 <script type="text/javascript" src="Planets/LifeformDefn.js"></script>
+<script type="text/javascript" src="Planets/Mappable.js"></script>
 <script type="text/javascript" src="Planets/PlacePlanetOrbit.js"></script>
 <script type="text/javascript" src="Planets/PlacePlanetSurface.js"></script>
 <script type="text/javascript" src="Planets/Planet.js"></script>

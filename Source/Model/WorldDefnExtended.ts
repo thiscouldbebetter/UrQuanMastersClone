@@ -3,6 +3,7 @@ class WorldDefnExtended extends WorldDefn
 {
 	factions: Faction[];
 	lifeformDefns: LifeformDefn[];
+	resourceDefns: ResourceDefn[];
 	shipDefns: ShipDefn[];
 
 	factionsByName: Map<string,Faction>;
@@ -11,12 +12,23 @@ class WorldDefnExtended extends WorldDefn
 
 	constructor
 	(
-		activityDefns: ActivityDefn[], factions: Faction[],
-		lifeformDefns: LifeformDefn[], placeDefns: PlaceDefn[],
+		activityDefns: ActivityDefn[],
+		factions: Faction[],
+		lifeformDefns: LifeformDefn[],
+		placeDefns: PlaceDefn[],
+		resourceDefns: ResourceDefn[],
 		shipDefns: ShipDefn[]
 	)
 	{
-		super( [ activityDefns, factions, lifeformDefns, placeDefns, shipDefns ] );
+		super
+		(
+			null, // actions
+			activityDefns,
+			null,
+			resourceDefns.map(x => x.toItemDefn()),
+			placeDefns,
+			null
+		);
 
 		this.factions = factions;
 		this.lifeformDefns = lifeformDefns;

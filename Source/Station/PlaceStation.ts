@@ -15,7 +15,14 @@ class PlaceStation extends Place
 		placePlanetVicinity: PlacePlanetVicinity
 	)
 	{
-		super(PlaceStation.name, PlaceStation.name, null, []);
+		super
+		(
+			PlaceStation.name,
+			PlaceStation.name,
+			null, // parentName
+			null, // size
+			null // entities
+		);
 		this.station = station;
 		this.placePlanetVicinity = placePlanetVicinity;
 	}
@@ -51,7 +58,7 @@ class PlaceStation extends Place
 		var playerLocNext = Disposition.fromPos(playerPosNext);
 		var placeNext = new PlacePlanetVicinity
 		(
-			world, size, planet, playerLocNext, placePrev.placeStarsystem
+			world, planet, playerLocNext, placePrev.placeStarsystem
 		);
 		world.placeNext = placeNext;
 	}
@@ -59,28 +66,25 @@ class PlaceStation extends Place
 	talk(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var size = universe.display.sizeInPixels;
 		var placeStation = world.placeCurrent as PlaceStation;
 		var factionName = this.station.factionName;
 		var faction = world.defnExtended().factionByName(factionName);
 		var conversationDefnName = faction.conversationDefnName;
 		var conversationResourceName = "Conversation-" + conversationDefnName;
-		var conversationDefnAsJSON =
-			universe.mediaLibrary.textStringGetByName(conversationResourceName).value;
-		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-		var conversation = new ConversationRun
-		(
-			conversationDefn,
-			() => // quit
-			{
-				world.placeCurrent = placeStation.placePlanetVicinity;
-				universe.venueNext = new VenueWorld(world);
-			},
-			null, // ?
-			null // ?
-		);
-		var conversationAsControl = conversation.toControl(size, universe);
-		universe.venueNext = new VenueControls(conversationAsControl, null);
+
+		var conversationQuit = () =>
+		{
+			world.placeCurrent = placeStation.placePlanetVicinity;
+			universe.venueNext = new VenueWorld(world);
+		};
+
+		var stationEntity = placeStation.entityByName(Station.name);
+		var talker = stationEntity.talker();
+		talker.conversationDefnName = conversationResourceName;
+		talker.quit = conversationQuit;
+
+		var uwpe = new UniverseWorldPlaceEntities(universe, world, this, stationEntity, null);
+		talker.talk(uwpe);
 	}
 
 	// Place
@@ -91,9 +95,12 @@ class PlaceStation extends Place
 		this.venueControls.draw(universe);
 	}
 
-	updateForTimerTick(universe: Universe, world: World): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		super.updateForTimerTick(universe, world);
+		super.updateForTimerTick(uwpe.placeSet(this));
+
+		var universe = uwpe.universe;
+
 		if (this.venueControls == null)
 		{
 			var messageToShow = "[Station]";
@@ -106,17 +113,17 @@ class PlaceStation extends Place
 				DataBinding.fromContext(messageToShow),
 				[ "Talk", "Dock", "Leave", ],
 				[
-					(universe: Universe) => // talk
+					() => // talk
 					{
 						placeStation.talk(universe);
 					},
 
-					(universe: Universe) => // dock
+					() => // dock
 					{
 						placeStation.dock(universe);
 					},
 
-					(universe: Universe) => // leave
+					() => // leave
 					{
 						placeStation.leave(universe);
 					}

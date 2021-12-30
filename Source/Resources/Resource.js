@@ -16,17 +16,19 @@ class Resource {
         ], null);
         var resourceRadius = resourceRadiusBase * Math.sqrt(resourceQuantity);
         var resourceVisual = new VisualCircleGradient(resourceRadius, resourceGradient, null);
+        var resourceVisualOnMinimap = new VisualCircleGradient(resourceRadius / 2, resourceGradient, null);
         var camera = place.camera();
         if (camera != null) {
             resourceVisual = new VisualWrapped(place.planet.sizeSurface, resourceVisual);
         }
         var resourcePos = resource.pos;
-        var resourceCollider = new Sphere(new Coords(0, 0, 0), resourceRadius);
+        var resourceCollider = new Sphere(Coords.zeroes(), resourceRadius);
         var resourceEntity = new Entity("Resource" + Math.random(), [
             new Item(resourceDefnName, resourceQuantity),
             Locatable.fromPos(resourcePos),
-            CollidableHelper.fromCollider(resourceCollider),
-            Drawable.fromVisual(resourceVisual)
+            Collidable.fromCollider(resourceCollider),
+            Drawable.fromVisual(resourceVisual),
+            new Mappable(resourceVisualOnMinimap)
         ]);
         return resourceEntity;
     }

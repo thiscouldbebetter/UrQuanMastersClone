@@ -4,7 +4,7 @@
     "contentTextStringName": "Conversation-Placeholder-Content",
     "talkNodes": [
 
-{ "defnName": "Display", "text": "#(PLACEHOLDER)"},
+{ "defnName": "Display", "name": "#(PLACEHOLDER)", "content": "[placeholder]" },
 
 { "defnName": "Quit" }
 

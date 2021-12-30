@@ -5,15 +5,19 @@ class Ship {
     }
     // static methods
     static actionAccelerate() {
-        return new Action("Accelerate", (universe, worldAsWorld, place, actor) => {
-            var world = worldAsWorld;
+        return new Action("Accelerate", (uwpe) => {
+            var world = uwpe.world;
+            var actor = uwpe.entity;
             var ship = EntityExtensions.ship(actor);
             ship.accelerate(world, actor);
         });
     }
     static actionFire() {
-        var returnValue = new Action("Fire", (universe, worldAsWorld, place, actor) => {
-            var world = worldAsWorld;
+        var returnValue = new Action("Fire", (uwpe) => {
+            var universe = uwpe.universe;
+            var world = uwpe.world;
+            var place = uwpe.place;
+            var actor = uwpe.entity;
             var ship = EntityExtensions.ship(actor);
             var shipDefn = ship.defn(world);
             var attackDefn = shipDefn.attackDefn;
@@ -25,8 +29,11 @@ class Ship {
         return returnValue;
     }
     static actionSpecial() {
-        var returnValue = new Action("Special", (universe, worldAsWorld, place, actor) => {
-            var world = worldAsWorld;
+        var returnValue = new Action("Special", (uwpe) => {
+            var universe = uwpe.universe;
+            var world = uwpe.world;
+            var place = uwpe.place;
+            var actor = uwpe.entity;
             var ship = EntityExtensions.ship(actor);
             var shipDefn = ship.defn(world);
             var specialDefn = shipDefn.specialDefn;
@@ -38,19 +45,24 @@ class Ship {
         return returnValue;
     }
     static actionShowMenu() {
-        return new Action("ShowMenu", (universe, world, place, actor) => {
+        return new Action("ShowMenu", (uwpe) => {
+            var universe = uwpe.universe;
             var venueNext = VenueControls.fromControl(universe.controlBuilder.gameAndSettings1(universe));
             venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
             universe.venueNext = venueNext;
         });
     }
     static actionTurnLeft() {
-        return new Action("TurnLeft", (universe, world, place, actor) => {
+        return new Action("TurnLeft", (uwpe) => {
+            var world = uwpe.world;
+            var actor = uwpe.entity;
             EntityExtensions.ship(actor).turnLeft(world, actor);
         });
     }
     static actionTurnRight() {
-        return new Action("TurnRight", (universe, world, place, actor) => {
+        return new Action("TurnRight", (uwpe) => {
+            var world = uwpe.world;
+            var actor = uwpe.entity;
             EntityExtensions.ship(actor).turnRight(world, actor);
         });
     }
@@ -89,9 +101,9 @@ class Ship {
     static actionToInputsMappings() {
         var returnValues = [
             new ActionToInputsMapping("ShowMenu", ["Escape"], null),
-            new ActionToInputsMapping("TurnLeft", ["ArrowLeft", "Gamepad0Left"], null),
-            new ActionToInputsMapping("TurnRight", ["ArrowRight", "Gamepad0Right"], null),
-            new ActionToInputsMapping("Accelerate", ["ArrowUp", "Gamepad0Up"], null),
+            new ActionToInputsMapping("TurnLeft", ["a", "ArrowLeft", "Gamepad0Left"], null),
+            new ActionToInputsMapping("TurnRight", ["d", "ArrowRight", "Gamepad0Right"], null),
+            new ActionToInputsMapping("Accelerate", ["w", "ArrowUp", "Gamepad0Up"], null),
         ]; //.addLookupsMultiple(function(x) { return x.inputNames; } );
         return returnValues;
     }
@@ -122,15 +134,20 @@ class Ship {
         return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
     }
     // EntityProperty.
-    finalize(universe, world, place, entityShip) { }
-    initialize(universe, world, place, entityShip) {
+    finalize(uwpe) {
+        // Do nothing.
+    }
+    initialize(uwpe) {
+        var world = uwpe.world;
         var defn = this.defn(world);
         if (this.crew == null) {
             this.crew = defn.crewMax;
             this.energy = defn.energyMax;
         }
     }
-    updateForTimerTick(universe, world, place, entityShip) {
+    updateForTimerTick(uwpe) {
+        var world = uwpe.world;
+        var entityShip = uwpe.entity;
         var ship = EntityExtensions.ship(entityShip);
         var shipDefn = ship.defn(world);
         ship.energy += shipDefn.energyPerTick;
@@ -186,22 +203,29 @@ class Ship {
         var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, [
             new ControlLabel("labelName", Coords.fromXY(containerShipSize.x / 2, marginSize.y + labelSizeShort.y / 2), // pos
             labelSizeShort, true, // isTextCentered
-            defn.factionName, fontHeightShort),
+            false, // isTextCenteredVertically
+            DataBinding.fromContext(defn.factionName), fontHeightShort),
             new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos
             labelSizeShort, false, // isTextCentered
-            "Crew:", fontHeightShort),
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Crew:"), fontHeightShort),
             new ControlLabel("infoCrew", Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 2 + labelSizeShort.y), // pos
             labelSizeShort, false, // isTextCentered
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(ship, (c) => c.crewCurrentOverMax(world)), fontHeightShort),
             new ControlLabel("labelEnergy", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
             labelSizeShort, false, // isTextCentered
-            "Energy:", fontHeightShort),
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Energy:"), fontHeightShort),
             new ControlLabel("infoEnergy", Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
             labelSizeShort, false, // isTextCentered
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(ship, (c) => c.energyCurrentOverMax(world)), fontHeightShort),
         ]);
         return returnValue;
     }
+    // Equatable.
+    equals(other) { return false; }
 }
 // temporary variables
 Ship._polar = Polar.create();

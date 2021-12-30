@@ -1,24 +1,24 @@
 
-class Fuelable implements EntityProperty
+class Fuelable implements EntityPropertyBase
 {
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	updateForTimerTick
-	(
-		universe: Universe, world: World, place: Place, entityFuelable: Entity
-	): void
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var world = uwpe.world as WorldExtended;
+		var entityFuelable = uwpe.entity;
+
 		var entityLoc = entityFuelable.locatable().loc;
 		var entityVel = entityLoc.vel;
 		var entitySpeed = entityVel.magnitude();
 		var fuelConsumedPerSpeed = .1;
 		if (entitySpeed > 0)
 		{
-			var flagship = (world as WorldExtended).player.flagship;
+			var flagship = world.player.flagship;
 			var fuelToConsume = entitySpeed * fuelConsumedPerSpeed;
 			if (flagship.fuel >= fuelToConsume)
 			{
@@ -30,4 +30,8 @@ class Fuelable implements EntityProperty
 			}
 		}
 	}
+
+	// Equatable.
+
+	equals(other: Fuelable): boolean { return false; }
 }

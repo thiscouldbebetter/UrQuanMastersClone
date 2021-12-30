@@ -1,5 +1,5 @@
 
-class ShipGroup implements EntityProperty
+class ShipGroup implements EntityPropertyBase
 {
 	name: string;
 	factionName: string;
@@ -22,25 +22,53 @@ class ShipGroup implements EntityProperty
 	{
 		return new ActivityDefn
 		(
-			"ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform
+			"Ship_ApproachPlayer",
+			ShipGroup.activityDefnApproachPlayer_Perform
 		);
 	}
 
 	static activityDefnApproachPlayer_Perform
 	(
-		universe: Universe, world: World, place: Place, entityActor: Entity
+		uwpe: UniverseWorldPlaceEntities
 	): void
 	{
+		var entityActor = uwpe.entity;
+
 		var actor = entityActor.actor();
 
-		var targetPos = actor.activity.target() as Coords;
-		if (targetPos == null)
+		var targetEntity = actor.activity.targetEntity();
+		if (targetEntity == null)
 		{
+			var place = uwpe.place;
 			var entityToTargetName = Player.name;
-			var target = place.entitiesByName.get(entityToTargetName);
-			targetPos = target.locatable().loc.pos;
-			actor.activity.targetSet(targetPos);
+			targetEntity = place.entitiesByName.get(entityToTargetName);
+			actor.activity.targetEntitySet(targetEntity);
 		}
+
+		ShipGroup.activityDefnApproachTarget_Perform(uwpe);
+	}
+
+	static activityDefnApproachTarget(): ActivityDefn
+	{
+		return new ActivityDefn
+		(
+			"Ship_ApproachTarget",
+			ShipGroup.activityDefnApproachTarget_Perform
+		);
+	}
+
+	static activityDefnApproachTarget_Perform
+	(
+		uwpe: UniverseWorldPlaceEntities
+	): void
+	{
+		var entityActor = uwpe.entity;
+
+		var actor = entityActor.actor();
+
+		var targetEntity = actor.activity.targetEntity();
+
+		var targetPos = targetEntity.locatable().loc.pos;
 
 		var actorLoc = entityActor.locatable().loc;
 		var actorPos = actorLoc.pos;
@@ -69,8 +97,8 @@ class ShipGroup implements EntityProperty
 		return new ActivityDefn
 		(
 			"Die",
-			(u: Universe, w: World, p: Place, e: Entity) =>
-				e.killable().integrityAdd(-10000)
+			(uwpe: UniverseWorldPlaceEntities) =>
+				uwpe.entity.killable().kill()
 		);
 	}
 
@@ -84,33 +112,44 @@ class ShipGroup implements EntityProperty
 
 	static activityDefnLeave_Perform
 	(
-		universe: Universe, world: World, place: Place, entityActor: Entity
+		uwpe: UniverseWorldPlaceEntities
 	): void
 	{
+		var entityActor = uwpe.entity;
 		var actor = entityActor.actor();
-
-		var targetPos = new Coords(100000, 0, 0);
-		actor.activity.targetSet(targetPos);
-
 		var actorLoc = entityActor.locatable().loc;
+		var actorPlace = actorLoc.place(uwpe.world);
 		var actorPos = actorLoc.pos;
-		var actorVel = actorLoc.vel;
+		var activity = actor.activity;
+		var entityTarget = activity.targetEntity();
 
-		actorVel.overwriteWith
-		(
-			targetPos
-		).subtract
-		(
-			actorPos
-		);
-
-		if (actorVel.magnitude() < 1)
+		var targetPos: Coords;
+		if (entityTarget == null)
 		{
-			actorPos.overwriteWith(targetPos);
+			var actorForward = actorLoc.orientation.forward;
+			var placeSize = actorPlace.size;
+			targetPos = actorPos.clone().add
+			(
+				actorForward.clone().multiply(placeSize)
+			);
+			entityTarget = Locatable.fromPos(targetPos).toEntity();
 		}
 		else
 		{
-			actorVel.normalize();
+			targetPos = entityTarget.locatable().loc.pos;
+		}
+
+		var displacementToTarget = targetPos.clone().subtract(actorPos);
+		var distanceToTarget = displacementToTarget.magnitude();
+		var distanceMin = 4;
+		if (distanceToTarget < distanceMin)
+		{
+			actorPos.overwriteWith(targetPos);
+			actorPlace.entityToRemoveAdd(entityActor);
+		}
+		else
+		{
+			actorLoc.vel.add(displacementToTarget.normalize()); // todo - * acceleration.
 		}
 	}
 
@@ -147,7 +186,7 @@ class ShipGroup implements EntityProperty
 
 		var shipCountsAsStrings = [];
 
-		for (var shipDefnName in shipCountsByDefnName)
+		for (var shipDefnName of shipCountsByDefnName.keys())
 		{
 			var shipCount = shipCountsByDefnName.get(shipDefnName);
 			var shipCountAsString = shipCount + " " + shipDefnName;
@@ -159,17 +198,20 @@ class ShipGroup implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(universe: Universe, world: World, place: Place, entity: Entity): void
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
 		for (var i = 0; i < this.ships.length; i++)
 		{
 			var ship = this.ships[i];
-			ship.initialize(universe, world, place, entity);
+			ship.initialize(uwpe);
 		}
 	}
 
-	updateForTimerTick(universe: Universe, world: World, place: Place, entity: Entity): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
+	// Equatable.
+
+	equals(other: ShipGroup): boolean { return false; }
 }

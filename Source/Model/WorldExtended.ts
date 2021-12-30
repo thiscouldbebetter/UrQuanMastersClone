@@ -4,38 +4,48 @@ class WorldExtended extends World
 	name: string;
 	dateCreated: DateTime;
 	defn: WorldDefnExtended;
-	player: Player;
 	hyperspace: Hyperspace;
-	starsystemStart: Starsystem;
+	factions: Faction[];
+	player: Player;
+
+	factionsByName: Map<string, Faction>;
 
 	constructor
 	(
 		name: string,
 		dateCreated: DateTime,
 		defn: WorldDefnExtended,
-		player: Player,
 		hyperspace: Hyperspace,
+		factions: Faction[],
+		player: Player,
 		starsystemStart: Starsystem
 	)
 	{
-		super(name, dateCreated, defn, []);
+		super
+		(
+			name,
+			dateCreated,
+			defn,
+			[] // places
+		);
 
 		this.timerTicksSoFar = 0;
 
-		this.player = player;
 		this.hyperspace = hyperspace;
+		this.factions = factions;
+		this.player = player;
 
-		this.placeCurrent = new PlaceStarsystem
+		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
+
+		this.placeCurrent = starsystemStart.toPlace
 		(
-			this,
-			starsystemStart,
-			new Disposition
+			this, // world
+			Disposition.fromPosAndOrientation
 			(
 				Coords.fromXY(.5, .95).multiply(starsystemStart.sizeInner),
 				new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1)),
-				null
 			),
-			null
+			null // planet?
 		);
 		//this.place.entitiesSpawn(null, this);
 	}
@@ -45,13 +55,17 @@ class WorldExtended extends World
 		var now = DateTime.now();
 		var nowAsString = now.toStringMMDD_HHMM_SS();
 
-		// todo
 		var activityDefns =
 		[
 			Player.activityDefn(),
+			Lifeform.activityDefnApproachPlayer(),
 			ShipGroup.activityDefnApproachPlayer(),
+			ShipGroup.activityDefnApproachTarget(),
+			Lifeform.activityDefnAvoidPlayer(),
 			ShipGroup.activityDefnDie(),
-			ShipGroup.activityDefnLeave()
+			Lifeform.activityDefnDoNothing(),
+			ShipGroup.activityDefnLeave(),
+			Lifeform.activityDefnMoveToRandomPosition()
 		];
 
 		var actions = Ship.actions();
@@ -60,6 +74,8 @@ class WorldExtended extends World
 		var entityPropertyNamesToProcess = 
 		[
 			Actor.name,
+			Damager.name,
+			Ephemeral.name,
 			Playable.name,
 
 			Locatable.name,
@@ -77,7 +93,7 @@ class WorldExtended extends World
 			PlaceDefn.from4(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
 			PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-			PlaceDefn.from4(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			PlaceDefn.from4(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
 			PlaceDefn.from4(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlaceStarsystem.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlaceStation.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
@@ -92,7 +108,7 @@ class WorldExtended extends World
 			"Terran",
 			null, // nameOriginal
 			null, // color
-			Faction.RelationsAllied, // todo
+			Faction.RelationsNeutral, // todo
 			true, // talksImmediately
 			"EarthStation", // conversationDefnName
 			null, // sphereOfInfluence
@@ -202,9 +218,16 @@ class WorldExtended extends World
 
 		var lifeformDefns = LifeformDefn.Instances()._All;
 
+		var resourceDefns = ResourceDefn.Instances()._All;
+
 		var defn = new WorldDefnExtended
 		(
-			activityDefns, factions, lifeformDefns, placeDefns, shipDefns
+			activityDefns,
+			factions,
+			lifeformDefns,
+			placeDefns,
+			resourceDefns,
+			shipDefns
 		);
 
 		var mediaLibrary = universe.mediaLibrary;
@@ -279,10 +302,12 @@ class WorldExtended extends World
 			"World-" + nowAsString,
 			now, // dateCreated
 			defn,
-			player,
 			hyperspace,
+			factions,
+			player,
 			starsystemStart
 		);
+
 		return returnValue;
 	}
 
@@ -298,22 +323,65 @@ class WorldExtended extends World
 		this.placeCurrent.draw(universe, universe.world, universe.display);
 	}
 
-	initialize(universe: Universe): void
+	factionByName(factionName: string): Faction
 	{
-		this.placeCurrent.initialize(universe, this);
+		return this.factionsByName.get(factionName);
 	}
 
-	updateForTimerTick(universe: Universe): void
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
+		this.placeCurrent.initialize(uwpe.worldSet(this));
+	}
+
+	placeByName(placeName: string): Place
+	{
+		var returnPlace: Place;
+
+		var placeNameParts = placeName.split(":");
+		var placeTypeName = placeNameParts[0];
+		var placeNameActual = placeNameParts[1];
+		if (placeTypeName == PlaceHyperspace.name)
+		{
+			throw new Error("todo");
+		}
+		else if (placeTypeName == PlacePlanetVicinity.name)
+		{
+			var planetName = placeNameActual;
+			var starsystem = this.hyperspace.starsystems.find
+			(
+				x => x.planets.some
+				(
+					y => y.name == planetName
+				)
+			);
+			var planet = starsystem.planets.find(x => x.name == planetName);
+			returnPlace = planet.toPlace(this);
+		}
+		else if (placeTypeName == PlaceStarsystem.name)
+		{
+			throw new Error("todo");
+		}
+		else
+		{
+			throw new Error("Unrecognized place type: " + placeTypeName);
+		}
+
+		return returnPlace;
+	}
+
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
+	{
+		uwpe.worldSet(this);
+
 		if (this.placeNext != null)
 		{
-			this.placeCurrent.finalize(universe, this);
+			this.placeCurrent.finalize(uwpe);
 			this.placeCurrent = this.placeNext;
-			this.placeCurrent.initialize(universe, this);
+			this.placeCurrent.initialize(uwpe);
 			this.placeNext = null;
 		}
 
-		this.placeCurrent.updateForTimerTick(universe, this);
+		this.placeCurrent.updateForTimerTick(uwpe);
 		this.timerTicksSoFar++;
 	}
 

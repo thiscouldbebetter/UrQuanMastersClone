@@ -1,14 +1,14 @@
 
-class VisualWrapped implements Visual
+class VisualWrapped implements VisualBase
 {
 	sizeToWrapTo: Coords;
-	child: Visual;
+	child: VisualBase;
 
 	_offset: Coords;
 	_posSaved: Coords;
 	_tilePos: Coords;
 
-	constructor(sizeToWrapTo: Coords, child: Visual)
+	constructor(sizeToWrapTo: Coords, child: VisualBase)
 	{
 		this.sizeToWrapTo = sizeToWrapTo;
 		this.child = child;
@@ -18,12 +18,12 @@ class VisualWrapped implements Visual
 		this._tilePos = Coords.create();
 	}
 
-	clone(): Visual
+	clone(): VisualBase
 	{
 		return new VisualWrapped(this.sizeToWrapTo.clone(), this.child.clone());
 	}
 
-	overwriteWith(otherAsVisual: Visual): Visual
+	overwriteWith(otherAsVisual: VisualBase): VisualBase
 	{
 		var other = otherAsVisual as VisualWrapped;
 		this.sizeToWrapTo.overwriteWith(other.sizeToWrapTo);
@@ -33,15 +33,17 @@ class VisualWrapped implements Visual
 
 	// Transformable.
 
-	transform(t: Transform): Transformable
+	transform(t: TransformBase): VisualBase
 	{
 		return this; // todo
 	}
 
 	// Visual.
 
-	draw(universe: Universe, world: World, place: Place, entity: Entity, display: Display)
+	draw(uwpe: UniverseWorldPlaceEntities, display: Display)
 	{
+		var entity = uwpe.entity;
+
 		var drawablePos = entity.locatable().loc.pos;
 		this._posSaved.overwriteWith(drawablePos);
 
@@ -65,7 +67,7 @@ class VisualWrapped implements Visual
 					)
 				);
 
-				this.child.draw(universe, world, place, entity, display);
+				this.child.draw(uwpe, display);
 
 				drawablePos.overwriteWith(this._posSaved);
 			}

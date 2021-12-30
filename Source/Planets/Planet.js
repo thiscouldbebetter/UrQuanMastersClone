@@ -71,21 +71,29 @@ class Planet {
         ]);
         var collider = new Sphere(Coords.create(), this.radiusOuter);
         var returnValue = new Entity(this.name, [
-            CollidableHelper.fromCollider(collider),
+            Collidable.fromCollider(collider),
             Drawable.fromVisual(visual),
             this,
             Locatable.fromPos(pos),
         ]);
         return returnValue;
     }
+    toPlace(world) {
+        return new PlacePlanetVicinity(world, this, null, // playerLoc
+        null // placeStarsystem
+        );
+    }
     // EntityProperty.
-    finalize(universe, world, place, entity) { }
-    initialize(universe, world, place, entity) {
+    finalize(uwpe) { }
+    initialize(uwpe) {
+        var universe = uwpe.universe;
         var randomizer = universe.randomizer;
         this.mineralsGenerate(randomizer);
         this.lifeformsGenerate(randomizer);
     }
-    updateForTimerTick(universe, world, place, entity) {
+    updateForTimerTick(uwpe) {
         // Do nothing.
     }
+    // Equatable.
+    equals(other) { return false; }
 }
