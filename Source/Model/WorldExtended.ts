@@ -7,7 +7,6 @@ class WorldExtended extends World
 	hyperspace: Hyperspace;
 	factions: Faction[];
 	player: Player;
-	starsystemStart: Starsystem;
 
 	factionsByName: Map<string, Faction>;
 
@@ -56,12 +55,12 @@ class WorldExtended extends World
 		var now = DateTime.now();
 		var nowAsString = now.toStringMMDD_HHMM_SS();
 
-		// todo
 		var activityDefns =
 		[
 			Player.activityDefn(),
 			Lifeform.activityDefnApproachPlayer(),
 			ShipGroup.activityDefnApproachPlayer(),
+			ShipGroup.activityDefnApproachTarget(),
 			Lifeform.activityDefnAvoidPlayer(),
 			ShipGroup.activityDefnDie(),
 			Lifeform.activityDefnDoNothing(),

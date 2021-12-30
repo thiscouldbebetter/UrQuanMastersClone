@@ -174,25 +174,17 @@ class PlacePlanetOrbit extends Place {
                 - containerScanSize.y), containerScanSize, [
                 ControlButton.from8("buttonScanMineral", Coords.fromXY(marginSize.x, marginSize.y), buttonScanSize, "Mineral", fontHeightShort, true, // hasBorder,
                 DataBinding.fromTrue(), // isEnabled,
-                () => {
-                    placePlanetOrbit.scanMinerals(universe);
-                }),
+                () => placePlanetOrbit.scanMinerals(universe)),
                 ControlButton.from8("buttonScanLife", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y), buttonScanSize, "Life", fontHeightShort, true, // hasBorder,
                 DataBinding.fromTrue(), // isEnabled,
-                () => {
-                    placePlanetOrbit.scanLife(universe);
-                }),
+                () => placePlanetOrbit.scanLife(universe)),
                 ControlButton.from8("buttonScanEnergy", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y * 2), buttonScanSize, "Energy", fontHeightShort, true, // hasBorder,
                 DataBinding.fromTrue(), // isEnabled,
-                () => {
-                    placePlanetOrbit.scanEnergy(universe);
-                }),
+                () => placePlanetOrbit.scanEnergy(universe)),
             ]),
             ControlButton.from8("buttonLand", Coords.fromXY(marginSize.x, containerRightSize.y - marginSize.y - buttonSizeRight.y), buttonSizeRight, "Land", fontHeightShort, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
-            () => {
-                placePlanetOrbit.land(universe);
-            }),
+            () => placePlanetOrbit.land(universe)),
         ]);
         var controlRoot = ControlContainer.from4("containerPlanetOrbit", Coords.fromXY(0, 0), // pos
         containerMainSize, [

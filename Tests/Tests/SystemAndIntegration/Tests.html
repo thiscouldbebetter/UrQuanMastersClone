@@ -18,6 +18,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlContainerTransparent.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlLabel.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlList.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlNone.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlScrollbar.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSelect.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSelectOption.js"></script>
@@ -38,6 +39,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/VenueFader.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/VenueLayered.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualAnchor.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualCircle.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualCircleGradient.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualDirectional.js"></script>
@@ -67,6 +69,10 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Collisions/Collision.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Collisions/CollisionHelper.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_FrictionXY.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_SpeedMaxXY.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeXTrimY.js"></script>
+
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Box.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/BoxRotated.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Cylinder.js"></script>
@@ -79,6 +85,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/ShapeContainer.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/ShapeGroupAll.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/ShapeGroupAny.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/ShapeHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/ShapeInverse.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Sphere.js"></script>
 
@@ -103,6 +110,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/MediaLibrary.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/Sound.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/SoundHelper.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Media/TextString.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/VenueVideo.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/Video.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/VideoHelper.js"></script>
@@ -110,6 +118,8 @@
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/EntityBuilder.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/EntityGenerator.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Playable.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Universe.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/UniverseWorldPlaceEntities.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/VenueWorld.js"></script>
@@ -122,6 +132,8 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Actors/ActivityDefn.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Actors/Actor.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Combat/Damage.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Combat/Damager.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Combat/Killable.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Items/Item.js"></script>
@@ -130,12 +142,23 @@
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Items/Equipment/ItemCategory.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Mortality/Ephemeral.js"></script>
+
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Boundable.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Collidable.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Constrainable.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Locatable.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Movable.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Places/Place.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Places/PlaceDefn.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/ConversationDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/ConversationRun.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/ConversationScope.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/TalkNode.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/TalkNodeDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/Talker.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Profiles/Profile.js"></script>
 
@@ -162,86 +185,69 @@
 
 <!-- End Framework includes. -->
 
-<script type="text/javascript" src="../../../Source/Actions/Action_CameraMove.js"></script>
-<script type="text/javascript" src="../../../Source/Actions/Action_CylinderMove_Yaw.js"></script>
-<script type="text/javascript" src="../../../Source/Actions/Action_CylinderMove_DistanceAlongAxis.js"></script>
-<script type="text/javascript" src="../../../Source/Actions/Action_CylinderMove_Radius.js"></script>
-<script type="text/javascript" src="../../../Source/Actions/Action_CylinderMove_Reset.js"></script>
-<script type="text/javascript" src="../../../Source/Actions/ActivityDefn_Instances2.js"></script>
-
-<script type="text/javascript" src="../../../Source/Constraints/Constraint_HoldDistanceFromTarget.js"></script>
-<script type="text/javascript" src="../../../Source/Constraints/Constraint_LookAt.js"></script>
-<script type="text/javascript" src="../../../Source/Constraints/Constraint_PositionOnCylinder.js"></script>
-
-<script type="text/javascript" src="../../../Source/Controls/ControlDynamic.js"></script>
-
-<script type="text/javascript" src="../../../Source/Extensions/ControlBuilderExtended.js"></script>
-<script type="text/javascript" src="../../../Source/Extensions/VenueFaderExtended.js"></script>
-
-<script type="text/javascript" src="../../../Source/Factions/Faction.js"></script>
-<script type="text/javascript" src="../../../Source/Factions/FactionIntelligence.js"></script>
-<script type="text/javascript" src="../../../Source/Factions/FactionKnowledge.js"></script>
-
-<script type="text/javascript" src="../../../Source/Layouts/Layout.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/Buildable.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/BuildableDefn.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/MapLayout.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/MapCell.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/MapCursor.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/MapTerrain.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/Resource.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/ResourceDefn.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/ResourceGroup.js"></script>
-<script type="text/javascript" src="../../../Source/Layouts/VenueLayout.js"></script>
-
-<script type="text/javascript" src="../../../Source/Networks/Network.js"></script>
-<script type="text/javascript" src="../../../Source/Networks/NetworkLink.js"></script>
-<script type="text/javascript" src="../../../Source/Networks/NetworkNode.js"></script>
-<script type="text/javascript" src="../../../Source/Networks/NetworkNodeDefn.js"></script>
-
-<script type="text/javascript" src="../../../Source/Notifications/Notification.js"></script>
-<script type="text/javascript" src="../../../Source/Notifications/NotificationSession.js"></script>
-<script type="text/javascript" src="../../../Source/Notifications/NotificationType.js"></script>
-
-<script type="text/javascript" src="../../../Source/Planets/Planet.js"></script>
-<script type="text/javascript" src="../../../Source/Planets/PlanetDemographics.js"></script>
-<script type="text/javascript" src="../../../Source/Planets/PlanetIndustry.js"></script>
-
-<script type="text/javascript" src="../../../Source/Ships/Device.js"></script>
-<script type="text/javascript" src="../../../Source/Ships/DeviceDefn.js"></script>
-<script type="text/javascript" src="../../../Source/Ships/Order.js"></script>
-<script type="text/javascript" src="../../../Source/Ships/OrderDefn.js"></script>
-<script type="text/javascript" src="../../../Source/Ships/Projectile.js"></script>
-<script type="text/javascript" src="../../../Source/Ships/Ship.js"></script>
-<script type="text/javascript" src="../../../Source/Ships/Shipyard.js"></script>
-<script type="text/javascript" src="../../../Source/Ships/TurnAndMove.js"></script>
-
-<script type="text/javascript" src="../../../Source/Starsystems/Constraint_Cursor.js"></script>
-<script type="text/javascript" src="../../../Source/Starsystems/Cursor.js"></script>
-<script type="text/javascript" src="../../../Source/Starsystems/LinkPortal.js"></script>
-<script type="text/javascript" src="../../../Source/Starsystems/Starsystem.js"></script>
-<script type="text/javascript" src="../../../Source/Starsystems/VenueStarsystem.js"></script>
-
-<script type="text/javascript" src="../../../Source/Talk/DiplomaticAction.js"></script>
-<script type="text/javascript" src="../../../Source/Talk/DiplomaticRelationship.js"></script>
-<script type="text/javascript" src="../../../Source/Talk/DiplomaticSession.js"></script>
-
-<script type="text/javascript" src="../../../Source/Technology/Technology.js"></script>
-<script type="text/javascript" src="../../../Source/Technology/TechnologyGraph.js"></script>
-<script type="text/javascript" src="../../../Source/Technology/TechnologyResearcher.js"></script>
-<script type="text/javascript" src="../../../Source/Technology/TechnologyResearchSession.js"></script>
-<script type="text/javascript" src="../../../Source/Technology/VenueTechnologyResearchSession.js"></script>
-
 <script type="text/javascript" src="../../../Source/Framework/Source/Tests/Assert.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Tests/TestFixture.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Tests/TestSuite.js"></script>
 
-<script type="text/javascript" src="../../../Source/Utility/BodyDefn.js"></script>
-<script type="text/javascript" src="../../../Source/Utility/Collision.js"></script>
-<script type="text/javascript" src="../../../Source/Utility/NameGenerator.js"></script>
+<!-- Game includes. -->
 
-<script type="text/javascript" src="../../../Source/VenueWorld.js"></script>
-<script type="text/javascript" src="../../../Source/World.js"></script>
+<script type="text/javascript" src="../../../Source/Combat/Combat.js"></script>
+<script type="text/javascript" src="../../../Source/Combat/PlaceCombat.js"></script>
+
+<script type="text/javascript" src="../../../Source/Encounters/Encounter.js"></script>
+<script type="text/javascript" src="../../../Source/Encounters/Faction.js"></script>
+<script type="text/javascript" src="../../../Source/Encounters/PlaceEncounter.js"></script>
+
+<script type="text/javascript" src="../../../Source/Helpers/CameraHelper.js"></script>
+<script type="text/javascript" src="../../../Source/Helpers/EntityExtensions.js"></script>
+
+<script type="text/javascript" src="../../../Source/Hyperspace/Fuelable.js"></script>
+<script type="text/javascript" src="../../../Source/Hyperspace/Hyperspace.js"></script>
+<script type="text/javascript" src="../../../Source/Hyperspace/PlaceHyperspace.js"></script>
+<script type="text/javascript" src="../../../Source/Hyperspace/PlaceHyperspaceMap.js"></script>
+
+<script type="text/javascript" src="../../../Source/Model/WorldExtended.js"></script>
+<script type="text/javascript" src="../../../Source/Model/WorldDefnExtended.js"></script>
+
+<script type="text/javascript" src="../../../Source/Planets/EnergySource.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/Lander.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/Lifeform.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/LifeformDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/Mappable.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/PlacePlanetOrbit.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/PlacePlanetSurface.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/Planet.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/PlanetDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/VisualWrapped.js"></script>
+
+<script type="text/javascript" src="../../../Source/Player/Flagship.js"></script>
+<script type="text/javascript" src="../../../Source/Player/Player.js"></script>
+
+<script type="text/javascript" src="../../../Source/Resources/Resource.js"></script>
+<script type="text/javascript" src="../../../Source/Resources/ResourceDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Resources/ResourceDistribution.js"></script>
+
+<script type="text/javascript" src="../../../Source/Ships/Ship.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/ShipAttackDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/ShipComponentDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/ShipSpecialDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/ShipDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/ShipGroup.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/ShipWeaponSlot.js"></script>
+
+<script type="text/javascript" src="../../../Source/Starsystems/PlacePlanetVicinity.js"></script>
+<script type="text/javascript" src="../../../Source/Starsystems/PlaceStarsystem.js"></script>
+<script type="text/javascript" src="../../../Source/Starsystems/Starsystem.js"></script>
+
+<script type="text/javascript" src="../../../Source/Station/PlaceStation.js"></script>
+<script type="text/javascript" src="../../../Source/Station/PlaceStationDock.js"></script>
+<script type="text/javascript" src="../../../Source/Station/Station.js"></script>
+
+<script type="text/javascript" src="../../../Source/Utility/CsvCompressor.js"></script>
+
+<script type="text/javascript" src="../../../Source/debug.js"></script>
+
+<script type="text/javascript" src="../../../Source/Game.js"></script>
 
 <!-- end Source -->
 

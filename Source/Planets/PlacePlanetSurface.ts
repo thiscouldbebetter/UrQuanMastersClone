@@ -567,7 +567,7 @@ class PlacePlanetSurface extends Place
 					fontHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
-					() => {}
+					() => this.exit(new UniverseWorldPlaceEntities(null, world, this, null, null) )
 				),
 
 			]

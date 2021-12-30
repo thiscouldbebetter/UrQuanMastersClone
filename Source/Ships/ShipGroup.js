@@ -20,6 +20,15 @@ class ShipGroup {
             targetEntity = place.entitiesByName.get(entityToTargetName);
             actor.activity.targetEntitySet(targetEntity);
         }
+        ShipGroup.activityDefnApproachTarget_Perform(uwpe);
+    }
+    static activityDefnApproachTarget() {
+        return new ActivityDefn("Ship_ApproachTarget", ShipGroup.activityDefnApproachTarget_Perform);
+    }
+    static activityDefnApproachTarget_Perform(uwpe) {
+        var entityActor = uwpe.entity;
+        var actor = entityActor.actor();
+        var targetEntity = actor.activity.targetEntity();
         var targetPos = targetEntity.locatable().loc.pos;
         var actorLoc = entityActor.locatable().loc;
         var actorPos = actorLoc.pos;

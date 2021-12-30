@@ -45,6 +45,29 @@ class ShipGroup implements EntityPropertyBase
 			actor.activity.targetEntitySet(targetEntity);
 		}
 
+		ShipGroup.activityDefnApproachTarget_Perform(uwpe);
+	}
+
+	static activityDefnApproachTarget(): ActivityDefn
+	{
+		return new ActivityDefn
+		(
+			"Ship_ApproachTarget",
+			ShipGroup.activityDefnApproachTarget_Perform
+		);
+	}
+
+	static activityDefnApproachTarget_Perform
+	(
+		uwpe: UniverseWorldPlaceEntities
+	): void
+	{
+		var entityActor = uwpe.entity;
+
+		var actor = entityActor.actor();
+
+		var targetEntity = actor.activity.targetEntity();
+
 		var targetPos = targetEntity.locatable().loc.pos;
 
 		var actorLoc = entityActor.locatable().loc;

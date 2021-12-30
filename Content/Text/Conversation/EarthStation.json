@@ -38,7 +38,7 @@
 { "defnName": "Quit" },
 { "name": "Radioactives.Yes", "defnName": "DoNothing" },
 { "defnName": "Display", "name": "#(IF_YOU_HAVE_RADIOACTIVES_TRANSFER_THEM)" },
-{ "defnName": "Goto", "next": "RadioactivesPlease" },
+{ "defnName": "Goto", "next": "Radioactives.Transfer" },
 
 { "name": "Radioactives.Transfer", "defnName": "DoNothing" },
 { "defnName": "Display", "name": "#(RADIOACTIVES_RECEIVED_SYSTEMS_RESTORED_WHO_ARE_YOU_REALLY)" },

@@ -66,57 +66,25 @@ class PlaceStation extends Place
 	talk(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var size = universe.display.sizeInPixels;
 		var placeStation = world.placeCurrent as PlaceStation;
 		var factionName = this.station.factionName;
 		var faction = world.defnExtended().factionByName(factionName);
 		var conversationDefnName = faction.conversationDefnName;
 		var conversationResourceName = "Conversation-" + conversationDefnName;
-		var mediaLibrary = universe.mediaLibrary;
-		var conversationDefnAsJSON =
-			mediaLibrary.textStringGetByName(conversationResourceName).value;
-		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
-		var contentTextStringName = "Conversation-Content-" + conversationDefnName;
-		var contentTextString = mediaLibrary.textStringGetByName(contentTextStringName);
-		if (contentTextString != null)
+
+		var conversationQuit = () =>
 		{
-			var contentBlocks = contentTextString.value.split("\n\n");
+			world.placeCurrent = placeStation.placePlanetVicinity;
+			universe.venueNext = new VenueWorld(world);
+		};
 
-			var contentsById = new Map
-			(
-				contentBlocks.map
-				(
-					nodeAsBlock =>
-					{
-						var indexOfNewlineFirst = nodeAsBlock.indexOf("\n");
-						var contentId = nodeAsBlock.substr
-						(
-							0, indexOfNewlineFirst
-						).split("\t")[0];
-						var restOfBlock = nodeAsBlock.substr(indexOfNewlineFirst + 1);
-						return [ contentId, restOfBlock ];
-					}
-				)
-			);
-			conversationDefn.contentSubstitute(contentsById);
-			conversationDefn.displayNodesExpandByLines();
-		}
+		var stationEntity = placeStation.entityByName(Station.name);
+		var talker = stationEntity.talker();
+		talker.conversationDefnName = conversationResourceName;
+		talker.quit = conversationQuit;
 
-		var conversation = new ConversationRun
-		(
-			conversationDefn,
-			() => // quit
-			{
-				world.placeCurrent = placeStation.placePlanetVicinity;
-				universe.venueNext = new VenueWorld(world);
-			},
-			null, // entityPlayer
-			null, // entityTalker
-			null // contentsById
-		);
-		conversation.initialize(universe);
-		var conversationAsControl = conversation.toControl(size, universe);
-		universe.venueNext = new VenueControls(conversationAsControl, null);
+		var uwpe = new UniverseWorldPlaceEntities(universe, world, this, stationEntity, null);
+		talker.talk(uwpe);
 	}
 
 	// Place

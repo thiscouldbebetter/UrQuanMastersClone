@@ -134,7 +134,8 @@ class ShipDefn_Instances {
         );
         var adTodo = attackDefnTodo;
         var heads = 16;
-        var shipImagesDirectory = "../Content/Import/sc2/content/base/ships/";
+        var contentDirectoryPath = universe.mediaLibrary.contentDirectoryPath;
+        var shipImagesDirectory = contentDirectoryPath + "Import/sc2/content/base/ships/";
         var shipDimension = 16;
         var shipSize = Coords.fromXY(1, 1).multiplyScalar(shipDimension);
         var sv = (shipName, shipImageFilePrefix) => {

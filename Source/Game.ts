@@ -1,29 +1,35 @@
 
 class Game
 {
-	start()
+	mediaLibraryBuild(contentDirectoryPath: string): MediaLibrary
 	{
-		//localStorage.clear();
 
-		var contentPathPrefixComms = "../Content/Import/sc2/content/base/comm/"
-
-		var conversationPlaceholderPath = "../Content/Text/Conversation/Placeholder.json";
-
-		var imageDirectory = "../Content/Images/";
+		var imageDirectory = contentDirectoryPath + "Images/";
 		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
 		var png = ".png";
 
+		var audioDirectory = contentDirectoryPath + "Audio/";
+
+		var textDirectory = contentDirectoryPath + "Text/";
+
 		var conversation = "Conversation-";
-		var conversationContent = conversation + "Content-";
+		var content = "-Content";
+		var conversationDirectory = textDirectory + "Conversation/";
+		var conversationPlaceholderPath =
+			conversationDirectory + "Placeholder.json";
+		var contentPathPrefixComms =
+			contentDirectoryPath + "Import/sc2/content/base/comm/"
 
 		var mediaLibrary = new MediaLibrary
 		(
+			contentDirectoryPath,
+
 			// images
 			[
 				// conversation 
 				new Image2("Conversation", imageDirectory + "Conversation.png"),
-				new Image2(conversation + "EarthStation", "../Content/Import/sc2/content/base/comm/commander/commander-000.png"),
-				new Image2(conversation + "Lahkemup", "../Content/Import/sc2/content/base/comm/urquan/urquan-000.png"),
+				new Image2(conversation + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
+				new Image2(conversation + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
 
 				// opening
 				new Image2("Opening", imageDirectory + "Opening.png"),
@@ -69,31 +75,31 @@ class Game
 			],
 			// sounds
 			[
-				new SoundFromFile("Sound", "../Content/Audio/Effects/Sound.wav"),
-				new SoundFromFile("Music_Music", "../Content/Audio/Music/Music.mp3"),
-				new SoundFromFile("Music_Producer", "../Content/Audio/Music/Music.mp3"),
-				new SoundFromFile("Music_Title", "../Content/Audio/Music/Music.mp3"),
+				new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
+				new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
+				new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
+				new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
 			],
 			// videos
 			[
-				new Video("Movie", "../Content/Video/Movie.webm"),
+				new Video("Movie", contentDirectoryPath + "Video/Movie.webm"),
 			],
 			// fonts
 			[
-				new Font("Font", "../Content/Fonts/Font.ttf"),
+				new Font("Font", contentDirectoryPath + "Fonts/Font.ttf"),
 			],
 			// textStrings
 			[
 				//new TextString("Instructions", "../Content/Text/Instructions.txt"),
-				new TextString("StarsAndPlanets", "../Content/Text/PlanetDatabase.csv"),
+				new TextString("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
 
-				new TextString(conversation + "LahkemupGuardDrone", "../Content/Text/Conversation/LahkemupGuardDrone.json"),
-				new TextString(conversationContent + "LahkemupGuardDrone", "../Content/Text/Conversation/LahkemupGuardDrone-Content.txt"),
-				new TextString(conversation + "Lahkemup-Content", contentPathPrefixComms + "urquan/urquan.txt"),
-				new TextString(conversation + "EarthStation", "../Content/Text/Conversation/EarthStation.json"),
-				new TextString(conversationContent + "EarthStation", "../Content/Text/Conversation/EarthStation-Content.txt"),
+				new TextString(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
+				new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
+				new TextString(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
+				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
+				new TextString(conversation + "EarthStation" + content, conversationDirectory + "EarthStation-Content.txt"),
 
-				new TextString("Conversation-Placeholder-Content", "../Content/Text/Conversation/Placeholder-Content.txt"),
+				new TextString("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
 
 				new TextString(conversation + "Amorfus", conversationPlaceholderPath),
 				new TextString(conversation + "Araknoid", conversationPlaceholderPath),
@@ -118,6 +124,16 @@ class Game
 				new TextString(conversation + "Warpig", conversationPlaceholderPath),
 			]
 		);
+
+		return mediaLibrary
+	}
+
+	start(): void
+	{
+		//localStorage.clear();
+
+		var contentDirectoryPath = "../Content/";
+		var mediaLibrary = this.mediaLibraryBuild(contentDirectoryPath);
 
 		var displaySizeInPixelsDefault = new Coords(400, 300, 1);
 

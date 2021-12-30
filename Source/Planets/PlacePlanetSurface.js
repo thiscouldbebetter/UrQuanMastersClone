@@ -263,7 +263,7 @@ class PlacePlanetSurface extends Place {
             ControlButton.from8("buttonLeave", Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y), // pos
             Coords.fromXY(containerLanderSize.x, labelSize.y * 2), "Launch", fontHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
-            () => { }),
+            () => this.exit(new UniverseWorldPlaceEntities(null, world, this, null, null))),
         ]);
         return containerSidebar;
     }

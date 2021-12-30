@@ -30,10 +30,8 @@ class Station implements EntityProperty<Station>, Satellite
 
 	toEntity(primaryPos: Coords): Entity
 	{
-		var pos = primaryPos.clone().add
-		(
-			this.posAsPolar.toCoords(Coords.create())
-		);
+		var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
+		var collidable = Collidable.fromCollider(collider)
 
 		var visual = new VisualGroup
 		([
@@ -48,17 +46,25 @@ class Station implements EntityProperty<Station>, Satellite
 				Coords.fromXY(1, 1).multiplyScalar(this.radiusOuter), this.color
 			)
 		]);
+		var drawable = Drawable.fromVisual(visual);
 
-		var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
+		var pos = primaryPos.clone().add
+		(
+			this.posAsPolar.toCoords(Coords.create())
+		);
+		var locatable = new Locatable(Disposition.fromPos(pos));
+
+		var talker = Talker.fromConversationDefnName("Conversation-EarthStation");
 
 		var returnValue = new Entity
 		(
 			this.name,
 			[
-				Collidable.fromCollider(collider),
-				Drawable.fromVisual(visual),
-				new Locatable(Disposition.fromPos(pos)),
-				this
+				collidable,
+				drawable,
+				locatable,
+				this,
+				talker
 			]
 		);
 

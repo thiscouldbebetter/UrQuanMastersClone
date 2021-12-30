@@ -470,10 +470,7 @@ class PlacePlanetOrbit extends Place
 							fontHeightShort,
 							true, // hasBorder,
 							DataBinding.fromTrue(), // isEnabled,
-							() =>
-							{
-								placePlanetOrbit.scanMinerals(universe);
-							}
+							() => placePlanetOrbit.scanMinerals(universe)
 						),
 
 						ControlButton.from8
@@ -489,10 +486,7 @@ class PlacePlanetOrbit extends Place
 							fontHeightShort,
 							true, // hasBorder,
 							DataBinding.fromTrue(), // isEnabled,
-							() =>
-							{
-								placePlanetOrbit.scanLife(universe);
-							}
+							() => placePlanetOrbit.scanLife(universe)
 						),
 
 						ControlButton.from8
@@ -508,10 +502,7 @@ class PlacePlanetOrbit extends Place
 							fontHeightShort,
 							true, // hasBorder,
 							DataBinding.fromTrue(), // isEnabled,
-							() =>
-							{
-								placePlanetOrbit.scanEnergy(universe);
-							}
+							() => placePlanetOrbit.scanEnergy(universe)
 						),
 					]
 				),
@@ -529,10 +520,7 @@ class PlacePlanetOrbit extends Place
 					fontHeightShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
-					() =>
-					{
-						placePlanetOrbit.land(universe);
-					}
+					() => placePlanetOrbit.land(universe)
 				),
 			]
 		);

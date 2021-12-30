@@ -11,18 +11,23 @@ class Station {
         return world.defnExtended().factionByName(this.factionName);
     }
     toEntity(primaryPos) {
-        var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
+        var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
+        var collidable = Collidable.fromCollider(collider);
         var visual = new VisualGroup([
             new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, Color.byName("Gray"), null), primaryPos, null // ?
             ),
             VisualRectangle.fromSizeAndColorFill(Coords.fromXY(1, 1).multiplyScalar(this.radiusOuter), this.color)
         ]);
-        var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
+        var drawable = Drawable.fromVisual(visual);
+        var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
+        var locatable = new Locatable(Disposition.fromPos(pos));
+        var talker = Talker.fromConversationDefnName("Conversation-EarthStation");
         var returnValue = new Entity(this.name, [
-            Collidable.fromCollider(collider),
-            Drawable.fromVisual(visual),
-            new Locatable(Disposition.fromPos(pos)),
-            this
+            collidable,
+            drawable,
+            locatable,
+            this,
+            talker
         ]);
         return returnValue;
     }
