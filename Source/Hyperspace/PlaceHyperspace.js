@@ -215,17 +215,25 @@ class PlaceHyperspace extends Place {
     }
     shipGroupToEntity(worldAsWorld, place, shipGroup) {
         var world = worldAsWorld;
+        var actor = new Actor(new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
+        var collidable = Collidable.fromCollider(new Sphere(Coords.create(), 5));
         var ship0 = shipGroup.ships[0];
+        var drawable = Drawable.fromVisual(ship0.defn(world).visual);
         var shipGroupPos = shipGroup.pos;
+        var locatable = Locatable.fromPos(shipGroupPos);
+        var movable = Movable.default();
+        var talker = new Talker(shipGroup.factionName, null // quit - todo
+        );
         var entityShipGroup = new Entity(shipGroup.name + Math.random(), [
-            new Actor(new Activity(ShipGroup.activityDefnApproachPlayer().name, null)),
+            actor,
             //faction,
-            Collidable.fromCollider(new Sphere(Coords.create(), 5)),
-            Drawable.fromVisual(ship0.defn(world).visual),
-            Locatable.fromPos(shipGroupPos),
-            Movable.default(),
+            collidable,
+            drawable,
+            locatable,
+            movable,
             shipGroup,
-            ship0
+            ship0,
+            talker
         ]);
         return entityShipGroup;
     }

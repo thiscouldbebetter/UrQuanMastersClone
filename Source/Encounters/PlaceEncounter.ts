@@ -38,7 +38,7 @@ class PlaceEncounter extends Place
 		universe.venueNext = VenueControls.fromControl(shipSelect);
 	}
 
-	talk(universe: Universe)
+	talk(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
 		var placeEncounter = world.placeCurrent as PlaceEncounter;

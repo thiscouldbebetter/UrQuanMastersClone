@@ -1,0 +1,12 @@
+{
+    "name": "Tempestrial",
+    "imageName": "Conversation",
+    "contentTextStringName": "Conversation-Tempestrial-Content",
+    "talkNodes": [
+
+{ "defnName": "Display", "name": "#(PLACEHOLDER)", "content": "[placeholder]" },
+
+{ "defnName": "Quit" }
+
+    ]
+}
