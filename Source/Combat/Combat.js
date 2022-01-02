@@ -46,7 +46,16 @@ class Combat {
         universe.venueNext = new VenueWorld(world);
     }
     fight(universe) {
-        var placeCombat = universe.world.placeCurrent;
+        var world = universe.world;
+        var placeCombat = world.placeCurrent;
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, placeCombat, null, null);
+        for (var i = 0; i < this.shipsFighting.length; i++) {
+            var ship = this.shipsFighting[i];
+            var shipEntity = ship.toEntity(uwpe);
+            if (placeCombat.entityById(shipEntity.id) == null) {
+                placeCombat.entityToSpawnAdd(shipEntity);
+            }
+        }
         var venueControls = placeCombat.venueControls;
         venueControls.controlRoot = this.toControlSidebar(universe.world);
     }
@@ -129,7 +138,7 @@ class Combat {
         DataBinding.fromFalse() // isEnabled
         );
         var returnValue = ControlContainer.from4("containerShipSelect", Coords.Instances().Zeroes, size, [
-            new ControlLabel("labelTitle", Coords.fromXY(marginSize.x, marginSize.y + fontHeightTitle / 2), titleSize, true, // isTextCentered
+            new ControlLabel("labelTitle", Coords.fromXY(marginSize.x, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Ship Select"), fontHeightTitle),
             new ControlLabel("labelYours", Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2), titleSize, false, // isTextCentered
@@ -150,7 +159,7 @@ class Combat {
                 var shipGroup = combat.shipGroups[shipGroupIndex];
                 var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
                 combat.shipsFighting[shipGroupIndex] = ship;
-                listShipsYours._itemSelected = null;
+                shipGroup.shipSelected = ship;
             }, false // canBeHeldDown
             ),
             new ControlLabel("labelTheirs", Coords.fromXY(listSize.x + marginSize.x * 2, titleSize.y + marginSize.y * 2), titleSize, false, // isTextCentered
@@ -171,7 +180,7 @@ class Combat {
                 var shipGroup = combat.shipGroups[shipGroupIndex];
                 var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
                 combat.shipsFighting[shipGroupIndex] = ship;
-                listShipsTheirs._itemSelected = null;
+                shipGroup.shipSelected = ship;
             }, false // canBeHeldDown
             ),
             new ControlButton("buttonFight", Coords.fromXY(marginSize.x, size.y - marginSize.y - buttonSizeFight.y), buttonSizeFight, "Fight", fontHeight, true, // hasBorder

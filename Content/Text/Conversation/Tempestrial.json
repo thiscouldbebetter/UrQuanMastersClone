@@ -4,6 +4,8 @@
     "contentTextStringName": "Conversation-Tempestrial-Content",
     "talkNodes": [
 
+{ "defnName": "VariableLoad", "content": "CoordinatesRelativeToOrigin", "next": "u.world.placeCurrent.encounter.posInHyperspace().toString()" },
+
 { "defnName": "Random" },
 { "defnName": "Display", "content": "#(WE_COME_IN_PEACE_1)" },
 { "defnName": "Display", "content": "#(WE_COME_IN_PEACE_2)" },
@@ -15,34 +17,33 @@
 { "defnName": "Display", "content": "#(WE_COME_IN_PEACE_8)" },
 
 { "defnName": "Random" },
-{ "defnName": "Option", "content": "#(we_are_us_1)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(we_are_us_2)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(we_are_us_3)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(we_are_us_4)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(we_are_us_1)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked')" },
+{ "defnName": "Option", "content": "#(we_are_us_2)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false"  },
+{ "defnName": "Option", "content": "#(we_are_us_3)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false"  },
+{ "defnName": "Option", "content": "#(we_are_us_4)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false"  },
 
 { "defnName": "Random" },
-{ "defnName": "Option", "content": "#(something_wrong_1)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(something_wrong_2)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(something_wrong_3)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(something_wrong_4)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(something_wrong_1)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked')" },
+{ "defnName": "Option", "content": "#(something_wrong_2)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
+{ "defnName": "Option", "content": "#(something_wrong_3)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
+{ "defnName": "Option", "content": "#(something_wrong_4)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
 
 { "defnName": "Random" },
-{ "defnName": "Option", "content": "#(why_attack_1)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(why_attack_2)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(why_attack_3)", "next": "ProbeStuff" },
-{ "defnName": "Option", "content": "#(why_attack_4)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(why_attack_1)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked')" },
+{ "defnName": "Option", "content": "#(why_attack_2)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
+{ "defnName": "Option", "content": "#(why_attack_3)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
+{ "defnName": "Option", "content": "#(why_attack_4)", "next": "ProbeStuff", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
+
+{ "defnName": "Option", "content": "#(threat_1)", "next": "ProgrammedToDefend" },
+{ "defnName": "Option", "content": "#(threat_2)", "next": "ProgrammedToDefend", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false"},
+{ "defnName": "Option", "content": "#(threat_3)", "next": "ProgrammedToDefend", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false"},
+{ "defnName": "Option", "content": "#(threat_4)", "next": "ProgrammedToDefend", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false"},
 
 { "defnName": "Random" },
-{ "defnName": "Option", "content": "#(threat_1)", "next": "ProgrammedToDefend"},
-{ "defnName": "Option", "content": "#(threat_2)", "next": "ProgrammedToDefend"},
-{ "defnName": "Option", "content": "#(threat_3)", "next": "ProgrammedToDefend"},
-{ "defnName": "Option", "content": "#(threat_4)", "next": "ProgrammedToDefend"},
-
-{ "defnName": "Random" },
-{ "defnName": "Option", "content": "#(bye_1)", "next": "Goodbye" },
-{ "defnName": "Option", "content": "#(bye_2)", "next": "Goodbye" },
-{ "defnName": "Option", "content": "#(bye_3)", "next": "Goodbye" },
-{ "defnName": "Option", "content": "#(bye_4)", "next": "Goodbye" },
+{ "defnName": "Option", "content": "#(bye_1)", "next": "Goodbye", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked')" },
+{ "defnName": "Option", "content": "#(bye_2)", "next": "Goodbye", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
+{ "defnName": "Option", "content": "#(bye_3)", "next": "Goodbye", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
+{ "defnName": "Option", "content": "#(bye_4)", "next": "Goodbye", "isDisabled": "u.world.player.vars.has('ProbeHasAttacked') == false" },
 
 { "defnName": "DoNothing" },
 { "defnName": "Option", "content": "#(destruct_code)", "isDisabled": "true"},
@@ -64,7 +65,7 @@
 { "defnName": "Display", "content": "#(THIS_IS_PROBE_1)" },
 { "defnName": "Display", "content": "#(THIS_IS_PROBE_2)" },
 { "defnName": "Display", "content": "#(THIS_IS_PROBE_3)" },
-{ "defnName": "Display", "content": "#(THIS_IS_PROBE_40)" },
+{ "defnName": "Display", "content": "THIS IS PROBE 2814-B. COORDINATES ARE: ^CoordinatesRelativeToOrigin^" },
 { "defnName": "Display", "content": "#(PEACEFUL_MISSION_1)" },
 { "defnName": "Display", "content": "#(PEACEFUL_MISSION_2)" },
 { "defnName": "Display", "content": "#(PEACEFUL_MISSION_3)" },
@@ -83,6 +84,7 @@
 { "defnName": "Goto", "next": "Quit" },
 
 { "name": "Hostile", "defnName": "Display", "content": "#(HOSTILE)" },
+{ "defnName": "Script", "content": "u.world.player.vars.set('ProbeHasAttacked', true)" },
 { "defnName": "Script", "content": "u.world.placeCurrent.encounter.doesEndInCombat = true" },
 
 { "name": "Quit", "defnName": "Quit" }

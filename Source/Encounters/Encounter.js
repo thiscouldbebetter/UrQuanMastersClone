@@ -39,6 +39,26 @@ class Encounter {
             universe.world.placeNext = placeNext;
         }
     }
+    posInHyperspace() {
+        var returnPos = null;
+        var place = this.placeToReturnTo;
+        var placeTypeName = place.constructor.name;
+        if (placeTypeName == PlaceHyperspace.name) {
+            returnPos = place.player().locatable().loc.pos;
+        }
+        else if (placeTypeName == PlaceStarsystem.name) {
+            //var starsystem = (place as PlaceStarsystem).starsystem();
+            throw new Error("Unexpected placeTypeName: " + placeTypeName);
+        }
+        else if (placeTypeName == PlacePlanetVicinity.name) {
+            //var starsystem = (place as PlacePlanetVicinity).starsystem();
+            throw new Error("Unexpected placeTypeName: " + placeTypeName);
+        }
+        else {
+            throw new Error("Unexpected placeTypeName: " + placeTypeName);
+        }
+        return returnPos;
+    }
     talk(universe) {
         var world = universe.world;
         var place = world.placeCurrent;

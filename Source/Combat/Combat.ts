@@ -88,7 +88,19 @@ class Combat
 
 	fight(universe: Universe): void
 	{
-		var placeCombat = universe.world.placeCurrent as PlaceCombat;
+		var world = universe.world;
+		var placeCombat = world.placeCurrent as PlaceCombat;
+		var uwpe = new UniverseWorldPlaceEntities(universe, world, placeCombat, null, null);
+
+		for (var i = 0; i < this.shipsFighting.length; i++)
+		{
+			var ship = this.shipsFighting[i];
+			var shipEntity = ship.toEntity(uwpe);
+			if (placeCombat.entityById(shipEntity.id) == null)
+			{
+				placeCombat.entityToSpawnAdd(shipEntity);
+			}
+		}
 		var venueControls = placeCombat.venueControls;
 		venueControls.controlRoot = this.toControlSidebar(universe.world as WorldExtended);
 	}
@@ -270,7 +282,7 @@ class Combat
 				new ControlLabel
 				(
 					"labelTitle",
-					Coords.fromXY(marginSize.x, marginSize.y + fontHeightTitle / 2),
+					Coords.fromXY(marginSize.x, marginSize.y),
 					titleSize,
 					true, // isTextCentered
 					false, // isTextCenteredVertically
@@ -337,7 +349,7 @@ class Combat
 						var shipGroup = combat.shipGroups[shipGroupIndex];
 						var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
 						combat.shipsFighting[shipGroupIndex] = ship;
-						listShipsYours._itemSelected = null;
+						shipGroup.shipSelected = ship;
 					},
 					false // canBeHeldDown
 				),
@@ -399,7 +411,7 @@ class Combat
 						var shipGroup = combat.shipGroups[shipGroupIndex];
 						var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
 						combat.shipsFighting[shipGroupIndex] = ship;
-						listShipsTheirs._itemSelected = null;
+						shipGroup.shipSelected = ship;
 					},
 					false // canBeHeldDown
 				),

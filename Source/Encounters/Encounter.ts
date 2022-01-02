@@ -69,6 +69,35 @@ class Encounter
 		}
 	}
 
+	posInHyperspace(): Coords
+	{
+		var returnPos: Coords = null;
+
+		var place = this.placeToReturnTo;
+		var placeTypeName = place.constructor.name;
+
+		if (placeTypeName == PlaceHyperspace.name)
+		{
+			returnPos = place.player().locatable().loc.pos;
+		}
+		else if (placeTypeName == PlaceStarsystem.name)
+		{
+			//var starsystem = (place as PlaceStarsystem).starsystem();
+			throw new Error("Unexpected placeTypeName: " + placeTypeName);
+		}
+		else if (placeTypeName == PlacePlanetVicinity.name)
+		{
+			//var starsystem = (place as PlacePlanetVicinity).starsystem();
+			throw new Error("Unexpected placeTypeName: " + placeTypeName);
+		}
+		else
+		{
+			throw new Error("Unexpected placeTypeName: " + placeTypeName);
+		}
+
+		return returnPos;
+	}
+
 	talk(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;

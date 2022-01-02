@@ -17,8 +17,11 @@ class Player
 
 	constructor
 	(
-		name: string, credit: number, flagship: Flagship,
-		factionsKnownNames: string[], shipGroup: ShipGroup
+		name: string,
+		credit: number,
+		flagship: Flagship,
+		factionsKnownNames: string[],
+		shipGroup: ShipGroup
 	)
 	{
 		this.name = name;
