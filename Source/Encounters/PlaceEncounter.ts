@@ -19,49 +19,6 @@ class PlaceEncounter extends Place
 		this.encounter = encounter;
 	}
 
-	// methods
-
-	fight(universe: Universe): void
-	{
-		var world = universe.world as WorldExtended;
-		var placeEncounter = world.placeCurrent as PlaceEncounter;
-		var encounter = placeEncounter.encounter;
-		var displaySize = universe.display.sizeInPixels;
-		var combatSize = Coords.fromXY(1, 1).multiplyScalar(displaySize.y * 2);
-		var player = world.player;
-		var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
-		var shipGroups = [player.shipGroup, shipGroupOther];
-		var combat = new Combat(combatSize, encounter, shipGroups);
-		combat.initialize(universe, world, placeEncounter);
-		var shipSelect =
-			combat.toControlShipSelect(universe, universe.display.sizeInPixels);
-		universe.venueNext = VenueControls.fromControl(shipSelect);
-	}
-
-	talk(universe: Universe): void
-	{
-		var world = universe.world as WorldExtended;
-		var placeEncounter = world.placeCurrent as PlaceEncounter;
-		var encounter = placeEncounter.encounter;
-		var faction = this.encounter.faction(world);
-		var conversationDefnName = faction.conversationDefnName;
-		var conversationResourceName = "Conversation-" + conversationDefnName;
-
-		var venueToReturnTo = universe.venueCurrent;
-		var conversationQuit = () =>
-		{
-			encounter.returnToPlace(world);
-			universe.venueNext = venueToReturnTo;
-		};
-
-		var entityTalker = encounter.entityOther;
-		var talker = entityTalker.talker();
-		talker.conversationDefnName = conversationResourceName;
-		talker.quit = conversationQuit;
-		var uwpe = new UniverseWorldPlaceEntities(universe, world, this, entityTalker, null);
-		talker.talk(uwpe);
-	}
-
 	// Place
 
 	draw(universe: Universe, world: World)
@@ -90,7 +47,7 @@ class PlaceEncounter extends Place
 
 			if (faction.talksImmediately)
 			{
-				this.talk(universe);
+				this.encounter.talk(universe);
 				return; // hack
 			}
 
@@ -106,12 +63,12 @@ class PlaceEncounter extends Place
 				+ "near " + encounter.planet.name;
 
 			var choiceNames = [ "Talk" ];
-			var choiceActions = [ () => this.talk(universe) ];
+			var choiceActions = [ () => this.encounter.talk(universe) ];
 
 			if (faction.relationsWithPlayer == Faction.RelationsHostile)
 			{
 				choiceNames.push("Fight");
-				choiceActions.push( () => this.fight(universe) );
+				choiceActions.push( () => this.encounter.fight(universe) );
 			}
 
 			var controlRoot = universe.controlBuilder.choice

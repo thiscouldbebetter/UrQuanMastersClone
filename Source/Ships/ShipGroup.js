@@ -5,6 +5,7 @@ class ShipGroup {
         this.factionName = factionName;
         this.pos = pos;
         this.ships = ships;
+        this.shipSelected = this.ships[0];
         this._posInverted = Coords.create();
     }
     static activityDefnApproachPlayer() {

@@ -201,7 +201,7 @@ class Ship {
         var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
         var defn = this.defn(world);
         var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, [
-            new ControlLabel("labelName", Coords.fromXY(containerShipSize.x / 2, marginSize.y + labelSizeShort.y / 2), // pos
+            new ControlLabel("labelName", Coords.fromXY(marginSize.x, marginSize.y + labelSizeShort.y / 2), // pos
             labelSizeShort, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext(defn.factionName), fontHeightShort),

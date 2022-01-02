@@ -386,7 +386,7 @@ class Ship implements EntityProperty<Ship>
 					"labelName",
 					Coords.fromXY
 					(
-						containerShipSize.x / 2,
+						marginSize.x,
 						marginSize.y + labelSizeShort.y / 2
 					), // pos
 					labelSizeShort,

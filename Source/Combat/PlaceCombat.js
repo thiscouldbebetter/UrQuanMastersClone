@@ -8,10 +8,9 @@ class PlaceCombat extends Place {
         this.combat = combat;
         this.size = this.combat.size;
         var actionExit = new Action("Exit", (uwpe) => {
-            var world = uwpe.world;
             var place = uwpe.place;
             var encounter = place.combat.encounter;
-            encounter.returnToPlace(world);
+            encounter.goToPlaceNext(uwpe.universe);
         });
         this.actions =
             [
@@ -36,7 +35,7 @@ class PlaceCombat extends Place {
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
-        this.entitySpawn(new UniverseWorldPlaceEntities(null, world, null, cameraAsEntity, null));
+        this.entityToSpawnAdd(cameraAsEntity);
         // entities
         var entityDimension = 10;
         var entities = this.entities;
@@ -129,12 +128,21 @@ class PlaceCombat extends Place {
             entities.push(shipEntity);
         }
         // controls
+        /*
         var containerSidebarSize = Coords.fromXY(100, 300); // hack
-        var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), containerSidebarSize, [
-            shipsFighting[0].toControlSidebar(containerSidebarSize, 0, world),
-            shipsFighting[1].toControlSidebar(containerSidebarSize, 1, world),
-        ]);
+        var containerSidebar = ControlContainer.from4
+        (
+            "containerSidebar",
+            Coords.fromXY(300, 0),
+            containerSidebarSize,
+            [
+                shipsFighting[0].toControlSidebar(containerSidebarSize, 0, world),
+                shipsFighting[1].toControlSidebar(containerSidebarSize, 1, world),
+            ]
+        );
+
         this.venueControls = VenueControls.fromControl(containerSidebar);
+        */
         //this.propertyNamesToProcess.push(Ship.name);
         this.entitiesByName = ArrayHelper.addLookupsByName(this.entities);
     }
@@ -191,25 +199,40 @@ class PlaceCombat extends Place {
     // Place overrides
     draw(universe, world) {
         var display = universe.display;
-        display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
         var ships = this.entitiesShips();
-        var camera = this._camera;
-        var cameraPos = camera.loc.pos;
-        var midpointBetweenCombatants;
-        if (ships.length == 1) {
-            midpointBetweenCombatants = ships[0].locatable().loc.pos;
+        if (ships.length == 0) {
+            // Do nothing.
         }
-        else // if ships.length == 2
-         {
-            midpointBetweenCombatants =
-                this.combat.midpointOfPointsWrappedToRange(cameraPos, // midpointToOverwrite
-                ships[0].locatable().loc.pos, ships[1].locatable().loc.pos, this.size);
+        else {
+            display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+            var midpointBetweenCombatants;
+            var camera = this._camera;
+            var cameraPos = camera.loc.pos;
+            if (ships.length == 1) {
+                midpointBetweenCombatants = ships[0].locatable().loc.pos;
+            }
+            else // if ships.length == 2
+             {
+                midpointBetweenCombatants =
+                    this.combat.midpointOfPointsWrappedToRange(cameraPos, // midpointToOverwrite
+                    ships[0].locatable().loc.pos, ships[1].locatable().loc.pos, this.size);
+            }
+            cameraPos.overwriteWith(midpointBetweenCombatants);
         }
-        cameraPos.overwriteWith(midpointBetweenCombatants);
         super.draw(universe, world, display);
         this.venueControls.draw(universe);
     }
+    initialize(uwpe) {
+        var universe = uwpe.universe;
+        var world = uwpe.world;
+        var place = uwpe.place;
+        this.combat.initialize(universe, world, place);
+        var controlShipSelect = this.combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+        this.venueControls = VenueControls.fromControl(controlShipSelect);
+    }
     updateForTimerTick(uwpe) {
         super.updateForTimerTick(uwpe);
+        this.combat.updateForTimerTick(uwpe);
+        this.venueControls.updateForTimerTick(uwpe.universe);
     }
 }

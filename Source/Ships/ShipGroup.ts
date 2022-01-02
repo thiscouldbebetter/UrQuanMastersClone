@@ -6,6 +6,8 @@ class ShipGroup implements EntityPropertyBase
 	pos: Coords;
 	ships: Ship[];
 
+	shipSelected: Ship;
+
 	_posInverted: Coords;
 
 	constructor(name: string, factionName: string, pos: Coords, ships: Ship[])
@@ -14,6 +16,8 @@ class ShipGroup implements EntityPropertyBase
 		this.factionName = factionName;
 		this.pos = pos;
 		this.ships = ships;
+
+		this.shipSelected = this.ships[0];
 
 		this._posInverted = Coords.create();
 	}

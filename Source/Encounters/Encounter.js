@@ -7,16 +7,54 @@ class Encounter {
         this.entityOther = entityOther;
         this.placeToReturnTo = placeToReturnTo;
         this.posToReturnTo = posToReturnTo;
+        this.doesEndInCombat = false;
     }
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
     }
-    returnToPlace(world) {
-        var placeNext = this.placeToReturnTo;
-        var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
-        var playerLoc = playerFromPlaceNext.locatable().loc;
-        playerLoc.pos.overwriteWith(this.posToReturnTo);
-        playerLoc.vel.clear();
-        world.placeNext = placeNext;
+    fight(universe) {
+        var world = universe.world;
+        var encounter = this;
+        var displaySize = universe.display.sizeInPixels;
+        var combatSize = Coords.fromXY(1, 1).multiplyScalar(displaySize.y * 2);
+        var player = world.player;
+        var shipGroupOther = EntityExtensions.shipGroup(encounter.entityOther);
+        var shipGroups = [player.shipGroup, shipGroupOther];
+        var combat = new Combat(combatSize, encounter, shipGroups);
+        world.placeNext = combat.toPlace(world);
+        // These lines are necessary.
+        var venueNext = new VenueWorld(world);
+        universe.venueNext = venueNext;
+    }
+    goToPlaceNext(universe) {
+        if (this.doesEndInCombat) {
+            this.fight(universe);
+        }
+        else {
+            var placeNext = this.placeToReturnTo;
+            var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+            var playerLoc = playerFromPlaceNext.locatable().loc;
+            playerLoc.pos.overwriteWith(this.posToReturnTo);
+            playerLoc.vel.clear();
+            universe.world.placeNext = placeNext;
+        }
+    }
+    talk(universe) {
+        var world = universe.world;
+        var place = world.placeCurrent;
+        var encounter = this;
+        var faction = encounter.faction(world);
+        var conversationDefnName = faction.conversationDefnName;
+        var conversationResourceName = "Conversation-" + conversationDefnName;
+        var conversationQuit = () => {
+            encounter.goToPlaceNext(universe);
+        };
+        var entityPlayer = encounter.entityPlayer;
+        var entityTalker = encounter.entityOther;
+        var talker = entityTalker.talker();
+        talker.conversationDefnName = conversationResourceName;
+        talker.quit = conversationQuit;
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, place, entityTalker, entityPlayer);
+        talker.talk(uwpe);
     }
 }

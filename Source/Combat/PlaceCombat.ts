@@ -31,10 +31,9 @@ class PlaceCombat extends Place
 			"Exit",
 			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var world = uwpe.world as WorldExtended;
 				var place = uwpe.place as PlaceCombat;
 				var encounter = place.combat.encounter;
-				encounter.returnToPlace(world);
+				encounter.goToPlaceNext(uwpe.universe);
 			}
 		);
 
@@ -73,12 +72,9 @@ class PlaceCombat extends Place
 			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
-		this.entitySpawn
+		this.entityToSpawnAdd
 		(
-			new UniverseWorldPlaceEntities
-			(
-				null, world, null, cameraAsEntity, null
-			)
+			cameraAsEntity
 		);
 
 		// entities
@@ -256,6 +252,7 @@ class PlaceCombat extends Place
 
 		// controls
 
+		/*
 		var containerSidebarSize = Coords.fromXY(100, 300); // hack
 		var containerSidebar = ControlContainer.from4
 		(
@@ -269,6 +266,8 @@ class PlaceCombat extends Place
 		);
 
 		this.venueControls = VenueControls.fromControl(containerSidebar);
+		*/
+
 
 		//this.propertyNamesToProcess.push(Ship.name);
 
@@ -277,7 +276,7 @@ class PlaceCombat extends Place
 
 	// methods
 
-	actionToInputsMappings()
+	actionToInputsMappings(): ActionToInputsMapping[]
 	{
 		return this._actionToInputsMappings;
 	}
@@ -360,40 +359,63 @@ class PlaceCombat extends Place
 	{
 		var display = universe.display;
 
-		display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
-
 		var ships = this.entitiesShips();
 
-		var camera = this._camera;
-		var cameraPos = camera.loc.pos;
-
-		var midpointBetweenCombatants;
-
-		if (ships.length == 1)
+		if (ships.length == 0)
 		{
-			midpointBetweenCombatants = ships[0].locatable().loc.pos;
+			// Do nothing.
 		}
-		else // if ships.length == 2
+		else
 		{
-			midpointBetweenCombatants =
-				this.combat.midpointOfPointsWrappedToRange
-				(
-					cameraPos, // midpointToOverwrite
-					ships[0].locatable().loc.pos,
-					ships[1].locatable().loc.pos,
-					this.size
-				);
-		}
+			display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
 
-		cameraPos.overwriteWith(midpointBetweenCombatants);
+			var midpointBetweenCombatants;
+
+			var camera = this._camera;
+			var cameraPos = camera.loc.pos;
+
+			if (ships.length == 1)
+			{
+				midpointBetweenCombatants = ships[0].locatable().loc.pos;
+			}
+			else // if ships.length == 2
+			{
+
+				midpointBetweenCombatants =
+					this.combat.midpointOfPointsWrappedToRange
+					(
+						cameraPos, // midpointToOverwrite
+						ships[0].locatable().loc.pos,
+						ships[1].locatable().loc.pos,
+						this.size
+					);
+			}
+
+			cameraPos.overwriteWith(midpointBetweenCombatants);
+		}
 
 		super.draw(universe, world, display);
 
 		this.venueControls.draw(universe);
 	}
 
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var universe = uwpe.universe;
+		var world = uwpe.world;
+		var place = uwpe.place;
+
+		this.combat.initialize(universe, world, place);
+
+		var controlShipSelect = this.combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+
+		this.venueControls = VenueControls.fromControl(controlShipSelect);
+	}
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		super.updateForTimerTick(uwpe);
+		this.combat.updateForTimerTick(uwpe);
+		this.venueControls.updateForTimerTick(uwpe.universe);
 	}
 }

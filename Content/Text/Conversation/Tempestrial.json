@@ -4,9 +4,88 @@
     "contentTextStringName": "Conversation-Tempestrial-Content",
     "talkNodes": [
 
-{ "defnName": "Display", "name": "#(PLACEHOLDER)", "content": "[placeholder]" },
+{ "defnName": "Random" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_1)" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_2)" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_3)" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_4)" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_5)" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_6)" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_7)" },
+{ "defnName": "Display", "content": "#(WE_COME_IN_PEACE_8)" },
 
-{ "defnName": "Quit" }
+{ "defnName": "Random" },
+{ "defnName": "Option", "content": "#(we_are_us_1)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(we_are_us_2)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(we_are_us_3)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(we_are_us_4)", "next": "ProbeStuff" },
+
+{ "defnName": "Random" },
+{ "defnName": "Option", "content": "#(something_wrong_1)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(something_wrong_2)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(something_wrong_3)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(something_wrong_4)", "next": "ProbeStuff" },
+
+{ "defnName": "Random" },
+{ "defnName": "Option", "content": "#(why_attack_1)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(why_attack_2)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(why_attack_3)", "next": "ProbeStuff" },
+{ "defnName": "Option", "content": "#(why_attack_4)", "next": "ProbeStuff" },
+
+{ "defnName": "Random" },
+{ "defnName": "Option", "content": "#(threat_1)", "next": "ProgrammedToDefend"},
+{ "defnName": "Option", "content": "#(threat_2)", "next": "ProgrammedToDefend"},
+{ "defnName": "Option", "content": "#(threat_3)", "next": "ProgrammedToDefend"},
+{ "defnName": "Option", "content": "#(threat_4)", "next": "ProgrammedToDefend"},
+
+{ "defnName": "Random" },
+{ "defnName": "Option", "content": "#(bye_1)", "next": "Goodbye" },
+{ "defnName": "Option", "content": "#(bye_2)", "next": "Goodbye" },
+{ "defnName": "Option", "content": "#(bye_3)", "next": "Goodbye" },
+{ "defnName": "Option", "content": "#(bye_4)", "next": "Goodbye" },
+
+{ "defnName": "DoNothing" },
+{ "defnName": "Option", "content": "#(destruct_code)", "isDisabled": "true"},
+
+{ "defnName": "Prompt" },
+
+{ "name": "ProgrammedToDefend", "defnName": "Random" },
+{ "defnName": "Display", "content": "#(PROGRAMMED_TO_DEFEND_1)" },
+{ "defnName": "Display", "content": "#(PROGRAMMED_TO_DEFEND_2)" },
+{ "defnName": "Display", "content": "#(PROGRAMMED_TO_DEFEND_3)" },
+{ "defnName": "Display", "content": "#(PROGRAMMED_TO_DEFEND_4)" },
+{ "defnName": "Goto", "next": "Hostile" },
+
+{ "name": "ProbeStuff", "defnName": "Random" },
+{ "defnName": "Display", "content": "#(NOMINAL_FUNCTION_1)" },
+{ "defnName": "Display", "content": "#(NOMINAL_FUNCTION_2)" },
+{ "defnName": "Display", "content": "#(NOMINAL_FUNCTION_3)" },
+{ "defnName": "Display", "content": "#(NOMINAL_FUNCTION_4)" },
+{ "defnName": "Display", "content": "#(THIS_IS_PROBE_1)" },
+{ "defnName": "Display", "content": "#(THIS_IS_PROBE_2)" },
+{ "defnName": "Display", "content": "#(THIS_IS_PROBE_3)" },
+{ "defnName": "Display", "content": "#(THIS_IS_PROBE_40)" },
+{ "defnName": "Display", "content": "#(PEACEFUL_MISSION_1)" },
+{ "defnName": "Display", "content": "#(PEACEFUL_MISSION_2)" },
+{ "defnName": "Display", "content": "#(PEACEFUL_MISSION_3)" },
+{ "defnName": "Display", "content": "#(PEACEFUL_MISSION_4)" },
+{ "defnName": "Goto", "next": "Hostile" },
+
+{ "name": "Goodbye", "defnName": "Random" },
+{ "defnName": "Display", "content": "#(GOODBYE_1)" },
+{ "defnName": "Display", "content": "#(GOODBYE_2)" },
+{ "defnName": "Display", "content": "#(GOODBYE_3)" },
+{ "defnName": "Display", "content": "#(GOODBYE_4)" },
+{ "defnName": "Goto", "next": "Hostile" },
+
+{ "defnName": "Display", "content": "#(DESTRUCT_SEQUENCE)" },
+{ "defnName": "Script", "content": "alert('todo')" },
+{ "defnName": "Goto", "next": "Quit" },
+
+{ "name": "Hostile", "defnName": "Display", "content": "#(HOSTILE)" },
+{ "defnName": "Script", "content": "u.world.placeCurrent.encounter.doesEndInCombat = true" },
+
+{ "name": "Quit", "defnName": "Quit" }
 
     ]
 }
