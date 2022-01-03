@@ -33,7 +33,7 @@ Building
 --------
 Note that, since the "transpiled" .js files are included in the repository, it shouldn't be necessary to build the game to play it.  However, to make and compile modifications, follow the steps outlined below.
 
-* In any convenient directory, clone the repository using Git, perhaps by running the command "git clone https://github.com/thiscouldbebetter/UrQuanMastersClone".
+* In any convenient directory, clone the repository using Git, perhaps by running the command "git clone --recursive https://github.com/thiscouldbebetter/UrQuanMastersClone".
 * Ensure the TypeScript command-line compiler "tsc" is installed, perhaps by running the commands "sudo apt install npm" and then "sudo npm install -g typescript".
 * Navigate to the repository's Source directory.
 * From the source directory, run the command "tsc".

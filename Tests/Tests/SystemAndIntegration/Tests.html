@@ -68,9 +68,12 @@
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Collisions/Collision.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Collisions/CollisionHelper.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Collisions/CollisionTracker.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_FrictionDry.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_FrictionXY.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_SpeedMaxXY.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_TrimToPlaceSize.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeXTrimY.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Box.js"></script>
@@ -80,6 +83,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Face.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Hemispace.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Path.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/PathBuilder.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Plane.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Ray.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/ShapeContainer.js"></script>
@@ -89,13 +93,17 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/ShapeInverse.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Sphere.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Maps/MapCell.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Maps/MapLocated.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Maps/MapOfCells.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 
-<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transform.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transform_Locate.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transform_Orient.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transform_Rotate2D.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transform_RotateRight.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transform_Scale.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transform_Translate.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Transforms/Transforms.js"></script>
 
@@ -172,6 +180,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Storage/Compressor/CompressorLZW.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/DateTime.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Utility/Debug.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/IDHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/PlatformHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/RandomizerSystem.js"></script>

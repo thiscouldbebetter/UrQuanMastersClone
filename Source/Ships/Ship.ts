@@ -1,7 +1,9 @@
 
 class Ship implements EntityProperty<Ship>
 {
+	name: string;
 	defnName: string;
+	captainName: string;
 
 	crew: number;
 	energy: number;
@@ -9,6 +11,17 @@ class Ship implements EntityProperty<Ship>
 	constructor(defnName: string)
 	{
 		this.defnName = defnName;
+
+		this.name =
+			"Ship " + ("" + Math.random()).split(".").join(""); // todo
+
+		this.captainName =
+			"Captain " + ("" + Math.random()).split(".").join(""); // todo
+	}
+
+	static fromEntity(shipEntity: Entity): Ship
+	{
+		return shipEntity.propertyByName(Ship.name) as Ship;
 	}
 
 	// temporary variables
@@ -221,6 +234,11 @@ class Ship implements EntityProperty<Ship>
 
 	// instance methods
 
+	collide(uwpe: UniverseWorldPlaceEntities)
+	{
+		// todo
+	}
+
 	crewCurrentOverMax(world: WorldExtended): string
 	{
 		return this.crew + "/" + this.defn(world).crewMax;
@@ -229,6 +247,45 @@ class Ship implements EntityProperty<Ship>
 	defn(world: WorldExtended): ShipDefn
 	{
 		return world.defnExtended().shipDefnByName(this.defnName);
+	}
+
+	die(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var place = uwpe.place as PlaceCombat;
+		var entityShipToDie = uwpe.entity;
+
+		var ship = EntityExtensions.ship(entityShipToDie);
+		var combat = place.combat;
+		ArrayHelper.remove(combat.shipsFighting, ship);
+		var shipGroups = combat.shipGroups;
+
+		for (var g = 0; g < shipGroups.length; g++)
+		{
+			var shipGroup = shipGroups[g];
+			if (ArrayHelper.contains(shipGroup.ships, ship))
+			{
+				ArrayHelper.remove(shipGroup.ships, ship);
+			}
+		}
+
+		var visualToRecycle =
+			entityShipToDie.drawable().visual as VisualWrapped;
+		visualToRecycle.child =
+			VisualCircle.fromRadiusAndColorFill(32, Color.byName("Red"));
+
+		entityShipToDie.locatable().loc.vel.clear();
+
+		var entityExplosion = new Entity
+		(
+			"Explosion",
+			[
+				new Ephemeral(64, place.roundOver),
+				Drawable.fromVisual(visualToRecycle),
+				entityShipToDie.locatable(),
+			]
+		);
+
+		place.entitiesToSpawn.push(entityExplosion);
 	}
 
 	energyCurrentOverMax(world: WorldExtended): string
@@ -246,6 +303,65 @@ class Ship implements EntityProperty<Ship>
 		return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
 	}
 
+	toEntity(uwpe: UniverseWorldPlaceEntities): Entity
+	{
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place as PlaceCombat;
+
+		var actor = Actor.default();
+
+		var entityDimension = 32; // todo
+		var shipCollider = new Sphere(Coords.zeroes(), entityDimension / 2);
+		var collidable = new Collidable
+		(
+			false, // canCollideAgainWithoutSeparating
+			null, // ticks
+			shipCollider,
+			[ Collidable.name ], // entityPropertyNamesToCollideWith
+			this.collide
+		);
+
+		var constraintWrapToRange = new Constraint_WrapToPlaceSize();
+		var constrainable = new Constrainable([constraintWrapToRange]);
+
+		var defn = this.defn(world);
+		var shipVisualBody = defn.visual;
+		var shipVisual = new VisualWrapped
+		(
+			place.size, shipVisualBody
+		);
+		var drawable = Drawable.fromVisual(shipVisual);
+
+		var itemHolder = ItemHolder.create();
+
+		var killable = new Killable(this.crew, null, this.die);
+
+		var shipPos = Coords.create();
+		var shipLoc = Disposition.fromPos(shipPos);
+		var locatable = new Locatable(shipLoc);
+
+		var shipEntityProperties = new Array<EntityPropertyBase>
+		(
+			actor,
+			collidable,
+			constrainable,
+			drawable,
+			itemHolder,
+			killable,
+			locatable,
+			this
+		);
+
+		var shipEntity = new Entity
+		(
+			this.name,
+			shipEntityProperties
+		);
+
+		return shipEntity;
+	}
+
+
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void
@@ -255,9 +371,9 @@ class Ship implements EntityProperty<Ship>
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = uwpe.world;
+		var world = uwpe.world as WorldExtended;
 
-		var defn = this.defn(world as WorldExtended);
+		var defn = this.defn(world);
 
 		if (this.crew == null)
 		{
@@ -386,11 +502,11 @@ class Ship implements EntityProperty<Ship>
 					"labelName",
 					Coords.fromXY
 					(
-						containerShipSize.x / 2,
-						marginSize.y + labelSizeShort.y / 2
+						marginSize.x,
+						marginSize.y
 					), // pos
 					labelSizeShort,
-					true, // isTextCentered
+					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(defn.factionName),
 					fontHeightShort

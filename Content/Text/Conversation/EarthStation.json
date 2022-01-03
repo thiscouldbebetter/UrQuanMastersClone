@@ -19,7 +19,7 @@
 
 { "name": "#(WE_NEED_RADIOACTIVES)", "defnName": "Display" },
 { "defnName": "VariableSet", "content": "RadioactivesRequested", "next": "true" },
-{ "defnName": "VariableStore", "content": "RadioactivesRequested", "next": "u.world.player.vars.set('RadioactivesRequested',[value])" },
+{ "defnName": "VariableStore", "content": "RadioactivesRequested", "next": "u.world.player.vars.set('RadioactivesRequested',$value)" },
 { "name": "RadioactivesPlease", "defnName": "Option", "next": "#(PLEASE_JUST_BRING_US_RADIOACTIVES)", "content": "We're leaving now to find the fuel you need." },
 { "defnName": "Option", "next": "#(PLEASE_JUST_BRING_US_RADIOACTIVES)", "content": "We aren't running any errands for beggars." },
 { "defnName": "Option", "next": "Radioactives.Transfer", "content": "[Transfer the radioactives.]", "isDisabled":"u.world.player.flagship.itemHolder.hasItemWithDefnName('Radioactives') == false" },

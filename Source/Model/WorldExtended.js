@@ -24,6 +24,7 @@ class WorldExtended extends World {
             Lifeform.activityDefnAvoidPlayer(),
             ShipGroup.activityDefnDie(),
             Lifeform.activityDefnDoNothing(),
+            Planet.activityDefnGravitate(),
             ShipGroup.activityDefnLeave(),
             Lifeform.activityDefnMoveToRandomPosition()
         ];

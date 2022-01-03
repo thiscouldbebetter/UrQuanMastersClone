@@ -28,20 +28,14 @@ class SystemTests extends TestFixture {
         var player = place.entityByName(Player.name);
         Assert.isNotNull(player);
         // Move the player's ship to Earth.
-        var playerPos = player.locatable().loc.pos;
-        var planetEarthPos = planetEarth.locatable().loc.pos;
-        playerPos.overwriteWith(planetEarthPos);
+        this.playFromStart_MoveToEntityWithName(universe, "Earth");
         // Make sure the place transitions to a planet vicinity.
-        universe.updateForTimerTick();
         place = world.placeCurrent;
         var placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
         // Wait for the guard drone to approach the player
         // and initiate a conversation.
-        var ticksToWait = 1000;
-        for (var i = 0; i < ticksToWait; i++) {
-            universe.updateForTimerTick();
-        }
+        this.playFromStart_WaitForTicks(universe, 1000);
         var venue = universe.venueCurrent;
         var venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
@@ -62,58 +56,35 @@ class SystemTests extends TestFixture {
         // Move the player to the station.
         var station = place.entityByName(Station.name);
         Assert.isNotNull(station);
-        player = place.entityByName(Player.name);
-        playerPos = player.locatable().loc.pos;
-        var stationPos = station.locatable().loc.pos;
-        playerPos.overwriteWith(stationPos);
-        universe.updateForTimerTick();
+        this.playFromStart_MoveToEntityWithName(universe, Station.name);
+        // hack - Should these be necessary?
         universe.updateForTimerTick();
         universe.updateForTimerTick();
         // Talk to the station.
         venue = universe.venueCurrent;
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
-        var stationTalker = station.talker();
-        var conversationRun = stationTalker.conversationRun;
-        Assert.isNotNull(conversationRun);
-        conversationRun.nextUntilPrompt(universe);
-        conversationRun.optionSelectByNext("#(WE_NEED_RADIOACTIVES)");
-        conversationRun.nextUntilPrompt(universe);
-        conversationRun.optionSelectByNext("#(PLEASE_JUST_BRING_US_RADIOACTIVES)");
-        conversationRun.nextUntilPrompt(universe);
+        var talker = station.talker();
+        this.playFromStart_TalkToTalker(universe, talker, [
+            "#(WE_NEED_RADIOACTIVES)",
+            "#(PLEASE_JUST_BRING_US_RADIOACTIVES)"
+        ]);
         universe.updateForTimerTick();
         venue = universe.venueCurrent;
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueWorld.name, venueTypeName);
         // Move the player beyond the edge of the screen to exit the planet vicinity.
-        playerPos.overwriteWith(place.size).double();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
+        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
         // Move the player to Mercury.
-        var planetMercury = place.entityByName("Mercury");
-        var planetMercuryPos = planetMercury.locatable().loc.pos;
-        player = place.entityByName(Player.name);
-        playerPos = player.locatable().loc.pos;
-        playerPos.overwriteWith(planetMercuryPos);
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
+        this.playFromStart_MoveToEntityWithName(universe, "Mercury");
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
         // Orbit the planet.
-        place = world.placeCurrent;
-        player = place.entityByName(Player.name);
-        playerPos = player.locatable().loc.pos;
-        planetMercury = place.entityByName(Planet.name);
-        planetMercuryPos = planetMercury.locatable().loc.pos;
-        playerPos.overwriteWith(planetMercuryPos);
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
+        this.playFromStart_MoveToEntityWithName(universe, Planet.name);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetOrbit.name, placeTypeName);
@@ -129,13 +100,13 @@ class SystemTests extends TestFixture {
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetSurface.name, placeTypeName);
-        // Move to radioactives.
-        player = place.entityByName(Player.name);
-        playerPos = player.locatable().loc.pos;
-        var radioactives = place.entities.find(x => x.item() != null && x.item().defnName == "Radioactives");
-        var radioactivesPos = radioactives.locatable().loc.pos;
-        playerPos.overwriteWith(radioactivesPos);
-        universe.updateForTimerTick();
+        // Pick up enough resources to be sure to get the radioactives.
+        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
         // Launch and return to the ship in orbit.
         var placeSurface = place;
         placeSurface.exit(new UniverseWorldPlaceEntities(universe, world, placeSurface, null, null));
@@ -154,46 +125,112 @@ class SystemTests extends TestFixture {
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
         // Leave the Mercury vicinity and return to the Earth Station.
-        player = place.entityByName(Player.name);
-        playerPos = player.locatable().loc.pos;
-        playerPos.overwriteWith(place.size).double();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
+        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
-        player = place.entityByName(Player.name);
-        playerPos = player.locatable().loc.pos;
-        playerPos.overwriteWith(planetEarthPos);
-        universe.updateForTimerTick();
+        this.playFromStart_MoveToEntityWithName(universe, "Earth");
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
+        this.playFromStart_MoveToEntityWithName(universe, Station.name);
+        venue = universe.venueCurrent;
+        venueTypeName = venue.constructor.name;
+        Assert.areStringsEqual(VenueControls.name, venueTypeName);
+        // Talk to the station commander.
+        station = place.entityByName(Station.name);
+        talker = station.talker();
+        this.playFromStart_TalkToTalker(universe, talker, [
+            "Radioactives.Yes",
+            "FightTheLahkemup",
+            null,
+            null,
+            null,
+            null,
+            "Goodbye"
+        ]);
         universe.updateForTimerTick();
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
-        player = place.entityByName(Player.name);
-        playerPos = player.locatable().loc.pos;
-        playerPos.overwriteWith(stationPos);
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
-        venue = universe.venueCurrent;
-        venueTypeName = venue.constructor.name;
-        Assert.areStringsEqual(VenueControls.name, venueTypeName);
-        station = place.entityByName(Station.name);
-        stationTalker = station.talker();
-        conversationRun = stationTalker.conversationRun;
-        conversationRun.nextUntilPrompt(universe);
-        conversationRun.optionSelectByNext("Radioactives.Yes");
-        conversationRun.nextUntilPrompt(universe);
-        conversationRun.optionSelectByNext("FightTheLahkemup");
-        conversationRun.nextUntilPrompt(universe);
-        conversationRun.optionSelectByNext("Goodbye");
-        conversationRun.nextUntilPrompt(universe);
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
+        // Leave the Sol system and go to hyperspace.
+        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
+        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
-        Assert.areStringsEqual(PlaceStationDock.name, placeTypeName);
+        Assert.areStringsEqual(PlaceHyperspace.name, placeTypeName);
+        // Wait to be accosted by a probe.
+        this.playFromStart_WaitForTicks(universe, 1000);
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlaceEncounter.name, placeTypeName);
+        var placeEncounter = place;
+        placeEncounter.encounter.talk(universe);
+        universe.updateForTimerTick();
+        // Talk to the probe.
+        var encounter = placeEncounter.encounter;
+        var entityOther = encounter.entityOther;
+        talker = entityOther.talker();
+        this.playFromStart_TalkToTalker(universe, talker, [null] // Doesn't matter what you say.
+        );
+        universe.updateForTimerTick();
+        // The probe attacks.
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlaceCombat.name, placeTypeName);
+        // todo
+        // Destroy the probe (by cheating, in this test).
+        // Verify that resources were gained.
+        // Go to another starsystem.
+        // Gather resources.
+        // Gather lifeforms.
+        // Return to Earth station.
+    }
+    playFromStart_LeavePlanetVicinityOrStarsystem(universe) {
+        var place = universe.world.placeCurrent;
+        var player = place.entityByName(Player.name);
+        var playerPos = player.locatable().loc.pos;
+        playerPos.overwriteWith(place.size).double();
+        universe.updateForTimerTick();
+        universe.updateForTimerTick(); // hack - Why does this take two ticks?
+    }
+    playFromStart_MoveToEntityWithName(universe, targetEntityName) {
+        var place = universe.world.placeCurrent;
+        var player = place.entityByName(Player.name);
+        var playerPos = player.locatable().loc.pos;
+        var target = place.entityByName(targetEntityName);
+        if (target == null) {
+            target =
+                place.entities.find((x) => x.name.startsWith(targetEntityName));
+        }
+        if (target != null) {
+            var targetPos = target.locatable().loc.pos;
+            playerPos.overwriteWith(targetPos);
+        }
+        // hack
+        // Only need this many sometimes.
+        // Why do we ever need more than one?
+        universe.updateForTimerTick();
+        universe.updateForTimerTick();
+        universe.updateForTimerTick();
+    }
+    playFromStart_TalkToTalker(universe, talker, optionsToSelect) {
+        var conversationRun = talker.conversationRun;
+        conversationRun.nextUntilPrompt(universe);
+        for (var i = 0; i < optionsToSelect.length; i++) {
+            var optionToSelect = optionsToSelect[i];
+            if (optionToSelect == null) {
+                conversationRun.optionSelectNext();
+            }
+            else {
+                conversationRun.optionSelectByNext(optionToSelect);
+            }
+            conversationRun.nextUntilPrompt(universe);
+        }
+    }
+    playFromStart_WaitForTicks(universe, ticksToWait) {
+        for (var i = 0; i < ticksToWait; i++) {
+            universe.updateForTimerTick();
+        }
     }
 }

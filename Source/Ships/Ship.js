@@ -2,6 +2,13 @@
 class Ship {
     constructor(defnName) {
         this.defnName = defnName;
+        this.name =
+            "Ship " + ("" + Math.random()).split(".").join(""); // todo
+        this.captainName =
+            "Captain " + ("" + Math.random()).split(".").join(""); // todo
+    }
+    static fromEntity(shipEntity) {
+        return shipEntity.propertyByName(Ship.name);
     }
     // static methods
     static actionAccelerate() {
@@ -118,11 +125,38 @@ class Ship {
         return ships;
     }
     // instance methods
+    collide(uwpe) {
+        // todo
+    }
     crewCurrentOverMax(world) {
         return this.crew + "/" + this.defn(world).crewMax;
     }
     defn(world) {
         return world.defnExtended().shipDefnByName(this.defnName);
+    }
+    die(uwpe) {
+        var place = uwpe.place;
+        var entityShipToDie = uwpe.entity;
+        var ship = EntityExtensions.ship(entityShipToDie);
+        var combat = place.combat;
+        ArrayHelper.remove(combat.shipsFighting, ship);
+        var shipGroups = combat.shipGroups;
+        for (var g = 0; g < shipGroups.length; g++) {
+            var shipGroup = shipGroups[g];
+            if (ArrayHelper.contains(shipGroup.ships, ship)) {
+                ArrayHelper.remove(shipGroup.ships, ship);
+            }
+        }
+        var visualToRecycle = entityShipToDie.drawable().visual;
+        visualToRecycle.child =
+            VisualCircle.fromRadiusAndColorFill(32, Color.byName("Red"));
+        entityShipToDie.locatable().loc.vel.clear();
+        var entityExplosion = new Entity("Explosion", [
+            new Ephemeral(64, place.roundOver),
+            Drawable.fromVisual(visualToRecycle),
+            entityShipToDie.locatable(),
+        ]);
+        place.entitiesToSpawn.push(entityExplosion);
     }
     energyCurrentOverMax(world) {
         return Math.floor(this.energy) + "/" + this.defn(world).energyMax;
@@ -132,6 +166,31 @@ class Ship {
     }
     fullNameAndCrew(world) {
         return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
+    }
+    toEntity(uwpe) {
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var actor = Actor.default();
+        var entityDimension = 32; // todo
+        var shipCollider = new Sphere(Coords.zeroes(), entityDimension / 2);
+        var collidable = new Collidable(false, // canCollideAgainWithoutSeparating
+        null, // ticks
+        shipCollider, [Collidable.name], // entityPropertyNamesToCollideWith
+        this.collide);
+        var constraintWrapToRange = new Constraint_WrapToPlaceSize();
+        var constrainable = new Constrainable([constraintWrapToRange]);
+        var defn = this.defn(world);
+        var shipVisualBody = defn.visual;
+        var shipVisual = new VisualWrapped(place.size, shipVisualBody);
+        var drawable = Drawable.fromVisual(shipVisual);
+        var itemHolder = ItemHolder.create();
+        var killable = new Killable(this.crew, null, this.die);
+        var shipPos = Coords.create();
+        var shipLoc = Disposition.fromPos(shipPos);
+        var locatable = new Locatable(shipLoc);
+        var shipEntityProperties = new Array(actor, collidable, constrainable, drawable, itemHolder, killable, locatable, this);
+        var shipEntity = new Entity(this.name, shipEntityProperties);
+        return shipEntity;
     }
     // EntityProperty.
     finalize(uwpe) {
@@ -201,8 +260,8 @@ class Ship {
         var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
         var defn = this.defn(world);
         var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, [
-            new ControlLabel("labelName", Coords.fromXY(containerShipSize.x / 2, marginSize.y + labelSizeShort.y / 2), // pos
-            labelSizeShort, true, // isTextCentered
+            new ControlLabel("labelName", Coords.fromXY(marginSize.x, marginSize.y), // pos
+            labelSizeShort, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext(defn.factionName), fontHeightShort),
             new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos

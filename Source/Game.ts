@@ -117,7 +117,10 @@ class Game
 				new TextString(conversation + "Raptor", conversationPlaceholderPath),
 				new TextString(conversation + "Silikonix", conversationPlaceholderPath),
 				new TextString(conversation + "Supial", conversationPlaceholderPath),
-				new TextString(conversation + "Tempestrial", conversationPlaceholderPath),
+
+				new TextString(conversation + "Tempestrial", conversationDirectory + "Tempestrial.json"),
+				new TextString(conversation + "Tempestrial" + content, contentPathPrefixComms + "probe/probe.txt"),
+
 				new TextString(conversation + "Triunion", conversationPlaceholderPath),
 				new TextString(conversation + "Twyggan", conversationPlaceholderPath),
 				new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),

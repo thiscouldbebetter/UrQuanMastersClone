@@ -23,6 +23,30 @@ class Planet {
     static from6(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites) {
         return new Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null);
     }
+    static activityDefnGravitate() {
+        return new ActivityDefn("Gravitate", Planet.activityGravitatePerform);
+    }
+    static activityGravitatePerform(uwpe) {
+        var place = uwpe.place;
+        var actor = uwpe.entity;
+        var planet = actor;
+        var planetPos = planet.locatable().loc.pos;
+        var entitiesShips = place.entitiesByPropertyName(Ship.name);
+        for (var i = 0; i < entitiesShips.length; i++) {
+            var ship = entitiesShips[i];
+            var shipLoc = ship.locatable().loc;
+            var shipPos = shipLoc.pos;
+            var displacement = shipPos.clone().subtractWrappedToRangeMax(planetPos, place.size);
+            var distance = displacement.magnitude();
+            if (distance > 0) {
+                var direction = displacement.divideScalar(distance);
+                var graviticConstant = -100;
+                var accelerationMagnitude = graviticConstant / (distance * distance);
+                var accelToAdd = direction.multiplyScalar(accelerationMagnitude);
+                shipLoc.accel.add(accelToAdd);
+            }
+        }
+    }
     // instance methods
     defn() {
         return PlanetDefn.byName(this.defnName);
