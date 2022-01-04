@@ -6,7 +6,11 @@ class ShipGroup {
         this.pos = pos;
         this.ships = ships;
         this.shipSelected = this.ships[0];
+        this.shipsLost = [];
         this._posInverted = Coords.create();
+    }
+    static fromEntity(entity) {
+        return entity.propertyByName(ShipGroup.name);
     }
     static activityDefnApproachPlayer() {
         return new ActivityDefn("Ship_ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform);

@@ -43,7 +43,7 @@ class Combat
 		var place = uwpe.place as PlaceCombat;
 		var actor = uwpe.entity;
 
-		var actorShip = EntityExtensions.ship(actor);
+		var actorShip = Ship.fromEntity(actor);
 
 		var entitiesShips = place.entitiesShips();
 		var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
@@ -79,9 +79,18 @@ class Combat
 		actorShip.accelerate(world, actor);
 	}
 
-	exit(universe: Universe)
+	exit(universe: Universe): void
 	{
-		var world = universe.world;
+		var world = universe.world as WorldExtended;
+		var shipsDestroyed = this.shipGroups[1].shipsLost;
+		var creditsForShipsDestroyed = 0;
+		shipsDestroyed.forEach
+		(
+			x => creditsForShipsDestroyed += x.defn(world).value
+		);
+		var player = world.player;
+		player.credit += creditsForShipsDestroyed;
+
 		world.placeNext = this.encounter.placeToReturnTo;
 		universe.venueNext = new VenueWorld(world);
 	}
@@ -177,19 +186,36 @@ class Combat
 
 	toControlDebriefing(universe: Universe, size: Coords): ControlBase
 	{
-		var numberOfShipsLost = 0; // todo
-		var numberOfShipsDestroyed = 1;
-		var numberOfCreditsSalvaged = 550;
+		var world = universe.world as WorldExtended;
+
+		var shipsLost = this.shipGroups[0].shipsLost;
+		var shipsDestroyed = this.shipGroups[1].shipsLost;
+
+		var numberOfShipsLost = shipsLost.length;
+		var numberOfShipsDestroyed = shipsDestroyed.length;
+
+		var creditsSalvaged = 0;
+		shipsDestroyed.forEach
+		(
+			x => creditsSalvaged += x.defn(world).value
+		);
+
+		shipsLost.length = 0;
+		shipsDestroyed.length = 0;
 
 		var message =
 			"Combat complete.\n"
 			+ numberOfShipsLost + " ships lost.\n"
 			+ numberOfShipsDestroyed + " ships destroyed.\n"
-			+ numberOfCreditsSalvaged + " credits worth of resources salvaged.\n";
+			+ creditsSalvaged + " credits worth of resources salvaged.\n";
 
 		var returnValue = universe.controlBuilder.message
 		(
-			universe, size, DataBinding.fromContext(message), this.exit.bind(this), null
+			universe,
+			size,
+			DataBinding.fromContext(message),
+			() => this.exit(universe),
+			null
 		);
 		return returnValue;
 	}

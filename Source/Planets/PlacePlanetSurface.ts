@@ -284,7 +284,7 @@ class PlacePlanetSurface extends Place
 		var entityOtherName = entityOther.name;
 		var entityOtherItem = entityOther.item();
 		var entityOtherEnergySource =
-			EntityExtensions.energySource(entityOther);
+			EnergySource.fromEntity(entityOther);
 
 		if (entityOtherItem != null)
 		{

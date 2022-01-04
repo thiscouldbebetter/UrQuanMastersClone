@@ -136,7 +136,7 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		var entityProjectile = uwpe.entity;
 		var entityOther = uwpe.entity2;
 
-		var ship = EntityExtensions.ship(entityProjectile);
+		var ship = Ship.fromEntity(entityProjectile);
 		var shipDefn = ship.defn(world);
 		var attackDefn = shipDefn.attackDefn;
 
@@ -166,7 +166,7 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		{
 			var projectileDamagePerHit = attackDefn.damage;
 			entityOtherKillable.integrity -= projectileDamagePerHit;
-			var entityOtherShip = EntityExtensions.ship(entityOther);
+			var entityOtherShip = Ship.fromEntity(entityOther);
 			if (entityOtherShip != null)
 			{
 				entityOtherShip.crew = entityOtherKillable.integrity;

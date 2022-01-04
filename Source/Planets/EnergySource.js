@@ -6,6 +6,9 @@ class EnergySource {
         this.visual = visual;
         this.collideWithLander = collideWithLander;
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(EnergySource.name);
+    }
     toEntity(world, place) {
         var visual = VisualCircle.fromRadiusAndColorFill(10, Color.byName("Cyan"));
         visual = new VisualWrapped(place.size, visual);

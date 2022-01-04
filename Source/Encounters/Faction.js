@@ -11,6 +11,9 @@ class Faction {
         this.shipDefnName = shipDefnName;
         this.shipGroupActivity = shipGroupActivity;
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(Faction.name);
+    }
     starsystems(world) {
         // Tersely-named alias method.
         return this.starsystemsInSphereOfInfluence(world);

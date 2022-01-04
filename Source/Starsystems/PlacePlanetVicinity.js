@@ -115,7 +115,7 @@ class PlacePlanetVicinity extends Place {
                 var entity = uwpe.entity;
                 place.entityRemove(entity);
                 var planet = place.planet;
-                var shipGroup = EntityExtensions.shipGroup(entity);
+                var shipGroup = ShipGroup.fromEntity(entity);
                 ArrayHelper.remove(planet.shipGroups, shipGroup);
             };
             var enemyKillable = new Killable(1, null, enemyKill);
@@ -180,9 +180,9 @@ class PlacePlanetVicinity extends Place {
             world.placeNext = starsystem.toPlace(world, dispositionNext, planet);
         }
         else {
-            var entityOtherPlanet = EntityExtensions.planet(entityOther);
-            var entityOtherShipGroup = EntityExtensions.shipGroup(entityOther);
-            var entityOtherStation = EntityExtensions.station(entityOther);
+            var entityOtherPlanet = Planet.fromEntity(entityOther);
+            var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+            var entityOtherStation = Station.fromEntity(entityOther);
             if (entityOtherPlanet != null) {
                 var playerLoc = entityPlayer.locatable().loc;
                 var planetPos = entityOther.locatable().loc.pos;

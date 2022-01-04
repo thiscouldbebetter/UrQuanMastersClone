@@ -42,6 +42,11 @@ class Starsystem implements EntityProperty<Starsystem>
 		"White",
 	].map(x => Color.byName(x));
 
+	static fromEntity(entity: Entity): Starsystem
+	{
+		return entity.propertyByName(Starsystem.name) as Starsystem;
+	}
+
 	solarSystem(): void
 	{
 		this.name = "Sol";

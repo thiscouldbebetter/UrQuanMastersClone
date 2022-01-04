@@ -47,6 +47,9 @@ class Planet {
             }
         }
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(Planet.name);
+    }
     // instance methods
     defn() {
         return PlanetDefn.byName(this.defnName);

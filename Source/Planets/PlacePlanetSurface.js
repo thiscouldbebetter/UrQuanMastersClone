@@ -150,7 +150,7 @@ class PlacePlanetSurface extends Place {
         var lander = Lander.fromEntity(entityPlayer);
         var entityOtherName = entityOther.name;
         var entityOtherItem = entityOther.item();
-        var entityOtherEnergySource = EntityExtensions.energySource(entityOther);
+        var entityOtherEnergySource = EnergySource.fromEntity(entityOther);
         if (entityOtherItem != null) {
             var itemHolder = null;
             if (entityOtherName.startsWith(Resource.name)) {

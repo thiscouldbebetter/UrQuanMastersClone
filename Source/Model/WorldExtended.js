@@ -34,6 +34,7 @@ class WorldExtended extends World {
             Actor.name,
             Damager.name,
             Ephemeral.name,
+            Killable.name,
             Playable.name,
             Locatable.name,
             Constrainable.name,
@@ -140,6 +141,14 @@ class WorldExtended extends World {
         Coords.fromXY(300, 300), factions, starsAndPlanetsAsStringCSVCompressed);
         var starsystemStart = hyperspace.starsystemByName("Sol");
         starsystemStart.solarSystem(); // todo
+        var starsystems = hyperspace.starsystems;
+        var starsystemsSupergiant = starsystems.filter(x => false);
+        starsystemsSupergiant.forEach(starsystem => {
+            var shipGroup = new ShipGroup(factionMurch.name + " " + ShipGroup.name, factionMurch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), [
+                new Ship(factionMurch.shipDefnName)
+            ]);
+            starsystem.shipGroups.push(shipGroup);
+        });
         var playerShipDefnName = "Flagship";
         var playerShip = new Ship(playerShipDefnName);
         var shipDefns = ShipDefn.Instances(universe)._All;

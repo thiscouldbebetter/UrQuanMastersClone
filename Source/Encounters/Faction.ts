@@ -13,10 +13,15 @@ class Faction implements EntityPropertyBase
 
 	constructor
 	(
-		name: string, nameOriginal: string, color: Color,
-		relationsWithPlayer: string, talksImmediately: boolean,
-		conversationDefnName: string, sphereOfInfluence: Sphere,
-		shipDefnName: string, shipGroupActivity: Activity
+		name: string,
+		nameOriginal: string,
+		color: Color,
+		relationsWithPlayer: string,
+		talksImmediately: boolean,
+		conversationDefnName: string,
+		sphereOfInfluence: Sphere,
+		shipDefnName: string,
+		shipGroupActivity: Activity
 	)
 	{
 		this.name = name;
@@ -33,6 +38,11 @@ class Faction implements EntityPropertyBase
 	static RelationsAllied = "Allied";
 	static RelationsHostile = "Hostile";
 	static RelationsNeutral = "Neutral";
+
+	static fromEntity(entity: Entity): Faction
+	{
+		return entity.propertyByName(Faction.name) as Faction;
+	}
 
 	starsystems(world: WorldExtended): Starsystem[]
 	{

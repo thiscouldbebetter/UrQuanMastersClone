@@ -23,6 +23,11 @@ class Station implements EntityProperty<Station>, Satellite
 		this.posAsPolar = posAsPolar;
 	}
 
+	static fromEntity(entity: Entity): Station
+	{
+		return entity.propertyByName(Station.name) as Station;
+	}
+
 	faction(world: WorldExtended): Faction
 	{
 		return world.defnExtended().factionByName(this.factionName);

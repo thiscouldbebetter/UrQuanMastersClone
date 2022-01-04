@@ -123,6 +123,11 @@ class Planet implements EntityProperty<Planet>, Satellite
 		}
 	}
 
+	static fromEntity(entity: Entity): Planet
+	{
+		return entity.propertyByName(Planet.name) as Planet;
+	}
+
 	// instance methods
 
 	defn(): PlanetDefn

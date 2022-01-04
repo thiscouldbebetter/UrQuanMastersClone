@@ -7,6 +7,9 @@ class Station {
         this.factionName = factionName;
         this.posAsPolar = posAsPolar;
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(Station.name);
+    }
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
     }

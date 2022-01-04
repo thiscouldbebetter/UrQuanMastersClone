@@ -10,6 +10,9 @@ class Starsystem {
         this.planets = planets;
         this.shipGroups = shipGroups;
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(Starsystem.name);
+    }
     solarSystem() {
         this.name = "Sol";
         var radiusBase = 5;

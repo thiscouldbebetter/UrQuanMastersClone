@@ -76,7 +76,7 @@ class PlaceStarsystem extends Place {
                 playerShipGroup
             ]);
             if (planetDeparted != null) {
-                var entityForPlanetDeparted = entities.filter(x => EntityExtensions.planet(x) == planetDeparted)[0];
+                var entityForPlanetDeparted = entities.filter(x => Planet.fromEntity(x) == planetDeparted)[0];
                 playerCollidable.entitiesAlreadyCollidedWith.push(entityForPlanetDeparted);
             }
             entities.push(playerEntity);
@@ -107,7 +107,7 @@ class PlaceStarsystem extends Place {
                 var entity = uwpe.entity;
                 place.entityRemove(entity);
                 var starsystem = place.starsystem;
-                var shipGroup = EntityExtensions.shipGroup(entity);
+                var shipGroup = ShipGroup.fromEntity(entity);
                 ArrayHelper.remove(starsystem.shipGroups, shipGroup);
             };
             var enemyActivityDefnPerform = (uwpe) => // activity
@@ -169,7 +169,7 @@ class PlaceStarsystem extends Place {
         var entityOther = uwpe.entity2;
         var entityOtherName = entityOther.name;
         if (entityOtherName.startsWith("Enemy")) {
-            var shipGroupOther = EntityExtensions.shipGroup(entityOther);
+            var shipGroupOther = ShipGroup.fromEntity(entityOther);
             var encounter = new Encounter(ArrayHelper.random(place.starsystem.planets, universe.randomizer), shipGroupOther.factionName, entityPlayer, entityOther, place, entityPlayer.locatable().loc.pos);
             var placeEncounter = new PlaceEncounter(world, encounter);
             world.placeNext = placeEncounter;
@@ -185,7 +185,7 @@ class PlaceStarsystem extends Place {
             // Do nothing.
         }
         else {
-            var entityOtherPlanet = EntityExtensions.planet(entityOther);
+            var entityOtherPlanet = Planet.fromEntity(entityOther);
             if (entityOtherPlanet != null) {
                 entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
                 var planet = entityOtherPlanet;

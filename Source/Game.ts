@@ -93,11 +93,11 @@ class Game
 				//new TextString("Instructions", "../Content/Text/Instructions.txt"),
 				new TextString("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
 
+				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
+				new TextString(conversation + "EarthStation" + content, conversationDirectory + "EarthStation-Content.txt"),
 				new TextString(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
 				new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
 				new TextString(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
-				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
-				new TextString(conversation + "EarthStation" + content, conversationDirectory + "EarthStation-Content.txt"),
 
 				new TextString("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
 
@@ -112,7 +112,10 @@ class Game
 				new TextString(conversation + "Moroz", conversationPlaceholderPath),
 				new TextString(conversation + "Muuncaf", conversationPlaceholderPath),
 				new TextString(conversation + "Mazonae", conversationPlaceholderPath),
-				new TextString(conversation + "Murch", conversationPlaceholderPath),
+
+				new TextString(conversation + "Murch", conversationDirectory + "Murch.json"),
+				new TextString(conversation + "Murch" + content, contentPathPrefixComms + "melnorme/melnorme.txt"),
+
 				new TextString(conversation + "Outsider", conversationPlaceholderPath),
 				new TextString(conversation + "Raptor", conversationPlaceholderPath),
 				new TextString(conversation + "Silikonix", conversationPlaceholderPath),

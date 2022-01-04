@@ -156,13 +156,13 @@ class PlaceHyperspace extends Place {
     }
     factionShipGroupSpawnIfNeeded(universe, world, placeAsPlace, entityPlayer, entityOther) {
         var place = placeAsPlace;
-        var faction = EntityExtensions.faction(entityOther);
+        var faction = Faction.fromEntity(entityOther);
         var factionName = faction.name;
         var numberOfShipGroupsExistingForFaction = 0;
         var entitiesShipGroupsAll = place.entitiesShipGroups();
         for (var i = 0; i < entitiesShipGroupsAll.length; i++) {
             var entityShipGroup = entitiesShipGroupsAll[i];
-            var shipGroup = EntityExtensions.shipGroup(entityShipGroup);
+            var shipGroup = ShipGroup.fromEntity(entityShipGroup);
             if (shipGroup.factionName == factionName) {
                 numberOfShipGroupsExistingForFaction++;
             }
@@ -185,9 +185,9 @@ class PlaceHyperspace extends Place {
         var place = uwpe.place;
         var entityPlayer = uwpe.entity;
         var entityOther = uwpe.entity2;
-        var entityOtherStarsystem = EntityExtensions.starsystem(entityOther);
-        var entityOtherShipGroup = EntityExtensions.shipGroup(entityOther);
-        var entityOtherFaction = EntityExtensions.faction(entityOther);
+        var entityOtherStarsystem = Starsystem.fromEntity(entityOther);
+        var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+        var entityOtherFaction = Faction.fromEntity(entityOther);
         if (entityOtherStarsystem != null) {
             var starsystem = entityOtherStarsystem;
             var playerLoc = entityPlayer.locatable().loc;

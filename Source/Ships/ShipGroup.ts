@@ -7,6 +7,7 @@ class ShipGroup implements EntityPropertyBase
 	ships: Ship[];
 
 	shipSelected: Ship;
+	shipsLost: Ship[];
 
 	_posInverted: Coords;
 
@@ -18,8 +19,14 @@ class ShipGroup implements EntityPropertyBase
 		this.ships = ships;
 
 		this.shipSelected = this.ships[0];
+		this.shipsLost = [];
 
 		this._posInverted = Coords.create();
+	}
+
+	static fromEntity(entity: Entity): ShipGroup
+	{
+		return entity.propertyByName(ShipGroup.name) as ShipGroup;
 	}
 
 	static activityDefnApproachPlayer(): ActivityDefn

@@ -40,7 +40,7 @@ class Ship implements EntityProperty<Ship>
 				var world = uwpe.world as WorldExtended;
 				var actor = uwpe.entity;
 
-				var ship = EntityExtensions.ship(actor);
+				var ship = Ship.fromEntity(actor);
 				ship.accelerate(world, actor);
 			}
 		);
@@ -58,7 +58,7 @@ class Ship implements EntityProperty<Ship>
 				var place = uwpe.place;
 				var actor = uwpe.entity;
 
-				var ship = EntityExtensions.ship(actor);
+				var ship = Ship.fromEntity(actor);
 				var shipDefn = ship.defn(world);
 				var attackDefn = shipDefn.attackDefn;
 				if (ship.energy >= attackDefn.energyToUse)
@@ -84,7 +84,7 @@ class Ship implements EntityProperty<Ship>
 				var place = uwpe.place;
 				var actor = uwpe.entity;
 
-				var ship = EntityExtensions.ship(actor);
+				var ship = Ship.fromEntity(actor);
 				var shipDefn = ship.defn(world);
 				var specialDefn = shipDefn.specialDefn;
 				if (ship.energy >= specialDefn.energyToUse)
@@ -130,7 +130,7 @@ class Ship implements EntityProperty<Ship>
 				var world = uwpe.world as WorldExtended;
 				var actor = uwpe.entity;
 
-				EntityExtensions.ship(actor).turnLeft(world, actor);
+				Ship.fromEntity(actor).turnLeft(world, actor);
 			}
 		);
 	}
@@ -144,8 +144,8 @@ class Ship implements EntityProperty<Ship>
 			{
 				var world = uwpe.world as WorldExtended;
 				var actor = uwpe.entity;
-				
-				EntityExtensions.ship(actor).turnRight(world, actor);
+
+				Ship.fromEntity(actor).turnRight(world, actor);
 			}
 		);
 	}
@@ -179,7 +179,7 @@ class Ship implements EntityProperty<Ship>
 		var targetDisplacement = targetPos.clone().subtract(actorPos);
 
 		var targetDistance = targetDisplacement.magnitude();
-		var ship = EntityExtensions.ship(actor);
+		var ship = Ship.fromEntity(actor);
 
 		if (targetDistance < ship.defn(world).sensorRange)
 		{
@@ -254,7 +254,7 @@ class Ship implements EntityProperty<Ship>
 		var place = uwpe.place as PlaceCombat;
 		var entityShipToDie = uwpe.entity;
 
-		var ship = EntityExtensions.ship(entityShipToDie);
+		var ship = Ship.fromEntity(entityShipToDie);
 		var combat = place.combat;
 		ArrayHelper.remove(combat.shipsFighting, ship);
 		var shipGroups = combat.shipGroups;
@@ -265,6 +265,7 @@ class Ship implements EntityProperty<Ship>
 			if (ArrayHelper.contains(shipGroup.ships, ship))
 			{
 				ArrayHelper.remove(shipGroup.ships, ship);
+				shipGroup.shipsLost.push(ship);
 			}
 		}
 
@@ -387,7 +388,7 @@ class Ship implements EntityProperty<Ship>
 		var world = uwpe.world;
 		var entityShip = uwpe.entity;
 
-		var ship = EntityExtensions.ship(entityShip);
+		var ship = Ship.fromEntity(entityShip);
 		var shipDefn = ship.defn(world as WorldExtended);
 		ship.energy += shipDefn.energyPerTick;
 		if (ship.energy > shipDefn.energyMax)
@@ -400,12 +401,12 @@ class Ship implements EntityProperty<Ship>
 
 	accelerate(world: WorldExtended, entity: Entity): void
 	{
-		var entityShipGroup = EntityExtensions.shipGroup(entity);
+		var entityShipGroup = ShipGroup.fromEntity(entity);
 		var ship =
 		(
 			entityShipGroup != null
 			? entityShipGroup.ships[0]
-			: EntityExtensions.ship(entity)
+			: Ship.fromEntity(entity)
 		);
 		var shipDefn = ship.defn(world);
 		var shipLoc = entity.locatable().loc;
@@ -430,11 +431,11 @@ class Ship implements EntityProperty<Ship>
 		var entityLoc = entity.locatable().loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
-		var entityShip = EntityExtensions.ship(entity);
+		var entityShip = Ship.fromEntity(entity);
 		var ship =
 		(
 			entityShip == null
-			? EntityExtensions.shipGroup(entity).ships[0]
+			? ShipGroup.fromEntity(entity).ships[0]
 			: entityShip
 		);
 		var shipDefn = ship.defn(world);

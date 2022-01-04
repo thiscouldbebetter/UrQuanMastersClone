@@ -25,8 +25,8 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual("Sol", starsystemSol.name);
         var planetEarth = place.entityByName("Earth");
         Assert.isNotNull(planetEarth);
-        var player = place.entityByName(Player.name);
-        Assert.isNotNull(player);
+        var playerEntity = place.entityByName(Player.name);
+        Assert.isNotNull(playerEntity);
         // Move the player's ship to Earth.
         this.playFromStart_MoveToEntityWithName(universe, "Earth");
         // Make sure the place transitions to a planet vicinity.
@@ -89,7 +89,8 @@ class SystemTests extends TestFixture {
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetOrbit.name, placeTypeName);
         // Verify that the cargo hold contains no radioactives.
-        var playerItemHolder = world.player.flagship.itemHolder;
+        var player = world.player;
+        var playerItemHolder = player.flagship.itemHolder;
         var itemDefnNameRadioactives = "Radioactives";
         var radioactivesHeld = playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
         Assert.isNull(radioactivesHeld);
@@ -180,11 +181,69 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual(PlaceCombat.name, placeTypeName);
         // todo
         // Destroy the probe (by cheating, in this test).
-        // Verify that resources were gained.
-        // Go to another starsystem.
+        var placeCombat = place;
+        var combat = placeCombat.combat;
+        var shipGroupForPlayer = combat.shipGroups[0];
+        var shipForPlayer = shipGroupForPlayer.ships[0];
+        combat.shipsFighting[0] = shipForPlayer;
+        combat.fight(universe);
+        this.playFromStart_WaitForTicks(universe, 100);
+        var shipEnemy = combat.shipsFighting[1];
+        var shipEnemyAsEntity = placeCombat.entityByName(shipEnemy.name);
+        shipEnemyAsEntity.killable().kill();
+        this.playFromStart_WaitForTicks(universe, 100);
+        // Verify that we're seeing a briefing screen.
+        venue = universe.venueCurrent;
+        venueTypeName = venue.constructor.name;
+        Assert.areStringsEqual(VenueControls.name, venueTypeName);
+        var creditBefore = player.credit;
+        var venueControls = venue;
+        var containerChoice = venueControls.controlRoot;
+        var buttonAcknowledge = containerChoice.childByName("buttonAcknowledge");
+        buttonAcknowledge.click();
+        this.playFromStart_WaitForTicks(universe, 100);
+        // Verify that resources were salvaged from destroyed ship.
+        var creditAfter = player.credit;
+        Assert.isTrue(creditAfter > creditBefore);
+        // Verify that we're back in hyperspace.
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlaceHyperspace.name, placeTypeName);
+        // Go to the nearby Alpha Centauri starsystem.
+        this.playFromStart_MoveToEntityWithName(universe, "Alpha Centauri");
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
+        // Look for a Trader ship, in the main starsystem and in each planet vicinity.
+        var placeStarsystem = place;
+        var starsystem = placeStarsystem.starsystem;
+        var factionNameMurch = world.factionByName("Murch").name;
+        var shipGroupMurch = starsystem.shipGroups.find(x => x.factionName == factionNameMurch);
+        if (shipGroupMurch != null) {
+            var planets = starsystem.planets;
+            for (var i = 0; i < planets.length; i++) {
+                var planet = planets[i];
+                shipGroupMurch = planet.shipGroups.find(x => x.factionName == factionNameMurch);
+                if (shipGroupMurch != null) {
+                    this.playFromStart_MoveToEntityWithName(universe, planet.name);
+                    break;
+                }
+            }
+        }
+        var place = world.placeCurrent;
+        this.playFromStart_MoveToEntityWithName(universe, factionNameMurch);
         // Gather resources.
         // Gather lifeforms.
         // Return to Earth station.
+    }
+    playFromStart_FindEntityWithName(universe, targetEntityName) {
+        var place = universe.world.placeCurrent;
+        var targetFound = place.entityByName(targetEntityName);
+        if (targetFound == null) {
+            targetFound =
+                place.entities.find((x) => x.name.startsWith(targetEntityName));
+        }
+        return targetFound;
     }
     playFromStart_LeavePlanetVicinityOrStarsystem(universe) {
         var place = universe.world.placeCurrent;
@@ -198,11 +257,7 @@ class SystemTests extends TestFixture {
         var place = universe.world.placeCurrent;
         var player = place.entityByName(Player.name);
         var playerPos = player.locatable().loc.pos;
-        var target = place.entityByName(targetEntityName);
-        if (target == null) {
-            target =
-                place.entities.find((x) => x.name.startsWith(targetEntityName));
-        }
+        var target = this.playFromStart_FindEntityWithName(universe, targetEntityName);
         if (target != null) {
             var targetPos = target.locatable().loc.pos;
             playerPos.overwriteWith(targetPos);

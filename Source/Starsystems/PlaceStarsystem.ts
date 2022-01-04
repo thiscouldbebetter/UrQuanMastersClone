@@ -147,7 +147,7 @@ class PlaceStarsystem extends Place
 			if (planetDeparted != null)
 			{
 				var entityForPlanetDeparted =
-					entities.filter(x => EntityExtensions.planet(x) == planetDeparted)[0];
+					entities.filter(x => Planet.fromEntity(x) == planetDeparted)[0];
 				playerCollidable.entitiesAlreadyCollidedWith.push(entityForPlanetDeparted);
 			}
 
@@ -202,7 +202,7 @@ class PlaceStarsystem extends Place
 
 				place.entityRemove(entity);
 				var starsystem = (place as PlaceStarsystem).starsystem;
-				var shipGroup = EntityExtensions.shipGroup(entity);
+				var shipGroup = ShipGroup.fromEntity(entity);
 				ArrayHelper.remove(starsystem.shipGroups, shipGroup);
 			}
 
@@ -328,7 +328,7 @@ class PlaceStarsystem extends Place
 
 		if (entityOtherName.startsWith("Enemy"))
 		{
-			var shipGroupOther = EntityExtensions.shipGroup(entityOther);
+			var shipGroupOther = ShipGroup.fromEntity(entityOther);
 			var encounter = new Encounter
 			(
 				ArrayHelper.random(place.starsystem.planets, universe.randomizer),
@@ -365,7 +365,7 @@ class PlaceStarsystem extends Place
 		}
 		else
 		{
-			var entityOtherPlanet = EntityExtensions.planet(entityOther);
+			var entityOtherPlanet = Planet.fromEntity(entityOther);
 			if (entityOtherPlanet != null)
 			{
 				entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
