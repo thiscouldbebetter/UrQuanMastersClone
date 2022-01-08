@@ -179,6 +179,14 @@ class Game {
         else if (debuggingModeName == "Station") {
             this.debug_Station(universe);
         }
+        else if (debuggingModeName.startsWith("Talk")) {
+            if (debuggingModeName.endsWith("Murch")) {
+                this.debug_Talk_Murch(universe);
+            }
+            else {
+                throw new Error("Unrecognized debugging mode: " + debuggingModeName);
+            }
+        }
         universe.start();
     }
     debug_Combat(universe) {
@@ -306,5 +314,10 @@ class Game {
         var placePlanetVicinity = planetEarth.toPlace(universe.world);
         var placeStation = new PlaceStation(world, station, placePlanetVicinity);
         world.placeNext = placeStation;
+    }
+    debug_Talk_Murch(universe) {
+        var talker = new Talker("Conversation-Murch", null);
+        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, universe.world.placeCurrent, null, null);
+        talker.talk(uwpe);
     }
 }

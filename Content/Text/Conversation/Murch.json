@@ -1,68 +1,88 @@
 {
-    "name": "Placeholder",
+    "name": "Murch",
     "imageName": "Conversation",
     "contentTextStringName": "Conversation-Murch-Content",
     "talkNodes": [
 
-{ "defnName": "Random" },
-{ "defnName": "Display", "content": "#(HELLO_NOW_DOWN_TO_BUSINESS_1)" },
-{ "defnName": "Display", "content": "#(HELLO_NOW_DOWN_TO_BUSINESS_2)" },
-{ "defnName": "Display", "content": "#(HELLO_NOW_DOWN_TO_BUSINESS_3)" },
+{ "defnName": "VariableLoad", "content": "Murch_TimesGreeted", "next": "u.world.player.varGetWithDefault('Murch_TimesGreeted', 0)" },
+{ "defnName": "Display", "content": "#(HELLO_NOW_DOWN_TO_BUSINESS_1)", "isDisabled": "cr.varGet('Murch_TimesGreeted') != 0" },
+{ "defnName": "Display", "content": "#(HELLO_NOW_DOWN_TO_BUSINESS_2)", "isDisabled": "cr.varGet('Murch_TimesGreeted') != 1" },
+{ "defnName": "Display", "content": "#(HELLO_NOW_DOWN_TO_BUSINESS_3)", "isDisabled": "cr.varGet('Murch_TimesGreeted') < 2" },
+{ "defnName": "Display", "content": "#(KNOW_OF_YOU)", "isDisabled": "cr.varGet('Murch_TimesGreeted') != 0"},
 
-{ "defnName": "Display", "content": "#(KNOW_OF_YOU)" },
+{ "defnName": "Option", "content": "#(how_know)", "next": "#(KNOW_BECAUSE)", "isDisabled": "cr.varGet('Murch_TimesGreeted') != 0" },
+{ "defnName": "Prompt" },
+{ "name": "#(KNOW_BECAUSE)", "defnName": "Display", "content": "#(KNOW_BECAUSE)" },
+{ "defnName": "Disable", "next": "#(how_know)" },
 
-{ "defnName": "Option", "content": "#(how_know)" },
-{ "defnName": "Option", "content": "#(what_about_yourselves)" },
-{ "defnName": "Option", "content": "#(what_factors)" },
-{ "defnName": "Option", "content": "#(what_about_universe)" },
-{ "defnName": "Option", "content": "#(giving_is_good_1)" },
-{ "defnName": "Option", "content": "#(get_on_with_business)" },
-{ "defnName": "Option", "content": "#(trade_is_for_the_weak)" },
-{ "defnName": "Option", "content": "#(no_trade_now)" },
+{ "defnName": "DoNothing", "name": "Questions" },
+
+{ "defnName": "VariableSet", "content": "Murch_TimesGreeted", "next": "cr.varGet('Murch_TimesGreeted') + 1" },
+{ "defnName": "VariableStore", "content": "Murch_TimesGreeted", "next": "u.world.player.varSet('Murch_TimesGreeted', $value)" },
+
+{ "defnName": "OptionsClear" },
+{ "name": "#(what_about_yourselves)", "defnName": "Option", "content": "#(what_about_yourselves)", "next": "#(NO_TALK_ABOUT_OURSELVES)" },
+{ "name": "#(what_about_universe)", "defnName": "Option", "content": "#(what_about_universe)", "next": "#(NO_FREE_LUNCH)" },
+{ "defnName": "Option", "content": "#(get_on_with_business)", "next": "#(HELLO_AND_DOWN_TO_BUSINESS_1)" },
+{ "name": "#(trade_is_for_the_weak)", "defnName": "Option", "content": "#(trade_is_for_the_weak)", "next": "#(WERE_NOT_AFRAID)" },
+{ "defnName": "Option", "content": "#(no_trade_now)", "next": "#(OK_NO_TRADE_NOW_BYE)" },
 { "defnName": "Prompt" },
 
-{ "defnName": "Display", "content": "#(KNOW_BECAUSE)" },
-
-{ "defnName": "Display", "content": "#(NO_TALK_ABOUT_OURSELVES)" },
-
-{ "defnName": "Display", "content": "#(FACTORS_ARE)" },
-
-{ "defnName": "Display", "content": "#(NO_FREE_LUNCH)" },
-
-{ "defnName": "Display", "content": "#(GIVING_IS_BAD_1)" },
-{ "defnName": "Option", "content": "#(giving_is_good_2)" },
+{ "name": "#(NO_TALK_ABOUT_OURSELVES)", "defnName": "Display", "content": "#(NO_TALK_ABOUT_OURSELVES)" },
+{ "defnName": "Disable", "next": "#(what_about_yourselves)" },
+{ "defnName": "OptionsClear" },
+{ "defnName": "Option", "content": "#(what_factors)", "next": "#(FACTORS_ARE)" },
 { "defnName": "Prompt" },
 
-{ "defnName": "Display", "content": "#(GIVING_IS_BAD_2)	" },
+{ "name" : "#(FACTORS_ARE)", "defnName": "Display", "content": "#(FACTORS_ARE)" },
+{ "defnName": "Goto", "next": "Questions" },
 
-{ "defnName": "Display", "content": "#(WERE_NOT_AFRAID)" },
-
-{ "defnName": "Display", "content": "#(OK_NO_TRADE_NOW_BYE)" },
-
-{ "defnName": "Random" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_1)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_2)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_3)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_4)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_5)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_6)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_7)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_8)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_9)" },
-{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_10)" },
-
-{ "defnName": "Option", "content": "#(whats_my_credit)" },
+{ "name": "#(NO_FREE_LUNCH)", "defnName": "Display", "content": "#(NO_FREE_LUNCH)" },
+{ "defnName": "Disable", "next": "#(what_about_universe)" },
+{ "defnName": "OptionsClear" },
+{ "defnName": "Option", "content": "#(giving_is_good_1)", "next": "#(GIVING_IS_BAD_1)" },
 { "defnName": "Prompt" },
 
-{ "defnName": "Display", "content": "#(HELLO_SLIGHTLY_ANGRY_1)" },
-{ "defnName": "Display", "content": "#(HELLO_SLIGHTLY_ANGRY_2)" },
-{ "defnName": "Display", "content": "#(HELLO_SLIGHTLY_ANGRY_3)" },
+{ "name": "#(GIVING_IS_BAD_1)", "defnName": "Display", "content": "#(GIVING_IS_BAD_1)" },
+{ "defnName": "OptionsClear" },
+{ "defnName": "Option", "content": "#(giving_is_good_2)", "next": "#(GIVING_IS_BAD_2)" },
+{ "defnName": "Prompt" },
+
+{ "name": "#(GIVING_IS_BAD_2)", "defnName": "Display", "content": "#(GIVING_IS_BAD_2)" },
+{ "defnName": "Goto", "next": "Questions" },
+
+{ "name": "#(WERE_NOT_AFRAID)", "defnName": "Display", "content": "#(WERE_NOT_AFRAID)" },
+{ "defnName": "Goto", "next": "Questions" },
+
+{ "name": "#(OK_NO_TRADE_NOW_BYE)", "defnName": "Display", "content": "#(OK_NO_TRADE_NOW_BYE)" },
+{ "defnName": "Goto", "next": "Done" },
+
+{ "defnName": "VariableLoad", "content": "DownToBusinessIndex", "next": "u.randomizer.integerLessThan(10)" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_1)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 0" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_2)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 1" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_3)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 2" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_4)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 3" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_5)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 4" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_6)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 5" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_7)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 6" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_8)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 7" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_9)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 8" },
+{ "defnName": "Display", "content": "#(HELLO_AND_DOWN_TO_BUSINESS_10)", "isDisabled": "cr.varGet('DownToBusinessIndex') != 9" },
+
+{ "defnName": "OptionsClear" },
+
 
 { "defnName": "Option", "content": "#(explore_relationship)" },
 { "defnName": "Option", "content": "#(excuse_1)" },
 { "defnName": "Option", "content": "#(we_apologize)" },
 { "defnName": "Option", "content": "#(so_we_can_attack)" },
 { "defnName": "Option", "content": "#(bye_melnorme_slightly_angry)" },
+{ "defnName": "Prompt", "content": "#(bye_melnorme_slightly_angry)" },
+
+{ "defnName": "Display", "content": "#(HELLO_SLIGHTLY_ANGRY_1)" },
+{ "defnName": "Display", "content": "#(HELLO_SLIGHTLY_ANGRY_2)" },
+{ "defnName": "Display", "content": "#(HELLO_SLIGHTLY_ANGRY_3)" },
+
 
 { "defnName": "Display", "content": "#(EXAMPLE_OF_RELATIONSHIP)" },
 
@@ -77,10 +97,10 @@
 { "defnName": "Display", "content": "#(DECEITFUL_HUMAN)" },
 { "defnName": "Display", "content": "#(MELNORME_SLIGHTLY_ANGRY_GOODBYE)" },
 
-{ "defnName": "Random" },
-{ "defnName": "Display", "content": "#(HELLO_HATE_YOU_1)" },
-{ "defnName": "Display", "content": "#(HELLO_HATE_YOU_2)" },
-{ "defnName": "Display", "content": "#(HELLO_HATE_YOU_3)" },
+{ "defnName": "VariableLoad", "content": "Murch_GreetedHostileIndex", "next": "u.randomizer.integerLessThan(3)" },
+{ "defnName": "Display", "content": "#(HELLO_HATE_YOU_1)", "isDisabled": "cr.varGet('Murch_GreetedHostileIndex') != 0" },
+{ "defnName": "Display", "content": "#(HELLO_HATE_YOU_2)", "isDisabled": "cr.varGet('Murch_GreetedHostileIndex') != 1" },
+{ "defnName": "Display", "content": "#(HELLO_HATE_YOU_3)", "isDisabled": "cr.varGet('Murch_GreetedHostileIndex') != 2" },
 
 { "defnName": "Option", "content": "#(well_if_thats_the_way_you_feel)" },
 { "defnName": "Option", "content": "#(you_hate_us_so_we_go_away)" },
@@ -89,21 +109,25 @@
 { "defnName": "Display", "content": "#(HATE_YOU_GOODBYE)" },
 { "defnName": "Display", "content": "#(WE_FIGHT_AGAIN)" },
 
+
+
 { "defnName": "Display", "content": "#(RESCUE_EXPLANATION)" },
 
-{ "defnName": "Random" },
-{ "defnName": "Display", "content": "#(RESCUE_AGAIN_1)" },
-{ "defnName": "Display", "content": "#(RESCUE_AGAIN_2)" },
-{ "defnName": "Display", "content": "#(RESCUE_AGAIN_3)" },
-{ "defnName": "Display", "content": "#(RESCUE_AGAIN_4)" },
-{ "defnName": "Display", "content": "#(RESCUE_AGAIN_5)" },
+{ "defnName": "VariableLoad", "content": "Murch_RescuedIndex", "next": "u.randomizer.integerLessThan(5)" },
+{ "defnName": "Display", "content": "#(RESCUE_AGAIN_1)", "isDisabled": "cr.varGet('Murch_RescuedIndex') != 0" },
+{ "defnName": "Display", "content": "#(RESCUE_AGAIN_2)", "isDisabled": "cr.varGet('Murch_RescuedIndex') != 1" },
+{ "defnName": "Display", "content": "#(RESCUE_AGAIN_3)", "isDisabled": "cr.varGet('Murch_RescuedIndex') != 2" },
+{ "defnName": "Display", "content": "#(RESCUE_AGAIN_4)", "isDisabled": "cr.varGet('Murch_RescuedIndex') != 3" },
+{ "defnName": "Display", "content": "#(RESCUE_AGAIN_5)", "isDisabled": "cr.varGet('Murch_RescuedIndex') != 4" },
 
 { "defnName": "Display", "content": "#(CHANGED_MIND)" },
 { "defnName": "Display", "content": "#(no_changed_mind)" },
 { "defnName": "Display", "content": "#(yes_changed_mind)" },
+
 { "defnName": "Display", "content": "#(SHOULD_WE_HELP_YOU)" },
 { "defnName": "Display", "content": "#(yes_help)" },
 { "defnName": "Display", "content": "#(no_help)" },
+
 { "defnName": "Display", "content": "#(RESCUE_OFFER)" },
 { "defnName": "Display", "content": "#(RESCUE_TANKS)" },
 { "defnName": "Display", "content": "#(RESCUE_HOME)" },
@@ -143,73 +167,175 @@
 { "defnName": "Display", "content": "#(youre_on)" },
 { "defnName": "Display", "content": "#(YOU_GIVE_US_NO_CHOICE)" },
 { "defnName": "Display", "content": "#(TRADING_INFO)" },
-{ "defnName": "Display", "content": "#(BUY_OR_SELL)" },
 { "defnName": "Display", "content": "#(goodbye)" },
 { "defnName": "Display", "content": "#(why_turned_purple)" },
-{ "defnName": "Display", "content": "#(buy)" },
-{ "defnName": "Display", "content": "#(sell)" },
 { "defnName": "Display", "content": "#(TURNED_PURPLE_BECAUSE)" },
-{ "defnName": "Display", "content": "#(NOTHING_TO_SELL)" },
-{ "defnName": "Display", "content": "#(WHAT_TO_SELL)" },
-{ "defnName": "Display", "content": "#(OK_DONE_SELLING)" },
-{ "defnName": "Display", "content": "#(sell_life_data)" },
-{ "defnName": "Display", "content": "#(SOLD_LIFE_DATA1)" },
-{ "defnName": "Display", "content": "#(SOLD_LIFE_DATA2)" },
-{ "defnName": "Display", "content": "#(SOLD_LIFE_DATA3)" },
-{ "defnName": "Display", "content": "#(sell_rainbow_locations)" },
-{ "defnName": "Display", "content": "#(SOLD_RAINBOW_LOCATIONS1)" },
-{ "defnName": "Display", "content": "#(SOLD_RAINBOW_LOCATIONS2)" },
-{ "defnName": "Display", "content": "#(SOLD_RAINBOW_LOCATIONS3)" },
-{ "defnName": "Display", "content": "#(sell_precursor_find)" },
-{ "defnName": "Display", "content": "#(SOLD_PRECURSOR_FIND)" },
+
+
+{ "name": "Business", "defnName": "DoNothing" },
+
+{ "defnName": "Display", "content": "#(BUY_OR_SELL)" },
+
+{ "defnName": "Option", "content": "#(whats_my_credit)", "next": "Business-Credit" },
+{ "defnName": "Option", "content": "#(buy)", "next": "Business-Buy" },
+{ "defnName": "Option", "content": "#(sell)", "next": "Business-Sell" },
+{ "defnName": "Option", "content": "#(be_leaving_now)" },
+{ "defnName": "Prompt" },
+
+
+
+{ "name": "Business-Credit", "defnName": "DoNothing" },
+
+{ "defnName": "Display", "content": "#(CREDIT_IS0)" },
+{ "defnName": "Display", "content": "#(CREDIT_IS1)" },
+{ "defnName": "Goto", "next": "Business" },
+
+
+
+{ "name": "Business-Buy", "defnName": "DoNothing" },
+
+{ "name": "#(WHAT_TO_BUY)", "defnName": "Display", "content": "#(WHAT_TO_BUY)" },
+{ "name": "#(WHAT_MORE_TO_BUY)", "defnName": "Display", "content": "#(WHAT_MORE_TO_BUY)"},
+
+{ "defnName": "Disable", "next": "#(WHAT_TO_BUY)" },
+{ "defnName": "Enable", "next": "#(WHAT_MORE_TO_BUY)" },
+
+{ "defnName": "Option", "content": "#(buy_fuel)", "next": "Business-Buy-Fuel" },
+{ "defnName": "Option", "content": "#(buy_info)", "next": "Business-Buy-Info" },
+{ "defnName": "Option", "content": "#(done_buying)", "next": "#(OK_DONE_BUYING)"},
+{ "defnName": "Prompt" },
+
+{ "name": "#(OK_DONE_BUYING)", "defnName": "Display", "content": "#(OK_DONE_BUYING)" },
+{ "defnName": "Goto", "next": "Business" },
+
+
+
+{ "name": "Business-Sell", "defnName": "DoNothing" },
+
+{ "defnName": "Option", "content": "#(sell_life_data)" },
+{ "defnName": "Option", "content": "#(sell_rainbow_locations)" },
+{ "defnName": "Option", "content": "#(sell_precursor_find)" },
 { "defnName": "Display", "content": "#(changed_mind_no_sell)" },
 { "defnName": "Display", "content": "#(done_selling)" },
 
+
+{ "defnName": "Display", "content": "#(NOTHING_TO_SELL)" },
+{ "defnName": "Display", "content": "#(WHAT_TO_SELL)" },
+{ "defnName": "Display", "content": "#(OK_DONE_SELLING)" },
+
+
+
+{ "name": "Business-Sell-LifeData", "defnName": "DoNothing" },
+{ "defnName": "VariableLoad", "content": "Murch_LifeDataSoldIndex", "next": "u.randomizer.integerLessThan(3)" },
+{ "defnName": "Display", "content": "#(SOLD_LIFE_DATA1)", "isDisabled": "cr.varGet('Murch_LifeDataSoldIndex') != 0" },
+{ "defnName": "Display", "content": "#(SOLD_LIFE_DATA2)", "isDisabled": "cr.varGet('Murch_LifeDataSoldIndex') != 1" },
+{ "defnName": "Display", "content": "#(SOLD_LIFE_DATA3)", "isDisabled": "cr.varGet('Murch_LifeDataSoldIndex') != 2" },
+
+
+
+{ "name": "Business-Sell-RainbowWorldLocations", "defnName": "DoNothing" },
+{ "defnName": "VariableLoad", "content": "Murch_RainbowWorldLocationsSoldIndex", "next": "u.randomizer.integerLessThan(3)" },
+{ "defnName": "Display", "content": "#(SOLD_RAINBOW_LOCATIONS1)", "isDisabled": "cr.varGet('Murch_LifeDataSoldIndex') != 0" },
+{ "defnName": "Display", "content": "#(SOLD_RAINBOW_LOCATIONS2)", "isDisabled": "cr.varGet('Murch_LifeDataSoldIndex') != 1" },
+{ "defnName": "Display", "content": "#(SOLD_RAINBOW_LOCATIONS3)", "isDisabled": "cr.varGet('Murch_LifeDataSoldIndex') != 2" },
+{ "defnName": "Goto", "next": "Business" },
+
+
+
+{ "name": "Business-Sell-Artifacts", "defnName": "DoNothing" },
+{ "defnName": "Display", "content": "#(SOLD_PRECURSOR_FIND)" },
+{ "defnName": "Goto", "next": "Business" },
+
+
 { "defnName": "Display", "content": "#(NEED_CREDIT)" },
-{ "defnName": "Display", "content": "#(WHAT_TO_BUY)" },
-{ "defnName": "Display", "content": "#(WHAT_MORE_TO_BUY)" },
-{ "defnName": "Display", "content": "#(OK_DONE_BUYING)" },
-{ "defnName": "Display", "content": "#(buy_fuel)" },
-{ "defnName": "Display", "content": "#(done_buying)" },
-{ "defnName": "Display", "content": "#(be_leaving_now)" },
+
+
+{ "name": "Business-Buy-Fuel", "defnName": "DoNothing" },
+{ "defnName": "OptionsClear" },
+
+{ "name": "#(BUY_FUEL_INTRO)", "defnName": "Display", "content": "#(BUY_FUEL_INTRO)" },
+{ "defnName": "Disable", "next": "#(BUY_FUEL_INTRO)" },
+
 { "defnName": "Display", "content": "#(HOW_MUCH_FUEL)" },
-{ "defnName": "Display", "content": "#(buy_1_fuel)" },
-{ "defnName": "Display", "content": "#(GOT_FUEL)" },
-{ "defnName": "Display", "content": "#(buy_5_fuel)" },
-{ "defnName": "Display", "content": "#(buy_10_fuel)" },
-{ "defnName": "Display", "content": "#(buy_25_fuel)" },
-{ "defnName": "Display", "content": "#(done_buying_fuel)" },
-{ "defnName": "Display", "content": "#(FRIENDLY_GOODBYE)" },
-{ "defnName": "Display", "content": "#(CREDIT_IS0)" },
-{ "defnName": "Display", "content": "#(CREDIT_IS1)" },
+
+{ "defnName": "Option", "content": "#(buy_1_fuel)", "next": "#(GOT_FUEL)" },
+{ "defnName": "Option", "content": "#(buy_5_fuel)", "next": "#(GOT_FUEL)" },
+{ "defnName": "Option", "content": "#(buy_10_fuel)", "next": "#(GOT_FUEL)" },
+{ "defnName": "Option", "content": "#(buy_25_fuel)", "next": "#(GOT_FUEL)" },
+{ "defnName": "Display", "content": "#(fill_me_up)", "next": "#(GOT_FUEL)" },
+{ "defnName": "Option", "content": "#(done_buying_fuel)", "next": "Business-Buy" },
+{ "defnName": "Prompt"},
+
+{ "next": "#(GOT_FUEL)", "defnName": "Display", "content": "#(GOT_FUEL)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
+
+{ "defnName": "Display", "content": "#(NO_ROOM_FOR_FUEL)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
+
+{ "defnName": "Display", "content": "#(OK_FILL_YOU_UP)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
+
+{ "defnName": "Display", "content": "#(OK_DONE_BUYING_FUEL)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
+
+
+
 { "defnName": "Display", "content": "#(NEED_MORE_CREDIT0)" },
 { "defnName": "Display", "content": "#(NEED_MORE_CREDIT1)" },
-{ "defnName": "Display", "content": "#(BUY_FUEL_INTRO)" },
-{ "defnName": "Display", "content": "#(NO_ROOM_FOR_FUEL)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
 
-{ "defnName": "Display", "content": "#(BUY_INFO_INTRO)" },
+
+
+{ "name": "Business-Buy-Info", "defnName": "DoNothing" },
+{ "defnName": "OptionsClear" },
+
+{ "name": "#(BUY_INFO_INTRO)", "defnName": "Display", "content": "#(BUY_INFO_INTRO)" },
+{ "defnName": "Disable", "next": "#(BUY_INFO_INTRO)" },
+
 { "defnName": "Display", "content": "#(OK_BUY_INFO)" },
+
+{ "defnName": "Option", "content": "#(buy_alien_races)" },
+{ "defnName": "Option", "content": "#(buy_current_events)", "next": "Business-Buy-Info-Events" },
+{ "defnName": "Option", "content": "#(buy_history)" },
+{ "defnName": "Option", "content": "#(no_buy_info)" },
+{ "defnName": "Disable", "next": "#(no_buy_info)" },
+{ "defnName": "Option", "content": "#(buy_technology)" },
+{ "defnName": "Option", "content": "#(done_buying_info)", "isDisabled": "true" },
+{ "defnName": "Enable", "content": "#(done_buying_info)" },
+{ "defnName": "Prompt" },
+
+
+
+{ "name": "Business-Buy-Info-NeverMind", "defnName": "DoNothing" },
 { "defnName": "Display", "content": "#(OK_NO_BUY_INFO)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
+
+
+
+{ "name": "Business-Buy-Info-Done", "defnName": "DoNothing" },
 { "defnName": "Display", "content": "#(OK_DONE_BUYING_INFO)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
 
-{ "defnName": "Display", "content": "#(buy_alien_races)" },
-{ "defnName": "Display", "content": "#(buy_current_events)" },
-{ "defnName": "Display", "content": "#(buy_history)" },
-{ "defnName": "Display", "content": "#(buy_info)" },
-{ "defnName": "Display", "content": "#(done_buying_info)" },
-{ "defnName": "Display", "content": "#(no_buy_info)" },
-{ "defnName": "Display", "content": "#(buy_new_tech)" },
-{ "defnName": "Display", "content": "#(buy_technology)" },
 
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_1)" },
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_2)" },
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_3)" },
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_4)" },
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_5)" },
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_6)" },
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_7)" },
-{ "defnName": "Display", "content": "#(OK_BUY_EVENT_8)" },
 
+{ "name": "Business-Buy-Info-Events", "defnName": "DoNothing" },
+{ "defnName": "VariableLoad", "content": "Murch_CurrentEventsBought", "next": "u.world.player.varGetWithDefault('Murch_Info_CurrentEventsBought', 0)" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_1)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 0" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_2)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 1" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_3)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 2" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_4)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 3" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_5)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 4" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_6)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 5" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_7)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 6" },
+{ "defnName": "Display", "content": "#(OK_BUY_EVENT_8)", "isDisabled": "u.world.player.varGet('Murch_Info_CurrentEventsBought') != 7" },
+{ "defnName": "VariableSet", "content": "Murch_CurrentEventsBought", "next": "cr.varGet('Murch_Info_CurrentEventsBought') + 1" },
+{ "defnName": "VariableStore", "content": "Murch_CurrentEventsBought", "next": "u.world.player.varSet('Murch_Info_CurrentEventsBought', $value)" },
+{ "defnName": "Goto", "next": "Business-Buy-Info" },
+
+
+
+{ "name": "Business-Buy-Info-Aliens", "defnName": "DoNothing" },
+{ "defnName": "VariableLoad", "content": "Murch_Info_AliensBought", "next": "u.world.player.varGetWithDefault('Murch_Info_AliensBought', 0)" },
 { "defnName": "Display", "content": "#(OK_BUY_ALIEN_RACE_1)" },
 { "defnName": "Display", "content": "#(OK_BUY_ALIEN_RACE_2)" },
 { "defnName": "Display", "content": "#(OK_BUY_ALIEN_RACE_3)" },
@@ -226,7 +352,14 @@
 { "defnName": "Display", "content": "#(OK_BUY_ALIEN_RACE_14)" },
 { "defnName": "Display", "content": "#(OK_BUY_ALIEN_RACE_15)" },
 { "defnName": "Display", "content": "#(OK_BUY_ALIEN_RACE_16)" },
+{ "defnName": "VariableSet", "content": "Murch_CurrentEventsBought", "next": "cr.varGet('Murch_Info_CurrentEventsBought') + 1" },
+{ "defnName": "VariableStore", "content": "Murch_CurrentEventsBought", "next": "u.world.player.varSet('Murch_Info_CurrentEventsBought', $value)" },
+{ "defnName": "Goto", "next": "Business-Buy-Info" },
 
+
+
+{ "name": "Business-Buy-Info-History", "defnName": "DoNothing" },
+{ "defnName": "VariableLoad", "content": "Murch_Info_AliensBought", "next": "u.world.player.varGetWithDefault('Murch_Info_HistoryBought', 0)" },
 { "defnName": "Display", "content": "#(OK_BUY_HISTORY_1)" },
 { "defnName": "Display", "content": "#(OK_BUY_HISTORY_2)" },
 { "defnName": "Display", "content": "#(OK_BUY_HISTORY_3)" },
@@ -236,54 +369,72 @@
 { "defnName": "Display", "content": "#(OK_BUY_HISTORY_7)" },
 { "defnName": "Display", "content": "#(OK_BUY_HISTORY_8)" },
 { "defnName": "Display", "content": "#(OK_BUY_HISTORY_9)" },
+{ "defnName": "VariableSet", "content": "Murch_CurrentEventsBought", "next": "cr.varGet('Murch_Info_CurrentEventsBought') + 1" },
+{ "defnName": "VariableStore", "content": "Murch_CurrentEventsBought", "next": "u.world.player.varSet('Murch_Info_CurrentEventsBought', $value)" },
+{ "defnName": "Goto", "next": "Business-Buy-Info" },
 
-{ "defnName": "Display", "content": "#(INFO_ALL_GONE)" },
 
-{ "defnName": "Display", "content": "#(no_buy_new_tech)" },
-{ "defnName": "Display", "content": "#(done_buying_new_tech)" },
-{ "defnName": "Display", "content": "#(fill_me_up)" },
 
-{ "defnName": "Display", "content": "#(OK_FILL_YOU_UP)" },
-{ "defnName": "Display", "content": "#(OK_DONE_BUYING_FUEL)" },
+{ "name": "#(INFO_ALL_GONE)", "defnName": "Display", "content": "#(INFO_ALL_GONE)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
 
-{ "defnName": "Display", "content": "#(OK_NO_BUY_NEW_TECH)" },
 
-{ "defnName": "Display", "content": "#(BUY_NEW_TECH_INTRO)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_1)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_2)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_3)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_4)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_5)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_6)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_7)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_8)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_9)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_10)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_11)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_12)" },
-{ "defnName": "Display", "content": "#(NEW_TECH_13)" },
+{ "name": "Business-Buy-Tech", "defnName": "DoNothing" },
+{ "defnName": "Disable", "next": "#(no_buy_new_tech)" },
+{ "defnName": "Option", "content": "#(done_buying_new_tech)", "next": "OK_DONE_BUYING_NEW_TECH", "isDisabled": "true" },
+{ "defnName": "Enable", "content": "#(done_buying_new_tech)" },
+{ "defnName": "Prompt" },
 
+{ "name": "#(BUY_NEW_TECH_INTRO)", "defnName": "Display", "content": "#(BUY_NEW_TECH_INTRO)" },
+{ "defnName": "Disable", "next": "#(BUY_NEW_TECH_INTRO)" },
+
+{ "name": "Business-Buy-Tech-Next", "defnName": "DoNothing" },
+{ "defnName": "VariableLoad", "content": "Murch_TechsBought", "next": "u.world.player.varGetWithDefault('Murch_TechsBought', 0)" },
+{ "defnName": "Display", "content": "#(NEW_TECH_1)", "isDisabled": "cr.varGet('Murch_TechsBought') != 0" },
+{ "defnName": "Display", "content": "#(NEW_TECH_2)", "isDisabled": "cr.varGet('Murch_TechsBought') != 1" },
+{ "defnName": "Display", "content": "#(NEW_TECH_3)", "isDisabled": "cr.varGet('Murch_TechsBought') != 2" },
+{ "defnName": "Display", "content": "#(NEW_TECH_4)", "isDisabled": "cr.varGet('Murch_TechsBought') != 3" },
+{ "defnName": "Display", "content": "#(NEW_TECH_5)", "isDisabled": "cr.varGet('Murch_TechsBought') != 4" },
+{ "defnName": "Display", "content": "#(NEW_TECH_6)", "isDisabled": "cr.varGet('Murch_TechsBought') != 5" },
+{ "defnName": "Display", "content": "#(NEW_TECH_7)", "isDisabled": "cr.varGet('Murch_TechsBought') != 6" },
+{ "defnName": "Display", "content": "#(NEW_TECH_8)", "isDisabled": "cr.varGet('Murch_TechsBought') != 7" },
+{ "defnName": "Display", "content": "#(NEW_TECH_9)", "isDisabled": "cr.varGet('Murch_TechsBought') != 8" },
+{ "defnName": "Display", "content": "#(NEW_TECH_10)", "isDisabled": "cr.varGet('Murch_TechsBought') != 9" },
+{ "defnName": "Display", "content": "#(NEW_TECH_11)", "isDisabled": "cr.varGet('Murch_TechsBought') != 10" },
+{ "defnName": "Display", "content": "#(NEW_TECH_12)", "isDisabled": "cr.varGet('Murch_TechsBought') != 11" },
+{ "defnName": "Display", "content": "#(NEW_TECH_13)", "isDisabled": "cr.varGet('Murch_TechsBought') != 12" },
+
+{ "defnName": "Option", "content": "#(buy_new_tech)", "next": "Business-Buy-Tech-Next-Yes" },
+{ "defnName": "Option", "content": "#(no_buy_new_tech)", "next": "#(OK_NO_BUY_NEW_TECH)" },
+{ "defnName": "Prompt" },
+
+{ "name": "Business-Buy-Tech-Next-Yes", "defnName": "DoNothing" },
 { "defnName": "Display", "content": "#(OK_BUY_NEW_TECH)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_1)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_2)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_3)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_4)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_5)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_6)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_7)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_8)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_9)" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_10" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_11" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_12" },
-{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_13" },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_1)", "isDisabled": "cr.varGet('Murch_TechsBought') != 0"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_2)", "isDisabled": "cr.varGet('Murch_TechsBought') != 1"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_3)", "isDisabled": "cr.varGet('Murch_TechsBought') != 2"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_4)", "isDisabled": "cr.varGet('Murch_TechsBought') != 3"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_5)", "isDisabled": "cr.varGet('Murch_TechsBought') != 4"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_6)", "isDisabled": "cr.varGet('Murch_TechsBought') != 5"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_7)", "isDisabled": "cr.varGet('Murch_TechsBought') != 6"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_8)", "isDisabled": "cr.varGet('Murch_TechsBought') != 7"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_9)", "isDisabled": "cr.varGet('Murch_TechsBought') != 8"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_10", "isDisabled": "cr.varGet('Murch_TechsBought') != 9"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_11", "isDisabled": "cr.varGet('Murch_TechsBought') != 10"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_12", "isDisabled": "cr.varGet('Murch_TechsBought') != 11"  },
+{ "defnName": "Display", "content": "#(OK_BUY_NEW_TECH_13", "isDisabled": "cr.varGet('Murch_TechsBought') != 12"  },
+{ "defnName": "VariableSet", "content": "Murch_TechsBought", "next": "u.world.player.varGet('Murch_TechsBought') + 1" },
+{ "defnName": "VariableStore", "content": "Murch_TechsBought", "next": "u.world.player.varSet('Murch_TechsBought', $value)" },
+
+
+{ "content": "#(OK_NO_BUY_NEW_TECH)", "defnName": "Display", "content": "#(OK_NO_BUY_NEW_TECH)" },
+{ "defnName": "Goto", "next": "Business-Buy" },
 
 { "defnName": "Display", "content": "#(OK_DONE_BUYING_NEW_TECH)" },
 
 { "defnName": "Display", "content": "#(NEW_TECH_ALL_GONE)" },
 
 { "defnName": "Display", "content": "#(CHARITY)" },
-
 
 { "defnName": "Display", "content": "#(we_are_from_alliance)" },
 
@@ -304,8 +455,9 @@
 { "defnName": "Display", "content": "#(name_1)" },
 { "defnName": "Display", "content": "#(name_2)" },
 { "defnName": "Display", "content": "#(name_3)" },
-{ "defnName": "Display", "content": "#(name_4)" }
+{ "defnName": "Display", "content": "#(name_4)" },
 
+{ "name": "Done", "defnName": "Display", "content": "#(FRIENDLY_GOODBYE)" },
 { "defnName": "Quit" }
 	]
 }

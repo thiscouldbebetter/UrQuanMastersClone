@@ -176,6 +176,28 @@ class Player
 		return this._shipDefnsAvailable;
 	}
 
+	varGet(variableName: string): unknown
+	{
+		return this.vars.get(variableName);
+	}
+
+	varGetWithDefault(variableName: string, defaultValue: unknown): unknown
+	{
+		var variableValue = this.varGet(variableName);
+		if (variableValue == null)
+		{
+			variableValue = defaultValue;
+			this.varSet(variableName, variableValue);
+		}
+		return variableValue;
+	}
+
+	varSet(variableName: string, value: unknown): Player
+	{
+		this.vars.set(variableName, value);
+		return this;
+	}
+
 	// controls
 
 	toControlSidebar(world: World): ControlBase

@@ -100,6 +100,21 @@ class Player {
         }
         return this._shipDefnsAvailable;
     }
+    varGet(variableName) {
+        return this.vars.get(variableName);
+    }
+    varGetWithDefault(variableName, defaultValue) {
+        var variableValue = this.varGet(variableName);
+        if (variableValue == null) {
+            variableValue = defaultValue;
+            this.varSet(variableName, variableValue);
+        }
+        return variableValue;
+    }
+    varSet(variableName, value) {
+        this.vars.set(variableName, value);
+        return this;
+    }
     // controls
     toControlSidebar(world) {
         var flagship = this.flagship;

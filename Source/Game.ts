@@ -254,6 +254,18 @@ class Game
 		{
 			this.debug_Station(universe);
 		}
+		else if (debuggingModeName.startsWith("Talk"))
+		{
+			if (debuggingModeName.endsWith("Murch"))
+			{
+				this.debug_Talk_Murch(universe);
+			}
+			else
+			{
+				throw new Error("Unrecognized debugging mode: " + debuggingModeName);
+			}
+		}
+
 
 		universe.start();
 	}
@@ -433,6 +445,16 @@ class Game
 		var placePlanetVicinity = planetEarth.toPlace(universe.world as WorldExtended);
 		var placeStation = new PlaceStation(world, station, placePlanetVicinity);
 		world.placeNext = placeStation;
+	}
+
+	debug_Talk_Murch(universe: Universe): void
+	{
+		var talker = new Talker("Conversation-Murch", null);
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, universe.world.placeCurrent, null, null
+		);
+		talker.talk(uwpe);
 	}
 
 }
