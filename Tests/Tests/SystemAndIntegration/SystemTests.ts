@@ -315,7 +315,7 @@ class SystemTests extends TestFixture
 		venueTypeName = venue.constructor.name;
 		Assert.areStringsEqual(VenueControls.name, venueTypeName);
 
-		var creditBefore = player.credit;
+		var creditBefore = player.resourceCredits;
 
 		var venueControls = venue as VenueControls;
 		var containerChoice = venueControls.controlRoot as ControlContainer;
@@ -327,7 +327,7 @@ class SystemTests extends TestFixture
 
 		// Verify that resources were salvaged from destroyed ship.
 
-		var creditAfter = player.credit;
+		var creditAfter = player.resourceCredits;
 		Assert.isTrue(creditAfter > creditBefore);
 
 		// Verify that we're back in hyperspace.

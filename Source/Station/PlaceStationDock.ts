@@ -98,9 +98,9 @@ class PlaceStationDock extends Place
 		if (componentToBuild != null)
 		{
 			var player = (universe.world as WorldExtended).player;
-			if (player.credit >= componentToBuild.value)
+			if (player.resourceCredits >= componentToBuild.value)
 			{
-				player.credit -= componentToBuild.value;
+				player.resourceCredits -= componentToBuild.value;
 				player.flagship.componentNames.push(componentToBuild.name);
 				player.cachesCalculate();
 			}
@@ -113,7 +113,7 @@ class PlaceStationDock extends Place
 		{
 			var player = (universe.world as WorldExtended).player;
 			ArrayHelper.remove(player.flagship.componentNames, componentToScrap.name);
-			player.credit += componentToScrap.value;
+			player.resourceCredits += componentToScrap.value;
 			player.cachesCalculate();
 		}
 	}
@@ -125,9 +125,9 @@ class PlaceStationDock extends Place
 		if (ship.crew < ship.defn(world).crewMax)
 		{
 			var player = world.player;
-			if (player.credit >= this.crewValuePerUnit)
+			if (player.resourceCredits >= this.crewValuePerUnit)
 			{
-				player.credit -= this.crewValuePerUnit;
+				player.resourceCredits -= this.crewValuePerUnit;
 				ship.crew++;
 			}
 		}
@@ -139,7 +139,7 @@ class PlaceStationDock extends Place
 		if (ship.crew > 1)
 		{
 			var player = (universe.world as WorldExtended).player;
-			player.credit += this.crewValuePerUnit;
+			player.resourceCredits += this.crewValuePerUnit;
 			ship.crew--;
 		}
 	}
@@ -149,7 +149,7 @@ class PlaceStationDock extends Place
 		var player = (universe.world as WorldExtended).player;
 		var flagship = player.flagship;
 		var fuelMax = flagship._fuelMax;
-		if (player.credit >= this.fuelValuePerUnit && flagship.fuel < fuelMax)
+		if (player.resourceCredits >= this.fuelValuePerUnit && flagship.fuel < fuelMax)
 		{
 			var fuelUnitsToBuy = 1;
 			if (flagship.fuel + fuelUnitsToBuy > fuelMax)
@@ -157,7 +157,7 @@ class PlaceStationDock extends Place
 				fuelUnitsToBuy = fuelMax + flagship.fuel;
 			}
 			var fuelValue = Math.ceil(this.fuelValuePerUnit * fuelUnitsToBuy);
-			player.credit -= fuelValue;
+			player.resourceCredits -= fuelValue;
 			flagship.fuel += fuelUnitsToBuy;
 		}
 	}
@@ -174,7 +174,7 @@ class PlaceStationDock extends Place
 				fuelUnitsToSell = player.flagship.fuel;
 			}
 			var fuelValue = Math.floor(fuelUnitsToSell * this.fuelValuePerUnit);
-			player.credit += fuelValue;
+			player.resourceCredits += fuelValue;
 			flagship.fuel -= fuelUnitsToSell;
 		}
 	}
@@ -182,9 +182,9 @@ class PlaceStationDock extends Place
 	landerAdd(universe: Universe): void
 	{
 		var player = (universe.world as WorldExtended).player;
-		if (player.credit >= this.landerValue)
+		if (player.resourceCredits >= this.landerValue)
 		{
-			player.credit -= this.landerValue;
+			player.resourceCredits -= this.landerValue;
 			player.flagship.numberOfLanders++;
 		}
 	}
@@ -196,7 +196,7 @@ class PlaceStationDock extends Place
 		if (flagship.numberOfLanders > 0)
 		{
 			flagship.numberOfLanders--;
-			player.credit += this.landerValue;
+			player.resourceCredits += this.landerValue;
 		}
 	}
 
@@ -215,7 +215,7 @@ class PlaceStationDock extends Place
 			var resourceValue = resourceDefn.valuePerUnit * item.quantity;
 			valueSumSoFar += resourceValue;
 		}
-		player.credit += valueSumSoFar;
+		player.resourceCredits += valueSumSoFar;
 		items.length = 0;
 	}
 
@@ -229,9 +229,9 @@ class PlaceStationDock extends Place
 			if (player.shipGroup.ships.length < player.flagship.shipsMax)
 			{
 				var shipValue = shipDefnToBuild.value;
-				if (player.credit >= shipValue)
+				if (player.resourceCredits >= shipValue)
 				{
-					player.credit -= shipValue;
+					player.resourceCredits -= shipValue;
 					var ship = new Ship(shipDefnToBuild.name);
 					ship.initialize
 					(
@@ -257,7 +257,7 @@ class PlaceStationDock extends Place
 				shipToScrapDefn.value
 				+ shipToScrap.crew * this.crewValuePerUnit;
 			var player = world.player;
-			player.credit += shipValue;
+			player.resourceCredits += shipValue;
 			ArrayHelper.remove(player.shipGroup.ships, shipToScrap);
 		}
 	}
@@ -932,7 +932,7 @@ class PlaceStationDock extends Place
 					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
-						player, (c: Player) => "" + c.credit
+						player, (c: Player) => "" + c.resourceCredits
 					),
 					fontHeightShort
 				),

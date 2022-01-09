@@ -57,8 +57,8 @@ class PlaceStationDock extends Place {
     componentBuild(universe, componentToBuild) {
         if (componentToBuild != null) {
             var player = universe.world.player;
-            if (player.credit >= componentToBuild.value) {
-                player.credit -= componentToBuild.value;
+            if (player.resourceCredits >= componentToBuild.value) {
+                player.resourceCredits -= componentToBuild.value;
                 player.flagship.componentNames.push(componentToBuild.name);
                 player.cachesCalculate();
             }
@@ -68,7 +68,7 @@ class PlaceStationDock extends Place {
         if (componentToScrap != null) {
             var player = universe.world.player;
             ArrayHelper.remove(player.flagship.componentNames, componentToScrap.name);
-            player.credit += componentToScrap.value;
+            player.resourceCredits += componentToScrap.value;
             player.cachesCalculate();
         }
     }
@@ -77,8 +77,8 @@ class PlaceStationDock extends Place {
         var ship = this.shipInFleetSelected;
         if (ship.crew < ship.defn(world).crewMax) {
             var player = world.player;
-            if (player.credit >= this.crewValuePerUnit) {
-                player.credit -= this.crewValuePerUnit;
+            if (player.resourceCredits >= this.crewValuePerUnit) {
+                player.resourceCredits -= this.crewValuePerUnit;
                 ship.crew++;
             }
         }
@@ -87,7 +87,7 @@ class PlaceStationDock extends Place {
         var ship = this.shipInFleetSelected;
         if (ship.crew > 1) {
             var player = universe.world.player;
-            player.credit += this.crewValuePerUnit;
+            player.resourceCredits += this.crewValuePerUnit;
             ship.crew--;
         }
     }
@@ -95,13 +95,13 @@ class PlaceStationDock extends Place {
         var player = universe.world.player;
         var flagship = player.flagship;
         var fuelMax = flagship._fuelMax;
-        if (player.credit >= this.fuelValuePerUnit && flagship.fuel < fuelMax) {
+        if (player.resourceCredits >= this.fuelValuePerUnit && flagship.fuel < fuelMax) {
             var fuelUnitsToBuy = 1;
             if (flagship.fuel + fuelUnitsToBuy > fuelMax) {
                 fuelUnitsToBuy = fuelMax + flagship.fuel;
             }
             var fuelValue = Math.ceil(this.fuelValuePerUnit * fuelUnitsToBuy);
-            player.credit -= fuelValue;
+            player.resourceCredits -= fuelValue;
             flagship.fuel += fuelUnitsToBuy;
         }
     }
@@ -114,14 +114,14 @@ class PlaceStationDock extends Place {
                 fuelUnitsToSell = player.flagship.fuel;
             }
             var fuelValue = Math.floor(fuelUnitsToSell * this.fuelValuePerUnit);
-            player.credit += fuelValue;
+            player.resourceCredits += fuelValue;
             flagship.fuel -= fuelUnitsToSell;
         }
     }
     landerAdd(universe) {
         var player = universe.world.player;
-        if (player.credit >= this.landerValue) {
-            player.credit -= this.landerValue;
+        if (player.resourceCredits >= this.landerValue) {
+            player.resourceCredits -= this.landerValue;
             player.flagship.numberOfLanders++;
         }
     }
@@ -130,7 +130,7 @@ class PlaceStationDock extends Place {
         var flagship = player.flagship;
         if (flagship.numberOfLanders > 0) {
             flagship.numberOfLanders--;
-            player.credit += this.landerValue;
+            player.resourceCredits += this.landerValue;
         }
     }
     offload(universe) {
@@ -146,7 +146,7 @@ class PlaceStationDock extends Place {
             var resourceValue = resourceDefn.valuePerUnit * item.quantity;
             valueSumSoFar += resourceValue;
         }
-        player.credit += valueSumSoFar;
+        player.resourceCredits += valueSumSoFar;
         items.length = 0;
     }
     shipBuild(universe) {
@@ -156,8 +156,8 @@ class PlaceStationDock extends Place {
             var player = world.player;
             if (player.shipGroup.ships.length < player.flagship.shipsMax) {
                 var shipValue = shipDefnToBuild.value;
-                if (player.credit >= shipValue) {
-                    player.credit -= shipValue;
+                if (player.resourceCredits >= shipValue) {
+                    player.resourceCredits -= shipValue;
                     var ship = new Ship(shipDefnToBuild.name);
                     ship.initialize(new UniverseWorldPlaceEntities(universe, world, this, null, null));
                     player.shipGroup.ships.push(ship);
@@ -173,7 +173,7 @@ class PlaceStationDock extends Place {
             var shipValue = shipToScrapDefn.value
                 + shipToScrap.crew * this.crewValuePerUnit;
             var player = world.player;
-            player.credit += shipValue;
+            player.resourceCredits += shipValue;
             ArrayHelper.remove(player.shipGroup.ships, shipToScrap);
         }
     }
@@ -328,7 +328,7 @@ class PlaceStationDock extends Place {
             DataBinding.fromContext("Resources:"), fontHeightShort),
             new ControlLabel("infoResources", Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, false, // isTextCentered
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player, (c) => "" + c.credit), fontHeightShort),
+            DataBinding.fromContextAndGet(player, (c) => "" + c.resourceCredits), fontHeightShort),
             new ControlLabel("labelFuel", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), labelSize, false, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Fuel:"), fontHeightShort),

@@ -1,8 +1,9 @@
 "use strict";
 class Player {
-    constructor(name, credit, flagship, factionsKnownNames, shipGroup) {
+    constructor(name, resourceCredits, infoCredits, flagship, factionsKnownNames, shipGroup) {
         this.name = name;
-        this.credit = credit;
+        this.resourceCredits = resourceCredits;
+        this.infoCredits = infoCredits;
         this.flagship = flagship;
         this.factionsKnownNames = factionsKnownNames;
         this.shipGroup = shipGroup;
@@ -53,6 +54,9 @@ class Player {
             }
         }
         return this._factionsKnown;
+    }
+    hasInfoToSell(world) {
+        return this.flagship.hasInfoToSell(world);
     }
     initialize(uwpe) {
         var ships = this.shipGroup.ships;

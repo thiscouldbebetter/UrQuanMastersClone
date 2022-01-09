@@ -1,7 +1,8 @@
 class Player
 {
 	name: string;
-	credit: number;
+	resourceCredits: number;
+	infoCredits: number;
 	flagship: Flagship;
 	factionsKnownNames: string[];
 	shipGroup: ShipGroup;
@@ -18,14 +19,16 @@ class Player
 	constructor
 	(
 		name: string,
-		credit: number,
+		resourceCredits: number,
+		infoCredits: number,
 		flagship: Flagship,
 		factionsKnownNames: string[],
 		shipGroup: ShipGroup
 	)
 	{
 		this.name = name;
-		this.credit = credit;
+		this.resourceCredits = resourceCredits;
+		this.infoCredits = infoCredits;
 		this.flagship = flagship;
 		this.factionsKnownNames = factionsKnownNames;
 		this.shipGroup = shipGroup;
@@ -107,6 +110,11 @@ class Player
 		}
 
 		return this._factionsKnown;
+	}
+
+	hasInfoToSell(world: World): boolean
+	{
+		return this.flagship.hasInfoToSell(world);
 	}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void

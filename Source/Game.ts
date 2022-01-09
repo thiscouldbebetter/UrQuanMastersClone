@@ -3,7 +3,6 @@ class Game
 {
 	mediaLibraryBuild(contentDirectoryPath: string): MediaLibrary
 	{
-
 		var imageDirectory = contentDirectoryPath + "Images/";
 		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
 		var png = ".png";
@@ -31,7 +30,9 @@ class Game
 				new Image2("Conversation", imageDirectory + "Conversation.png"),
 				new Image2(conversationPortrait + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
 				new Image2(conversationPortrait + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
+				new Image2(conversationPortrait + "Mauluska", contentDirectoryPath + "Import/sc2/content/base/comm/spathi/spathi-000.png"),
 				new Image2(conversationPortrait + "Murch", contentDirectoryPath + "Import/sc2/content/base/comm/melnorme/melnorme-000.png"),
+				new Image2(conversationPortrait + "Tempestrial", contentDirectoryPath + "Import/sc2/content/base/comm/probe/probe-000.png"),
 
 				// opening
 				new Image2("Opening", imageDirectory + "Opening.png"),
@@ -110,7 +111,12 @@ class Game
 				new TextString(conversation + "Hyphae", conversationPlaceholderPath),
 				new TextString(conversation + "Kehlemal", conversationPlaceholderPath),
 				new TextString(conversation + "Lahkemup", conversationPlaceholderPath),
-				new TextString(conversation + "Mauluska", conversationPlaceholderPath),
+
+				new TextString(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
+				new TextString(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
+				new TextString(conversation + "MauluskaOrphan", conversationDirectory + "MauluskaOrphan.json"),
+				new TextString(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
+
 				new TextString(conversation + "Moroz", conversationPlaceholderPath),
 				new TextString(conversation + "Muuncaf", conversationPlaceholderPath),
 				new TextString(conversation + "Mazonae", conversationPlaceholderPath),
@@ -161,12 +167,12 @@ class Game
 
 		var timerHelper = new TimerHelper(24);
 
-		var controlBuilder = ControlBuilder.default();
+		var controlBuilder = ControlBuilder.fromStyles( [ ControlStyle.Instances().Dark ] );
 
 		var universe = Universe.create
 		(
 			"SpaceAdventureClone",
-			"0.0.0-20211219",
+			"0.0.0-20220109",
 			timerHelper,
 			display,
 			mediaLibrary,
@@ -258,9 +264,17 @@ class Game
 		}
 		else if (debuggingModeName.startsWith("Talk"))
 		{
-			if (debuggingModeName.endsWith("Murch"))
+			if (debuggingModeName.endsWith("MauluskaOrphan"))
+			{
+				this.debug_Talk_MauluskaOrphan(universe);
+			}
+			else if (debuggingModeName.endsWith("Murch"))
 			{
 				this.debug_Talk_Murch(universe);
+			}
+			else if (debuggingModeName.endsWith("Tempestrial"))
+			{
+				this.debug_Talk_Tempestrial(universe);
 			}
 			else
 			{
@@ -334,7 +348,7 @@ class Game
 		worldDefn.factionsByName.get("Terran").relationsWithPlayer
 			= Faction.RelationsAllied;
 		var player = world.player;
-		player.credit = 1000;
+		player.resourceCredits = 1000;
 		var resourceDefns = ResourceDefn.Instances();
 		var playerItemHolder = player.flagship.itemHolder;
 		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
@@ -436,7 +450,7 @@ class Game
 		var world = universe.world as WorldExtended;
 
 		var player = world.player;
-		player.credit = 0;
+		player.resourceCredits = 0;
 		var resourceDefns = ResourceDefn.Instances();
 		var playerItemHolder = player.flagship.itemHolder;
 		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
@@ -449,6 +463,23 @@ class Game
 		world.placeNext = placeStation;
 	}
 
+	debug_Talk_MauluskaOrphan(universe: Universe): void
+	{
+		var talker = new Talker
+		(
+			"Conversation-MauluskaOrphan",
+			null, // quit
+			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
+		);
+		var entityPlayer = new Entity("Player", []);
+		var entityTalker = new Entity("Mauluska", [ talker] );
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer
+		);
+		talker.talk(uwpe);
+	}
+
 	debug_Talk_Murch(universe: Universe): void
 	{
 		var talker = new Talker
@@ -457,10 +488,57 @@ class Game
 			null, // quit
 			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
 		);
+		var entityPlayer = new Entity("Player", []);
+		var entityTalker = new Entity("Murch", [ talker] );
 		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, universe.world, universe.world.placeCurrent, null, null
+			universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer
 		);
+		talker.talk(uwpe);
+	}
+
+	debug_Talk_Tempestrial(universe: Universe): void
+	{
+		var talker = new Talker
+		(
+			"Conversation-Tempestrial",
+			null, // quit
+			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
+		);
+		var entityTalker = new Entity("Tempestrial", [ talker] );
+		var entityPlayer = new Entity("Player", [ Locatable.fromPos(Coords.create()), new Playable() ]);
+
+		var world = universe.world as WorldExtended;
+
+		var hyperspace = world.hyperspace;
+		var placeHyperspace = new PlaceHyperspace
+		(
+			universe,
+			hyperspace,
+			hyperspace.starsystems[0], // starsystemDeparted,
+			Disposition.create(), // playerLoc
+		);
+
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, placeEncounter, entityPlayer, entityTalker
+		);
+		placeHyperspace.entitySpawn(uwpe);
+
+		var encounter = new Encounter
+		(
+			null, // planet,
+			null, // factionName,
+			entityPlayer,
+			entityTalker,
+			placeHyperspace, // placeToReturnTo
+			null // posToReturnTo
+		);
+
+		uwpe.entitiesSwap();
+		var placeEncounter = new PlaceEncounter(world, encounter);
+		universe.world.placeCurrent = placeEncounter;
+
 		talker.talk(uwpe);
 	}
 

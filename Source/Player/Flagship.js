@@ -114,6 +114,12 @@ class Flagship {
     fuelCurrentOverMax() {
         return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
     }
+    hasInfoToSell(world) {
+        var returnValue = (this.itemHolder.hasItemWithDefnName("Biodata")
+            || this.itemHolder.hasItemWithDefnName("RainbowWorldLocations")
+            || this.itemHolder.hasItemWithCategoryName("PrecursorArtifact", world));
+        return returnValue;
+    }
     thrustersCurrent() {
         return this.componentsThruster().length;
     }

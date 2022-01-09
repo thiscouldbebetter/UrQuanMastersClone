@@ -311,7 +311,8 @@ class WorldExtended extends World
 		var player = new Player
 		(
 			"Player",
-			0, // credit
+			0, // resourceCredits
+			0, // infoCredits
 			playerFlagship,
 			[
 				"Terran"

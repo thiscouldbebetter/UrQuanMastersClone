@@ -177,7 +177,8 @@ class WorldExtended extends World {
         30 // shipsMax
         );
         //var factionNamesAll = factions.elementProperties("name");
-        var player = new Player("Player", 0, // credit
+        var player = new Player("Player", 0, // resourceCredits
+        0, // infoCredits
         playerFlagship, [
             "Terran"
         ], // factionsKnownNames

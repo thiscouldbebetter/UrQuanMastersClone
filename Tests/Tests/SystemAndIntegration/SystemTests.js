@@ -196,14 +196,14 @@ class SystemTests extends TestFixture {
         venue = universe.venueCurrent;
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
-        var creditBefore = player.credit;
+        var creditBefore = player.resourceCredits;
         var venueControls = venue;
         var containerChoice = venueControls.controlRoot;
         var buttonAcknowledge = containerChoice.childByName("buttonAcknowledge");
         buttonAcknowledge.click();
         this.playFromStart_WaitForTicks(universe, 100);
         // Verify that resources were salvaged from destroyed ship.
-        var creditAfter = player.credit;
+        var creditAfter = player.resourceCredits;
         Assert.isTrue(creditAfter > creditBefore);
         // Verify that we're back in hyperspace.
         place = world.placeCurrent;
