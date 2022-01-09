@@ -17,6 +17,7 @@ class Game
 		var conversationDirectory = textDirectory + "Conversation/";
 		var conversationPlaceholderPath =
 			conversationDirectory + "Placeholder.json";
+		var conversationPortrait = "Conversation-Portrait-";
 		var contentPathPrefixComms =
 			contentDirectoryPath + "Import/sc2/content/base/comm/"
 
@@ -28,8 +29,9 @@ class Game
 			[
 				// conversation 
 				new Image2("Conversation", imageDirectory + "Conversation.png"),
-				new Image2(conversation + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
-				new Image2(conversation + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
+				new Image2(conversationPortrait + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
+				new Image2(conversationPortrait + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
+				new Image2(conversationPortrait + "Murch", contentDirectoryPath + "Import/sc2/content/base/comm/melnorme/melnorme-000.png"),
 
 				// opening
 				new Image2("Opening", imageDirectory + "Opening.png"),
@@ -449,7 +451,12 @@ class Game
 
 	debug_Talk_Murch(universe: Universe): void
 	{
-		var talker = new Talker("Conversation-Murch", null);
+		var talker = new Talker
+		(
+			"Conversation-Murch",
+			null, // quit
+			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
+		);
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, universe.world, universe.world.placeCurrent, null, null

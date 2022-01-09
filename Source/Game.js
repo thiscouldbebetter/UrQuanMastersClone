@@ -10,14 +10,16 @@ class Game {
         var content = "-Content";
         var conversationDirectory = textDirectory + "Conversation/";
         var conversationPlaceholderPath = conversationDirectory + "Placeholder.json";
+        var conversationPortrait = "Conversation-Portrait-";
         var contentPathPrefixComms = contentDirectoryPath + "Import/sc2/content/base/comm/";
         var mediaLibrary = new MediaLibrary(contentDirectoryPath, 
         // images
         [
             // conversation 
             new Image2("Conversation", imageDirectory + "Conversation.png"),
-            new Image2(conversation + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
-            new Image2(conversation + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
+            new Image2(conversationPortrait + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
+            new Image2(conversationPortrait + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
+            new Image2(conversationPortrait + "Murch", contentDirectoryPath + "Import/sc2/content/base/comm/melnorme/melnorme-000.png"),
             // opening
             new Image2("Opening", imageDirectory + "Opening.png"),
             new Image2("Producer", imageDirectory + "Producer.png"),
@@ -316,7 +318,8 @@ class Game {
         world.placeNext = placeStation;
     }
     debug_Talk_Murch(universe) {
-        var talker = new Talker("Conversation-Murch", null);
+        var talker = new Talker("Conversation-Murch", null, // quit
+        (cr, size, u) => cr.toControl_Layout_2(size, universe));
         var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, universe.world.placeCurrent, null, null);
         talker.talk(uwpe);
     }

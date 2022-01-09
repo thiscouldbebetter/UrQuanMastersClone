@@ -1,6 +1,6 @@
 {
     "name": "Murch",
-    "imageName": "Conversation",
+    "imagePortraitName": "Conversation-Portrait-Murch",
     "contentTextStringName": "Conversation-Murch-Content",
     "talkNodes": [
 

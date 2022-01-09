@@ -434,7 +434,8 @@ class PlaceHyperspace extends Place
 		var talker = new Talker
 		(
 			shipGroup.factionName,
-			null // quit - todo
+			null, // quit - todo
+			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, u)
 		);
 
 		var entityShipGroup = new Entity

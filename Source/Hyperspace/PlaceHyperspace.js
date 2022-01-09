@@ -222,8 +222,8 @@ class PlaceHyperspace extends Place {
         var shipGroupPos = shipGroup.pos;
         var locatable = Locatable.fromPos(shipGroupPos);
         var movable = Movable.default();
-        var talker = new Talker(shipGroup.factionName, null // quit - todo
-        );
+        var talker = new Talker(shipGroup.factionName, null, // quit - todo
+        (cr, size, u) => cr.toControl_Layout_2(size, u));
         var entityShipGroup = new Entity(shipGroup.name + Math.random(), [
             actor,
             //faction,
