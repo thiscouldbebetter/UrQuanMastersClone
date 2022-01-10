@@ -33,6 +33,7 @@ class Game
 				new Image2(conversationPortrait + "Mauluska", contentDirectoryPath + "Import/sc2/content/base/comm/spathi/spathi-000.png"),
 				new Image2(conversationPortrait + "Murch", contentDirectoryPath + "Import/sc2/content/base/comm/melnorme/melnorme-000.png"),
 				new Image2(conversationPortrait + "Tempestrial", contentDirectoryPath + "Import/sc2/content/base/comm/probe/probe-000.png"),
+				new Image2(conversationPortrait + "Triunion", contentDirectoryPath + "Import/sc2/content/base/comm/zoqfotpik/zoqfotpik-000.png"),
 
 				// opening
 				new Image2("Opening", imageDirectory + "Opening.png"),
@@ -132,7 +133,9 @@ class Game
 				new TextString(conversation + "Tempestrial", conversationDirectory + "Tempestrial.json"),
 				new TextString(conversation + "Tempestrial" + content, contentPathPrefixComms + "probe/probe.txt"),
 
-				new TextString(conversation + "Triunion", conversationPlaceholderPath),
+				new TextString(conversation + "Triunion", conversationDirectory + "Triunion.json"),
+				new TextString(conversation + "Triunion" + content, contentPathPrefixComms + "zoqfotpik/zoqfotpik.txt"),
+
 				new TextString(conversation + "Twyggan", conversationPlaceholderPath),
 				new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),
 				new TextString(conversation + "Warpig", conversationPlaceholderPath),
@@ -275,6 +278,10 @@ class Game
 			else if (debuggingModeName.endsWith("Tempestrial"))
 			{
 				this.debug_Talk_Tempestrial(universe);
+			}
+			else if (debuggingModeName.endsWith("Triunion"))
+			{
+				this.debug_Talk_Triunion(universe);
 			}
 			else
 			{
@@ -539,6 +546,23 @@ class Game
 		var placeEncounter = new PlaceEncounter(world, encounter);
 		universe.world.placeCurrent = placeEncounter;
 
+		talker.talk(uwpe);
+	}
+
+	debug_Talk_Triunion(universe: Universe): void
+	{
+		var talker = new Talker
+		(
+			"Conversation-Triunion",
+			null, // quit
+			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
+		);
+		var entityPlayer = new Entity("Player", []);
+		var entityTalker = new Entity("Triunion", [ talker] );
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer
+		);
 		talker.talk(uwpe);
 	}
 

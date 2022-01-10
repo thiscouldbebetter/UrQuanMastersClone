@@ -5,7 +5,7 @@ The code in this repository is eventually intended to reproduce all the basic fu
 
 To play the game, open the file Source/_SpaceAdventureSequelClone.html in a web browser that runs JavaScript.  To allow reading files from the filesystem, it may be necessary to host the game in a web server, or alternatively to customize the web browser configuration.  For example, Google Chrome should be started with the "--allow-file-access-from-files" command-line option.
 
-To minimize the possibility of legal entanglements, this repository will not contain any actual content files from the game, nor any other third-party copyrighted information.  Note this content is currently available at the URL "https://sourceforge.net/projects/sc2/files/latest/download".  Importing of content data will probably be handled by copying the directory structure from there over any existing data in the Content/Import directory.
+To minimize the possibility of legal entanglements, it was initially decided that this repository would not contain any actual content files from the original game, nor any other third-party copyrighted information.  However, this was slowing down development, so currently some files from the original game have been included in this repository.  Rest assured, however, that they will be swiftly removed upon request from their rightsholders.  Note this content is currently available at the URL "https://sourceforge.net/projects/sc2/files/latest/download".  In the final released version, mporting of content data will probably be handled by copying the directory structure from there over any existing data in the Content/Import directory.
 
 
 Screenshots
