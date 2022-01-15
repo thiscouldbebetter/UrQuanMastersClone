@@ -44,6 +44,12 @@ class Faction implements EntityPropertyBase
 		return entity.propertyByName(Faction.name) as Faction;
 	}
 
+	shipDefn(world: WorldExtended): ShipDefn
+	{
+		var returnValue = world.shipDefnByName(this.shipDefnName);
+		return returnValue;
+	}
+
 	starsystems(world: WorldExtended): Starsystem[]
 	{
 		// Tersely-named alias method.

@@ -42,8 +42,7 @@ class SystemTests extends TestFixture {
         // Leave the conversation.
         var venueConversation = venue;
         var containerConversation = venueConversation.controlRoot;
-        var containerButtons = containerConversation.childByName("containerButtons").containerInner;
-        var buttonNext = containerButtons.childByName("buttonNext");
+        var buttonNext = containerConversation.childByName("buttonNextUnderPortrait");
         Assert.isNotNull(buttonNext);
         while (universe.venueCurrent == venueConversation) {
             buttonNext.click();
@@ -54,9 +53,10 @@ class SystemTests extends TestFixture {
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueWorld.name, venueTypeName);
         // Move the player to the station.
-        var station = place.entityByName(Station.name);
+        var stationName = "EarthStation";
+        var station = place.entityByName(stationName);
         Assert.isNotNull(station);
-        this.playFromStart_MoveToEntityWithName(universe, Station.name);
+        this.playFromStart_MoveToEntityWithName(universe, stationName);
         // hack - Should these be necessary?
         universe.updateForTimerTick();
         universe.updateForTimerTick();
@@ -134,12 +134,12 @@ class SystemTests extends TestFixture {
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
-        this.playFromStart_MoveToEntityWithName(universe, Station.name);
+        this.playFromStart_MoveToEntityWithName(universe, stationName);
         venue = universe.venueCurrent;
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
         // Talk to the station commander.
-        station = place.entityByName(Station.name);
+        station = place.entityByName(stationName);
         talker = station.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
             "Radioactives.Yes",
@@ -219,7 +219,7 @@ class SystemTests extends TestFixture {
         var starsystem = placeStarsystem.starsystem;
         var factionNameMurch = world.factionByName("Murch").name;
         var shipGroupMurch = starsystem.shipGroups.find(x => x.factionName == factionNameMurch);
-        if (shipGroupMurch != null) {
+        if (shipGroupMurch == null) {
             var planets = starsystem.planets;
             for (var i = 0; i < planets.length; i++) {
                 var planet = planets[i];
@@ -231,7 +231,7 @@ class SystemTests extends TestFixture {
             }
         }
         var place = world.placeCurrent;
-        this.playFromStart_MoveToEntityWithName(universe, factionNameMurch);
+        this.playFromStart_MoveToEntityWithName(universe, shipGroupMurch.name);
         // Gather resources.
         // Gather lifeforms.
         // Return to Earth station.

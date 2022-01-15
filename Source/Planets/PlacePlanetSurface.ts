@@ -400,6 +400,12 @@ class PlacePlanetSurface extends Place
 		}
 	}
 
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
+	{
+		super.updateForTimerTick(uwpe);
+		this.venueControls.updateForTimerTick(uwpe.universe);
+	}
+
 	// controls
 
 	toControlSidebar(world: World, entityPlayer: Entity): ControlBase

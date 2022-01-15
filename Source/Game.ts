@@ -465,7 +465,7 @@ class Game
 		var starsystemSol = world.hyperspace.starsystemByName("Sol");
 		var planetEarth = starsystemSol.planets[2];
 		var station = planetEarth.satellites[0] as Station;
-		var placePlanetVicinity = planetEarth.toPlace(universe.world as WorldExtended);
+		var placePlanetVicinity = planetEarth.toPlace(world);
 		var placeStation = new PlaceStation(world, station, placePlanetVicinity);
 		world.placeNext = placeStation;
 	}

@@ -167,17 +167,15 @@ class Player
 		{
 			this._shipDefnsAvailable = [];
 
-			var factionsAllied = this.factionsAllied(universe.world as WorldExtended);
+			var world = universe.world as WorldExtended;
+
+			var factionsAllied = this.factionsAllied(world);
 
 			for (var i = 0; i < factionsAllied.length; i++)
 			{
 				var faction = factionsAllied[i];
-				var shipDefnName = faction.shipDefnName;
-				if (shipDefnName != null)
-				{
-					var shipDefn = ShipDefn.byName(shipDefnName, universe);
-					this._shipDefnsAvailable.push(shipDefn);
-				}
+				var shipDefn = faction.shipDefn(world);
+				this._shipDefnsAvailable.push(shipDefn);
 			}
 		}
 

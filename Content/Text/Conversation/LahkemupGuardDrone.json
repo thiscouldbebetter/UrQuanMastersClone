@@ -1,13 +1,13 @@
 {
     "name": "LahkemupGuardDrone",
-    "imageName": "Conversation-Lahkemup",
+    "imagePortraitName": "Conversation-Portrait-Lahkemup",
     "contentTextStringName": "Conversation-Lahkemup-Content",
     "talkNodes": [
 
 { "defnName": "Display", "name": "#(SEND_MESSAGE)"},
 { "defnName": "Quit" },
 { "name": "Finalize", "defnName": "DoNothing" },
-{ "defnName": "Script", "content": "(u, cr) => cr.talker().actor().activity.defnNameSet('Leave')" }
+{ "defnName": "Script", "content": "cr.talker().actor().activity.defnNameSet('Leave')" }
 
     ]
 }

@@ -69,9 +69,8 @@ class SystemTests extends TestFixture
 
 		var venueConversation = venue as VenueControls;
 		var containerConversation = venueConversation.controlRoot as ControlContainer;
-		var containerButtons =
-			(containerConversation.childByName("containerButtons") as ControlContainerTransparent).containerInner;
-		var buttonNext = containerButtons.childByName("buttonNext") as ControlButton<ConversationRun>;
+		var buttonNext =
+			containerConversation.childByName("buttonNextUnderPortrait") as ControlButton<unknown>;
 		Assert.isNotNull(buttonNext);
 
 		while (universe.venueCurrent == venueConversation)
@@ -88,10 +87,11 @@ class SystemTests extends TestFixture
 
 		// Move the player to the station.
 
-		var station = place.entityByName(Station.name);
+		var stationName = "EarthStation";
+		var station = place.entityByName(stationName);
 		Assert.isNotNull(station);
 
-		this.playFromStart_MoveToEntityWithName(universe, Station.name);
+		this.playFromStart_MoveToEntityWithName(universe, stationName);
 
 		// hack - Should these be necessary?
 		universe.updateForTimerTick();
@@ -218,7 +218,7 @@ class SystemTests extends TestFixture
 		placeTypeName = place.constructor.name;
 		Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
 
-		this.playFromStart_MoveToEntityWithName(universe, Station.name);
+		this.playFromStart_MoveToEntityWithName(universe, stationName);
 
 		venue = universe.venueCurrent;
 		venueTypeName = venue.constructor.name;
@@ -226,7 +226,7 @@ class SystemTests extends TestFixture
 
 		// Talk to the station commander.
 
-		station = place.entityByName(Station.name);
+		station = place.entityByName(stationName);
 		talker = station.talker();
 		this.playFromStart_TalkToTalker
 		(
@@ -352,7 +352,7 @@ class SystemTests extends TestFixture
 		var shipGroupMurch =
 			starsystem.shipGroups.find(x => x.factionName == factionNameMurch);
 
-		if (shipGroupMurch != null)
+		if (shipGroupMurch == null)
 		{
 			var planets = starsystem.planets;
 			for (var i = 0; i < planets.length; i++)
@@ -372,7 +372,7 @@ class SystemTests extends TestFixture
 
 		var place = world.placeCurrent;
 
-		this.playFromStart_MoveToEntityWithName(universe, factionNameMurch);
+		this.playFromStart_MoveToEntityWithName(universe, shipGroupMurch.name);
 
 		// Gather resources.
 		// Gather lifeforms.

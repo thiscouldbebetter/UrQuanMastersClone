@@ -213,6 +213,10 @@ class PlacePlanetSurface extends Place {
             }
         }
     }
+    updateForTimerTick(uwpe) {
+        super.updateForTimerTick(uwpe);
+        this.venueControls.updateForTimerTick(uwpe.universe);
+    }
     // controls
     toControlSidebar(world, entityPlayer) {
         var containerSidebarSize = Coords.fromXY(100, 300); // hack

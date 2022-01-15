@@ -200,9 +200,6 @@ class Combat
 			x => creditsSalvaged += x.defn(world).value
 		);
 
-		shipsLost.length = 0;
-		shipsDestroyed.length = 0;
-
 		var message =
 			"Combat complete.\n"
 			+ numberOfShipsLost + " ships lost.\n"

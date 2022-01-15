@@ -24,7 +24,7 @@ class Station {
         var drawable = Drawable.fromVisual(visual);
         var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
         var locatable = new Locatable(Disposition.fromPos(pos));
-        var talker = Talker.fromConversationDefnName("Conversation-EarthStation");
+        var talker = new Talker("Conversation-" + this.name, null, this.toControl);
         var returnValue = new Entity(this.name, [
             collidable,
             drawable,
@@ -33,6 +33,10 @@ class Station {
             talker
         ]);
         return returnValue;
+    }
+    // Controls.
+    toControl(cr, size, universe) {
+        return cr.toControl_Layout_2(size, universe);
     }
     // EntityProperty.
     finalize(uwpe) { }

@@ -71,11 +71,6 @@ class ShipDefn
 
 	// static methods
 
-	static byName(name: string, universe: Universe): ShipDefn
-	{
-		return ShipDefn.Instances(universe)._AllByName.get(name);
-	}
-
 	static visual(dimension: number, colorFill: Color, colorBorder: Color)
 	{
 		var visualPath = new Path

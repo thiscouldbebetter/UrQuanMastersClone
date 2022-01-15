@@ -29,26 +29,29 @@ class PlacePlanetOrbit extends Place
 		this.planet = planet;
 		this.placePlanetVicinity = placePlanetVicinity;
 
-		var entities = this.entitiesToSpawn;
+		if (this.planet.defn().canLand)
+		{
+			var entities = this.entitiesToSpawn;
 
-		// Resources.
+			// Resources.
 
-		var resourceRadiusBase = 5; // todo
-		var resourceEntities = this.planet.resources.map
-		(
-			x => x.toEntity(world, this, resourceRadiusBase)
-		);
-		entities.push(...resourceEntities);
+			var resourceRadiusBase = 5; // todo
+			var resourceEntities = this.planet.resources.map
+			(
+				x => x.toEntity(world, this, resourceRadiusBase)
+			);
+			entities.push(...resourceEntities);
 
-		// Lifeforms.
+			// Lifeforms.
 
-		var lifeformEntities = this.planet.lifeforms.map
-		(
-			x => x.toEntity(world, this.planet)
-		);
-		entities.push(...lifeformEntities);
+			var lifeformEntities = this.planet.lifeforms.map
+			(
+				x => x.toEntity(world, this.planet)
+			);
+			entities.push(...lifeformEntities);
 
-		// todo - Energy sources.
+			// todo - Energy sources.
+		}
 
 		this._camera = new Camera
 		(
@@ -61,7 +64,7 @@ class PlacePlanetOrbit extends Place
 			null // entitiesInViewSort
 		);
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
-		entities.push(cameraAsEntity);
+		this.entityToSpawnAdd(cameraAsEntity);
 
 		this._drawPos = Coords.create();
 	}
@@ -361,29 +364,14 @@ class PlacePlanetOrbit extends Place
 			]
 		);
 
+		var visualPlanetFromOrbit =  this.planet.defn().visualOrbit;
 		var visualGlobe = new VisualGroup
 		([
 			VisualRectangle.fromSizeAndColorFill
 			(
 				containerInfoSize, Color.byName("Black")
 			),
-			VisualCircle.fromRadiusAndColorFill
-			(
-				containerInfoSize.y * .4, Color.byName("Gray")
-			),
-			new VisualCircleGradient
-			(
-				containerInfoSize.y * .4,
-				new ValueBreakGroup
-				(
-					[
-						new ValueBreak(0, planet.defn().color),
-						new ValueBreak(1, Color.byName("Black"))
-					],
-					null // interpolationMode
-				),
-				planet.defn().color
-			)
+			visualPlanetFromOrbit
 		]);
 
 		var containerGlobe = ControlContainer.from4
@@ -411,6 +399,9 @@ class PlacePlanetOrbit extends Place
 		);
 
 		var containerPlayer = world.player.toControlSidebar(world);
+
+		var canLandAsBinding =
+			DataBinding.fromBooleanWithContext(this.planet.defn().canLand, null);
 
 		var containerRight = ControlContainer.from4
 		(
@@ -469,7 +460,7 @@ class PlacePlanetOrbit extends Place
 							"Mineral",
 							fontHeightShort,
 							true, // hasBorder,
-							DataBinding.fromTrue(), // isEnabled,
+							canLandAsBinding, // isEnabled,
 							() => placePlanetOrbit.scanMinerals(universe)
 						),
 
@@ -485,7 +476,7 @@ class PlacePlanetOrbit extends Place
 							"Life",
 							fontHeightShort,
 							true, // hasBorder,
-							DataBinding.fromTrue(), // isEnabled,
+							canLandAsBinding, // isEnabled,
 							() => placePlanetOrbit.scanLife(universe)
 						),
 
@@ -501,7 +492,7 @@ class PlacePlanetOrbit extends Place
 							"Energy",
 							fontHeightShort,
 							true, // hasBorder,
-							DataBinding.fromTrue(), // isEnabled,
+							canLandAsBinding, // isEnabled,
 							() => placePlanetOrbit.scanEnergy(universe)
 						),
 					]
@@ -519,7 +510,7 @@ class PlacePlanetOrbit extends Place
 					"Land",
 					fontHeightShort,
 					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
+					canLandAsBinding, // isEnabled,
 					() => placePlanetOrbit.land(universe)
 				),
 			]

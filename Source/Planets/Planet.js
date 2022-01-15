@@ -94,7 +94,8 @@ class Planet {
         var visual = new VisualGroup([
             new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, Color.byName("Gray"), null), primaryPos, null // ?
             ),
-            VisualCircle.fromRadiusAndColorFill(this.radiusOuter, planetDefn.color)
+            //VisualCircle.fromRadiusAndColorFill(this.radiusOuter, planetDefn.color)
+            planetDefn.visualStarsystem
         ]);
         var collider = new Sphere(Coords.create(), this.radiusOuter);
         var returnValue = new Entity(this.name, [

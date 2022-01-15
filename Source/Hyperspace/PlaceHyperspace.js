@@ -46,10 +46,11 @@ class PlaceHyperspace extends Place {
         }
         var starColors = Starsystem.StarColors;
         var starVisualsForSizesByColorName = new Map();
+        var starSizeCount = 3; // Normal, giant, supergiant.
         for (var i = 0; i < starColors.length; i++) {
             var starColor = starColors[i];
             var starVisualsForSizes = [];
-            for (var j = 0; j < 3; j++) {
+            for (var j = 0; j < starSizeCount; j++) {
                 var starVisualPathForSize = starVisualPathsForSizes[j];
                 var starVisual = new VisualPolygon(starVisualPathForSize, starColor, null, false // shouldUseEntityOrientation
                 );

@@ -59,7 +59,10 @@ class Station implements EntityProperty<Station>, Satellite
 		);
 		var locatable = new Locatable(Disposition.fromPos(pos));
 
-		var talker = Talker.fromConversationDefnName("Conversation-EarthStation");
+		var talker = new Talker
+		(
+			"Conversation-" + this.name, null, this.toControl
+		);
 
 		var returnValue = new Entity
 		(
@@ -74,6 +77,13 @@ class Station implements EntityProperty<Station>, Satellite
 		);
 
 		return returnValue;
+	}
+
+	// Controls.
+
+	toControl(cr: ConversationRun, size: Coords, universe: Universe): ControlBase
+	{
+		return cr.toControl_Layout_2(size, universe)
 	}
 
 	// EntityProperty.

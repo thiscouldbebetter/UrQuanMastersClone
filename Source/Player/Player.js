@@ -92,14 +92,12 @@ class Player {
     shipDefnsAvailable(universe) {
         if (this._shipDefnsAvailable == null) {
             this._shipDefnsAvailable = [];
-            var factionsAllied = this.factionsAllied(universe.world);
+            var world = universe.world;
+            var factionsAllied = this.factionsAllied(world);
             for (var i = 0; i < factionsAllied.length; i++) {
                 var faction = factionsAllied[i];
-                var shipDefnName = faction.shipDefnName;
-                if (shipDefnName != null) {
-                    var shipDefn = ShipDefn.byName(shipDefnName, universe);
-                    this._shipDefnsAvailable.push(shipDefn);
-                }
+                var shipDefn = faction.shipDefn(world);
+                this._shipDefnsAvailable.push(shipDefn);
             }
         }
         return this._shipDefnsAvailable;

@@ -116,8 +116,6 @@ class Combat {
         var numberOfShipsDestroyed = shipsDestroyed.length;
         var creditsSalvaged = 0;
         shipsDestroyed.forEach(x => creditsSalvaged += x.defn(world).value);
-        shipsLost.length = 0;
-        shipsDestroyed.length = 0;
         var message = "Combat complete.\n"
             + numberOfShipsLost + " ships lost.\n"
             + numberOfShipsDestroyed + " ships destroyed.\n"

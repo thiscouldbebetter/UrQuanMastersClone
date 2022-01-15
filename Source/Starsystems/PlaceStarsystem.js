@@ -81,58 +81,16 @@ class PlaceStarsystem extends Place {
             }
             entities.push(playerEntity);
         }
-        if (starsystem.factionName != null) {
-            // enemy
-            var damagerColor = Color.byName("Red");
-            var enemyColor = damagerColor;
-            var enemyPos = Coords.create().randomize(null).multiply(this.size);
-            var enemyLoc = Disposition.fromPos(enemyPos);
-            var enemyColliderAsFace = new Face([
-                Coords.fromXY(0, -entityDimension).half(),
-                Coords.fromXY(entityDimension, entityDimension).half(),
-                Coords.fromXY(-entityDimension, entityDimension).half(),
-            ]);
-            var enemyCollider = Mesh.fromFace(new Coords(0, 0, 0), // center
-            enemyColliderAsFace, 1 // thickness
-            );
-            var enemyVisual = new VisualPolygon(new Path(enemyColliderAsFace.vertices), enemyColor, null, // ?
-            false // shouldUseEntityOrientation
-            );
-            var enemyShipDefnName = "Flagship"; // todo
-            var enemyShip = new Ship(enemyShipDefnName);
-            var enemyShipGroup = new ShipGroup("Enemy", "Enemy", // factionName
-            Coords.create(), [enemyShip]);
-            var enemyKill = (uwpe) => {
-                var place = uwpe.place;
-                var entity = uwpe.entity;
-                place.entityRemove(entity);
-                var starsystem = place.starsystem;
-                var shipGroup = ShipGroup.fromEntity(entity);
-                ArrayHelper.remove(starsystem.shipGroups, shipGroup);
-            };
-            var enemyActivityDefnPerform = (uwpe) => // activity
-             {
-                var place = uwpe.place;
-                var actor = uwpe.entity;
-                var entityToTargetName = "todo";
-                var target = place.entitiesByName.get(entityToTargetName);
-                var actorLoc = actor.locatable().loc;
-                actorLoc.vel.overwriteWith(target.locatable().loc.pos).subtract(actorLoc.pos).normalize().multiplyScalar(.5 // hack - speed
-                );
-            };
-            var enemyActivityDefn = new ActivityDefn("Enemy", enemyActivityDefnPerform);
-            var enemyEntity = new Entity("Enemy", [
-                enemyShipGroup,
-                new Constrainable([constraintSpeedMax]),
-                Collidable.fromCollider(enemyCollider),
-                Drawable.fromVisual(enemyVisual),
-                new Killable(1, null, enemyKill),
-                new Locatable(enemyLoc),
-                Movable.default(),
-                new Actor(Activity.fromDefnNameAndTargetEntity(enemyActivityDefn.name, new Entity("Player", []))),
-            ]);
-            entities.push(enemyEntity);
+        var faction = starsystem.faction(world);
+        if (faction != null) {
+            var shipDefnName = faction.shipDefnName;
+            var ship = new Ship(shipDefnName);
+            var shipGroup = new ShipGroup(faction.name + " " + ShipGroup.name, faction.name, // factionName
+            Coords.create(), [ship]);
+            this.starsystem.shipGroups.push(shipGroup);
         }
+        var entitiesForShipGroups = this.starsystem.shipGroups.map(x => x.toEntity(world, this));
+        entities.push(...entitiesForShipGroups);
         this._camera = new Camera(new Coords(1, 1, 0).multiplyScalar(this.size.y), null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );
@@ -157,7 +115,7 @@ class PlaceStarsystem extends Place {
         // Helper variables.
         this._drawLoc = Disposition.create();
     }
-    // methods
+    // Instance methods.
     actionToInputsMappings() {
         return this._actionToInputsMappings;
     }

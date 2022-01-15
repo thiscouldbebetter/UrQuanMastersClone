@@ -209,7 +209,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 				primaryPos,
 				null // ?
 			),
-			VisualCircle.fromRadiusAndColorFill(this.radiusOuter, planetDefn.color)
+			//VisualCircle.fromRadiusAndColorFill(this.radiusOuter, planetDefn.color)
+			planetDefn.visualStarsystem
 		]);
 
 		var collider = new Sphere(Coords.create(), this.radiusOuter);
@@ -228,11 +229,11 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return returnValue;
 	}
 
-	toPlace(world: WorldExtended): PlacePlanetVicinity
+	toPlace(world: World): PlacePlanetVicinity
 	{
 		return new PlacePlanetVicinity
 		(
-			world,
+			world as WorldExtended,
 			this,
 			null, // playerLoc
 			null // placeStarsystem
