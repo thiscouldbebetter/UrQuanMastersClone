@@ -33,15 +33,16 @@ Other ship groups cannot move between starsystem and planet vicinities.
 
 Planet Vicinity
 ---------------
+Planets are all the same size.
 Planets are slightly transparent.
 
 
 Planet Orbit
 ------------
-Mineral and biological contacts show up without scanning.
-No energy contacts.
+Scanning is instantaneous.
 Surface landscape for all planets is a single static image.
 Surface landscape not projected onto globe view.
+Can't select landing site.
 
 Planet Surface
 --------------
@@ -55,6 +56,7 @@ aw
 
 Communications
 --------------
+Escape key terminates communications instantly.
 Not all species set up.
 Can't do specialized fonts.
 Can't move speaker caption to different places.
@@ -64,7 +66,6 @@ Ending in combat doesn't work right.
 
 Combat
 ------
-Projectiles rapid-fire, colliding with each other.
 Projectiles do not collide with enemy.
 No multiple/continuous zoom levels.
 No escape from combat for flagship.

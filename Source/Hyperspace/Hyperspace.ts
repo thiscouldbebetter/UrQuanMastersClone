@@ -242,7 +242,15 @@ class Hyperspace
 			var weather = parseInt(planetAsValues[12]);
 			var temperature = parseInt(planetAsValues[23]);
 
-			var hasLife = (parseInt(planetAsValues[15]) > 0);
+			var lifeformBiodataQuantity = parseInt(planetAsValues[15]);
+			var lifeformCount = lifeformBiodataQuantity; // todo
+			var lifeformDefnNames =
+			(
+				lifeformCount > 0
+				? [ "BiteyMouse" ] // todo
+				: null
+			);
+
 			var planet = new Planet
 			(
 				planetName,
@@ -250,8 +258,8 @@ class Hyperspace
 				planetRadius,
 				posAsPolar,
 				planetSize,
-				[], // satellites
-				[], // shipGroups,
+				null, // satellites
+				null, // shipGroups,
 				massInKg,
 				radiusInKm,
 				gravityAsFractionOfEarth,
@@ -261,8 +269,9 @@ class Hyperspace
 				tectonics,
 				weather,
 				temperature,
-				hasLife,
-				[] // energySources
+				lifeformCount,
+				lifeformDefnNames,
+				null // energySources
 			);
 
 			var isMoon = (orbitOrdinalParts.length > 1);

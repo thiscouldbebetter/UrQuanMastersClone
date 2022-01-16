@@ -223,13 +223,12 @@ class Combat
 			+ numberOfShipsDestroyed + " ships destroyed.\n"
 			+ creditsSalvaged + " credits worth of resources salvaged.\n";
 
-		var returnValue = universe.controlBuilder.message
+		var returnValue = universe.controlBuilder.message4
 		(
 			universe,
 			size,
 			DataBinding.fromContext(message),
-			() => this.exit(universe),
-			null
+			() => this.exit(universe)
 		);
 		return returnValue;
 	}

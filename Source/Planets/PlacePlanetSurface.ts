@@ -108,9 +108,10 @@ class PlacePlanetSurface extends Place
 
 		// lifeforms
 
-		if (planet.hasLife)
+		var lifeforms = planet.lifeforms;
+
+		if (lifeforms.length > 0)
 		{
-			var lifeforms = planet.lifeforms;
 			var lifeformEntities = lifeforms.map
 			(
 				(x: Lifeform) => x.toEntity(world, planet)
@@ -149,24 +150,43 @@ class PlacePlanetSurface extends Place
 
 		// Environmental hazards.
 
-		var entityHazard = new Entity
-		(
-			"Hazard",
-			[
-				Collidable.default(),
-				Drawable.default(),
-				Ephemeral.fromTicksToLive(20),
-				Locatable.create()
-			]
-		);
-		var hazardGenerator = new EntityGenerator
-		(
-			entityHazard,
-			new RangeExtent(5, 10), // ticksPerGenerationAsRange
-			new RangeExtent(0, 10), // entitiesPerGenerationAsRange
-			1000 // entitiesGeneratedMax
-		);
-		entities.push(hazardGenerator.toEntity());
+		var colors = Color.Instances();
+		var hazardLevels = [ planet.weather, planet.tectonics, planet.temperature ];
+		var hazardTypeNames = [ "Weather", "Tectonics", "Temperature" ];
+		var hazardColors = [ colors.Yellow, colors.Brown, colors.Red ];
+
+		for (var i = 0; i < hazardTypeNames.length; i++)
+		{
+			var hazardLevel = hazardLevels[i];
+
+			if (hazardLevel > 1)
+			{
+				var hazardTypeName = hazardTypeNames[i];
+				var hazardColor = hazardColors[i];
+				var drawable = Drawable.fromVisual(VisualRectangle.fromColorFill(hazardColor));
+
+				var ephemeral = Ephemeral.fromTicksToLive(20);
+
+				var entityHazard = new Entity
+				(
+					hazardTypeName,
+					[
+						Collidable.default(),
+						drawable,
+						ephemeral,
+						Locatable.create()
+					]
+				);
+				var generatorHazard = new EntityGenerator
+				(
+					entityHazard,
+					new RangeExtent(5, 10), // ticksPerGenerationAsRange
+					new RangeExtent(0, 10), // entitiesPerGenerationAsRange
+					1000 // entitiesGeneratedMax
+				);
+				entities.push(generatorHazard.toEntity());
+			}
+		}
 
 		// Helper variables.
 

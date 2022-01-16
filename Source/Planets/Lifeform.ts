@@ -28,7 +28,9 @@ class Lifeform implements EntityProperty<Lifeform>
 		var lifeformActivity = new Activity(lifeformDefn.activityDefnName, null);
 		var lifeformActor = new Actor(lifeformActivity);
 
-		var lifeformCollider = new Sphere(Coords.create(), 5);
+		var lifeformRadius = 5;
+
+		var lifeformCollider = new Sphere(Coords.create(), lifeformRadius);
 		var lifeformCollidable = Collidable.fromCollider(lifeformCollider);
 		lifeformCollidable.canCollideAgainWithoutSeparating = true;
 
@@ -59,7 +61,40 @@ class Lifeform implements EntityProperty<Lifeform>
 
 		var lifeformLocatable = Locatable.fromPos(this.pos);
 
-		var lifeformMappable = new Mappable(lifeformVisual);
+		var colorGreen = Color.Instances().Green;
+		var visualScanContact: VisualBase = new VisualRectangle
+		(
+			Coords.ones().multiplyScalar(lifeformRadius), colorGreen, null, null
+		);
+		visualScanContact = new VisualHidable
+		(
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var isVisible = false;
+
+				var place = uwpe.place;
+				var placeTypeName = place.constructor.name;
+				if (placeTypeName == PlacePlanetOrbit.name)
+				{
+					var placePlanetOrbit = place as PlacePlanetOrbit;
+					isVisible = placePlanetOrbit.hasLifeBeenScanned;
+				}
+				else if (placeTypeName == PlacePlanetSurface.name)
+				{
+					var placePlanetSurface = place as PlacePlanetSurface;
+					var placePlanetOrbit = placePlanetSurface.placePlanetOrbit;
+					isVisible = placePlanetOrbit.hasLifeBeenScanned;
+				}
+				else
+				{
+					throw new Error("Unexpected placeTypeName: " + placeTypeName);
+				}
+
+				return isVisible;
+			},
+			visualScanContact
+		);
+		var lifeformMappable = new Mappable(visualScanContact);
 
 		var lifeformMovable = Movable.fromSpeedMax(lifeformDefn.speed / 4);
 

@@ -83,14 +83,16 @@ class Ship {
         return returnValues;
     }
     static actionToInputsMappings() {
+        var inactivateTrue = true;
+        var inactivateFalse = false;
         var returnValues = [
-            new ActionToInputsMapping("ShowMenu", ["Escape"], null),
-            new ActionToInputsMapping("TurnLeft", ["a", "ArrowLeft", "Gamepad0Left"], null),
-            new ActionToInputsMapping("TurnRight", ["d", "ArrowRight", "Gamepad0Right"], null),
-            new ActionToInputsMapping("Accelerate", ["w", "ArrowUp", "Gamepad0Up"], null),
-            new ActionToInputsMapping("Fire", ["f", "Enter", "Gamepad0Button0"], null),
-            new ActionToInputsMapping("Special", ["g", "Enter", "Gamepad0Button1"], null),
-        ]; //.addLookupsMultiple(function(x) { return x.inputNames; } );
+            new ActionToInputsMapping("ShowMenu", ["Escape"], inactivateTrue),
+            new ActionToInputsMapping("TurnLeft", ["a", "ArrowLeft", "Gamepad0Left"], inactivateFalse),
+            new ActionToInputsMapping("TurnRight", ["d", "ArrowRight", "Gamepad0Right"], inactivateFalse),
+            new ActionToInputsMapping("Accelerate", ["w", "ArrowUp", "Gamepad0Up"], inactivateFalse),
+            new ActionToInputsMapping("Fire", ["f", "Enter", "Gamepad0Button0"], inactivateTrue),
+            new ActionToInputsMapping("Special", ["g", "Enter", "Gamepad0Button1"], inactivateTrue),
+        ];
         return returnValues;
     }
     static manyFromDefns(defns) {

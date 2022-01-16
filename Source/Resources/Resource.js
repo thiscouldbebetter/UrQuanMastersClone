@@ -27,8 +27,26 @@ class Resource {
         var resourceDrawable = Drawable.fromVisual(resourceVisual);
         var resourcePos = resource.pos;
         var resourceLocatable = Locatable.fromPos(resourcePos);
-        var resourceVisualOnMinimap = new VisualCircleGradient(resourceRadius / 2, resourceGradient, null);
-        var resourceMappable = new Mappable(resourceVisualOnMinimap);
+        var visualScanContact = new VisualCircleGradient(resourceRadius / 2, resourceGradient, null);
+        visualScanContact = new VisualHidable((uwpe) => {
+            var isVisible = false;
+            var place = uwpe.place;
+            var placeTypeName = place.constructor.name;
+            if (placeTypeName == PlacePlanetOrbit.name) {
+                var placePlanetOrbit = place;
+                isVisible = placePlanetOrbit.haveMineralsBeenScanned;
+            }
+            else if (placeTypeName == PlacePlanetSurface.name) {
+                var placePlanetSurface = place;
+                var placePlanetOrbit = placePlanetSurface.placePlanetOrbit;
+                isVisible = placePlanetOrbit.haveMineralsBeenScanned;
+            }
+            else {
+                throw new Error("Unexpected placeTypeName: " + placeTypeName);
+            }
+            return isVisible;
+        }, visualScanContact);
+        var resourceMappable = new Mappable(visualScanContact);
         var resourceEntity = new Entity(Resource.name + Math.random(), [
             resourceCollidable,
             resourceDrawable,

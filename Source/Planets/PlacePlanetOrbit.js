@@ -64,15 +64,15 @@ class PlacePlanetOrbit extends Place {
         var contactPosSaved = Coords.create();
         for (var i = 0; i < scanContacts.length; i++) {
             var contact = scanContacts[i];
-            var contactDrawable = contact.drawable();
-            if (contactDrawable != null) {
+            var contactMappable = Mappable.fromEntity(contact);
+            if (contactMappable != null) {
                 var contactLocatable = contact.locatable();
                 var contactLoc = contactLocatable.loc;
                 var contactPos = contactLoc.pos;
                 contactPosSaved.overwriteWith(contactPos);
                 var drawPos = this._drawPos.overwriteWith(contactPos).divide(surfaceSize).multiply(mapSize).add(mapPos);
                 contactPos.overwriteWith(drawPos);
-                var contactVisual = contactDrawable.visual;
+                var contactVisual = contactMappable.visual;
                 contactVisual.draw(uwpe.entitySet(contact), display);
                 contactPos.overwriteWith(contactPosSaved);
             }

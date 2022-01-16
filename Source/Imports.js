@@ -40,6 +40,7 @@ var VisualCircleGradient = gf.VisualCircleGradient;
 var VisualDirectional = gf.VisualDirectional;
 var VisualDynamic = gf.VisualDynamic;
 var VisualGroup = gf.VisualGroup;
+var VisualHidable = gf.VisualHidable;
 var VisualImageFromLibrary = gf.VisualImageFromLibrary;
 var VisualImageImmediate = gf.VisualImageImmediate;
 var VisualImageScaled = gf.VisualImageScaled;

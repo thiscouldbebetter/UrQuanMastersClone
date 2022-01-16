@@ -63,6 +63,7 @@ class Game {
             new Image2("MauluskaGourmand", imageDirectoryLifeforms + "25-MauluskaGourmand" + png),
             new Image2("FreakyBeast", imageDirectoryLifeforms + "26-FreakyBeast" + png),
             // planets - energy sources
+            new Image2(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase-000" + png),
             new Image2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
         ], 
         // sounds
@@ -118,6 +119,7 @@ class Game {
             new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),
             new TextString(conversation + "Warpig", conversationPlaceholderPath),
             // Energy sources.
+            new TextString(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
             new TextString(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
         ]);
         return mediaLibrary;

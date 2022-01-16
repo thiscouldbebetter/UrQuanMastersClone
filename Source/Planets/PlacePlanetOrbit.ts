@@ -14,7 +14,9 @@ class PlacePlanetOrbit extends Place
 
 	constructor
 	(
-		world: WorldExtended, planet: Planet, placePlanetVicinity: PlacePlanetVicinity
+		world: WorldExtended,
+		planet: Planet,
+		placePlanetVicinity: PlacePlanetVicinity
 	)
 	{
 		super
@@ -133,8 +135,8 @@ class PlacePlanetOrbit extends Place
 		for (var i = 0; i < scanContacts.length; i++)
 		{
 			var contact = scanContacts[i];
-			var contactDrawable = contact.drawable();
-			if (contactDrawable != null)
+			var contactMappable = Mappable.fromEntity(contact);
+			if (contactMappable != null)
 			{
 				var contactLocatable = contact.locatable();
 				var contactLoc = contactLocatable.loc;
@@ -157,7 +159,7 @@ class PlacePlanetOrbit extends Place
 
 				contactPos.overwriteWith(drawPos);
 
-				var contactVisual = contactDrawable.visual;
+				var contactVisual = contactMappable.visual;
 				contactVisual.draw(uwpe.entitySet(contact), display);
 
 				contactPos.overwriteWith(contactPosSaved);

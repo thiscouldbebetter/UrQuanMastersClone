@@ -59,16 +59,29 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 	activate(universe: Universe, world: World, place: Place, actor: Entity): void
 	{
 		var attackDefn = this;
-		var actorLoc = actor.locatable().loc;
-		var actorPos = actorLoc.pos;
-		var actorVisual = actor.drawable().visual as VisualWrapped;
 
+		var projectileCollider =
+			new Sphere(Coords.create(), attackDefn.projectileRadius);
+		var projectileCollidable = new Collidable
+		(
+			false, // canCollideAgainWithoutSeparating
+			null, // ticks
+			projectileCollider,
+			[ Killable.name ],
+			this.projectileCollide
+		);
+
+		var actorVisual = actor.drawable().visual as VisualWrapped;
 		var projectileVisual = new VisualWrapped
 		(
 			actorVisual.sizeToWrapTo,
 			attackDefn.visualProjectile,
 		);
+		var projectileDrawable = Drawable.fromVisual(projectileVisual);
 
+		var projectileKillable = new Killable(1, null, null);
+
+		var actorLoc = actor.locatable().loc;
 		var actorOrientation = actorLoc.orientation;
 		var actorForward = actorOrientation.forward;
 		var projectileDirectionAsPolar = Polar.create().fromCoords(actorForward);
@@ -78,6 +91,7 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		var projectileDirection =
 			projectileDirectionAsPolar.toCoords(Coords.create());
 		var actorRadius = (actor.collidable().collider as Sphere).radius;
+		var actorPos = actorLoc.pos;
 		var projectilePos = actorPos.clone().add
 		(
 			projectileDirection.clone().multiplyScalar(actorRadius).double()
@@ -87,24 +101,15 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		(
 			projectileDirection
 		).multiplyScalar(this.speed);
-
-		var projectileCollider =
-			new Sphere(Coords.create(), attackDefn.projectileRadius);
+		var projectileLocatable = new Locatable(projectileLoc);
 
 		var projectileEntityProperties = new Array<EntityPropertyBase>
 		(
 			this,
-			new Locatable(projectileLoc),
-			new Collidable
-			(
-				false, // canCollideAgainWithoutSeparating
-				null, // ticks
-				projectileCollider,
-				[ Killable.name ],
-				this.projectileCollide
-			),
-			Drawable.fromVisual(projectileVisual),
-			new Killable(1, null, null),
+			projectileCollidable,
+			projectileLocatable,
+			projectileDrawable,
+			projectileKillable
 		);
 
 		if (this.ticksToLive != null)
@@ -115,23 +120,12 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 			);
 		}
 
-		/*
-		if (this.activity != null)
-		{
-			//var targetEntityName = "Ship1"; // todo
-			projectileEntityProperties.push
-			(
-				new Actor(this.activity)//, targetEntityName)
-			);
-		}
-		*/
-
 		var projectileEntity = new Entity
 		(
 			"Projectile" + Math.random(), projectileEntityProperties
 		);
 
-		place.entitiesToSpawn.push(projectileEntity);
+		place.entityToSpawnAdd(projectileEntity);
 	}
 
 	projectileCollide(uwpe: UniverseWorldPlaceEntities): void

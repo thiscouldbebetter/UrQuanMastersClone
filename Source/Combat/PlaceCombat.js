@@ -116,7 +116,8 @@ class PlaceCombat extends Place {
             // Do nothing.
         }
         else {
-            display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+            var colorBlack = Color.byName("Black");
+            display.drawBackground(colorBlack, colorBlack);
             var midpointBetweenCombatants;
             var camera = this._camera;
             var cameraPos = camera.loc.pos;
@@ -156,7 +157,9 @@ class PlaceCombat extends Place {
                 shipEntity.actor().activity.defnNameSet(Player.activityDefn().name);
             }
             else if (ship == shipsFighting[1]) {
-                shipEntity.actor().activity.defnNameSet(Combat.activityDefnEnemy().name);
+                shipEntity.actor().activity.defnNameSet(
+                //Combat.activityDefnEnemy().name
+                ActivityDefn.Instances().DoNothing.name);
             }
         }
     }

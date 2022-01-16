@@ -58,6 +58,7 @@ import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
 import VisualDynamic = gf.VisualDynamic;
 import VisualGroup = gf.VisualGroup;
+import VisualHidable = gf.VisualHidable;
 import VisualImage = gf.VisualImage;
 import VisualImageFromLibrary = gf.VisualImageFromLibrary;
 import VisualImageImmediate = gf.VisualImageImmediate;

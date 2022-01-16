@@ -32,7 +32,12 @@ class EnergySource implements EntityProperty<EnergySource>
 		var energySourceCollider = new Sphere(Coords.create(), dimension);
 		var energySourceCollidable = Collidable.fromCollider(energySourceCollider);
 
-		var visual: VisualBase =
+		var visualDetailed = new VisualWrapped(planet.sizeSurface, this.visual);
+		var energySourceDrawable = Drawable.fromVisual(visualDetailed);
+
+		var energySourceLocatable = Locatable.fromPos(this.pos);
+
+		var visualScanContact: VisualBase =
 			VisualPolygon.fromVerticesAndColorFill
 			(
 				[
@@ -43,16 +48,35 @@ class EnergySource implements EntityProperty<EnergySource>
 				],
 				Color.byName("Cyan")
 			);
-		visual = new VisualWrapped(planet.sizeSurface, visual);
-		var energySourceDrawable = Drawable.fromVisual(visual);
-
-		var energySourceLocatable = Locatable.fromPos(this.pos);
-
-		var energySourceVisualOnMinimap = new VisualImageFromLibrary
+		visualScanContact = new VisualHidable
 		(
-			EnergySource.name + "MauluskaOrphan"
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var isVisible = false;
+
+				var place = uwpe.place;
+				var placeTypeName = place.constructor.name;
+				if (placeTypeName == PlacePlanetOrbit.name)
+				{
+					var placePlanetOrbit = place as PlacePlanetOrbit;
+					isVisible = placePlanetOrbit.hasEnergyBeenScanned;
+				}
+				else if (placeTypeName == PlacePlanetSurface.name)
+				{
+					var placePlanetSurface = place as PlacePlanetSurface;
+					var placePlanetOrbit = placePlanetSurface.placePlanetOrbit;
+					isVisible = placePlanetOrbit.hasEnergyBeenScanned;
+				}
+				else
+				{
+					throw new Error("Unexpected placeTypeName: " + placeTypeName);
+				}
+
+				return isVisible;
+			},
+			visualScanContact
 		);
-		var energySourceMappable = new Mappable(energySourceVisualOnMinimap);
+		var energySourceMappable = new Mappable(visualScanContact);
 
 		var returnValue = new Entity
 		(

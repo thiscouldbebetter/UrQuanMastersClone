@@ -1,13 +1,13 @@
 "use strict";
 class Planet {
-    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, hasLife, energySources) {
+    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, energySources) {
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
         this.posAsPolar = posAsPolar;
         this.sizeSurface = sizeSurface;
-        this.satellites = satellites;
-        this.shipGroups = (shipGroups == null ? [] : shipGroups);
+        this.satellites = satellites || [];
+        this.shipGroups = shipGroups || [];
         this.mass = Math.round(mass);
         this.radius = Math.round(radius);
         this.gravity = parseFloat(gravity.toFixed(2));
@@ -17,11 +17,12 @@ class Planet {
         this.tectonics = tectonics;
         this.weather = weather;
         this.temperature = temperature;
-        this.hasLife = hasLife;
-        this.energySources = energySources;
+        this.lifeformCount = lifeformCount || 0;
+        this.lifeformDefnNames = lifeformDefnNames || [];
+        this.energySources = energySources || [];
     }
     static from6(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites) {
-        return new Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null);
+        return new Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
     static activityDefnGravitate() {
         return new ActivityDefn("Gravitate", Planet.activityGravitatePerform);
@@ -56,13 +57,11 @@ class Planet {
     }
     lifeformsGenerate(randomizer) {
         this.lifeforms = new Array();
-        if (this.hasLife) {
-            var numberOfLifeforms = 8; // todo
-            for (var i = 0; i < numberOfLifeforms; i++) {
-                var lifeformPos = Coords.create().randomize(randomizer).multiply(this.sizeSurface);
-                var lifeform = new Lifeform("BiteyMouse", lifeformPos);
-                this.lifeforms.push(lifeform);
-            }
+        for (var i = 0; i < this.lifeformCount; i++) {
+            var lifeformDefnName = ArrayHelper.random(this.lifeformDefnNames, randomizer);
+            var lifeformPos = Coords.create().randomize(randomizer).multiply(this.sizeSurface);
+            var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
+            this.lifeforms.push(lifeform);
         }
         return this.lifeforms;
     }

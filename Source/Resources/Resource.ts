@@ -58,11 +58,39 @@ class Resource
 		var resourcePos = resource.pos;
 		var resourceLocatable = Locatable.fromPos(resourcePos);
 
-		var resourceVisualOnMinimap = new VisualCircleGradient
+		var visualScanContact: VisualBase = new VisualCircleGradient
 		(
 			resourceRadius / 2, resourceGradient, null
 		);
-		var resourceMappable = new Mappable(resourceVisualOnMinimap);
+		visualScanContact = new VisualHidable
+		(
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var isVisible = false;
+
+				var place = uwpe.place;
+				var placeTypeName = place.constructor.name;
+				if (placeTypeName == PlacePlanetOrbit.name)
+				{
+					var placePlanetOrbit = place as PlacePlanetOrbit;
+					isVisible = placePlanetOrbit.haveMineralsBeenScanned;
+				}
+				else if (placeTypeName == PlacePlanetSurface.name)
+				{
+					var placePlanetSurface = place as PlacePlanetSurface;
+					var placePlanetOrbit = placePlanetSurface.placePlanetOrbit;
+					isVisible = placePlanetOrbit.haveMineralsBeenScanned;
+				}
+				else
+				{
+					throw new Error("Unexpected placeTypeName: " + placeTypeName);
+				}
+
+				return isVisible;
+			},
+			visualScanContact
+		);
+		var resourceMappable = new Mappable(visualScanContact);
 
 		var resourceEntity = new Entity
 		(

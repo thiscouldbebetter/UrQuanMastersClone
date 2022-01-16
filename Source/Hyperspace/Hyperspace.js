@@ -132,10 +132,14 @@ class Hyperspace {
             var tectonics = parseInt(planetAsValues[11]);
             var weather = parseInt(planetAsValues[12]);
             var temperature = parseInt(planetAsValues[23]);
-            var hasLife = (parseInt(planetAsValues[15]) > 0);
-            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetSize, [], // satellites
-            [], // shipGroups,
-            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, year, tectonics, weather, temperature, hasLife, [] // energySources
+            var lifeformBiodataQuantity = parseInt(planetAsValues[15]);
+            var lifeformCount = lifeformBiodataQuantity; // todo
+            var lifeformDefnNames = (lifeformCount > 0
+                ? ["BiteyMouse"] // todo
+                : null);
+            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetSize, null, // satellites
+            null, // shipGroups,
+            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, year, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, null // energySources
             );
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;

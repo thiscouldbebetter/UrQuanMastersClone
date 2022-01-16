@@ -208,7 +208,8 @@ class PlaceCombat extends Place
 		}
 		else
 		{
-			display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+			var colorBlack = Color.byName("Black");
+			display.drawBackground(colorBlack, colorBlack);
 
 			var midpointBetweenCombatants;
 
@@ -280,7 +281,11 @@ class PlaceCombat extends Place
 			}
 			else if (ship == shipsFighting[1])
 			{
-				shipEntity.actor().activity.defnNameSet(Combat.activityDefnEnemy().name);
+				shipEntity.actor().activity.defnNameSet
+				(
+					//Combat.activityDefnEnemy().name
+					ActivityDefn.Instances().DoNothing.name
+				);
 			}
 		}
 	}

@@ -80,6 +80,7 @@ class Game
 				new Image2("FreakyBeast", 		imageDirectoryLifeforms + "26-FreakyBeast" 		+ png),
 
 				// planets - energy sources
+				new Image2(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase-000" + png),
 				new Image2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
 			],
 			// sounds
@@ -147,6 +148,7 @@ class Game
 
 				// Energy sources.
 
+				new TextString(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
 				new TextString(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
 			]
 		);

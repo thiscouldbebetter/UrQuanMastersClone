@@ -106,7 +106,7 @@ class PlaceStation extends Place
 			var messageToShow = "[Station]";
 			var placeStation = this;
 
-			var controlRoot = universe.controlBuilder.choice
+			var controlRoot = universe.controlBuilder.choice5
 			(
 				universe,
 				universe.display.sizeInPixels.clone(),
@@ -127,8 +127,7 @@ class PlaceStation extends Place
 					{
 						placeStation.leave(universe);
 					}
-				],
-				null //?
+				]
 			);
 
 			this.venueControls = new VenueControls(controlRoot, null);

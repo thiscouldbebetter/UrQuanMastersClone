@@ -132,7 +132,7 @@ class Combat {
             + numberOfShipsLost + " ships lost.\n"
             + numberOfShipsDestroyed + " ships destroyed.\n"
             + creditsSalvaged + " credits worth of resources salvaged.\n";
-        var returnValue = universe.controlBuilder.message(universe, size, DataBinding.fromContext(message), () => this.exit(universe), null);
+        var returnValue = universe.controlBuilder.message4(universe, size, DataBinding.fromContext(message), () => this.exit(universe));
         return returnValue;
     }
     toControlShipSelect(universe, size) {
