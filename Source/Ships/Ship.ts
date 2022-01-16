@@ -323,7 +323,12 @@ class Ship implements EntityProperty<Ship>
 		);
 
 		var constraintWrapToRange = new Constraint_WrapToPlaceSize();
-		var constrainable = new Constrainable([constraintWrapToRange]);
+		var constraintSpeedMax = new Constraint_SpeedMaxXY(5); // An absolute upper limit.
+		var constrainable = new Constrainable
+		([
+			constraintSpeedMax,
+			constraintWrapToRange
+		]);
 
 		var defn = this.defn(world);
 		var shipVisualBody = defn.visual;

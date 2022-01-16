@@ -248,22 +248,7 @@ class PlaceStarsystem extends Place
 
 		var entityOtherName = entityOther.name;
 
-		if (entityOtherName.startsWith("Enemy"))
-		{
-			var shipGroupOther = ShipGroup.fromEntity(entityOther);
-			var encounter = new Encounter
-			(
-				ArrayHelper.random(place.starsystem.planets, universe.randomizer),
-				shipGroupOther.factionName,
-				entityPlayer,
-				entityOther,
-				place,
-				entityPlayer.locatable().loc.pos
-			);
-			var placeEncounter = new PlaceEncounter(world, encounter);
-			world.placeNext = placeEncounter;
-		}
-		else if (entityOtherName.startsWith("Wall"))
+		if (entityOtherName.startsWith("Wall"))
 		{
 			var hyperspace = world.hyperspace;
 			var playerLoc = entityPlayer.locatable().loc;
@@ -288,6 +273,8 @@ class PlaceStarsystem extends Place
 		else
 		{
 			var entityOtherPlanet = Planet.fromEntity(entityOther);
+			var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+
 			if (entityOtherPlanet != null)
 			{
 				entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
@@ -311,6 +298,22 @@ class PlaceStarsystem extends Place
 				(
 					world, planet, playerLocNext, place
 				);
+			}
+			else if (entityOtherShipGroup != null)
+			{
+				entityOther.collidable().ticksUntilCanCollide = 100; // hack
+				var shipGroup = entityOtherShipGroup;
+				var encounter = new Encounter
+				(
+					place.starsystem.planets[0], // todo
+					shipGroup.factionName,
+					entityPlayer,
+					entityOther,
+					place,
+					entityPlayer.locatable().loc.pos
+				);
+				var placeEncounter = new PlaceEncounter(world, encounter);
+				world.placeNext = placeEncounter;
 			}
 		}
 	}
