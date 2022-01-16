@@ -139,6 +139,7 @@ class PlaceCombat extends Place {
         var entityToSpawn = uwpe.entity;
         var ship = Ship.fromEntity(entityToSpawn);
         if (ship != null) {
+            var shipEntity = entityToSpawn;
             var shipEntitiesExisting = this.entitiesByPropertyName(Ship.name);
             var shipEntityOther = shipEntitiesExisting.find(x => x.id != entityToSpawn.id);
             var shipOtherPos = (shipEntityOther == null ? Coords.create() : shipEntityOther.locatable().loc.pos);
@@ -149,6 +150,13 @@ class PlaceCombat extends Place {
             while (shipPos.clone().subtract(planetPos).magnitude() < distanceMin
                 || shipPos.clone().subtract(shipOtherPos).magnitude() < distanceMin) {
                 shipPos.randomize(uwpe.universe.randomizer).multiply(this.size);
+            }
+            var shipsFighting = this.combat.shipsFighting;
+            if (ship == shipsFighting[0]) {
+                shipEntity.actor().activity.defnNameSet(Player.activityDefn().name);
+            }
+            else if (ship == shipsFighting[1]) {
+                shipEntity.actor().activity.defnNameSet(Combat.activityDefnEnemy().name);
             }
         }
     }

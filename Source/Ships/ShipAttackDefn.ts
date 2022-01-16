@@ -51,6 +51,11 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		this.range = this.speed * this.ticksToLive;
 	}
 
+	static fromEntity(entity: Entity): ShipAttackDefn
+	{
+		return entity.propertyByName(ShipAttackDefn.name) as ShipAttackDefn;
+	}
+
 	activate(universe: Universe, world: World, place: Place, actor: Entity): void
 	{
 		var attackDefn = this;
@@ -131,28 +136,26 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 
 	projectileCollide(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place;
 		var entityProjectile = uwpe.entity;
 		var entityOther = uwpe.entity2;
 
-		var ship = Ship.fromEntity(entityProjectile);
-		var shipDefn = ship.defn(world);
-		var attackDefn = shipDefn.attackDefn;
+		var attackDefn = ShipAttackDefn.fromEntity(entityProjectile);
 
 		if (attackDefn.diesOnImpact == true)
 		{
-			entityProjectile.killable().integrity = 0;
-			(entityProjectile.drawable().visual as VisualGroup).children.push
-			(
-				attackDefn.visualImpact
-			);
+			var killable = entityProjectile.killable();
+			killable.integrity = 0;
+
+			var drawable = entityProjectile.drawable();
+			var visualWrapped = drawable.visual as VisualWrapped;
+			visualWrapped.child = attackDefn.visualImpact;
 
 			var entityImpact = new Entity
 			(
 				"Impact",
 				[
-					new Ephemeral(10, null),
+					new Ephemeral(10, null), // hack
 					entityProjectile.locatable(),
 					entityProjectile.drawable()
 				]

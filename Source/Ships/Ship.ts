@@ -158,48 +158,9 @@ class Ship implements EntityProperty<Ship>
 			Ship.actionAccelerate(),
 			Ship.actionTurnLeft(),
 			Ship.actionTurnRight(),
-			//actionMapView
-		];//.addLookupsByName();
+		];
 
 		return returnValues;
-	}
-
-	activityApproachPlayer
-	(
-		universe: Universe, worldAsWorld: World, place: Place, actor: Entity
-	): void
-	{
-		var world = worldAsWorld as WorldExtended;
-
-		var target = place.entitiesByName.get("Player");
-		var targetPos = target.locatable().loc.pos;
-		var actorLoc = actor.locatable().loc;
-		var actorPos = actorLoc.pos;
-
-		var targetDisplacement = targetPos.clone().subtract(actorPos);
-
-		var targetDistance = targetDisplacement.magnitude();
-		var ship = Ship.fromEntity(actor);
-
-		if (targetDistance < ship.defn(world).sensorRange)
-		{
-			var forwardAsPolar = Polar.create().fromCoords(actorLoc.orientation.forward);
-			var angleForward = forwardAsPolar.azimuthInTurns;
-
-			var targetDisplacementAsPolar = Polar.create().fromCoords(targetDisplacement);
-			var angleToTarget = targetDisplacementAsPolar.azimuthInTurns;
-
-			var angleTargetMinusForward =
-				NumberHelper.subtractWrappedToRangeMax(angleToTarget, angleForward, 1);
-
-			if (angleTargetMinusForward != 0)
-			{
-				var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-				ship.turnInDirection(world, actor, directionToTurn);
-			}
-
-			ship.accelerate(world, actor);
-		}
 	}
 
 	static actionToInputsMappings(): ActionToInputsMapping[]
@@ -211,6 +172,9 @@ class Ship implements EntityProperty<Ship>
 			new ActionToInputsMapping("TurnLeft", [ "a", "ArrowLeft", "Gamepad0Left"], null),
 			new ActionToInputsMapping("TurnRight", [ "d", "ArrowRight", "Gamepad0Right"], null),
 			new ActionToInputsMapping("Accelerate", [ "w", "ArrowUp", "Gamepad0Up"], null),
+
+			new ActionToInputsMapping("Fire", [ "f", "Enter", "Gamepad0Button0"], null),
+			new ActionToInputsMapping("Special", [ "g", "Enter", "Gamepad0Button1"], null),
 
 		];//.addLookupsMultiple(function(x) { return x.inputNames; } );
 

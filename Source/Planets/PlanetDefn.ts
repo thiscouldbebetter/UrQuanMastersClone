@@ -127,13 +127,9 @@ class PlanetDefn_Instances
 		var colorGray = Color.byName("Gray");
 		var colorWhite = Color.byName("White");
 
-		var colorToGlobe = (radius: number, color: Color) =>
-			new VisualGroup
-			([
-				VisualCircle.fromRadiusAndColorFill
-				(
-					radius, colorGray
-				),
+		var colorToGlobe = (radius: number, color: Color, colorBorder: Color) =>
+		{
+			var returnVisual: VisualBase = 
 				new VisualCircleGradient
 				(
 					radius,
@@ -145,42 +141,44 @@ class PlanetDefn_Instances
 						],
 						null // interpolationMode
 					),
-					null, // colorBorder
-				)
-			]);
+					colorBorder
+				);
+
+			return returnVisual;
+		}
 
 		var radiusStarsystem = 5;
-		var visualStarsystemRed = 		colorToGlobe(radiusStarsystem, colorRed);
-		var visualStarsystemOrange = 	colorToGlobe(radiusStarsystem, colorOrange);
-		var visualStarsystemYellow = 	colorToGlobe(radiusStarsystem, colorYellow);
-		var visualStarsystemGreen = 	colorToGlobe(radiusStarsystem, colorGreen);
-		var visualStarsystemCyan = 		colorToGlobe(radiusStarsystem, colorCyan);
-		var visualStarsystemBlue = 		colorToGlobe(radiusStarsystem, colorBlue);
-		var visualStarsystemViolet = 	colorToGlobe(radiusStarsystem, colorViolet);
-		var visualStarsystemGray = 		colorToGlobe(radiusStarsystem, colorGray);
-		var visualStarsystemWhite = 	colorToGlobe(radiusStarsystem, colorWhite);
+		var visualStarsystemRed = 		colorToGlobe(radiusStarsystem, colorRed, null);
+		var visualStarsystemOrange = 	colorToGlobe(radiusStarsystem, colorOrange, null);
+		var visualStarsystemYellow = 	colorToGlobe(radiusStarsystem, colorYellow, null);
+		var visualStarsystemGreen = 	colorToGlobe(radiusStarsystem, colorGreen, null);
+		var visualStarsystemCyan = 		colorToGlobe(radiusStarsystem, colorCyan, null);
+		var visualStarsystemBlue = 		colorToGlobe(radiusStarsystem, colorBlue, null);
+		var visualStarsystemViolet = 	colorToGlobe(radiusStarsystem, colorViolet, null);
+		var visualStarsystemGray = 		colorToGlobe(radiusStarsystem, colorGray, null);
+		var visualStarsystemWhite = 	colorToGlobe(radiusStarsystem, colorWhite, null);
 
 		var radiusVicinity = 10;
-		var visualVicinityRed = 	colorToGlobe(radiusVicinity, colorRed);
-		var visualVicinityOrange = 	colorToGlobe(radiusVicinity, colorOrange);
-		var visualVicinityYellow = 	colorToGlobe(radiusVicinity, colorYellow);
-		var visualVicinityGreen = 	colorToGlobe(radiusVicinity, colorGreen);
-		var visualVicinityCyan = 	colorToGlobe(radiusVicinity, colorCyan);
-		var visualVicinityBlue = 	colorToGlobe(radiusVicinity, colorBlue);
-		var visualVicinityViolet = 	colorToGlobe(radiusVicinity, colorViolet);
-		var visualVicinityGray = 	colorToGlobe(radiusVicinity, colorGray);
-		var visualVicinityWhite = 	colorToGlobe(radiusVicinity, colorWhite);
+		var visualVicinityRed = 	colorToGlobe(radiusVicinity, colorRed, null);
+		var visualVicinityOrange = 	colorToGlobe(radiusVicinity, colorOrange, null);
+		var visualVicinityYellow = 	colorToGlobe(radiusVicinity, colorYellow, null);
+		var visualVicinityGreen = 	colorToGlobe(radiusVicinity, colorGreen, null);
+		var visualVicinityCyan = 	colorToGlobe(radiusVicinity, colorCyan, null);
+		var visualVicinityBlue = 	colorToGlobe(radiusVicinity, colorBlue, null);
+		var visualVicinityViolet = 	colorToGlobe(radiusVicinity, colorViolet, null);
+		var visualVicinityGray = 	colorToGlobe(radiusVicinity, colorGray, null);
+		var visualVicinityWhite = 	colorToGlobe(radiusVicinity, colorWhite, null);
 
 		var radiusOrbit = 50;
-		var visualOrbitRed = 	colorToGlobe(radiusOrbit, colorRed);
-		var visualOrbitOrange = colorToGlobe(radiusOrbit, colorOrange);
-		var visualOrbitYellow = colorToGlobe(radiusOrbit, colorYellow);
-		var visualOrbitGreen = 	colorToGlobe(radiusOrbit, colorGreen);
-		var visualOrbitCyan = 	colorToGlobe(radiusOrbit, colorCyan);
-		var visualOrbitBlue = 	colorToGlobe(radiusOrbit, colorBlue);
-		var visualOrbitViolet = colorToGlobe(radiusOrbit, colorViolet);
-		var visualOrbitGray = 	colorToGlobe(radiusOrbit, colorGray);
-		var visualOrbitWhite = 	colorToGlobe(radiusOrbit, colorWhite);
+		var visualOrbitRed = 	colorToGlobe(radiusOrbit, colorRed, null);
+		var visualOrbitOrange = colorToGlobe(radiusOrbit, colorOrange, null);
+		var visualOrbitYellow = colorToGlobe(radiusOrbit, colorYellow, null);
+		var visualOrbitGreen = 	colorToGlobe(radiusOrbit, colorGreen, null);
+		var visualOrbitCyan = 	colorToGlobe(radiusOrbit, colorCyan, null);
+		var visualOrbitBlue = 	colorToGlobe(radiusOrbit, colorBlue, null);
+		var visualOrbitViolet = colorToGlobe(radiusOrbit, colorViolet, null);
+		var visualOrbitGray = 	colorToGlobe(radiusOrbit, colorGray, null);
+		var visualOrbitWhite = 	colorToGlobe(radiusOrbit, colorWhite, null);
 
 		var visualsRed = [ visualStarsystemRed, visualVicinityRed, visualOrbitRed ];
 		var visualsOrange = [ visualStarsystemOrange, visualVicinityOrange, visualOrbitOrange ];

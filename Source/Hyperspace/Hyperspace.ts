@@ -27,8 +27,12 @@ class Hyperspace
 
 	static random
 	(
-		randomizer: Randomizer, size: Coords, numberOfStarsystems: number,
-		starsystemRadiusOuter: number, starsystemSizeInner: Coords
+		universe: Universe,
+		randomizer: Randomizer,
+		size: Coords,
+		numberOfStarsystems: number,
+		starsystemRadiusOuter: number,
+		starsystemSizeInner: Coords
 	)
 	{
 		//var planetsPerStarsystemMax = 6;
@@ -90,7 +94,7 @@ class Hyperspace
 
 		var starsystemSol = starsystems[starsystems.length - 1];
 		starsystemSol.factionName = "todo"; // Spawns "enemy".
-		starsystemSol.solarSystem();
+		starsystemSol.solarSystem(universe);
 
 		var returnValue = new Hyperspace
 		(
@@ -280,30 +284,6 @@ class Hyperspace
 		var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
 
 		var starsystemSol = starsystemsByName.get("Sol");
-
-		var pluto = starsystemSol.planets[8];
-		var energySourceAbandonedScuttlerMessage = "todo";
-		var energySourceAbandonedScuttler = new EnergySource
-		(
-			"AbandonedScuttler",
-			pluto.sizeSurface.clone().half().addDimensions(30, 20, 0),
-			VisualCircle.fromRadiusAndColorFill(10, Color.byName("Red")), // todo
-			(universe: Universe, world: World, place: Place, entityEnergySource: Entity, entityLander: Entity) =>
-			{
-				var controlMessage = universe.controlBuilder.message
-				(
-					universe,
-					universe.display.sizeInPixels,
-					DataBinding.fromContext(energySourceAbandonedScuttlerMessage),
-					() => alert("todo"),
-					null // ?
-				);
-
-				universe.venueNext = VenueControls.fromControl(controlMessage);
-			}
-		);
-		var energySources = [ energySourceAbandonedScuttler ];
-		pluto.energySources = energySources;
 
 		// todo - Encounter test.
 		var shipGroup = new ShipGroup

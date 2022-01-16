@@ -8,7 +8,7 @@ class Hyperspace {
         this.shipGroups = shipGroups;
     }
     // static methods
-    static random(randomizer, size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner) {
+    static random(universe, randomizer, size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner) {
         //var planetsPerStarsystemMax = 6;
         var factionName = null; // todo
         var distanceBetweenStarsystemsMin = starsystemRadiusOuter * 2;
@@ -40,7 +40,7 @@ class Hyperspace {
         }
         var starsystemSol = starsystems[starsystems.length - 1];
         starsystemSol.factionName = "todo"; // Spawns "enemy".
-        starsystemSol.solarSystem();
+        starsystemSol.solarSystem(universe);
         var returnValue = new Hyperspace(size, starsystemRadiusOuter, starsystems, [] // shipGroups
         );
         return returnValue;
@@ -151,16 +151,6 @@ class Hyperspace {
         }
         var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
         var starsystemSol = starsystemsByName.get("Sol");
-        var pluto = starsystemSol.planets[8];
-        var energySourceAbandonedScuttlerMessage = "todo";
-        var energySourceAbandonedScuttler = new EnergySource("AbandonedScuttler", pluto.sizeSurface.clone().half().addDimensions(30, 20, 0), VisualCircle.fromRadiusAndColorFill(10, Color.byName("Red")), // todo
-        (universe, world, place, entityEnergySource, entityLander) => {
-            var controlMessage = universe.controlBuilder.message(universe, universe.display.sizeInPixels, DataBinding.fromContext(energySourceAbandonedScuttlerMessage), () => alert("todo"), null // ?
-            );
-            universe.venueNext = VenueControls.fromControl(controlMessage);
-        });
-        var energySources = [energySourceAbandonedScuttler];
-        pluto.energySources = energySources;
         // todo - Encounter test.
         var shipGroup = new ShipGroup("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), [new Ship("Tumbler")]);
         var shipGroups = [shipGroup];

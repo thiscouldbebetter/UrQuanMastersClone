@@ -5,6 +5,8 @@ class Game
 	{
 		var imageDirectory = contentDirectoryPath + "Images/";
 		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
+		var directoryEnergySources = contentDirectoryPath + "Import/sc2/content/base/lander/energy/";
+		var energySource = EnergySource.name;
 		var png = ".png";
 
 		var audioDirectory = contentDirectoryPath + "Audio/";
@@ -76,6 +78,9 @@ class Game
 				new Image2("BioDecoy", 			imageDirectoryLifeforms + "24-Biodecoy" 		+ png),
 				new Image2("MauluskaGourmand", 	imageDirectoryLifeforms + "25-MauluskaGourmand" + png),
 				new Image2("FreakyBeast", 		imageDirectoryLifeforms + "26-FreakyBeast" 		+ png),
+
+				// planets - energy sources
+				new Image2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
 			],
 			// sounds
 			[
@@ -139,6 +144,10 @@ class Game
 				new TextString(conversation + "Twyggan", conversationPlaceholderPath),
 				new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),
 				new TextString(conversation + "Warpig", conversationPlaceholderPath),
+
+				// Energy sources.
+
+				new TextString(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
 			]
 		);
 

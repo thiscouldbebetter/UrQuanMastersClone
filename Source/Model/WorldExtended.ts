@@ -69,12 +69,14 @@ class WorldExtended extends World
 			Lifeform.activityDefnAvoidPlayer(),
 			ShipGroup.activityDefnDie(),
 			Lifeform.activityDefnDoNothing(),
+			Combat.activityDefnEnemy(),
 			Planet.activityDefnGravitate(),
 			ShipGroup.activityDefnLeave(),
 			Lifeform.activityDefnMoveToRandomPosition()
 		];
 
 		var actions = Ship.actions();
+		var actionsCombat = Combat.actions();
 		var actionToInputsMappings = Ship.actionToInputsMappings();
 
 		var entityPropertyNamesToProcess = 
@@ -96,7 +98,7 @@ class WorldExtended extends World
 
 		var placeDefns = 
 		[
-			PlaceDefn.from4(PlaceCombat.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			PlaceDefn.from4(PlaceCombat.name, actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name]) ),
 			PlaceDefn.from4(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
 			PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
@@ -252,7 +254,7 @@ class WorldExtended extends World
 		);
 
 		var starsystemStart = hyperspace.starsystemByName("Sol");
-		starsystemStart.solarSystem(); // todo
+		starsystemStart.solarSystem(universe);
 
 		var starsystems = hyperspace.starsystems;
 		var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);

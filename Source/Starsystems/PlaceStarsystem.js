@@ -19,18 +19,8 @@ class PlaceStarsystem extends Place {
         var entityDimension = 10;
         var entities = this.entitiesToSpawn;
         // sun
-        var sizeHalf = this.size.clone().half();
-        var sunRadius = entityDimension * 1.5;
-        var sunPos = sizeHalf.clone();
-        var sunColor = starsystem.starColor;
-        var sunVisual = VisualCircle.fromRadiusAndColorFill(sunRadius, sunColor);
-        var sunCollider = new Sphere(Coords.create(), sunRadius);
-        var sunEntity = new Entity("Sun", [
-            new Locatable(Disposition.fromPos(sunPos)),
-            new Collidable(false, // canCollideAgainWithoutSeparating
-            null, sunCollider, [Collidable.name], null),
-            Drawable.fromVisual(sunVisual)
-        ]);
+        var sunEntity = this.sunEntityBuild(entityDimension);
+        var sunPos = sunEntity.locatable().loc.pos;
         entities.push(sunEntity);
         // planets
         var planets = starsystem.planets;
@@ -114,6 +104,33 @@ class PlaceStarsystem extends Place {
         this.venueControls = VenueControls.fromControl(containerSidebar);
         // Helper variables.
         this._drawLoc = Disposition.create();
+    }
+    // Constructor helpers.
+    sunEntityBuild(entityDimension) {
+        var sizeHalf = this.size.clone().half();
+        var sunPos = sizeHalf.clone();
+        var sunLocatable = new Locatable(Disposition.fromPos(sunPos));
+        var sunRadius = entityDimension * 1.5;
+        var sunCollider = new Sphere(Coords.create(), sunRadius);
+        var sunCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
+        null, sunCollider, [Collidable.name], null);
+        var sunColor = this.starsystem.starColor;
+        var colorWhite = Color.Instances().White;
+        var sunVisual = 
+        //VisualCircle.fromRadiusAndColorFill(sunRadius, sunColor);
+        new VisualCircleGradient(sunRadius, new ValueBreakGroup([
+            new ValueBreak(0, colorWhite),
+            new ValueBreak(.5, colorWhite),
+            new ValueBreak(1, sunColor)
+        ], null // interpolationMode
+        ), null);
+        var sunDrawable = Drawable.fromVisual(sunVisual);
+        var sunEntity = new Entity("Sun", [
+            sunLocatable,
+            sunCollidable,
+            sunDrawable
+        ]);
+        return sunEntity;
     }
     // Instance methods.
     actionToInputsMappings() {

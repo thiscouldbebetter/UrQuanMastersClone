@@ -10,6 +10,8 @@ class Lifeform implements EntityProperty<Lifeform>
 		this.pos = pos;
 	}
 
+	// static
+
 	defn(world: WorldExtended)
 	{
 		return world.defnExtended().lifeformDefnByName(this.defnName);
@@ -17,17 +19,14 @@ class Lifeform implements EntityProperty<Lifeform>
 
 	toEntity
 	(
-		worldAsWorld: World,
+		world: WorldExtended,
 		planet: Planet
 	): Entity
 	{
-		var world = worldAsWorld as WorldExtended;
-
 		var lifeformDefn = this.defn(world);
 
 		var lifeformActivity = new Activity(lifeformDefn.activityDefnName, null);
 		var lifeformActor = new Actor(lifeformActivity);
-
 
 		var lifeformCollider = new Sphere(Coords.create(), 5);
 		var lifeformCollidable = Collidable.fromCollider(lifeformCollider);
@@ -35,7 +34,7 @@ class Lifeform implements EntityProperty<Lifeform>
 
 		var lifeformDamager = Damager.default();
 
-		var lifeformVisual = lifeformDefn.visual;
+		var lifeformVisual: VisualBase = lifeformDefn.visual;
 		lifeformVisual = new VisualWrapped(planet.sizeSurface, lifeformVisual);
 		var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
 

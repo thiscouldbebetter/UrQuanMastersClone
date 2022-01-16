@@ -16,7 +16,8 @@ class PlacePlanetOrbit extends Place {
             // Lifeforms.
             var lifeformEntities = this.planet.lifeforms.map(x => x.toEntity(world, this.planet));
             entities.push(...lifeformEntities);
-            // todo - Energy sources.
+            var energySourceEntities = this.planet.energySources.map(x => x.toEntity(world, this.planet));
+            entities.push(...energySourceEntities);
         }
         this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y), null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort

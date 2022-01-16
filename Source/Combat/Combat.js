@@ -12,10 +12,21 @@ class Combat {
         this._displacementWrappedAbsolute = Coords.create();
         this._midpointBetweenPoints = Coords.create();
     }
-    enemyActivityDefn() {
-        return new ActivityDefn("Enemy", this.enemyActivityDefnPerform);
+    static actions() {
+        var returnValues = [
+            Ship.actionShowMenu(),
+            Ship.actionAccelerate(),
+            Ship.actionTurnLeft(),
+            Ship.actionTurnRight(),
+            Ship.actionFire(),
+            Ship.actionSpecial()
+        ];
+        return returnValues;
     }
-    enemyActivityDefnPerform(uwpe) {
+    static activityDefnEnemy() {
+        return new ActivityDefn("CombatEnemy", Combat.activityDefnEnemyPerform);
+    }
+    static activityDefnEnemyPerform(uwpe) {
         var world = uwpe.world;
         var place = uwpe.place;
         var actor = uwpe.entity;
@@ -54,8 +65,9 @@ class Combat {
         var world = universe.world;
         var placeCombat = world.placeCurrent;
         var uwpe = new UniverseWorldPlaceEntities(universe, world, placeCombat, null, null);
-        for (var i = 0; i < this.shipsFighting.length; i++) {
-            var ship = this.shipsFighting[i];
+        var shipsFighting = this.shipsFighting;
+        for (var i = 0; i < shipsFighting.length; i++) {
+            var ship = shipsFighting[i];
             var shipEntity = ship.toEntity(uwpe);
             if (placeCombat.entityById(shipEntity.id) == null) {
                 placeCombat.entityToSpawnAdd(shipEntity);

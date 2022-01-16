@@ -14,7 +14,7 @@ class PlacePlanetOrbit extends Place
 
 	constructor
 	(
-		world: World, planet: Planet, placePlanetVicinity: PlacePlanetVicinity
+		world: WorldExtended, planet: Planet, placePlanetVicinity: PlacePlanetVicinity
 	)
 	{
 		super
@@ -50,7 +50,11 @@ class PlacePlanetOrbit extends Place
 			);
 			entities.push(...lifeformEntities);
 
-			// todo - Energy sources.
+			var energySourceEntities = this.planet.energySources.map
+			(
+				x => x.toEntity(world, this.planet)
+			);
+			entities.push(...energySourceEntities);
 		}
 
 		this._camera = new Camera

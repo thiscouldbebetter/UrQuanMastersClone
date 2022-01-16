@@ -9,15 +9,27 @@ class EnergySource {
     static fromEntity(entity) {
         return entity.propertyByName(EnergySource.name);
     }
-    toEntity(world, place) {
-        var visual = VisualCircle.fromRadiusAndColorFill(10, Color.byName("Cyan"));
-        visual = new VisualWrapped(place.size, visual);
-        var energySourceCollider = new Sphere(Coords.create(), 5);
+    toEntity(world, planet) {
+        var dimension = 5;
+        var energySourceCollider = new Sphere(Coords.create(), dimension);
+        var energySourceCollidable = Collidable.fromCollider(energySourceCollider);
+        var visual = VisualPolygon.fromVerticesAndColorFill([
+            Coords.fromXY(0, -dimension),
+            Coords.fromXY(dimension, 0),
+            Coords.fromXY(0, dimension),
+            Coords.fromXY(-dimension, 0),
+        ], Color.byName("Cyan"));
+        visual = new VisualWrapped(planet.sizeSurface, visual);
+        var energySourceDrawable = Drawable.fromVisual(visual);
+        var energySourceLocatable = Locatable.fromPos(this.pos);
+        var energySourceVisualOnMinimap = new VisualImageFromLibrary(EnergySource.name + "MauluskaOrphan");
+        var energySourceMappable = new Mappable(energySourceVisualOnMinimap);
         var returnValue = new Entity(this.name, [
+            energySourceCollidable,
+            energySourceDrawable,
             this,
-            Collidable.fromCollider(energySourceCollider),
-            Drawable.fromVisual(visual),
-            Locatable.fromPos(this.pos),
+            energySourceLocatable,
+            energySourceMappable
         ]);
         return returnValue;
     }

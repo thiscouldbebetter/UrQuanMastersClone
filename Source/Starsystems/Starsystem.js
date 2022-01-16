@@ -16,7 +16,7 @@ class Starsystem {
     faction(world) {
         return world.factionByName(this.factionName);
     }
-    solarSystem() {
+    solarSystem(universe) {
         this.name = "Sol";
         var radiusBase = 5;
         var planetEarth = this.planets[2];
@@ -32,6 +32,25 @@ class Starsystem {
         Coords.create(), // todo
         [enemyShip]);
         planetEarth.shipGroups.push(enemyShipGroup);
+        var pluto = this.planets[8];
+        var textMauluskaOrphan = "MauluskaOrphan";
+        var mediaLibrary = universe.mediaLibrary;
+        var energySourceMauluskaOrphanMessage = mediaLibrary.textStringGetByName(EnergySource.name + textMauluskaOrphan).value;
+        var energySourceMauluskaOrphan = new EnergySource(textMauluskaOrphan, pluto.sizeSurface.clone().half().addDimensions(30, 20, 0), VisualCircle.fromRadiusAndColorFill(10, Color.byName("Red")), // todo
+        (uwpe) => {
+            var universe = uwpe.universe;
+            var controlMessage = universe.controlBuilder.message(universe, universe.display.sizeInPixels, DataBinding.fromContext(energySourceMauluskaOrphanMessage), () => {
+                var conversationDefnSerialized = mediaLibrary.textStringGetByName("Conversation-" + textMauluskaOrphan).value;
+                var conversationDefn = ConversationDefn.deserialize(conversationDefnSerialized);
+                var conversationRun = new ConversationRun(conversationDefn, null, null, null, null);
+                var conversationVenue = conversationRun.toVenue(universe);
+                universe.venueTransitionTo(conversationVenue);
+            }, null // ?
+            );
+            universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
+        });
+        var energySources = [energySourceMauluskaOrphan];
+        pluto.energySources = energySources;
     }
     contentsRandomize(randomizer) {
         var planetsPerStarsystemMax = 6;

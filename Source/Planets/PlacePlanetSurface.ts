@@ -64,12 +64,6 @@ class PlacePlanetSurface extends Place
 			this._actionToInputsMappings, x => x.inputNames
 		);
 
-		// constraints
-
-		var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
-		var constraintFriction = new Constraint_FrictionXY(0.1, null);
-		var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
-
 		// entities
 
 		var entities = this.entitiesToSpawn;
@@ -139,12 +133,50 @@ class PlacePlanetSurface extends Place
 		var energySources = this.planet.energySources || [];
 		var energySourceEntities = energySources.map
 		(
-			x => x.toEntity(world, this)
+			x => x.toEntity(world, this.planet)
 		);
 		entities.push(...energySourceEntities);
 
 		// player
 
+		var playerEntity = this.playerEntityBuild(entityDimension);
+		entities.push(playerEntity);
+
+		var containerSidebar = this.toControlSidebar(world, playerEntity);
+		this.venueControls = VenueControls.fromControl(containerSidebar);
+
+		//this.propertyNamesToProcess.push("ship");
+
+		// Environmental hazards.
+
+		var entityHazard = new Entity
+		(
+			"Hazard",
+			[
+				Collidable.default(),
+				Drawable.default(),
+				Ephemeral.fromTicksToLive(20),
+				Locatable.create()
+			]
+		);
+		var hazardGenerator = new EntityGenerator
+		(
+			entityHazard,
+			new RangeExtent(5, 10), // ticksPerGenerationAsRange
+			new RangeExtent(0, 10), // entitiesPerGenerationAsRange
+			1000 // entitiesGeneratedMax
+		);
+		entities.push(hazardGenerator.toEntity());
+
+		// Helper variables.
+
+		this._drawPos = Coords.create();
+	}
+
+	// Constructor helpers.
+
+	playerEntityBuild(entityDimension: number): Entity
+	{
 		var playerActivityDefnName = Player.activityDefn().name;
 		var playerActivity = new Activity(playerActivityDefnName, null);
 		var playerActor = new Actor(playerActivity);
@@ -158,6 +190,10 @@ class PlacePlanetSurface extends Place
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
 			this.playerCollide
 		);
+
+		var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
+		var constraintFriction = new Constraint_FrictionXY(0.1, null);
+		var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
 
 		var playerConstrainable = new Constrainable
 		([
@@ -210,37 +246,7 @@ class PlacePlanetSurface extends Place
 			]
 		);
 
-		entities.push(playerEntity);
-
-		var containerSidebar = this.toControlSidebar(world, playerEntity);
-		this.venueControls = VenueControls.fromControl(containerSidebar);
-
-		//this.propertyNamesToProcess.push("ship");
-
-		// Environmental hazards.
-
-		var entityHazard = new Entity
-		(
-			"Hazard",
-			[
-				Collidable.default(),
-				Drawable.default(),
-				Ephemeral.fromTicksToLive(20),
-				Locatable.create()
-			]
-		);
-		var hazardGenerator = new EntityGenerator
-		(
-			entityHazard,
-			new RangeExtent(5, 10), // ticksPerGenerationAsRange
-			new RangeExtent(0, 10), // entitiesPerGenerationAsRange
-			1000 // entitiesGeneratedMax
-		);
-		entities.push(hazardGenerator.toEntity());
-
-		// Helper variables.
-
-		this._drawPos = Coords.create();
+		return playerEntity;
 	}
 
 	// methods
@@ -274,7 +280,6 @@ class PlacePlanetSurface extends Place
 	playerCollide(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var universe = uwpe.universe;
-		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place;
 		var entityPlayer = uwpe.entity;
 		var entityOther = uwpe.entity2;
@@ -313,7 +318,7 @@ class PlacePlanetSurface extends Place
 		else if (entityOtherEnergySource != null)
 		{
 			var energySource = entityOtherEnergySource;
-			energySource.collideWithLander(universe, world, place, entityOther, entityPlayer);
+			energySource.collideWithLander(uwpe);
 		}
 	}
 

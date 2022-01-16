@@ -4,11 +4,11 @@ class Lifeform {
         this.defnName = defnName;
         this.pos = pos;
     }
+    // static
     defn(world) {
         return world.defnExtended().lifeformDefnByName(this.defnName);
     }
-    toEntity(worldAsWorld, planet) {
-        var world = worldAsWorld;
+    toEntity(world, planet) {
         var lifeformDefn = this.defn(world);
         var lifeformActivity = new Activity(lifeformDefn.activityDefnName, null);
         var lifeformActor = new Actor(lifeformActivity);

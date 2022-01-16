@@ -43,29 +43,35 @@ class Player
 	{
 		return new ActivityDefn
 		(
-			"AcceptUserInput",
-			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var universe = uwpe.universe;
-				var world = uwpe.world;
-				var place = uwpe.place;
-
-				var inputHelper = universe.inputHelper;
-				var placeDefn = place.defn(world);
-				var actionsByName = placeDefn.actionsByName;
-				var actionToInputsMappingsByInputName =
-					placeDefn.actionToInputsMappingsByInputName;
-				var actionsToPerform = inputHelper.actionsFromInput
-				(
-					actionsByName, actionToInputsMappingsByInputName
-				);
-				for (var i = 0; i < actionsToPerform.length; i++)
-				{
-					var action = actionsToPerform[i];
-					action.perform(uwpe);
-				}
-			}
+			"AcceptUserInput", Player.activityDefnPerform
 		);
+	}
+
+	static activityDefnPerform(uwpe: UniverseWorldPlaceEntities): void
+	{
+		// todo - Replace this with equivalent from Framework?
+
+		var universe = uwpe.universe;
+		var world = uwpe.world;
+		var place = uwpe.place;
+
+		var inputHelper = universe.inputHelper;
+		var placeDefn = place.defn(world);
+		var actionsByName = placeDefn.actionsByName;
+		var actionToInputsMappingsByInputName =
+			placeDefn.actionToInputsMappingsByInputName;
+		var actionsToPerform = inputHelper.actionsFromInput
+		(
+			actionsByName, actionToInputsMappingsByInputName
+		);
+		for (var i = 0; i < actionsToPerform.length; i++)
+		{
+			var action = actionsToPerform[i];
+			if (action != null) // Can't fire in some places.
+			{
+				action.perform(uwpe);
+			}
+		}
 	}
 
 	cachesCalculate(): void

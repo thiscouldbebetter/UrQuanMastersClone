@@ -16,6 +16,9 @@ class ShipAttackDefn {
         this.effectOnImpact = effectOnImpact;
         this.range = this.speed * this.ticksToLive;
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(ShipAttackDefn.name);
+    }
     activate(universe, world, place, actor) {
         var attackDefn = this;
         var actorLoc = actor.locatable().loc;
@@ -54,16 +57,16 @@ class ShipAttackDefn {
         place.entitiesToSpawn.push(projectileEntity);
     }
     projectileCollide(uwpe) {
-        var world = uwpe.world;
         var place = uwpe.place;
         var entityProjectile = uwpe.entity;
         var entityOther = uwpe.entity2;
-        var ship = Ship.fromEntity(entityProjectile);
-        var shipDefn = ship.defn(world);
-        var attackDefn = shipDefn.attackDefn;
+        var attackDefn = ShipAttackDefn.fromEntity(entityProjectile);
         if (attackDefn.diesOnImpact == true) {
-            entityProjectile.killable().integrity = 0;
-            entityProjectile.drawable().visual.children.push(attackDefn.visualImpact);
+            var killable = entityProjectile.killable();
+            killable.integrity = 0;
+            var drawable = entityProjectile.drawable();
+            var visualWrapped = drawable.visual;
+            visualWrapped.child = attackDefn.visualImpact;
             var entityImpact = new Entity("Impact", [
                 new Ephemeral(10, null),
                 entityProjectile.locatable(),

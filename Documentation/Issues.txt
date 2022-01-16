@@ -12,9 +12,11 @@ New game should start with slideshow.
 Hyperspace
 ----------
 No parallax background to show movement.
+Background is gray.
 Other ship groups use static, non-rotated image.
 Spheres of influence don't spawn ship groups.
 Running out of fuel has no effect?
+View is too zoomed-out, showing too much.
 
 
 Hyperspace Map
@@ -29,12 +31,17 @@ Starsystem
 Other ship groups cannot move between starsystem and planet vicinities.
 
 
+Planet Vicinity
+---------------
+Planets are slightly transparent.
+
+
 Planet Orbit
 ------------
 Mineral and biological contacts show up without scanning.
 No energy contacts.
 Surface landscape for all planets is a single static image.
-
+Surface landscape not projected onto globe view.
 
 Planet Surface
 --------------
@@ -44,7 +51,7 @@ Only environmental hazard is... weather?
 	and which never hurts the player,
 	and which is rendered as a cyan square.
 No weapon on lander.
-
+aw
 
 Communications
 --------------
@@ -57,9 +64,14 @@ Ending in combat doesn't work right.
 
 Combat
 ------
-Controls do not work.
+Projectiles rapid-fire, colliding with each other.
+Projectiles do not collide with enemy.
 No multiple/continuous zoom levels.
-
+No escape from combat for flagship.
+Ships interpenetrate other ships on collision.
+Ships interpenetrate planet on collision.
+Collisions with planet do not hurt.
+Planet is always the same.
 
 Station
 -------

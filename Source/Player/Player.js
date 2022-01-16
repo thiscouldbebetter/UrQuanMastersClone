@@ -12,20 +12,25 @@ class Player {
         this.vars = this.variableLookup;
     }
     static activityDefn() {
-        return new ActivityDefn("AcceptUserInput", (uwpe) => {
-            var universe = uwpe.universe;
-            var world = uwpe.world;
-            var place = uwpe.place;
-            var inputHelper = universe.inputHelper;
-            var placeDefn = place.defn(world);
-            var actionsByName = placeDefn.actionsByName;
-            var actionToInputsMappingsByInputName = placeDefn.actionToInputsMappingsByInputName;
-            var actionsToPerform = inputHelper.actionsFromInput(actionsByName, actionToInputsMappingsByInputName);
-            for (var i = 0; i < actionsToPerform.length; i++) {
-                var action = actionsToPerform[i];
+        return new ActivityDefn("AcceptUserInput", Player.activityDefnPerform);
+    }
+    static activityDefnPerform(uwpe) {
+        // todo - Replace this with equivalent from Framework?
+        var universe = uwpe.universe;
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var inputHelper = universe.inputHelper;
+        var placeDefn = place.defn(world);
+        var actionsByName = placeDefn.actionsByName;
+        var actionToInputsMappingsByInputName = placeDefn.actionToInputsMappingsByInputName;
+        var actionsToPerform = inputHelper.actionsFromInput(actionsByName, actionToInputsMappingsByInputName);
+        for (var i = 0; i < actionsToPerform.length; i++) {
+            var action = actionsToPerform[i];
+            if (action != null) // Can't fire in some places.
+             {
                 action.perform(uwpe);
             }
-        });
+        }
     }
     cachesCalculate() {
         this._factionsKnown = null;
