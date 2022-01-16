@@ -1,14 +1,71 @@
 Issues
 ======
 
-Earth Station
-	Scripts in Conversation need updating.
-	Cannot Return from Transcript Screen.
+General
+-------
+No music from MODs.
+Very few sound effects.
+Can't use devices.
+New game should start with slideshow.
 
-Hyperspace view doesn't show stars.
+
+Hyperspace
+----------
+No parallax background to show movement.
+Other ship groups use static, non-rotated image.
+Spheres of influence don't spawn ship groups.
+Running out of fuel has no effect?
+
+
+Hyperspace Map
+--------------
+No cursor?
+No zoom/pan.
+Known spheres of influence don't show up.
+
+
+Starsystem
+----------
+Other ship groups cannot move between starsystem and planet vicinities.
+
+
+Planet Orbit
+------------
+Mineral and biological contacts show up without scanning.
+No energy contacts.
+Surface landscape for all planets is a single static image.
+
 
 Planet Surface
-	Doesn't scroll.
-	Can't launch from it.
+--------------
+Landing and launching consumes no fuel.
+Only environmental hazard is... weather?
+	Which isn't dependent on the hazard class of the planet,
+	and which never hurts the player,
+	and which is rendered as a cyan square.
+No weapon on lander.
 
-Guard Drone Encountered Again at Same Spot, Even if it's Moved Away.
+
+Communications
+--------------
+Not all species set up.
+Can't do specialized fonts.
+Can't move speaker caption to different places.
+Not persisting most variable changes for next time.
+Ending in combat doesn't work right.
+
+
+Combat
+------
+Controls do not work.
+No multiple/continuous zoom levels.
+
+
+Station
+-------
+[unknown]
+
+
+Docks
+-----
+[unknown]
