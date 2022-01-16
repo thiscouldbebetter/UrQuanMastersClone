@@ -7,20 +7,22 @@ class PlacePlanetOrbit extends Place {
         );
         this.planet = planet;
         this.placePlanetVicinity = placePlanetVicinity;
-        var entities = this.entitiesToSpawn;
-        // Resources.
-        var resourceRadiusBase = 5; // todo
-        var resourceEntities = this.planet.resources.map(x => x.toEntity(world, this, resourceRadiusBase));
-        entities.push(...resourceEntities);
-        // Lifeforms.
-        var lifeformEntities = this.planet.lifeforms.map(x => x.toEntity(world, this.planet));
-        entities.push(...lifeformEntities);
-        // todo - Energy sources.
+        if (this.planet.defn().canLand) {
+            var entities = this.entitiesToSpawn;
+            // Resources.
+            var resourceRadiusBase = 5; // todo
+            var resourceEntities = this.planet.resources.map(x => x.toEntity(world, this, resourceRadiusBase));
+            entities.push(...resourceEntities);
+            // Lifeforms.
+            var lifeformEntities = this.planet.lifeforms.map(x => x.toEntity(world, this.planet));
+            entities.push(...lifeformEntities);
+            // todo - Energy sources.
+        }
         this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y), null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
-        entities.push(cameraAsEntity);
+        this.entityToSpawnAdd(cameraAsEntity);
         this._drawPos = Coords.create();
     }
     // methods
@@ -142,14 +144,10 @@ class PlacePlanetOrbit extends Place {
             false, // isTextCenteredVertically
             DataBinding.fromContext("Tectonics: Class " + planet.tectonics), fontHeightShort),
         ]);
+        var visualPlanetFromOrbit = this.planet.defn().visualOrbit;
         var visualGlobe = new VisualGroup([
             VisualRectangle.fromSizeAndColorFill(containerInfoSize, Color.byName("Black")),
-            VisualCircle.fromRadiusAndColorFill(containerInfoSize.y * .4, Color.byName("Gray")),
-            new VisualCircleGradient(containerInfoSize.y * .4, new ValueBreakGroup([
-                new ValueBreak(0, planet.defn().color),
-                new ValueBreak(1, Color.byName("Black"))
-            ], null // interpolationMode
-            ), planet.defn().color)
+            visualPlanetFromOrbit
         ]);
         var containerGlobe = ControlContainer.from4("containerGlobe", Coords.fromXY(marginSize.x * 2 + containerInfoSize.x, marginSize.y * 2 + titleSize.y), containerInfoSize, 
         // children
@@ -157,6 +155,7 @@ class PlacePlanetOrbit extends Place {
             ControlVisual.from4("visualGlobe", Coords.fromXY(0, 0), containerInfoSize, DataBinding.fromContext(visualGlobe))
         ]);
         var containerPlayer = world.player.toControlSidebar(world);
+        var canLandAsBinding = DataBinding.fromBooleanWithContext(this.planet.defn().canLand, null);
         var containerRight = ControlContainer.from4("containerRight", Coords.fromXY(marginSize.x * 2 + containerMapSize.x, marginSize.y * 2 + titleSize.y), containerRightSize, 
         // children
         [
@@ -173,17 +172,17 @@ class PlacePlanetOrbit extends Place {
                 - buttonSizeRight.y
                 - containerScanSize.y), containerScanSize, [
                 ControlButton.from8("buttonScanMineral", Coords.fromXY(marginSize.x, marginSize.y), buttonScanSize, "Mineral", fontHeightShort, true, // hasBorder,
-                DataBinding.fromTrue(), // isEnabled,
+                canLandAsBinding, // isEnabled,
                 () => placePlanetOrbit.scanMinerals(universe)),
                 ControlButton.from8("buttonScanLife", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y), buttonScanSize, "Life", fontHeightShort, true, // hasBorder,
-                DataBinding.fromTrue(), // isEnabled,
+                canLandAsBinding, // isEnabled,
                 () => placePlanetOrbit.scanLife(universe)),
                 ControlButton.from8("buttonScanEnergy", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y * 2), buttonScanSize, "Energy", fontHeightShort, true, // hasBorder,
-                DataBinding.fromTrue(), // isEnabled,
+                canLandAsBinding, // isEnabled,
                 () => placePlanetOrbit.scanEnergy(universe)),
             ]),
             ControlButton.from8("buttonLand", Coords.fromXY(marginSize.x, containerRightSize.y - marginSize.y - buttonSizeRight.y), buttonSizeRight, "Land", fontHeightShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
+            canLandAsBinding, // isEnabled,
             () => placePlanetOrbit.land(universe)),
         ]);
         var controlRoot = ControlContainer.from4("containerPlanetOrbit", Coords.fromXY(0, 0), // pos

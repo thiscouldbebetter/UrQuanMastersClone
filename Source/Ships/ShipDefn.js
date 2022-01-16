@@ -25,9 +25,6 @@ class ShipDefn {
         return ShipDefn._instances;
     }
     // static methods
-    static byName(name, universe) {
-        return ShipDefn.Instances(universe)._AllByName.get(name);
-    }
     static visual(dimension, colorFill, colorBorder) {
         var visualPath = new Path([
             Coords.fromXY(1.2, 0).multiplyScalar(dimension).half(),

@@ -43,8 +43,8 @@ class SystemTests extends TestFixture
 		var planetEarth = place.entityByName("Earth");
 		Assert.isNotNull(planetEarth);
 
-		var player = place.entityByName(Player.name);
-		Assert.isNotNull(player);
+		var playerEntity = place.entityByName(Player.name);
+		Assert.isNotNull(playerEntity);
 
 		// Move the player's ship to Earth.
 
@@ -69,8 +69,8 @@ class SystemTests extends TestFixture
 
 		var venueConversation = venue as VenueControls;
 		var containerConversation = venueConversation.controlRoot as ControlContainer;
-		var containerButtons = (containerConversation.childByName("containerButtons") as ControlContainerTransparent).containerInner;
-		var buttonNext = containerButtons.childByName("buttonNext") as ControlButton<ConversationRun>;
+		var buttonNext =
+			containerConversation.childByName("buttonNextUnderPortrait") as ControlButton<unknown>;
 		Assert.isNotNull(buttonNext);
 
 		while (universe.venueCurrent == venueConversation)
@@ -87,10 +87,11 @@ class SystemTests extends TestFixture
 
 		// Move the player to the station.
 
-		var station = place.entityByName(Station.name);
+		var stationName = "EarthStation";
+		var station = place.entityByName(stationName);
 		Assert.isNotNull(station);
 
-		this.playFromStart_MoveToEntityWithName(universe, Station.name);
+		this.playFromStart_MoveToEntityWithName(universe, stationName);
 
 		// hack - Should these be necessary?
 		universe.updateForTimerTick();
@@ -145,7 +146,8 @@ class SystemTests extends TestFixture
 
 		// Verify that the cargo hold contains no radioactives.
 
-		var playerItemHolder = world.player.flagship.itemHolder;
+		var player = world.player;
+		var playerItemHolder = player.flagship.itemHolder;
 		var itemDefnNameRadioactives = "Radioactives";
 		var radioactivesHeld =
 			playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
@@ -216,7 +218,7 @@ class SystemTests extends TestFixture
 		placeTypeName = place.constructor.name;
 		Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
 
-		this.playFromStart_MoveToEntityWithName(universe, Station.name);
+		this.playFromStart_MoveToEntityWithName(universe, stationName);
 
 		venue = universe.venueCurrent;
 		venueTypeName = venue.constructor.name;
@@ -224,7 +226,7 @@ class SystemTests extends TestFixture
 
 		// Talk to the station commander.
 
-		station = place.entityByName(Station.name);
+		station = place.entityByName(stationName);
 		talker = station.talker();
 		this.playFromStart_TalkToTalker
 		(
@@ -292,14 +294,108 @@ class SystemTests extends TestFixture
 
 		// Destroy the probe (by cheating, in this test).
 
-		// Verify that resources were gained.
+		var placeCombat = place as PlaceCombat;
+		var combat = placeCombat.combat;
 
-		// Go to another starsystem.
+		var shipGroupForPlayer = combat.shipGroups[0];
+		var shipForPlayer = shipGroupForPlayer.ships[0];
+		combat.shipsFighting[0] = shipForPlayer;
+		combat.fight(universe);
+		this.playFromStart_WaitForTicks(universe, 100);
+
+		var shipEnemy = combat.shipsFighting[1];
+		var shipEnemyAsEntity =  placeCombat.entityByName(shipEnemy.name);
+		shipEnemyAsEntity.killable().kill();
+
+		this.playFromStart_WaitForTicks(universe, 100);
+
+		// Verify that we're seeing a briefing screen.
+
+		venue = universe.venueCurrent;
+		venueTypeName = venue.constructor.name;
+		Assert.areStringsEqual(VenueControls.name, venueTypeName);
+
+		var creditBefore = player.resourceCredits;
+
+		var venueControls = venue as VenueControls;
+		var containerChoice = venueControls.controlRoot as ControlContainer;
+		var buttonAcknowledge =
+			containerChoice.childByName("buttonAcknowledge") as ControlButton<any>;
+		buttonAcknowledge.click();
+
+		this.playFromStart_WaitForTicks(universe, 100);
+
+		// Verify that resources were salvaged from destroyed ship.
+
+		var creditAfter = player.resourceCredits;
+		Assert.isTrue(creditAfter > creditBefore);
+
+		// Verify that we're back in hyperspace.
+
+		place = world.placeCurrent;
+		placeTypeName = place.constructor.name;
+		Assert.areStringsEqual(PlaceHyperspace.name, placeTypeName);
+
+		// Go to the nearby Alpha Centauri starsystem.
+
+		this.playFromStart_MoveToEntityWithName(universe, "Alpha Centauri");
+
+		place = world.placeCurrent;
+		placeTypeName = place.constructor.name;
+		Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
+
+		// Look for a Trader ship, in the main starsystem and in each planet vicinity.
+
+		var placeStarsystem = place as PlaceStarsystem;
+		var starsystem = placeStarsystem.starsystem;
+		var factionNameMurch = world.factionByName("Murch").name;
+		var shipGroupMurch =
+			starsystem.shipGroups.find(x => x.factionName == factionNameMurch);
+
+		if (shipGroupMurch == null)
+		{
+			var planets = starsystem.planets;
+			for (var i = 0; i < planets.length; i++)
+			{
+				var planet = planets[i];
+				shipGroupMurch = planet.shipGroups.find
+				(
+					x => x.factionName == factionNameMurch
+				);
+				if (shipGroupMurch != null)
+				{
+					this.playFromStart_MoveToEntityWithName(universe, planet.name);
+					break;
+				}
+			}
+		}
+
+		var place = world.placeCurrent;
+
+		this.playFromStart_MoveToEntityWithName(universe, shipGroupMurch.name);
 
 		// Gather resources.
 		// Gather lifeforms.
 		// Return to Earth station.
 
+	}
+
+	playFromStart_FindEntityWithName(universe: Universe, targetEntityName: string): Entity
+	{
+		var place = universe.world.placeCurrent;
+
+		var targetFound = place.entityByName(targetEntityName);
+
+		if (targetFound == null)
+		{
+			targetFound =
+				place.entities.find
+				(
+					(x: Entity) => x.name.startsWith(targetEntityName)
+				);
+		}
+
+		return targetFound;
 	}
 
 	playFromStart_LeavePlanetVicinityOrStarsystem(universe: Universe): void
@@ -321,16 +417,7 @@ class SystemTests extends TestFixture
 		var player = place.entityByName(Player.name);
 		var playerPos = player.locatable().loc.pos;
 
-		var target = place.entityByName(targetEntityName);
-
-		if (target == null)
-		{
-			target =
-				place.entities.find
-				(
-					(x: Entity) => x.name.startsWith(targetEntityName)
-				);
-		}
+		var target = this.playFromStart_FindEntityWithName(universe, targetEntityName);
 
 		if (target != null)
 		{

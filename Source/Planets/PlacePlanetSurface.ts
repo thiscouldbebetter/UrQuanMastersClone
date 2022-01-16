@@ -284,7 +284,7 @@ class PlacePlanetSurface extends Place
 		var entityOtherName = entityOther.name;
 		var entityOtherItem = entityOther.item();
 		var entityOtherEnergySource =
-			EntityExtensions.energySource(entityOther);
+			EnergySource.fromEntity(entityOther);
 
 		if (entityOtherItem != null)
 		{
@@ -398,6 +398,12 @@ class PlacePlanetSurface extends Place
 				contactPos.overwriteWith(contactPosSaved);
 			}
 		}
+	}
+
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
+	{
+		super.updateForTimerTick(uwpe);
+		this.venueControls.updateForTimerTick(uwpe.universe);
 	}
 
 	// controls

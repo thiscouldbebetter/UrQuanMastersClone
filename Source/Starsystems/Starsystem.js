@@ -10,12 +10,19 @@ class Starsystem {
         this.planets = planets;
         this.shipGroups = shipGroups;
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(Starsystem.name);
+    }
+    faction(world) {
+        return world.factionByName(this.factionName);
+    }
     solarSystem() {
         this.name = "Sol";
         var radiusBase = 5;
         var planetEarth = this.planets[2];
+        planetEarth.defnName = PlanetDefn.Instances().Shielded.name;
         var moon = planetEarth.satellites[0];
-        var station = new Station("Station", Color.byName("Gray"), // color
+        var station = new Station("EarthStation", Color.byName("Gray"), // color
         radiusBase, "Terran", // factionName
         new Polar(Math.random(), moon.posAsPolar.radius / 2, null));
         planetEarth.satellites.splice(0, 0, station);
@@ -60,7 +67,7 @@ class Starsystem {
     stationBuild(planetWithStation) {
         var numberOfPlanets = this.planets.length;
         var distanceBetweenPlanetOrbits = this.sizeInner.clone().half().y / (numberOfPlanets + 1);
-        var station = new Station("Station", Color.byName("Gray"), // color
+        var station = new Station("EarthStation", Color.byName("Gray"), // color
         10, // radius
         "Terran", // factionName
         new Polar(Math.random(), distanceBetweenPlanetOrbits, null));

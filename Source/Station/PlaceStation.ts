@@ -39,7 +39,7 @@ class PlaceStation extends Place
 
 	leave(universe: Universe): void
 	{
-		var world = universe.world;
+		var world = universe.world as WorldExtended;
 		var place = (world.placeCurrent as PlaceStation);
 		var placePrev = place.placePlanetVicinity;
 		var size = placePrev.size;

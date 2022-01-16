@@ -1,13 +1,15 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, defn, hyperspace, factions, player, starsystemStart) {
+    constructor(name, dateCreated, defn, hyperspace, factions, shipDefns, player, starsystemStart) {
         super(name, dateCreated, defn, [] // places
         );
         this.timerTicksSoFar = 0;
         this.hyperspace = hyperspace;
         this.factions = factions;
+        this.shipDefns = shipDefns;
         this.player = player;
         this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
+        this.shipDefnsByName = ArrayHelper.addLookupsByName(this.shipDefns);
         this.placeCurrent = starsystemStart.toPlace(this, // world
         Disposition.fromPosAndOrientation(Coords.fromXY(.5, .95).multiply(starsystemStart.sizeInner), new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))), null // planet?
         );
@@ -34,6 +36,7 @@ class WorldExtended extends World {
             Actor.name,
             Damager.name,
             Ephemeral.name,
+            Killable.name,
             Playable.name,
             Locatable.name,
             Constrainable.name,
@@ -68,7 +71,7 @@ class WorldExtended extends World {
         Faction.RelationsHostile, true, // talksImmediately
         "LahkemupGuardDrone", // conversationDefnName
         null, // sphereOfInfluence
-        null, // shipDefnName
+        "GuardDrone", // shipDefnName
         new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
         // normal
         var f = (name, nameOriginal, color, sphereOfInfluence, relations, shipDefnName) => {
@@ -140,6 +143,14 @@ class WorldExtended extends World {
         Coords.fromXY(300, 300), factions, starsAndPlanetsAsStringCSVCompressed);
         var starsystemStart = hyperspace.starsystemByName("Sol");
         starsystemStart.solarSystem(); // todo
+        var starsystems = hyperspace.starsystems;
+        var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);
+        starsystemsSupergiant.forEach(starsystem => {
+            var shipGroup = new ShipGroup(factionMurch.name + " " + ShipGroup.name, factionMurch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), [
+                new Ship(factionMurch.shipDefnName)
+            ]);
+            starsystem.shipGroups.push(shipGroup);
+        });
         var playerShipDefnName = "Flagship";
         var playerShip = new Ship(playerShipDefnName);
         var shipDefns = ShipDefn.Instances(universe)._All;
@@ -168,13 +179,15 @@ class WorldExtended extends World {
         30 // shipsMax
         );
         //var factionNamesAll = factions.elementProperties("name");
-        var player = new Player("Player", 0, // credit
+        var player = new Player("Player", 0, // resourceCredits
+        0, // infoCredits
         playerFlagship, [
             "Terran"
         ], // factionsKnownNames
         playerShipGroup);
+        var shipDefns = ShipDefn.Instances(universe)._All;
         var returnValue = new WorldExtended("World-" + nowAsString, now, // dateCreated
-        defn, hyperspace, factions, player, starsystemStart);
+        defn, hyperspace, factions, shipDefns, player, starsystemStart);
         return returnValue;
     }
     // instance methods
@@ -212,6 +225,10 @@ class WorldExtended extends World {
         }
         return returnPlace;
     }
+    shipDefnByName(shipDefnName) {
+        return this.shipDefnsByName.get(shipDefnName);
+    }
+    // World overrides.
     updateForTimerTick(uwpe) {
         uwpe.worldSet(this);
         if (this.placeNext != null) {

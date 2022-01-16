@@ -58,7 +58,7 @@ class ShipAttackDefn {
         var place = uwpe.place;
         var entityProjectile = uwpe.entity;
         var entityOther = uwpe.entity2;
-        var ship = EntityExtensions.ship(entityProjectile);
+        var ship = Ship.fromEntity(entityProjectile);
         var shipDefn = ship.defn(world);
         var attackDefn = shipDefn.attackDefn;
         if (attackDefn.diesOnImpact == true) {
@@ -75,7 +75,7 @@ class ShipAttackDefn {
         if (entityOtherKillable != null) {
             var projectileDamagePerHit = attackDefn.damage;
             entityOtherKillable.integrity -= projectileDamagePerHit;
-            var entityOtherShip = EntityExtensions.ship(entityOther);
+            var entityOtherShip = Ship.fromEntity(entityOther);
             if (entityOtherShip != null) {
                 entityOtherShip.crew = entityOtherKillable.integrity;
             }

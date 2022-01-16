@@ -1,11 +1,10 @@
 "use strict";
 class PlacePlanetVicinity extends Place {
-    constructor(worldAsWorld, planet, playerLoc, placeStarsystem) {
+    constructor(world, planet, playerLoc, placeStarsystem) {
         super(PlacePlanetVicinity.name + ":" + planet.name, PlacePlanetVicinity.name, // defnName
         null, // parentName
         Coords.fromXY(300, 300), null // entities
         );
-        var world = worldAsWorld;
         this.planet = planet;
         this.placeStarsystem = placeStarsystem;
         this.actions =
@@ -23,15 +22,16 @@ class PlacePlanetVicinity extends Place {
         var sizeHalf = this.size.clone().half();
         var planetRadius = entityDimension;
         var planetPos = sizeHalf.clone();
-        var planetColor = planet.defn().color;
         var orbitMultiplier = 16;
         var planetOrbitRadius = planet.posAsPolar.radius * orbitMultiplier;
         var planetOrbitVisual = new VisualAnchor(new VisualCircle(planetOrbitRadius, null, Color.byName("Gray"), null), planetPos.clone().add(new Polar(planet.posAsPolar.azimuthInTurns + .5, planetOrbitRadius, null).wrap().toCoords(Coords.create())), // posToAnchorAt
         null // ?
         );
+        var planetDefn = planet.defn();
+        var planetGlobeVisual = planetDefn.visualVicinity;
         var planetVisual = new VisualGroup([
             planetOrbitVisual,
-            VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor),
+            planetGlobeVisual,
         ]);
         var planetCollider = new Sphere(Coords.create(), planetRadius);
         var planetEntity = new Entity("Planet", [
@@ -87,54 +87,8 @@ class PlacePlanetVicinity extends Place {
             //playerEntity.collidable.ticksUntilCanCollide = 100; // hack
             entities.push(playerEntity);
         }
-        var shipGroups = this.planet.shipGroups;
-        for (var i = 0; i < shipGroups.length; i++) {
-            var shipGroup = shipGroups[i];
-            var faction = shipGroup.faction(world);
-            var enemyActor = new Actor(faction.shipGroupActivity);
-            var damagerColor = Color.byName("Red");
-            var enemyColor = damagerColor;
-            var enemyPos = this.size.clone().half();
-            var enemyLoc = Disposition.fromPos(enemyPos);
-            var enemyColliderAsFace = new Face([
-                Coords.fromXY(0, -entityDimension).half(),
-                Coords.fromXY(entityDimension, entityDimension).half(),
-                Coords.fromXY(-entityDimension, entityDimension).half(),
-            ]);
-            var enemyCollider = Mesh.fromFace(new Coords(0, 0, 0), // center
-            enemyColliderAsFace, 1 // thickness
-            );
-            var enemyCollidable = Collidable.fromCollider(enemyCollider);
-            var enemyConstrainable = new Constrainable([constraintSpeedMax]);
-            var enemyVisual = new VisualPolygon(new Path(enemyColliderAsFace.vertices), enemyColor, null, // ?
-            false // shouldUseEntityOrientation
-            );
-            var enemyDrawable = Drawable.fromVisual(enemyVisual);
-            var enemyKill = (uwpe) => {
-                var place = uwpe.place;
-                var entity = uwpe.entity;
-                place.entityRemove(entity);
-                var planet = place.planet;
-                var shipGroup = EntityExtensions.shipGroup(entity);
-                ArrayHelper.remove(planet.shipGroups, shipGroup);
-            };
-            var enemyKillable = new Killable(1, null, enemyKill);
-            var enemyLocatable = new Locatable(enemyLoc);
-            var enemyMovable = Movable.default();
-            var enemyTalker = Talker.fromConversationDefnName("todo");
-            var enemyEntity = new Entity("Enemy" + i, [
-                enemyActor,
-                enemyCollidable,
-                enemyConstrainable,
-                enemyDrawable,
-                enemyKillable,
-                enemyLocatable,
-                enemyMovable,
-                shipGroup,
-                enemyTalker
-            ]);
-            entities.push(enemyEntity);
-        }
+        var entitiesForShipGroups = this.planet.shipGroups.map(x => x.toEntity(world, this));
+        entities.push(...entitiesForShipGroups);
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
         null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
@@ -180,9 +134,9 @@ class PlacePlanetVicinity extends Place {
             world.placeNext = starsystem.toPlace(world, dispositionNext, planet);
         }
         else {
-            var entityOtherPlanet = EntityExtensions.planet(entityOther);
-            var entityOtherShipGroup = EntityExtensions.shipGroup(entityOther);
-            var entityOtherStation = EntityExtensions.station(entityOther);
+            var entityOtherPlanet = Planet.fromEntity(entityOther);
+            var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+            var entityOtherStation = Station.fromEntity(entityOther);
             if (entityOtherPlanet != null) {
                 var playerLoc = entityPlayer.locatable().loc;
                 var planetPos = entityOther.locatable().loc.pos;

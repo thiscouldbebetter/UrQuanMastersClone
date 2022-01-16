@@ -6,7 +6,11 @@ class ShipGroup {
         this.pos = pos;
         this.ships = ships;
         this.shipSelected = this.ships[0];
+        this.shipsLost = [];
         this._posInverted = Coords.create();
+    }
+    static fromEntity(entity) {
+        return entity.propertyByName(ShipGroup.name);
     }
     static activityDefnApproachPlayer() {
         return new ActivityDefn("Ship_ApproachPlayer", ShipGroup.activityDefnApproachPlayer_Perform);
@@ -80,6 +84,67 @@ class ShipGroup {
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
     }
+    toEntity(world, place) {
+        var shipGroup = this;
+        var faction = shipGroup.faction(world);
+        var shipActor = new Actor(faction.shipGroupActivity);
+        var shipPos = Coords.random(null).multiply(place.size);
+        var shipLoc = Disposition.fromPos(shipPos);
+        var entityDimension = 10;
+        var shipColliderAsFace = new Face([
+            Coords.fromXY(0, -1).multiplyScalar(entityDimension).half(),
+            Coords.fromXY(1, 1).multiplyScalar(entityDimension).half(),
+            Coords.fromXY(-1, 1).multiplyScalar(entityDimension).half(),
+        ]);
+        var shipCollider = Mesh.fromFace(Coords.zeroes(), // center
+        shipColliderAsFace, 1 // thickness
+        );
+        var shipCollidable = Collidable.fromCollider(shipCollider);
+        var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
+        var shipConstrainable = new Constrainable([constraintSpeedMax]);
+        var shipDefn = faction.shipDefn(world);
+        var shipVisual = shipDefn.visual;
+        var shipDrawable = Drawable.fromVisual(shipVisual);
+        var shipKill = (uwpe) => {
+            var place = uwpe.place;
+            var entity = uwpe.entity;
+            place.entityRemove(entity);
+            var shipGroup = ShipGroup.fromEntity(entity);
+            var shipGroupsInPlace = null;
+            var placeTypeName = place.constructor.name;
+            if (placeTypeName == PlacePlanetVicinity.name) {
+                shipGroupsInPlace = place.planet.shipGroups;
+            }
+            else if (placeTypeName == PlaceStarsystem.name) {
+                shipGroupsInPlace = place.starsystem.shipGroups;
+            }
+            else {
+                throw new Error("Unexpected placeTypeName: " + placeTypeName);
+            }
+            ArrayHelper.remove(shipGroupsInPlace, shipGroup);
+        };
+        var shipKillable = new Killable(1, null, shipKill);
+        var shipLocatable = new Locatable(shipLoc);
+        var shipMovable = Movable.default();
+        var shipTalker = new Talker("todo", null, this.toControl);
+        var returnEntity = new Entity(shipGroup.name, [
+            shipActor,
+            shipCollidable,
+            shipConstrainable,
+            shipDrawable,
+            shipKillable,
+            shipLocatable,
+            shipMovable,
+            shipGroup,
+            shipTalker
+        ]);
+        return returnEntity;
+    }
+    // Controls.
+    toControl(cr, size, universe) {
+        return cr.toControl_Layout_2(size, universe);
+    }
+    // Strings.
     toStringPosition(world) {
         var hyperspaceSize = world.hyperspace.size;
         return this._posInverted.overwriteWithDimensions(this.pos.x, hyperspaceSize.y - this.pos.y, 0).round().toStringXY();

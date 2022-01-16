@@ -1,8 +1,9 @@
 "use strict";
 class Player {
-    constructor(name, credit, flagship, factionsKnownNames, shipGroup) {
+    constructor(name, resourceCredits, infoCredits, flagship, factionsKnownNames, shipGroup) {
         this.name = name;
-        this.credit = credit;
+        this.resourceCredits = resourceCredits;
+        this.infoCredits = infoCredits;
         this.flagship = flagship;
         this.factionsKnownNames = factionsKnownNames;
         this.shipGroup = shipGroup;
@@ -54,6 +55,9 @@ class Player {
         }
         return this._factionsKnown;
     }
+    hasInfoToSell(world) {
+        return this.flagship.hasInfoToSell(world);
+    }
     initialize(uwpe) {
         var ships = this.shipGroup.ships;
         for (var i = 0; i < ships.length; i++) {
@@ -88,17 +92,30 @@ class Player {
     shipDefnsAvailable(universe) {
         if (this._shipDefnsAvailable == null) {
             this._shipDefnsAvailable = [];
-            var factionsAllied = this.factionsAllied(universe.world);
+            var world = universe.world;
+            var factionsAllied = this.factionsAllied(world);
             for (var i = 0; i < factionsAllied.length; i++) {
                 var faction = factionsAllied[i];
-                var shipDefnName = faction.shipDefnName;
-                if (shipDefnName != null) {
-                    var shipDefn = ShipDefn.byName(shipDefnName, universe);
-                    this._shipDefnsAvailable.push(shipDefn);
-                }
+                var shipDefn = faction.shipDefn(world);
+                this._shipDefnsAvailable.push(shipDefn);
             }
         }
         return this._shipDefnsAvailable;
+    }
+    varGet(variableName) {
+        return this.vars.get(variableName);
+    }
+    varGetWithDefault(variableName, defaultValue) {
+        var variableValue = this.varGet(variableName);
+        if (variableValue == null) {
+            variableValue = defaultValue;
+            this.varSet(variableName, variableValue);
+        }
+        return variableValue;
+    }
+    varSet(variableName, value) {
+        this.vars.set(variableName, value);
+        return this;
     }
     // controls
     toControlSidebar(world) {

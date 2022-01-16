@@ -114,12 +114,13 @@ class PlaceHyperspace extends Place
 
 		var starColors = Starsystem.StarColors;
 
-		var starVisualsForSizesByColorName = new Map<string,VisualPolygon[]>();
+		var starVisualsForSizesByColorName = new Map<string, VisualPolygon[]>();
+		var starSizeCount = 3; // Normal, giant, supergiant.
 		for (var i = 0; i < starColors.length; i++)
 		{
 			var starColor = starColors[i];
 			var starVisualsForSizes = [];
-			for (var j = 0; j < 3; j++)
+			for (var j = 0; j < starSizeCount; j++)
 			{
 				var starVisualPathForSize = starVisualPathsForSizes[j];
 				var starVisual = new VisualPolygon
@@ -296,7 +297,7 @@ class PlaceHyperspace extends Place
 	{
 		var place = placeAsPlace as PlaceHyperspace;
 
-		var faction = EntityExtensions.faction(entityOther);
+		var faction = Faction.fromEntity(entityOther);
 		var factionName = faction.name;
 
 		var numberOfShipGroupsExistingForFaction = 0;
@@ -304,7 +305,7 @@ class PlaceHyperspace extends Place
 		for (var i = 0; i < entitiesShipGroupsAll.length; i++)
 		{
 			var entityShipGroup = entitiesShipGroupsAll[i];
-			var shipGroup = EntityExtensions.shipGroup(entityShipGroup);
+			var shipGroup = ShipGroup.fromEntity(entityShipGroup);
 			if (shipGroup.factionName == factionName)
 			{
 				numberOfShipGroupsExistingForFaction++;
@@ -346,9 +347,9 @@ class PlaceHyperspace extends Place
 		var entityPlayer = uwpe.entity;
 		var entityOther = uwpe.entity2;
 
-		var entityOtherStarsystem = EntityExtensions.starsystem(entityOther);
-		var entityOtherShipGroup = EntityExtensions.shipGroup(entityOther);
-		var entityOtherFaction = EntityExtensions.faction(entityOther);
+		var entityOtherStarsystem = Starsystem.fromEntity(entityOther);
+		var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+		var entityOtherFaction = Faction.fromEntity(entityOther);
 
 		if (entityOtherStarsystem != null)
 		{
@@ -434,7 +435,8 @@ class PlaceHyperspace extends Place
 		var talker = new Talker
 		(
 			shipGroup.factionName,
-			null // quit - todo
+			null, // quit - todo
+			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, u)
 		);
 
 		var entityShipGroup = new Entity

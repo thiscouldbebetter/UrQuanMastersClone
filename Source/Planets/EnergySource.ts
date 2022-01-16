@@ -14,6 +14,11 @@ class EnergySource implements EntityProperty<EnergySource>
 		this.collideWithLander = collideWithLander;
 	}
 
+	static fromEntity(entity: Entity): EnergySource
+	{
+		return entity.propertyByName(EnergySource.name) as EnergySource;
+	}
+
 	toEntity(world: WorldExtended, place: Place): Entity
 	{
 		var visual: VisualBase =

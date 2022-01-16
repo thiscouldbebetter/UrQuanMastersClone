@@ -42,6 +42,16 @@ class Starsystem implements EntityProperty<Starsystem>
 		"White",
 	].map(x => Color.byName(x));
 
+	static fromEntity(entity: Entity): Starsystem
+	{
+		return entity.propertyByName(Starsystem.name) as Starsystem;
+	}
+
+	faction(world: WorldExtended): Faction
+	{
+		return world.factionByName(this.factionName);
+	}
+
 	solarSystem(): void
 	{
 		this.name = "Sol";
@@ -49,12 +59,13 @@ class Starsystem implements EntityProperty<Starsystem>
 		var radiusBase = 5;
 
 		var planetEarth = this.planets[2];
+		planetEarth.defnName = PlanetDefn.Instances().Shielded.name;
 
 		var moon = planetEarth.satellites[0];
 
 		var station = new Station
 		(
-			"Station",
+			"EarthStation",
 			Color.byName("Gray"), // color
 			radiusBase,
 			"Terran", // factionName
@@ -149,7 +160,7 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		var station = new Station
 		(
-			"Station",
+			"EarthStation",
 			Color.byName("Gray"), // color
 			10, // radius
 			"Terran", // factionName

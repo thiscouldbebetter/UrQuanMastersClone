@@ -1,8 +1,11 @@
 "use strict";
 class PlanetDefn {
-    constructor(name, color, canLand, lifeChance, resourceDistributions) {
+    constructor(name, visualsStarsystemVicinityOrbit, visualsSurface, canLand, lifeChance, resourceDistributions) {
         this.name = name;
-        this.color = color;
+        this.visualStarsystem = visualsStarsystemVicinityOrbit[0];
+        this.visualVicinity = visualsStarsystemVicinityOrbit[1];
+        this.visualOrbit = visualsStarsystemVicinityOrbit[2];
+        this.visualsSurface = visualsSurface;
         this.canLand = canLand;
         this.lifeChance = lifeChance;
         this.resourceDistributions = resourceDistributions;
@@ -20,6 +23,7 @@ class PlanetDefn {
 }
 class PlanetDefn_Instances {
     constructor() {
+        var colorBlack = Color.byName("Black");
         var colorRed = Color.byName("Red");
         var colorOrange = Color.byName("Orange");
         var colorYellow = Color.byName("Yellow");
@@ -29,6 +33,65 @@ class PlanetDefn_Instances {
         var colorViolet = Color.byName("Violet");
         var colorGray = Color.byName("Gray");
         var colorWhite = Color.byName("White");
+        var colorToGlobe = (radius, color) => new VisualGroup([
+            VisualCircle.fromRadiusAndColorFill(radius, colorGray),
+            new VisualCircleGradient(radius, new ValueBreakGroup([
+                new ValueBreak(0, color),
+                new ValueBreak(1, colorBlack)
+            ], null // interpolationMode
+            ), null)
+        ]);
+        var radiusStarsystem = 5;
+        var visualStarsystemRed = colorToGlobe(radiusStarsystem, colorRed);
+        var visualStarsystemOrange = colorToGlobe(radiusStarsystem, colorOrange);
+        var visualStarsystemYellow = colorToGlobe(radiusStarsystem, colorYellow);
+        var visualStarsystemGreen = colorToGlobe(radiusStarsystem, colorGreen);
+        var visualStarsystemCyan = colorToGlobe(radiusStarsystem, colorCyan);
+        var visualStarsystemBlue = colorToGlobe(radiusStarsystem, colorBlue);
+        var visualStarsystemViolet = colorToGlobe(radiusStarsystem, colorViolet);
+        var visualStarsystemGray = colorToGlobe(radiusStarsystem, colorGray);
+        var visualStarsystemWhite = colorToGlobe(radiusStarsystem, colorWhite);
+        var radiusVicinity = 10;
+        var visualVicinityRed = colorToGlobe(radiusVicinity, colorRed);
+        var visualVicinityOrange = colorToGlobe(radiusVicinity, colorOrange);
+        var visualVicinityYellow = colorToGlobe(radiusVicinity, colorYellow);
+        var visualVicinityGreen = colorToGlobe(radiusVicinity, colorGreen);
+        var visualVicinityCyan = colorToGlobe(radiusVicinity, colorCyan);
+        var visualVicinityBlue = colorToGlobe(radiusVicinity, colorBlue);
+        var visualVicinityViolet = colorToGlobe(radiusVicinity, colorViolet);
+        var visualVicinityGray = colorToGlobe(radiusVicinity, colorGray);
+        var visualVicinityWhite = colorToGlobe(radiusVicinity, colorWhite);
+        var radiusOrbit = 50;
+        var visualOrbitRed = colorToGlobe(radiusOrbit, colorRed);
+        var visualOrbitOrange = colorToGlobe(radiusOrbit, colorOrange);
+        var visualOrbitYellow = colorToGlobe(radiusOrbit, colorYellow);
+        var visualOrbitGreen = colorToGlobe(radiusOrbit, colorGreen);
+        var visualOrbitCyan = colorToGlobe(radiusOrbit, colorCyan);
+        var visualOrbitBlue = colorToGlobe(radiusOrbit, colorBlue);
+        var visualOrbitViolet = colorToGlobe(radiusOrbit, colorViolet);
+        var visualOrbitGray = colorToGlobe(radiusOrbit, colorGray);
+        var visualOrbitWhite = colorToGlobe(radiusOrbit, colorWhite);
+        var visualsRed = [visualStarsystemRed, visualVicinityRed, visualOrbitRed];
+        var visualsOrange = [visualStarsystemOrange, visualVicinityOrange, visualOrbitOrange];
+        var visualsYellow = [visualStarsystemYellow, visualVicinityYellow, visualOrbitYellow];
+        var visualsGreen = [visualStarsystemGreen, visualVicinityGreen, visualOrbitGreen];
+        var visualsCyan = [visualStarsystemCyan, visualVicinityCyan, visualOrbitCyan];
+        var visualsBlue = [visualStarsystemBlue, visualVicinityBlue, visualOrbitBlue];
+        var visualsViolet = [visualStarsystemViolet, visualVicinityViolet, visualOrbitViolet];
+        var visualsGray = [visualStarsystemGray, visualVicinityGray, visualOrbitGray];
+        var visualsWhite = [visualStarsystemWhite, visualVicinityWhite, visualOrbitWhite];
+        var visualsRainbow = visualsYellow; // todo
+        var visualVicinityShielded = new VisualGroup([
+            new VisualCircleGradient(radiusVicinity, new ValueBreakGroup([
+                new ValueBreak(0, colorRed),
+                new ValueBreak(1, colorBlack)
+            ], null // interpolationMode
+            ), colorRed),
+            new VisualCircle(radiusVicinity * 1.1, null, colorRed, null)
+        ]);
+        var visualOrbitShielded = visualOrbitRed;
+        var visualsShielded = [visualStarsystemRed, visualVicinityShielded, visualOrbitShielded];
+        var visualsSurface = [new VisualNone()]; // todo
         var canLand = true;
         var cannotLand = false;
         var resourceDefns = ResourceDefn.Instances();
@@ -51,59 +114,59 @@ class PlanetDefn_Instances {
         };
         var pd = PlanetDefn;
         // Special worlds.
-        this.Rainbow = new pd("Rainbow", colorViolet, canLand, 0, [rd(ex, 6, huge),]);
-        this.Shielded = new pd("Shielded", colorRed, cannotLand, 0, []);
+        this.Rainbow = new pd("Rainbow", visualsRainbow, visualsSurface, canLand, 0, [rd(ex, 6, huge),]);
+        this.Shielded = new pd("Shielded", visualsShielded, visualsSurface, cannotLand, 0, []);
         // Ordinary worlds.
-        this.Acid = new pd("Acid", colorGreen, canLand, .108, [rd(ce, 6, heavy)]);
-        this.Alkali = new pd("Alkali", colorGreen, canLand, .234, [rd(bm, 3, medium)]);
-        this.Auric = new pd("Auric", colorYellow, canLand, .358, [rd(pm, 3, huge)]);
-        this.Azure = new pd("Azure", colorBlue, canLand, .270, [rd(bm, 3, light)]);
-        this.Carbide = new pd("Carbide", colorRed, canLand, .063, [rd(ce, 3, heavy)]);
-        this.Chlorine = new pd("Chlorine", colorGreen, canLand, .03, [rd(bm, 2, light), rd(co, 2, heavy), rd(ce, 2, heavy)]);
-        this.Chondrite = new pd("Chondrite", colorViolet, canLand, .02, [rd(ce, 2, heavy)]);
-        this.Cimmerian = new pd("Cimmerian", colorRed, canLand, .01, [rd(ce, 4, medium)]);
-        this.Copper = new pd("Copper", colorGreen, canLand, .22, [rd(bm, 2, huge)]);
-        this.Crimson = new pd("Crimson", colorRed, canLand, .20, [rd(bm, 5, light)]);
-        this.Cyanic = new pd("Cyanic", colorBlue, canLand, 0, [rd(ce, 1, medium)]);
-        this.Dust = new pd("Dust", colorOrange, canLand, 0, [rd(ce, 1, medium)]);
-        this.Emerald = new pd("Emerald", colorGreen, canLand, 0, [rd(ex, 1, medium)]);
-        this.Fluorescent = new pd("Fluorescent", colorViolet, canLand, 0, [rd(ng, 1, medium)]);
-        this.GasGiant = new pd("GasGiant", colorGreen, canLand, 0, []);
-        this.Green = new pd("Green", colorGreen, canLand, 0, [rd(re, 1, medium)]);
-        this.Halide = new pd("Halide", colorGreen, canLand, 0, [rd(co, 1, medium)]);
-        this.Hydrocarbon = new pd("Hydrocarbon", colorWhite, canLand, 0, [rd(ce, 1, medium), rd(bm, 1, medium)]);
-        this.Infrared = new pd("Infrared", colorRed, canLand, 0, [rd(bm, 1, medium)]);
-        this.Iodine = new pd("Iodine", colorGreen, canLand, 0, [rd(co, 1, medium)]);
-        this.Lanthanide = new pd("Lanthanide", colorYellow, canLand, 0, [rd(re, 1, medium)]);
-        this.Magma = new pd("Magma", colorRed, canLand, 0, [rd(bm, 1, medium)]);
-        this.Magnetic = new pd("Magnetic", colorGreen, canLand, 0, [rd(bm, 1, medium), rd(ex, 1, medium)]);
-        this.Maroon = new pd("Maroon", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Metal = new pd("Metal", colorOrange, canLand, 0, [rd(pm, 3, medium), rd(ra, 3, medium)]);
-        this.Noble = new pd("Noble", colorBlue, canLand, 0, [rd(todo, 1, medium),]);
-        this.Oolite = new pd("Oolite", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Opalescent = new pd("Opalescent", colorCyan, canLand, 0, [rd(todo, 1, medium),]);
-        this.Organic = new pd("Organic", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Pellucid = new pd("Pellucid", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Plutonic = new pd("Plutonic", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Primordial = new pd("Primordial", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Purple = new pd("Purple", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.QuasiDegenerate = new pd("Quasi-Degenerate", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Radioactive = new pd("Radioactive", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Redux = new pd("Redux", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Ruby = new pd("Ruby", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Sapphire = new pd("Sapphire", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Selenic = new pd("Selenic", colorGray, canLand, 0, [rd(todo, 1, medium),]);
-        this.Shattered = new pd("Shattered", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.SuperDense = new pd("Super-Dense", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Telluric = new pd("Telluric", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Treasure = new pd("Treasure", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Ultramarine = new pd("Ultramarine", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Ultraviolet = new pd("Ultraviolet", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Urea = new pd("Urea", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Vinylogous = new pd("Vinylogous", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Water = new pd("Water", colorCyan, canLand, .9, [rd(todo, 1, medium),]);
-        this.Xenolithic = new pd("Xenolithic", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
-        this.Yttric = new pd("Yttric", colorViolet, canLand, 0, [rd(todo, 1, medium),]);
+        this.Acid = new pd("Acid", visualsGreen, visualsSurface, canLand, .108, [rd(ce, 6, heavy)]);
+        this.Alkali = new pd("Alkali", visualsGreen, visualsSurface, canLand, .234, [rd(bm, 3, medium)]);
+        this.Auric = new pd("Auric", visualsYellow, visualsSurface, canLand, .358, [rd(pm, 3, huge)]);
+        this.Azure = new pd("Azure", visualsBlue, visualsSurface, canLand, .270, [rd(bm, 3, light)]);
+        this.Carbide = new pd("Carbide", visualsRed, visualsSurface, canLand, .063, [rd(ce, 3, heavy)]);
+        this.Chlorine = new pd("Chlorine", visualsGreen, visualsSurface, canLand, .03, [rd(bm, 2, light), rd(co, 2, heavy), rd(ce, 2, heavy)]);
+        this.Chondrite = new pd("Chondrite", visualsViolet, visualsSurface, canLand, .02, [rd(ce, 2, heavy)]);
+        this.Cimmerian = new pd("Cimmerian", visualsRed, visualsSurface, canLand, .01, [rd(ce, 4, medium)]);
+        this.Copper = new pd("Copper", visualsGreen, visualsSurface, canLand, .22, [rd(bm, 2, huge)]);
+        this.Crimson = new pd("Crimson", visualsRed, visualsSurface, canLand, .20, [rd(bm, 5, light)]);
+        this.Cyanic = new pd("Cyanic", visualsBlue, visualsSurface, canLand, 0, [rd(ce, 1, medium)]);
+        this.Dust = new pd("Dust", visualsOrange, visualsSurface, canLand, 0, [rd(ce, 1, medium)]);
+        this.Emerald = new pd("Emerald", visualsGreen, visualsSurface, canLand, 0, [rd(ex, 1, medium)]);
+        this.Fluorescent = new pd("Fluorescent", visualsViolet, visualsSurface, canLand, 0, [rd(ng, 1, medium)]);
+        this.GasGiant = new pd("GasGiant", visualsGreen, visualsSurface, canLand, 0, []);
+        this.Green = new pd("Green", visualsGreen, visualsSurface, canLand, 0, [rd(re, 1, medium)]);
+        this.Halide = new pd("Halide", visualsGreen, visualsSurface, canLand, 0, [rd(co, 1, medium)]);
+        this.Hydrocarbon = new pd("Hydrocarbon", visualsWhite, visualsSurface, canLand, 0, [rd(ce, 1, medium), rd(bm, 1, medium)]);
+        this.Infrared = new pd("Infrared", visualsRed, visualsSurface, canLand, 0, [rd(bm, 1, medium)]);
+        this.Iodine = new pd("Iodine", visualsGreen, visualsSurface, canLand, 0, [rd(co, 1, medium)]);
+        this.Lanthanide = new pd("Lanthanide", visualsYellow, visualsSurface, canLand, 0, [rd(re, 1, medium)]);
+        this.Magma = new pd("Magma", visualsRed, visualsSurface, canLand, 0, [rd(bm, 1, medium)]);
+        this.Magnetic = new pd("Magnetic", visualsGreen, visualsSurface, canLand, 0, [rd(bm, 1, medium), rd(ex, 1, medium)]);
+        this.Maroon = new pd("Maroon", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium),]);
+        this.Metal = new pd("Metal", visualsOrange, visualsSurface, canLand, 0, [rd(pm, 3, medium), rd(ra, 3, medium)]);
+        this.Noble = new pd("Noble", visualsBlue, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Oolite = new pd("Oolite", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Opalescent = new pd("Opalescent", visualsCyan, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Organic = new pd("Organic", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Pellucid = new pd("Pellucid", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Plutonic = new pd("Plutonic", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Primordial = new pd("Primordial", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Purple = new pd("Purple", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.QuasiDegenerate = new pd("Quasi-Degenerate", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Radioactive = new pd("Radioactive", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Redux = new pd("Redux", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Ruby = new pd("Ruby", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Sapphire = new pd("Sapphire", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Selenic = new pd("Selenic", visualsGray, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Shattered = new pd("Shattered", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.SuperDense = new pd("Super-Dense", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Telluric = new pd("Telluric", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Treasure = new pd("Treasure", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Ultramarine = new pd("Ultramarine", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Ultraviolet = new pd("Ultraviolet", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Urea = new pd("Urea", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Vinylogous = new pd("Vinylogous", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Water = new pd("Water", visualsCyan, visualsSurface, canLand, .9, [rd(todo, 1, medium)]);
+        this.Xenolithic = new pd("Xenolithic", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
+        this.Yttric = new pd("Yttric", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
         this._All =
             [
                 //this.Shielded,
@@ -149,6 +212,7 @@ class PlanetDefn_Instances {
                 this.Sapphire,
                 this.Selenic,
                 this.Shattered,
+                this.Shielded,
                 this.SuperDense,
                 this.Telluric,
                 this.Treasure,

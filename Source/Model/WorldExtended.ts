@@ -6,9 +6,11 @@ class WorldExtended extends World
 	defn: WorldDefnExtended;
 	hyperspace: Hyperspace;
 	factions: Faction[];
+	shipDefns: ShipDefn[];
 	player: Player;
 
 	factionsByName: Map<string, Faction>;
+	shipDefnsByName: Map<string, ShipDefn>;
 
 	constructor
 	(
@@ -17,6 +19,7 @@ class WorldExtended extends World
 		defn: WorldDefnExtended,
 		hyperspace: Hyperspace,
 		factions: Faction[],
+		shipDefns: ShipDefn[],
 		player: Player,
 		starsystemStart: Starsystem
 	)
@@ -33,9 +36,11 @@ class WorldExtended extends World
 
 		this.hyperspace = hyperspace;
 		this.factions = factions;
+		this.shipDefns = shipDefns;
 		this.player = player;
 
 		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
+		this.shipDefnsByName = ArrayHelper.addLookupsByName(this.shipDefns);
 
 		this.placeCurrent = starsystemStart.toPlace
 		(
@@ -77,6 +82,7 @@ class WorldExtended extends World
 			Actor.name,
 			Damager.name,
 			Ephemeral.name,
+			Killable.name,
 			Playable.name,
 
 			Locatable.name,
@@ -126,7 +132,7 @@ class WorldExtended extends World
 			true, // talksImmediately
 			"LahkemupGuardDrone", // conversationDefnName
 			null, // sphereOfInfluence
-			null, // shipDefnName
+			"GuardDrone", // shipDefnName
 			new Activity(ShipGroup.activityDefnApproachPlayer().name, null)
 		);
 
@@ -248,6 +254,26 @@ class WorldExtended extends World
 		var starsystemStart = hyperspace.starsystemByName("Sol");
 		starsystemStart.solarSystem(); // todo
 
+		var starsystems = hyperspace.starsystems;
+		var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);
+		starsystemsSupergiant.forEach
+		(
+			starsystem =>
+			{
+				var shipGroup = new ShipGroup
+				(
+					factionMurch.name + " " + ShipGroup.name,
+					factionMurch.name,
+					Coords.random(universe.randomizer).multiply(starsystem.sizeInner),
+					[
+						new Ship(factionMurch.shipDefnName)
+					]
+				);
+
+				starsystem.shipGroups.push(shipGroup);
+			}
+		);
+
 		var playerShipDefnName = "Flagship";
 		var playerShip = new Ship(playerShipDefnName);
 		var shipDefns = ShipDefn.Instances(universe)._All;
@@ -290,13 +316,16 @@ class WorldExtended extends World
 		var player = new Player
 		(
 			"Player",
-			0, // credit
+			0, // resourceCredits
+			0, // infoCredits
 			playerFlagship,
 			[
 				"Terran"
 			], // factionsKnownNames
 			playerShipGroup
 		);
+
+		var shipDefns = ShipDefn.Instances(universe)._All;
 
 		var returnValue = new WorldExtended
 		(
@@ -305,6 +334,7 @@ class WorldExtended extends World
 			defn,
 			hyperspace,
 			factions,
+			shipDefns,
 			player,
 			starsystemStart
 		);
@@ -369,6 +399,13 @@ class WorldExtended extends World
 
 		return returnPlace;
 	}
+
+	shipDefnByName(shipDefnName: string): ShipDefn
+	{
+		return this.shipDefnsByName.get(shipDefnName);
+	}
+
+	// World overrides.
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{

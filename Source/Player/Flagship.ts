@@ -209,6 +209,18 @@ class Flagship
 		return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
 	}
 
+	hasInfoToSell(world: World): boolean
+	{
+		var returnValue =
+		(
+			this.itemHolder.hasItemWithDefnName("Biodata")
+			|| this.itemHolder.hasItemWithDefnName("RainbowWorldLocations")
+			|| this.itemHolder.hasItemWithCategoryName("PrecursorArtifact", world)
+		);
+
+		return returnValue;
+	}
+
 	thrustersCurrent(): number
 	{
 		return this.componentsThruster().length;
