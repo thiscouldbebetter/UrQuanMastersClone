@@ -112,7 +112,7 @@ class WorldExtended extends World
 			PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
 			PlaceDefn.from4(PlaceHyperspaceMap.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-			PlaceDefn.from4(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
+			PlaceDefn.from4(PlacePlanetSurface.name, actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
 			PlaceDefn.from4(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlaceStarsystem.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlaceStation.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
@@ -344,7 +344,7 @@ class WorldExtended extends World
 			"World-" + nowAsString,
 			now, // dateCreated
 			defn,
-			new Date(2155, 1, 17),
+			new Date(Date.UTC(2155, 1, 17, 9, 27, 22)),
 			hyperspace,
 			factions,
 			shipDefns,

@@ -147,7 +147,7 @@ class SystemTests extends TestFixture
 		// Verify that the cargo hold contains no radioactives.
 
 		var player = world.player;
-		var playerItemHolder = player.flagship.itemHolder;
+		var playerItemHolder = player.flagship.itemHolderCargo;
 		var itemDefnNameRadioactives = "Radioactives";
 		var radioactivesHeld =
 			playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];

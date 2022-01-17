@@ -8,6 +8,7 @@ Very few sound effects.
 Can't use devices.
 New game should start with slideshow.
 Player never runs out of time.
+Cargo capacity is infinite.
 
 
 Hyperspace
@@ -40,22 +41,25 @@ Planets are all the same size.
 
 Planet Orbit
 ------------
-Scanning is instantaneous.
+Scanning appears instantaneous, but takes an hour of game time.
 Surface landscape for all planets is a single static image.
 Surface landscape not projected onto globe view.
 Scanner contacts at edges of map are rendered over border.
 Can't select landing site.
+Year calculation is wrong.
+Lifeforms are not animated.
+Resources regenerate after leaving surface.
 
 
 Planet Surface
 --------------
 Landing and launching consumes no fuel.
-Only environmental hazard is... weather?
-	Which isn't dependent on the hazard class of the planet,
-	and which never hurts the player,
-	and which is rendered as a cyan square.
+Environmental hazards aren't dependent on the hazard class.
+	and never hurt the player,
+	and are rendered as simple squares.
 No weapon on lander.
-aw
+Surface not rendered in minimap.
+
 
 Communications
 --------------
@@ -69,6 +73,8 @@ Ending in combat doesn't work right.
 
 Combat
 ------
+Enemy ships do not move.
+No weapons or specials defined for each ship.
 Projectiles do not collide with enemy.
 No multiple/continuous zoom levels.
 No escape from combat for flagship.
@@ -78,7 +84,6 @@ No escape from combat for flagship.
 Ships interpenetrate other ships on collision.
 Ships interpenetrate planet on collision.
 Collisions with planet do not hurt.
-Planet is always the same.
 
 Station
 -------

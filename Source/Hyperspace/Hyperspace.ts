@@ -162,6 +162,7 @@ class Hyperspace
 		var earthDensityInGramsPerCubicCm = 5.514;
 		var earthRadiusInKm = 6371;
 		var earthOrbitRadiusInKm = 150000000;
+		var earthYearInEarthDays = 365.25;
 
 		for (var i = iOffset; i < starsAndPlanetsAsStringsCSV.length; i++)
 		{
@@ -225,10 +226,13 @@ class Hyperspace
 			var gravityAsFractionOfEarth = parseFloat(planetAsValues[22]) / 100;
 			var orbitRelativeToEarth = parseFloat(planetAsValues[27]) / 512;
 			var dayInHours = parseFloat(planetAsValues[24]) / 10;
-			var year = 365; // todo
 
 			var radiusInKm = radiusAsFractionOfEarth * earthRadiusInKm;
 			var orbitInKm = orbitRelativeToEarth * earthOrbitRadiusInKm;
+
+			var yearInEarthDays =
+				earthYearInEarthDays
+				* orbitInKm / earthOrbitRadiusInKm;
 
 			var densityAsFractionOfEarth = parseFloat(planetAsValues[20]) / 100;
 			var densityInGramsPerCubicCm =
@@ -265,7 +269,7 @@ class Hyperspace
 				gravityAsFractionOfEarth,
 				orbitInKm,
 				dayInHours,
-				year,
+				yearInEarthDays,
 				tectonics,
 				weather,
 				temperature,

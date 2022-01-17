@@ -103,13 +103,16 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		).multiplyScalar(this.speed);
 		var projectileLocatable = new Locatable(projectileLoc);
 
+		var projectileMovable = Movable.default();
+
 		var projectileEntityProperties = new Array<EntityPropertyBase>
 		(
 			this,
 			projectileCollidable,
 			projectileLocatable,
 			projectileDrawable,
-			projectileKillable
+			projectileKillable,
+			projectileMovable
 		);
 
 		if (this.ticksToLive != null)

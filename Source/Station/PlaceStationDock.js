@@ -137,7 +137,7 @@ class PlaceStationDock extends Place {
     offload(universe) {
         var world = universe.world;
         var player = world.player;
-        var playerItemHolder = player.flagship.itemHolder;
+        var playerItemHolder = player.flagship.itemHolderCargo;
         var items = playerItemHolder.items;
         var valueSumSoFar = 0;
         for (var i = 0; i < items.length; i++) {
@@ -205,7 +205,7 @@ class PlaceStationDock extends Place {
         var placeStationDock = this;
         var world = worldAsWorld;
         var player = world.player;
-        var playerItemHolder = player.flagship.itemHolder;
+        var playerItemHolder = player.flagship.itemHolderCargo;
         var playerShipGroup = player.shipGroup;
         var shipWeaponSlots = ShipWeaponSlot.Instances()._All;
         var containerDockSize = universe.display.sizeInPixels.clone();

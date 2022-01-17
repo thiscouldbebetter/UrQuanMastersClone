@@ -79,8 +79,6 @@ class PlaceCombat extends Place
 
 		// entities
 
-		var entityDimension = 10;
-
 		// Planet.
 
 		var planet = this.combat.encounter.planet;
@@ -101,6 +99,9 @@ class PlaceCombat extends Place
 
 		// todo - Match appearance to the actual planet.
 
+		var planetDefn = planet.defn();
+		/*
+		var entityDimension = 10;
 		var planetRadius = entityDimension;
 		var planetColor = Color.byName("Cyan");
 		var planetVisual = new VisualWrapped
@@ -108,6 +109,11 @@ class PlaceCombat extends Place
 			this.size,
 			VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor)
 		);
+		*/
+		var planetVisual: VisualBase = planetDefn.visualVicinity;
+		var planetRadius = (planetVisual as VisualCircleGradient).radius;
+		planetVisual = new VisualWrapped(this.size, planetVisual);
+
 		var planetDrawable = Drawable.fromVisual(planetVisual);
 
 		var sizeHalf = this.size.clone().half();

@@ -368,7 +368,7 @@ class Game
 		var player = world.player;
 		player.resourceCredits = 1000;
 		var resourceDefns = ResourceDefn.Instances();
-		var playerItemHolder = player.flagship.itemHolder;
+		var playerItemHolder = player.flagship.itemHolderCargo;
 		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
 		playerItemHolder.itemAdd(new Item(resourceDefns.Exotics.name, 100));
 
@@ -470,7 +470,7 @@ class Game
 		var player = world.player;
 		player.resourceCredits = 0;
 		var resourceDefns = ResourceDefn.Instances();
-		var playerItemHolder = player.flagship.itemHolder;
+		var playerItemHolder = player.flagship.itemHolderCargo;
 		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
 
 		var starsystemSol = world.hyperspace.starsystemByName("Sol");

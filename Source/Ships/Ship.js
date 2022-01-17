@@ -176,7 +176,8 @@ class Ship {
         var shipPos = Coords.create();
         var shipLoc = Disposition.fromPos(shipPos);
         var locatable = new Locatable(shipLoc);
-        var shipEntityProperties = new Array(actor, collidable, constrainable, drawable, itemHolder, killable, locatable, this);
+        var movable = Movable.default();
+        var shipEntityProperties = new Array(actor, collidable, constrainable, drawable, itemHolder, killable, locatable, movable, this);
         var shipEntity = new Entity(this.name, shipEntityProperties);
         return shipEntity;
     }
@@ -245,11 +246,12 @@ class Ship {
         var containerShipSize = Coords.fromXY(containerSidebarSize.x - marginSize.x * 2, (containerSidebarSize.y - marginSize.y * 3) / 2);
         var fontHeight = 20;
         var fontHeightShort = fontHeight / 2;
+        var labelSizeWide = Coords.fromXY(containerShipSize.x - marginSize.x * 2, fontHeightShort);
         var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
         var defn = this.defn(world);
         var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, [
             new ControlLabel("labelName", Coords.fromXY(marginSize.x, marginSize.y), // pos
-            labelSizeShort, false, // isTextCenteredHorizontally
+            labelSizeWide, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext(defn.factionName), fontHeightShort),
             new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos

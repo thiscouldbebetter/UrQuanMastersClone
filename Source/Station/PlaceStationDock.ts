@@ -206,7 +206,7 @@ class PlaceStationDock extends Place
 	{
 		var world = universe.world as WorldExtended;
 		var player = world.player;
-		var playerItemHolder = player.flagship.itemHolder;
+		var playerItemHolder = player.flagship.itemHolderCargo;
 		var items = playerItemHolder.items;
 		var valueSumSoFar = 0;
 		for (var i = 0; i < items.length; i++)
@@ -305,7 +305,7 @@ class PlaceStationDock extends Place
 		var world = worldAsWorld as WorldExtended;
 
 		var player = world.player;
-		var playerItemHolder = player.flagship.itemHolder;
+		var playerItemHolder = player.flagship.itemHolderCargo;
 		var playerShipGroup = player.shipGroup;
 		var shipWeaponSlots = ShipWeaponSlot.Instances()._All;
 

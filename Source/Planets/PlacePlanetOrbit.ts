@@ -134,16 +134,19 @@ class PlacePlanetOrbit extends Place
 
 	scanEnergy(universe: Universe): void
 	{
+		(universe.world as WorldExtended).gameSecondsSinceStart += 60 * 60;
 		this.hasEnergyBeenScanned = true;
 	}
 
 	scanLife(universe: Universe): void
 	{
+		(universe.world as WorldExtended).gameSecondsSinceStart += 60 * 60;
 		this.hasLifeBeenScanned = true;
 	}
 
 	scanMinerals(universe: Universe): void
 	{
+		(universe.world as WorldExtended).gameSecondsSinceStart += 60 * 60;
 		this.haveMineralsBeenScanned = true;
 	}
 
@@ -363,7 +366,7 @@ class PlacePlanetOrbit extends Place
 					labelSize,
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
-					DataBinding.fromContext("Day: " + planet.day + " hours"),
+					DataBinding.fromContext("Day: " + planet.dayInHours + " hours"),
 					fontHeightShort
 				),
 
@@ -374,7 +377,7 @@ class PlacePlanetOrbit extends Place
 					labelSize,
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
-					DataBinding.fromContext("Year: " + planet.year + " Earth days"),
+					DataBinding.fromContext("Year: " + planet.yearInEarthDays + " Earth days"),
 					fontHeightShort
 				),
 

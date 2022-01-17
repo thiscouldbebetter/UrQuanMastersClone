@@ -43,7 +43,8 @@ class ShipAttackDefn {
         var projectileLoc = Disposition.fromPos(projectilePos);
         projectileLoc.vel.overwriteWith(projectileDirection).multiplyScalar(this.speed);
         var projectileLocatable = new Locatable(projectileLoc);
-        var projectileEntityProperties = new Array(this, projectileCollidable, projectileLocatable, projectileDrawable, projectileKillable);
+        var projectileMovable = Movable.default();
+        var projectileEntityProperties = new Array(this, projectileCollidable, projectileLocatable, projectileDrawable, projectileKillable, projectileMovable);
         if (this.ticksToLive != null) {
             projectileEntityProperties.push(new Ephemeral(this.ticksToLive, null));
         }

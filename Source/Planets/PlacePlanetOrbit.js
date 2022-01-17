@@ -63,12 +63,15 @@ class PlacePlanetOrbit extends Place {
         world.placeNext = placePlanetVicinity;
     }
     scanEnergy(universe) {
+        universe.world.gameSecondsSinceStart += 60 * 60;
         this.hasEnergyBeenScanned = true;
     }
     scanLife(universe) {
+        universe.world.gameSecondsSinceStart += 60 * 60;
         this.hasLifeBeenScanned = true;
     }
     scanMinerals(universe) {
+        universe.world.gameSecondsSinceStart += 60 * 60;
         this.haveMineralsBeenScanned = true;
     }
     starsystem() {
@@ -156,10 +159,10 @@ class PlacePlanetOrbit extends Place {
                 + " km"), fontHeightShort),
             new ControlLabel("labelRotationPeriod", Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Day: " + planet.day + " hours"), fontHeightShort),
+            DataBinding.fromContext("Day: " + planet.dayInHours + " hours"), fontHeightShort),
             new ControlLabel("labelOrbitPeriod", Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Year: " + planet.year + " Earth days"), fontHeightShort),
+            DataBinding.fromContext("Year: " + planet.yearInEarthDays + " Earth days"), fontHeightShort),
             new ControlLabel("labelTemperature", Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Temperature: " + planet.temperature + " C"), fontHeightShort),

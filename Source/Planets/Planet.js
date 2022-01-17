@@ -1,6 +1,6 @@
 "use strict";
 class Planet {
-    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, day, year, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, energySources) {
+    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, dayInHours, yearInEarthDays, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, energySources) {
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
@@ -12,8 +12,8 @@ class Planet {
         this.radius = Math.round(radius);
         this.gravity = parseFloat(gravity.toFixed(2));
         this.orbit = Math.round(orbit);
-        this.day = day;
-        this.year = year;
+        this.dayInHours = dayInHours;
+        this.yearInEarthDays = Math.round(yearInEarthDays * 100) / 100;
         this.tectonics = tectonics;
         this.weather = weather;
         this.temperature = temperature;

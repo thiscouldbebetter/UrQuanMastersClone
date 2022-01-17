@@ -9,7 +9,8 @@ class Flagship {
         this.numberOfLanders = numberOfLanders;
         this.crew = crew;
         this.fuel = fuel;
-        this.itemHolder = ItemHolder.fromItems(items);
+        this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(items);
+        this.itemHolderOther = ItemHolder.create();
         this.shipsMax = shipsMax;
         this.cachesCalculate();
     }
@@ -26,11 +27,8 @@ class Flagship {
             component.applyToFlagship(this);
         }
     }
-    cargoCurrent() {
-        return 0; // todo
-    }
-    cargoCurrentOverMax() {
-        return this.cargoCurrent() + "/" + this._cargoMax;
+    cargoCurrentOverMax(world) {
+        return this.itemHolderCargo.massOfAllItemsOverMax(world);
     }
     components() {
         if (this._components == null) {
@@ -115,10 +113,17 @@ class Flagship {
         return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
     }
     hasInfoToSell(world) {
-        var returnValue = (this.itemHolder.hasItemWithDefnName("Biodata")
-            || this.itemHolder.hasItemWithDefnName("RainbowWorldLocations")
-            || this.itemHolder.hasItemWithCategoryName("PrecursorArtifact", world));
+        var returnValue = (this.itemHolderOther.hasItemWithDefnName("Biodata")
+            || this.itemHolderOther.hasItemWithDefnName("RainbowWorldLocations")
+            || this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world));
         return returnValue;
+    }
+    itemHolderCargoBuildOrUpdate(items) {
+        if (this.itemHolderCargo == null) {
+            this.itemHolderCargo = ItemHolder.fromItems(items);
+        }
+        // todo - Set max.
+        return this.itemHolderCargo;
     }
     thrustersCurrent() {
         return this.componentsThruster().length;
@@ -141,7 +146,7 @@ class Flagship {
         var fontHeight = 10;
         var childControlWidth = containerSidebarSize.x - marginWidth * 2;
         var labelSize = Coords.fromXY(childControlWidth, fontHeight);
-        var containerFlagshipSize = Coords.fromXY(containerSidebarSize.x - marginSize.x * 2, (containerSidebarSize.y - marginSize.x * 3) / 3);
+        var containerFlagshipSize = Coords.fromXY(containerSidebarSize.x - marginSize.x * 2, (containerSidebarSize.y - marginSize.x * 3) * 0.4);
         var containerFlagship = ControlContainer.from4("containerFlagship", Coords.fromXY(marginSize.x, marginSize.y), // hack - pos
         containerFlagshipSize, 
         // children
@@ -173,7 +178,7 @@ class Flagship {
             DataBinding.fromContext("Cargo:"), fontHeight),
             new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, labelSize.y * 5), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax()), fontHeight),
+            DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax(world)), fontHeight),
             new ControlLabel("labelPosition", Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Loc:"), fontHeight),
@@ -186,6 +191,12 @@ class Flagship {
             new ControlLabel("infoDate", Coords.fromXY(marginSize.x * 4, labelSize.y * 7), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[0]), fontHeight),
+            new ControlLabel("labelTime", Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContext("Time:"), fontHeight),
+            new ControlLabel("infoTime", Coords.fromXY(marginSize.x * 4, labelSize.y * 8), labelSize, false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")), fontHeight),
         ]);
         return containerFlagship;
     }

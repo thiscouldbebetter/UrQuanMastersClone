@@ -80,6 +80,7 @@ class Hyperspace {
         var earthDensityInGramsPerCubicCm = 5.514;
         var earthRadiusInKm = 6371;
         var earthOrbitRadiusInKm = 150000000;
+        var earthYearInEarthDays = 365.25;
         for (var i = iOffset; i < starsAndPlanetsAsStringsCSV.length; i++) {
             var planetAsCSV = starsAndPlanetsAsStringsCSV[i];
             var planetAsValues = planetAsCSV.split(",");
@@ -121,9 +122,10 @@ class Hyperspace {
             var gravityAsFractionOfEarth = parseFloat(planetAsValues[22]) / 100;
             var orbitRelativeToEarth = parseFloat(planetAsValues[27]) / 512;
             var dayInHours = parseFloat(planetAsValues[24]) / 10;
-            var year = 365; // todo
             var radiusInKm = radiusAsFractionOfEarth * earthRadiusInKm;
             var orbitInKm = orbitRelativeToEarth * earthOrbitRadiusInKm;
+            var yearInEarthDays = earthYearInEarthDays
+                * orbitInKm / earthOrbitRadiusInKm;
             var densityAsFractionOfEarth = parseFloat(planetAsValues[20]) / 100;
             var densityInGramsPerCubicCm = densityAsFractionOfEarth * earthDensityInGramsPerCubicCm;
             var radiusInCm = radiusInKm * 100000;
@@ -139,7 +141,7 @@ class Hyperspace {
                 : null);
             var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetSize, null, // satellites
             null, // shipGroups,
-            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, year, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, null // energySources
+            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, null // energySources
             );
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;

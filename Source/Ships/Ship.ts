@@ -315,6 +315,8 @@ class Ship implements EntityProperty<Ship>
 		var shipLoc = Disposition.fromPos(shipPos);
 		var locatable = new Locatable(shipLoc);
 
+		var movable = Movable.default();
+
 		var shipEntityProperties = new Array<EntityPropertyBase>
 		(
 			actor,
@@ -324,6 +326,7 @@ class Ship implements EntityProperty<Ship>
 			itemHolder,
 			killable,
 			locatable,
+			movable,
 			this
 		);
 
@@ -441,7 +444,9 @@ class Ship implements EntityProperty<Ship>
 
 	toControlSidebar
 	(
-		containerSidebarSize: Coords, indexTopOrBottom: number, world: WorldExtended
+		containerSidebarSize: Coords,
+		indexTopOrBottom: number,
+		world: WorldExtended
 	): ControlBase
 	{
 		var ship = this;
@@ -458,6 +463,7 @@ class Ship implements EntityProperty<Ship>
 		var fontHeight = 20;
 
 		var fontHeightShort = fontHeight / 2;
+		var labelSizeWide = Coords.fromXY(containerShipSize.x - marginSize.x * 2, fontHeightShort);
 		var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
 
 		var defn = this.defn(world);
@@ -480,7 +486,7 @@ class Ship implements EntityProperty<Ship>
 						marginSize.x,
 						marginSize.y
 					), // pos
-					labelSizeShort,
+					labelSizeWide,
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(defn.factionName),

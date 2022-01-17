@@ -287,7 +287,7 @@ class PlacePlanetSurface extends Place
 		var lander = Lander.fromEntity(entityLander);
 		var itemHoldersForLander = [ lander.itemHolderCargo, lander.itemHolderLifeforms ];
 
-		var itemHolderPlayer = world.player.flagship.itemHolder;
+		var itemHolderPlayer = world.player.flagship.itemHolderCargo;
 
 		for (var i = 0; i < itemHoldersForLander.length; i++)
 		{

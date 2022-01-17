@@ -12,7 +12,8 @@ class Flagship
 	items: any[];
 	shipsMax: number;
 
-	itemHolder: ItemHolder;
+	itemHolderCargo: ItemHolder;
+	itemHolderOther: ItemHolder;
 
 	_acceleration: number;
 	_cargoMax: number;
@@ -51,7 +52,8 @@ class Flagship
 		this.numberOfLanders = numberOfLanders;
 		this.crew = crew;
 		this.fuel = fuel;
-		this.itemHolder = ItemHolder.fromItems(items);
+		this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(items);
+		this.itemHolderOther = ItemHolder.create();
 		this.shipsMax = shipsMax;
 
 		this.cachesCalculate();
@@ -74,14 +76,9 @@ class Flagship
 		}
 	}
 
-	cargoCurrent(): number
+	cargoCurrentOverMax(world: World): string
 	{
-		return 0; // todo
-	}
-
-	cargoCurrentOverMax(): string
-	{
-		return this.cargoCurrent() + "/" + this._cargoMax;
+		return this.itemHolderCargo.massOfAllItemsOverMax(world);
 	}
 
 	components(): ShipComponentDefn[]
@@ -213,12 +210,24 @@ class Flagship
 	{
 		var returnValue =
 		(
-			this.itemHolder.hasItemWithDefnName("Biodata")
-			|| this.itemHolder.hasItemWithDefnName("RainbowWorldLocations")
-			|| this.itemHolder.hasItemWithCategoryName("PrecursorArtifact", world)
+			this.itemHolderOther.hasItemWithDefnName("Biodata")
+			|| this.itemHolderOther.hasItemWithDefnName("RainbowWorldLocations")
+			|| this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world)
 		);
 
 		return returnValue;
+	}
+
+	itemHolderCargoBuildOrUpdate(items: Item[]): ItemHolder
+	{
+		if (this.itemHolderCargo == null)
+		{
+			this.itemHolderCargo = ItemHolder.fromItems(items);
+		}
+
+		// todo - Set max.
+
+		return this.itemHolderCargo;
 	}
 
 	thrustersCurrent(): number
@@ -255,7 +264,7 @@ class Flagship
 		var containerFlagshipSize = Coords.fromXY
 		(
 			containerSidebarSize.x - marginSize.x * 2,
-			(containerSidebarSize.y - marginSize.x * 3) / 3
+			(containerSidebarSize.y - marginSize.x * 3) * 0.4
 		);
 
 		var containerFlagship = ControlContainer.from4
@@ -371,7 +380,8 @@ class Flagship
 					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
-						flagship, (c: Flagship) => c.cargoCurrentOverMax()
+						flagship,
+						(c: Flagship) => c.cargoCurrentOverMax(world)
 					),
 					fontHeight
 				),
@@ -424,6 +434,32 @@ class Flagship
 					(
 						world.player.shipGroup,
 						(c: ShipGroup) => world.gameTimeAsString().split("T")[0]
+					),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelTime",
+					Coords.fromXY(marginSize.x, labelSize.y * 8),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Time:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoTime",
+					Coords.fromXY(marginSize.x * 4, labelSize.y * 8),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						world.player.shipGroup,
+						(c: ShipGroup) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")
 					),
 					fontHeight
 				),

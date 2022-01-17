@@ -12,8 +12,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 	radius: number;
 	gravity: number;
 	orbit: number;
-	day: number;
-	year: number;
+	dayInHours: number;
+	yearInEarthDays: number;
 	tectonics: number;
 	weather: number;
 	temperature: number;
@@ -37,8 +37,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 		radius: number,
 		gravity: number,
 		orbit: number,
-		day: number,
-		year: number,
+		dayInHours: number,
+		yearInEarthDays: number,
 		tectonics: number,
 		weather: number,
 		temperature: number,
@@ -59,8 +59,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 		this.radius = Math.round(radius);
 		this.gravity = parseFloat(gravity.toFixed(2));
 		this.orbit = Math.round(orbit);
-		this.day = day;
-		this.year = year;
+		this.dayInHours = dayInHours;
+		this.yearInEarthDays = Math.round(yearInEarthDays * 100) / 100;
 		this.tectonics = tectonics;
 		this.weather = weather;
 		this.temperature = temperature;

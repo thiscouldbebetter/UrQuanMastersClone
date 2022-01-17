@@ -37,7 +37,6 @@ class PlaceCombat extends Place {
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         this.entityToSpawnAdd(cameraAsEntity);
         // entities
-        var entityDimension = 10;
         // Planet.
         var planet = this.combat.encounter.planet;
         var planetActivity = new Activity(Planet.activityDefnGravitate().name, null);
@@ -48,9 +47,20 @@ class PlaceCombat extends Place {
         planetCollider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.planetCollide);
         // todo - Match appearance to the actual planet.
+        var planetDefn = planet.defn();
+        /*
+        var entityDimension = 10;
         var planetRadius = entityDimension;
         var planetColor = Color.byName("Cyan");
-        var planetVisual = new VisualWrapped(this.size, VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor));
+        var planetVisual = new VisualWrapped
+        (
+            this.size,
+            VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor)
+        );
+        */
+        var planetVisual = planetDefn.visualVicinity;
+        var planetRadius = planetVisual.radius;
+        planetVisual = new VisualWrapped(this.size, planetVisual);
         var planetDrawable = Drawable.fromVisual(planetVisual);
         var sizeHalf = this.size.clone().half();
         var planetPos = sizeHalf.clone();
