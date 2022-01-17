@@ -7,6 +7,7 @@ No music from MODs.
 Very few sound effects.
 Can't use devices.
 New game should start with slideshow.
+Player never runs out of time.
 
 
 Hyperspace
@@ -24,6 +25,7 @@ Hyperspace Map
 No cursor?
 No zoom/pan.
 Known spheres of influence don't show up.
+Accessing from inside starsystem causes error.
 
 
 Starsystem
@@ -34,7 +36,6 @@ Other ship groups cannot move between starsystem and planet vicinities.
 Planet Vicinity
 ---------------
 Planets are all the same size.
-Planets are slightly transparent.
 
 
 Planet Orbit
@@ -42,7 +43,9 @@ Planet Orbit
 Scanning is instantaneous.
 Surface landscape for all planets is a single static image.
 Surface landscape not projected onto globe view.
+Scanner contacts at edges of map are rendered over border.
 Can't select landing site.
+
 
 Planet Surface
 --------------
@@ -69,6 +72,9 @@ Combat
 Projectiles do not collide with enemy.
 No multiple/continuous zoom levels.
 No escape from combat for flagship.
+	Pressing escape goes to menu,
+	then goes to ship select screen,
+	adds two more ships to same fight.
 Ships interpenetrate other ships on collision.
 Ships interpenetrate planet on collision.
 Collisions with planet do not hurt.

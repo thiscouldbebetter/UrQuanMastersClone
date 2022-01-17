@@ -68,6 +68,8 @@ class PlacePlanetSurface extends Place
 
 		var entities = this.entitiesToSpawn;
 
+		entities.push(new GameClock(60).toEntity());
+
 		var entityDimension = 10;
 
 		// camera
@@ -345,6 +347,11 @@ class PlacePlanetSurface extends Place
 	playerDie(uwpe: UniverseWorldPlaceEntities): void
 	{
 		this.exit(uwpe);
+	}
+
+	starsystem(): Starsystem
+	{
+		return this.placePlanetOrbit.placePlanetVicinity.placeStarsystem.starsystem;
 	}
 
 	// Place overrides

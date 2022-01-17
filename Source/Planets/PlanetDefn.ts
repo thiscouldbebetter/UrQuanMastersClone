@@ -129,6 +129,8 @@ class PlanetDefn_Instances
 
 		var colorToGlobe = (radius: number, color: Color, colorBorder: Color) =>
 		{
+			var colorOuter = color.clone().add(colorBlack).add(colorBlack);
+
 			var returnVisual: VisualBase = 
 				new VisualCircleGradient
 				(
@@ -137,7 +139,7 @@ class PlanetDefn_Instances
 					(
 						[
 							new ValueBreak(0, color),
-							new ValueBreak(1, colorBlack)
+							new ValueBreak(1, colorOuter)
 						],
 						null // interpolationMode
 					),

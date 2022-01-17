@@ -9,6 +9,7 @@ class PlaceStationDock extends Place {
         this.crewValuePerUnit = 3;
         this.fuelValuePerUnit = 20;
         this.landerValue = 100;
+        this.entityToSpawnAdd(new GameClock(60).toEntity());
     }
     // method
     componentBackboneBuild(universe) {

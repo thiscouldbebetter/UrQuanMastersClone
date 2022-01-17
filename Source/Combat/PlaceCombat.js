@@ -5,6 +5,7 @@ class PlaceCombat extends Place {
         combat.size, null // entities
         );
         this.combat = combat;
+        this.entityToSpawnAdd(new GameClock(60).toEntity());
         this.size = this.combat.size;
         var actionExit = new Action("Exit", (uwpe) => {
             var place = uwpe.place;

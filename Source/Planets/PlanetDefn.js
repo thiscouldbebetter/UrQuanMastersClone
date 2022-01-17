@@ -34,9 +34,10 @@ class PlanetDefn_Instances {
         var colorGray = Color.byName("Gray");
         var colorWhite = Color.byName("White");
         var colorToGlobe = (radius, color, colorBorder) => {
+            var colorOuter = color.clone().add(colorBlack).add(colorBlack);
             var returnVisual = new VisualCircleGradient(radius, new ValueBreakGroup([
                 new ValueBreak(0, color),
-                new ValueBreak(1, colorBlack)
+                new ValueBreak(1, colorOuter)
             ], null // interpolationMode
             ), colorBorder);
             return returnVisual;

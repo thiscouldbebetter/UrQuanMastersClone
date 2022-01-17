@@ -22,6 +22,8 @@ class PlaceCombat extends Place
 
 		this.combat = combat;
 
+		this.entityToSpawnAdd(new GameClock(60).toEntity());
+
 		this.size = this.combat.size;
 
 		var actionExit = new Action

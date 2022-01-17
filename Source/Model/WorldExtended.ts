@@ -12,11 +12,15 @@ class WorldExtended extends World
 	factionsByName: Map<string, Faction>;
 	shipDefnsByName: Map<string, ShipDefn>;
 
+	gameTimeInitial: Date;
+	gameSecondsSinceStart: number;
+
 	constructor
 	(
 		name: string,
 		dateCreated: DateTime,
 		defn: WorldDefnExtended,
+		gameTimeInitial: Date,
 		hyperspace: Hyperspace,
 		factions: Faction[],
 		shipDefns: ShipDefn[],
@@ -33,6 +37,9 @@ class WorldExtended extends World
 		);
 
 		this.timerTicksSoFar = 0;
+
+		this.gameTimeInitial = gameTimeInitial;
+		this.gameSecondsSinceStart = 0;
 
 		this.hyperspace = hyperspace;
 		this.factions = factions;
@@ -92,6 +99,8 @@ class WorldExtended extends World
 			Collidable.name,
 			Boundable.name,
 
+			GameClock.name,
+
 			//Drawable.name,
 			//Camera.name
 		];
@@ -101,6 +110,7 @@ class WorldExtended extends World
 			PlaceDefn.from4(PlaceCombat.name, actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name]) ),
 			PlaceDefn.from4(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
+			PlaceDefn.from4(PlaceHyperspaceMap.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
 			PlaceDefn.from4(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
 			PlaceDefn.from4(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
@@ -334,6 +344,7 @@ class WorldExtended extends World
 			"World-" + nowAsString,
 			now, // dateCreated
 			defn,
+			new Date(2155, 1, 17),
 			hyperspace,
 			factions,
 			shipDefns,
@@ -359,6 +370,15 @@ class WorldExtended extends World
 	factionByName(factionName: string): Faction
 	{
 		return this.factionsByName.get(factionName);
+	}
+
+	gameTimeAsString(): string
+	{
+		var timeCurrentInMilliseconds =
+			this.gameTimeInitial.getTime() + this.gameSecondsSinceStart * 1000;
+		var timeCurrentAsDate = new Date(timeCurrentInMilliseconds);
+		var timeCurrentAsString = timeCurrentAsDate.toISOString();
+		return timeCurrentAsString;
 	}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void

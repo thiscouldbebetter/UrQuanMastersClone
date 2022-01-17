@@ -169,6 +169,62 @@ class ShipGroup implements EntityPropertyBase
 		return world.defnExtended().factionByName(this.factionName);
 	}
 
+	posInHyperspace(world: World): Coords
+	{
+		var pos: Coords = null;
+
+		var place = world.placeCurrent;
+		var placeTypeName = place.constructor.name;
+		if (placeTypeName == PlaceHyperspace.name)
+		{
+			var shipGroupEntity = place.entities.find(x => ShipGroup.fromEntity(x) == this);
+			pos = shipGroupEntity.locatable().loc.pos;
+		}
+		else if (placeTypeName == PlaceHyperspaceMap.name)
+		{
+			var placeHyperspaceMap = place as PlaceHyperspaceMap;
+			var placeHyperspace = placeHyperspaceMap.placeHyperspaceToReturnTo;
+			var shipGroupEntity = placeHyperspace.entities.find(x => ShipGroup.fromEntity(x) == this);
+			pos = shipGroupEntity.locatable().loc.pos;
+		}
+		else if (placeTypeName == PlaceStarsystem.name)
+		{
+			var placeStarsystem = place as PlaceStarsystem;
+			var starsystem = placeStarsystem.starsystem;
+			pos = starsystem.posInHyperspace;
+		}
+		else if (placeTypeName == PlacePlanetVicinity.name)
+		{
+			var placePlanetVicinity = place as PlacePlanetVicinity;
+			var starsystem = placePlanetVicinity.starsystem();
+			pos = starsystem.posInHyperspace;
+		}
+		else if (placeTypeName == PlacePlanetOrbit.name)
+		{
+			var placePlanetOrbit = place as PlacePlanetOrbit;
+			var starsystem = placePlanetOrbit.starsystem();
+			pos = starsystem.posInHyperspace;
+		}
+		else if (placeTypeName == PlacePlanetSurface.name)
+		{
+			var placePlanetSurface = place as PlacePlanetSurface;
+			var starsystem = placePlanetSurface.starsystem();
+			pos = starsystem.posInHyperspace;
+		}
+		else
+		{
+			throw new Error("Unexpected placeTypeName: " + placeTypeName);
+		}
+
+		var hyperspaceSize = (world as WorldExtended).hyperspace.size;
+		var posInverted = this._posInverted.overwriteWithDimensions
+		(
+			pos.x, hyperspaceSize.y - pos.y, 0
+		).round();
+
+		return posInverted;
+	}
+
 	toEntity
 	(
 		world: WorldExtended, place: Place
@@ -179,9 +235,6 @@ class ShipGroup implements EntityPropertyBase
 		var faction = shipGroup.faction(world);
 
 		var shipActor = new Actor(faction.shipGroupActivity);
-
-		var shipPos = Coords.random(null).multiply(place.size);
-		var shipLoc = Disposition.fromPos(shipPos);
 
 		var entityDimension = 10;
 
@@ -238,6 +291,8 @@ class ShipGroup implements EntityPropertyBase
 		}
 		var shipKillable = new Killable(1, null, shipKill);
 
+		var shipPos = Coords.random(null).multiply(place.size);
+		var shipLoc = Disposition.fromPos(shipPos);
 		var shipLocatable = new Locatable(shipLoc);
 
 		var shipMovable = Movable.default();
@@ -274,15 +329,6 @@ class ShipGroup implements EntityPropertyBase
 	}
 
 	// Strings.
-
-	toStringPosition(world: World): string
-	{
-		var hyperspaceSize = (world as WorldExtended).hyperspace.size;
-		return this._posInverted.overwriteWithDimensions
-		(
-			this.pos.x, hyperspaceSize.y - this.pos.y, 0
-		).round().toStringXY();
-	}
 
 	toStringDescription(): string
 	{

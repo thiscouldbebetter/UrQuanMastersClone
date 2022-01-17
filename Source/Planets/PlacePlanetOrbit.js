@@ -9,6 +9,7 @@ class PlacePlanetOrbit extends Place {
         this.placePlanetVicinity = placePlanetVicinity;
         if (this.planet.defn().canLand) {
             var entities = this.entitiesToSpawn;
+            entities.push(new GameClock(60).toEntity());
             // Resources.
             var resourceRadiusBase = 5; // todo
             var resourceEntities = this.planet.resources.map(x => x.toEntity(world, this, resourceRadiusBase));
@@ -29,10 +30,31 @@ class PlacePlanetOrbit extends Place {
     // methods
     land(universe) {
         var world = universe.world;
-        var placeOrbit = world.placeCurrent;
-        var planet = placeOrbit.planet;
-        var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
-        world.placeNext = placeNext;
+        var player = world.player;
+        var flagship = player.flagship;
+        if (flagship.numberOfLanders <= 0) {
+            // todo - Notify player.
+        }
+        else {
+            var placeOrbit = world.placeCurrent;
+            var planet = placeOrbit.planet;
+            var fuelRequiredToLandPerG = 2;
+            var fuelRequiredToLand = planet.gravity * fuelRequiredToLandPerG;
+            var fuelRequiredToLandMax = 3;
+            if (fuelRequiredToLand > fuelRequiredToLandMax) {
+                fuelRequiredToLand = fuelRequiredToLandMax;
+            }
+            var fuelHeld = flagship.fuel;
+            var isFuelHeldSufficientToLand = (fuelHeld >= fuelRequiredToLand);
+            if (isFuelHeldSufficientToLand == false) {
+                // todo - Notify player.
+            }
+            else {
+                flagship.fuel -= fuelRequiredToLand;
+                var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
+                world.placeNext = placeNext;
+            }
+        }
     }
     returnToPlaceParent(universe) {
         var world = universe.world;
@@ -48,6 +70,9 @@ class PlacePlanetOrbit extends Place {
     }
     scanMinerals(universe) {
         this.haveMineralsBeenScanned = true;
+    }
+    starsystem() {
+        return this.placePlanetVicinity.placeStarsystem.starsystem;
     }
     // overrides
     draw(universe, world) {

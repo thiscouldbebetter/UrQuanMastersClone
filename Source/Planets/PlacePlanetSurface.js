@@ -27,6 +27,7 @@ class PlacePlanetSurface extends Place {
         this.actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple(this._actionToInputsMappings, x => x.inputNames);
         // entities
         var entities = this.entitiesToSpawn;
+        entities.push(new GameClock(60).toEntity());
         var entityDimension = 10;
         // camera
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
@@ -192,6 +193,9 @@ class PlacePlanetSurface extends Place {
     }
     playerDie(uwpe) {
         this.exit(uwpe);
+    }
+    starsystem() {
+        return this.placePlanetOrbit.placePlanetVicinity.placeStarsystem.starsystem;
     }
     // Place overrides
     draw(universe, world) {

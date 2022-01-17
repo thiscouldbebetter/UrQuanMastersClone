@@ -35,6 +35,8 @@ class PlacePlanetOrbit extends Place
 		{
 			var entities = this.entitiesToSpawn;
 
+			entities.push(new GameClock(60).toEntity());
+
 			// Resources.
 
 			var resourceRadiusBase = 5; // todo
@@ -79,11 +81,47 @@ class PlacePlanetOrbit extends Place
 
 	land(universe: Universe): void
 	{
-		var world = universe.world;
-		var placeOrbit = world.placeCurrent as PlacePlanetOrbit;
-		var planet = placeOrbit.planet;
-		var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
-		world.placeNext = placeNext;
+		var world = universe.world as WorldExtended;
+		var player = world.player;
+		var flagship = player.flagship;
+
+		if (flagship.numberOfLanders <= 0)
+		{
+			// todo - Notify player.
+		}
+		else
+		{
+			var placeOrbit = world.placeCurrent as PlacePlanetOrbit;
+			var planet = placeOrbit.planet;
+
+			var fuelRequiredToLandPerG = 2;
+			var fuelRequiredToLand =
+				planet.gravity * fuelRequiredToLandPerG;
+
+			var fuelRequiredToLandMax = 3;
+			if (fuelRequiredToLand > fuelRequiredToLandMax)
+			{
+				fuelRequiredToLand = fuelRequiredToLandMax;
+			}
+
+			var fuelHeld = flagship.fuel;
+			var isFuelHeldSufficientToLand =
+				(fuelHeld >= fuelRequiredToLand);
+
+			if (isFuelHeldSufficientToLand == false)
+			{
+				// todo - Notify player.
+			}
+			else
+			{
+				flagship.fuel -= fuelRequiredToLand;
+
+				var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
+				world.placeNext = placeNext;
+			}
+		}
+
+
 	}
 
 	returnToPlaceParent(universe: Universe): void
@@ -107,6 +145,11 @@ class PlacePlanetOrbit extends Place
 	scanMinerals(universe: Universe): void
 	{
 		this.haveMineralsBeenScanned = true;
+	}
+
+	starsystem(): Starsystem
+	{
+		return this.placePlanetVicinity.placeStarsystem.starsystem;
 	}
 
 	// overrides

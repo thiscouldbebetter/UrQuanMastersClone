@@ -158,6 +158,7 @@ class Ship implements EntityProperty<Ship>
 			Ship.actionAccelerate(),
 			Ship.actionTurnLeft(),
 			Ship.actionTurnRight(),
+			PlaceHyperspace.actionMapView(),
 		];
 
 		return returnValues;
@@ -179,6 +180,7 @@ class Ship implements EntityProperty<Ship>
 			new ActionToInputsMapping("Fire", [ "f", "Enter", "Gamepad0Button0"], inactivateTrue),
 			new ActionToInputsMapping("Special", [ "g", "Enter", "Gamepad0Button1"], inactivateTrue),
 
+			new ActionToInputsMapping("MapView", [ "Tab", "Gamepad0Button2" ], inactivateTrue),
 		];
 
 		return returnValues;
