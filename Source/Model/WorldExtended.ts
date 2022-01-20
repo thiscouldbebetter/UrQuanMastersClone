@@ -189,7 +189,7 @@ class WorldExtended extends World
 		var factionHyphae 		= f("Hyphae", 		"Mycon", 	c("Purple"),soi(629.1, 220.8, .12), hostile, "Sporsac");
 		var factionKehlemal 	= f("Kehlemal", 	"Kohrah", 	c("Gray"), 	soi(610, 610, .25), 	hostile, "Silencer");
 		var factionLahkemup 	= f("Lahkemup",		"Urquan", 	c("Green"),	soi(590, 590, .25), 	hostile, "Shackler");
-		var factionSilikonix 	= f("Konstalyxz", 	"Chmmr", 	null, 		null, 					neutral, "Gravitar");
+		var factionKonstalyxz 	= f("Konstalyxz", 	"Chmmr", 	null, 		null, 					neutral, "Gravitar");
 		var factionMauluska 	= f("Mauluska", 	"Spathi", 	c("Brown"), soi(241.6, 368.7, .12), neutral, "Scuttler");
 		var factionMoroz 		= f("Moroz", 		"Utwig", 	c("Cyan"), 	soi(863.0, 869.3, .1), 	neutral, "Punishpunj");
 		var factionMuuncaf 		= f("Muuncaf", 		"Pkunk", 	c("Cyan"), 	soi(52.2, 52.5, .1), 	neutral, "Fireblossom");
@@ -214,6 +214,7 @@ class WorldExtended extends World
 			factionEllfyn,
 			factionHyphae,
 			factionKehlemal,
+			factionKonstalyxz,
 			factionLahkemup,
 			factionLahkemupGuardDrone,
 			factionMauluska,
@@ -223,7 +224,6 @@ class WorldExtended extends World
 			factionMurch,
 			factionOutsider,
 			factionRaptor,
-			factionSilikonix,
 			factionSupial,
 			factionTempestrial,
 			factionTerran,
