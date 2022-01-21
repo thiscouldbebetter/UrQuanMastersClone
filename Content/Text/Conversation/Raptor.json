@@ -1,7 +1,7 @@
 {
-    "name": "Outsider",
-    "imagePortraitName": "Conversation-Portrait-Outsider",
-    "contentTextStringName": "Conversation-Outsider-Content",
+    "name": "Raptor",
+    "imagePortraitName": "Conversation-Portrait-Raptor",
+    "contentTextStringName": "Conversation-Raptor-Content",
     "talkNodes": [
 
 { "defnName": "Display", "content": "#(HOMEWORLD_HELLO_1)" },
