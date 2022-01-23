@@ -1,10 +1,11 @@
 {
     "name": "LahkemupGuardDrone",
     "imagePortraitName": "Conversation-Portrait-Lahkemup",
+    "soundMusicName": "Music_Faction_Lahkemup",
     "contentTextStringName": "Conversation-Lahkemup-Content",
     "talkNodes": [
 
-{ "defnName": "Display", "name": "#(SEND_MESSAGE)"},
+{ "defnName": "Display", "content": "#(SEND_MESSAGE)"},
 { "defnName": "Quit" },
 { "name": "Finalize", "defnName": "DoNothing" },
 { "defnName": "Script", "content": "cr.talker().actor().activity.defnNameSet('Leave')" }

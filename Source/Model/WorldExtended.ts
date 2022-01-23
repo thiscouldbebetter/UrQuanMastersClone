@@ -107,15 +107,86 @@ class WorldExtended extends World
 
 		var placeDefns = 
 		[
-			PlaceDefn.from4(PlaceCombat.name, actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name]) ),
-			PlaceDefn.from4(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-			PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
-			PlaceDefn.from4(PlaceHyperspaceMap.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-			PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-			PlaceDefn.from4(PlacePlanetSurface.name, actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
-			PlaceDefn.from4(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-			PlaceDefn.from4(PlaceStarsystem.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-			PlaceDefn.from4(PlaceStation.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+			PlaceDefn.from5
+			(
+				PlaceCombat.name,
+				"Music_Combat",
+				actionsCombat,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess.slice(0).concat([Ship.name])
+			),
+
+			PlaceDefn.from5
+			(
+				PlaceEncounter.name,
+				"Music_Encounter",
+				actions,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess
+			),
+
+			PlaceDefn.from5
+			(
+				PlaceHyperspace.name,
+				"Music_Hyperspace",
+				actions,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess.slice(0).concat( [ Fuelable.name ] )
+			),
+
+			PlaceDefn.from5
+			(
+				PlaceHyperspaceMap.name,
+				"Music_Hyperspace",
+				actions,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess
+			),
+
+			PlaceDefn.from5
+			(
+				PlacePlanetOrbit.name,
+				"Music_Planet",
+				actions,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess
+			),
+
+			PlaceDefn.from5
+			(
+				PlacePlanetSurface.name,
+				"Music_Planet",
+				actionsCombat,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess.slice(0).concat( [ EntityGenerator.name ] )
+			),
+
+			PlaceDefn.from5
+			(
+				PlacePlanetVicinity.name,
+				"Music_Starsystem",
+				actions,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess
+			),
+
+			PlaceDefn.from5
+			(
+				PlaceStarsystem.name,
+				"Music_Starsystem",
+				actions,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess
+			),
+
+			PlaceDefn.from5
+			(
+				PlaceStation.name,
+				"Music_Music",
+				actions,
+				actionToInputsMappings,
+				entityPropertyNamesToProcess
+			),
 		];
 
 		var hyperspaceSize = Coords.fromXY(1, 1).multiplyScalar(10000);

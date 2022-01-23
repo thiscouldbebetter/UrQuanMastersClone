@@ -1,6 +1,7 @@
 {
     "name": "EarthStation",
     "imagePortraitName": "Conversation-Portrait-EarthStation",
+    "soundMusicName": "Music_Faction_EarthStation",
     "contentTextStringName": "Conversation-EarthStation-Content",
     "talkNodes": [
 
@@ -97,7 +98,7 @@
 { "defnName": "Display", "content": "#(we_destroyed_it)" },
 { "defnName": "Display", "content": "#(what_probe)" },
 { "defnName": "Display", "content": "#(take_care_of_base_again)" },
-{ "defnName": "Display", "content": "#(goodbye_commander)" },
+{ "defnName": "Display", "content": "#(goodbye_commander)" }
 
     ]
 }

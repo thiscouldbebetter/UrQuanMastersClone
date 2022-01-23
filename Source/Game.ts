@@ -5,7 +5,8 @@ class Game
 	{
 		var imageDirectory = contentDirectoryPath + "Images/";
 		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
-		var directoryEnergySources = contentDirectoryPath + "Import/sc2/content/base/lander/energy/";
+		var importDirectoryPath = contentDirectoryPath + "Import/sc2/content/base/";
+		var directoryEnergySources = importDirectoryPath + "lander/energy/";
 		var energySource = EnergySource.name;
 		var png = ".png";
 
@@ -20,7 +21,7 @@ class Game
 			conversationDirectory + "Placeholder.json";
 		var conversationPortrait = "Conversation-Portrait-";
 		var contentPathPrefixComms =
-			contentDirectoryPath + "Import/sc2/content/base/comm/"
+			importDirectoryPath + "comm/";
 
 		var mediaLibrary = new MediaLibrary
 		(
@@ -30,12 +31,12 @@ class Game
 			[
 				// conversation 
 				new Image2("Conversation", imageDirectory + "Conversation.png"),
-				new Image2(conversationPortrait + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
-				new Image2(conversationPortrait + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
-				new Image2(conversationPortrait + "Mauluska", contentDirectoryPath + "Import/sc2/content/base/comm/spathi/spathi-000.png"),
-				new Image2(conversationPortrait + "Murch", contentDirectoryPath + "Import/sc2/content/base/comm/melnorme/melnorme-000.png"),
-				new Image2(conversationPortrait + "Tempestrial", contentDirectoryPath + "Import/sc2/content/base/comm/probe/probe-000.png"),
-				new Image2(conversationPortrait + "Triunion", contentDirectoryPath + "Import/sc2/content/base/comm/zoqfotpik/zoqfotpik-000.png"),
+				new Image2(conversationPortrait + "EarthStation", importDirectoryPath + "comm/commander/commander-000.png"),
+				new Image2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
+				new Image2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
+				new Image2(conversationPortrait + "Murch", importDirectoryPath + "comm/melnorme/melnorme-000.png"),
+				new Image2(conversationPortrait + "Tempestrial", importDirectoryPath + "comm/probe/probe-000.png"),
+				new Image2(conversationPortrait + "Triunion", importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
 
 				// opening
 				new Image2("Opening", imageDirectory + "Opening.png"),
@@ -86,9 +87,20 @@ class Game
 			// sounds
 			[
 				new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
+
 				new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
 				new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
-				new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
+				//new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
+				new SoundFromFileMod("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
+
+				new SoundFromFileMod("Music_Battle", importDirectoryPath + "battle/battle.mod"),
+				new SoundFromFileMod("Music_Encounter", importDirectoryPath + "ui/redalert.mod"),
+				new SoundFromFileMod("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
+				new SoundFromFileMod("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
+				new SoundFromFileMod("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
+
+				new SoundFromFileMod("Music_Faction_EarthStation", importDirectoryPath + "comm/commander/commander.mod"),
+				new SoundFromFileMod("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
 			],
 			// videos
 			[
@@ -104,9 +116,9 @@ class Game
 				new TextString("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
 
 				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
-				new TextString(conversation + "EarthStation" + content, conversationDirectory + "EarthStation-Content.txt"),
+				new TextString(conversation + "EarthStation" + content, contentPathPrefixComms + "commander/commander.txt"),
 				new TextString(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
-				new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
+				//new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
 				new TextString(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
 
 				new TextString("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
@@ -121,7 +133,7 @@ class Game
 
 				new TextString(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
 				new TextString(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-				new TextString(conversation + "MauluskaOrphan", conversationDirectory + "MauluskaOrphan.json"),
+				new TextString(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
 				new TextString(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
 
 				new TextString(conversation + "Moroz", conversationPlaceholderPath),

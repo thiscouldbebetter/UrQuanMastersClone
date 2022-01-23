@@ -191,4 +191,9 @@ class PlaceStarsystem extends Place {
         super.draw(universe, world, universe.display);
         this.venueControls.draw(universe);
     }
+    initialize(uwpe) {
+        var universe = uwpe.universe;
+        var soundHelper = universe.soundHelper;
+        soundHelper.soundWithNamePlayAsMusic(universe, "Music_Starsystem");
+    }
 }

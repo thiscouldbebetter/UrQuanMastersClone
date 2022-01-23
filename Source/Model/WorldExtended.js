@@ -51,15 +51,15 @@ class WorldExtended extends World {
             //Camera.name
         ];
         var placeDefns = [
-            PlaceDefn.from4(PlaceCombat.name, actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
-            PlaceDefn.from4(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
-            PlaceDefn.from4(PlaceHyperspaceMap.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlacePlanetSurface.name, actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
-            PlaceDefn.from4(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlaceStarsystem.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlaceStation.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceCombat.name, "Music_Combat", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
+            PlaceDefn.from5(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceHyperspace.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
+            PlaceDefn.from5(PlaceHyperspaceMap.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlacePlanetOrbit.name, "Music_Planet", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlacePlanetSurface.name, "Music_Planet", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
+            PlaceDefn.from5(PlacePlanetVicinity.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceStarsystem.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceStation.name, "Music_Music", actions, actionToInputsMappings, entityPropertyNamesToProcess),
         ];
         var hyperspaceSize = Coords.fromXY(1, 1).multiplyScalar(10000);
         // special
@@ -98,7 +98,7 @@ class WorldExtended extends World {
         var factionHyphae = f("Hyphae", "Mycon", c("Purple"), soi(629.1, 220.8, .12), hostile, "Sporsac");
         var factionKehlemal = f("Kehlemal", "Kohrah", c("Gray"), soi(610, 610, .25), hostile, "Silencer");
         var factionLahkemup = f("Lahkemup", "Urquan", c("Green"), soi(590, 590, .25), hostile, "Shackler");
-        var factionSilikonix = f("Konstalyxz", "Chmmr", null, null, neutral, "Gravitar");
+        var factionKonstalyxz = f("Konstalyxz", "Chmmr", null, null, neutral, "Gravitar");
         var factionMauluska = f("Mauluska", "Spathi", c("Brown"), soi(241.6, 368.7, .12), neutral, "Scuttler");
         var factionMoroz = f("Moroz", "Utwig", c("Cyan"), soi(863.0, 869.3, .1), neutral, "Punishpunj");
         var factionMuuncaf = f("Muuncaf", "Pkunk", c("Cyan"), soi(52.2, 52.5, .1), neutral, "Fireblossom");
@@ -121,6 +121,7 @@ class WorldExtended extends World {
             factionEllfyn,
             factionHyphae,
             factionKehlemal,
+            factionKonstalyxz,
             factionLahkemup,
             factionLahkemupGuardDrone,
             factionMauluska,
@@ -130,7 +131,6 @@ class WorldExtended extends World {
             factionMurch,
             factionOutsider,
             factionRaptor,
-            factionSilikonix,
             factionSupial,
             factionTempestrial,
             factionTerran,
