@@ -7,7 +7,7 @@ class Player
 	factionsKnownNames: string[];
 	shipGroup: ShipGroup;
 
-	variableLookup: Map<string,any>;
+	variableLookup: Map<string, any>;
 	vars: Map<string,any>;
 
 	_factionsAllied: Faction[];
@@ -43,29 +43,35 @@ class Player
 	{
 		return new ActivityDefn
 		(
-			"AcceptUserInput",
-			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var universe = uwpe.universe;
-				var world = uwpe.world;
-				var place = uwpe.place;
-
-				var inputHelper = universe.inputHelper;
-				var placeDefn = place.defn(world);
-				var actionsByName = placeDefn.actionsByName;
-				var actionToInputsMappingsByInputName =
-					placeDefn.actionToInputsMappingsByInputName;
-				var actionsToPerform = inputHelper.actionsFromInput
-				(
-					actionsByName, actionToInputsMappingsByInputName
-				);
-				for (var i = 0; i < actionsToPerform.length; i++)
-				{
-					var action = actionsToPerform[i];
-					action.perform(uwpe);
-				}
-			}
+			"AcceptUserInput", Player.activityDefnPerform
 		);
+	}
+
+	static activityDefnPerform(uwpe: UniverseWorldPlaceEntities): void
+	{
+		// todo - Replace this with equivalent from Framework?
+
+		var universe = uwpe.universe;
+		var world = uwpe.world;
+		var place = uwpe.place;
+
+		var inputHelper = universe.inputHelper;
+		var placeDefn = place.defn(world);
+		var actionsByName = placeDefn.actionsByName;
+		var actionToInputsMappingsByInputName =
+			placeDefn.actionToInputsMappingsByInputName;
+		var actionsToPerform = inputHelper.actionsFromInput
+		(
+			actionsByName, actionToInputsMappingsByInputName
+		);
+		for (var i = 0; i < actionsToPerform.length; i++)
+		{
+			var action = actionsToPerform[i];
+			if (action != null) // Can't fire in some places.
+			{
+				action.perform(uwpe);
+			}
+		}
 	}
 
 	cachesCalculate(): void
@@ -206,165 +212,9 @@ class Player
 
 	// controls
 
-	toControlSidebar(world: World): ControlBase
+	toControlSidebar(world: WorldExtended): ControlBase
 	{
-		var flagship = this.flagship;
-		var containerSidebarSize = Coords.fromXY(100, 300); // hack
-		var marginWidth = 8;
-		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
-		var fontHeight = 10;
-		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
-		var labelSize = Coords.fromXY(childControlWidth, fontHeight);
-		var containerFlagshipSize = Coords.fromXY
-		(
-			containerSidebarSize.x - marginSize.x * 2,
-			(containerSidebarSize.y - marginSize.x * 3) / 3
-		);
-
-		var containerFlagship = ControlContainer.from4
-		(
-			"containerFlagship",
-			Coords.fromXY(marginSize.x, marginSize.y), // hack - pos
-			containerFlagshipSize,
-			// children
-			[
-				new ControlLabel
-				(
-					"labelFlagship",
-					Coords.fromXY(0, labelSize.y), // pos
-					labelSize,
-					true, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext(flagship.name),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"labelCrew",
-					Coords.fromXY(marginSize.x, labelSize.y * 2),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Crew:"),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"infoCrew",
-					Coords.fromXY(marginSize.x * 4, labelSize.y * 2),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						flagship, (c: Flagship) => c.crewCurrentOverMax()
-					),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"labelFuel",
-					Coords.fromXY(marginSize.x, labelSize.y * 3),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Fuel:"),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"infoFuel",
-					Coords.fromXY(marginSize.x * 4, labelSize.y * 3),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						flagship, (c: Flagship) => c.fuelCurrentOverMax()
-					),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"labelLanders",
-					Coords.fromXY(marginSize.x, labelSize.y * 4),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Landers:"),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"infoLanders",
-					Coords.fromXY(marginSize.x * 6, labelSize.y * 4),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						flagship, (c: Flagship) => "" + c.numberOfLanders
-					),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"labelCargo",
-					Coords.fromXY(marginSize.x, labelSize.y * 5),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Cargo:"),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"infoCargo",
-					Coords.fromXY(marginSize.x * 5, labelSize.y * 5),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						flagship, (c: Flagship) => c.cargoCurrentOverMax()
-					),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"labelPosition",
-					Coords.fromXY(marginSize.x, labelSize.y * 6),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Pos:"),
-					fontHeight
-				),
-
-				new ControlLabel
-				(
-					"infoPosition",
-					Coords.fromXY(marginSize.x * 5, labelSize.y * 6),
-					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						this.shipGroup, (c: ShipGroup) => c.toStringPosition(world)
-					),
-					fontHeight
-				),
-			]
-		);
+		var containerFlagship = this.flagship.toControlSidebar(world);
 
 		/*
 		var containerSidebar = new ControlContainer

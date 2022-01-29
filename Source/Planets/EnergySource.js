@@ -9,15 +9,44 @@ class EnergySource {
     static fromEntity(entity) {
         return entity.propertyByName(EnergySource.name);
     }
-    toEntity(world, place) {
-        var visual = VisualCircle.fromRadiusAndColorFill(10, Color.byName("Cyan"));
-        visual = new VisualWrapped(place.size, visual);
-        var energySourceCollider = new Sphere(Coords.create(), 5);
+    toEntity(world, planet) {
+        var dimension = 5;
+        var energySourceCollider = new Sphere(Coords.create(), dimension);
+        var energySourceCollidable = Collidable.fromCollider(energySourceCollider);
+        var visualDetailed = new VisualWrapped(planet.sizeSurface, this.visual);
+        var energySourceDrawable = Drawable.fromVisual(visualDetailed);
+        var energySourceLocatable = Locatable.fromPos(this.pos);
+        var visualScanContact = VisualPolygon.fromVerticesAndColorFill([
+            Coords.fromXY(0, -dimension),
+            Coords.fromXY(dimension, 0),
+            Coords.fromXY(0, dimension),
+            Coords.fromXY(-dimension, 0),
+        ], Color.byName("Cyan"));
+        visualScanContact = new VisualHidable((uwpe) => {
+            var isVisible = false;
+            var place = uwpe.place;
+            var placeTypeName = place.constructor.name;
+            if (placeTypeName == PlacePlanetOrbit.name) {
+                var placePlanetOrbit = place;
+                isVisible = placePlanetOrbit.hasEnergyBeenScanned;
+            }
+            else if (placeTypeName == PlacePlanetSurface.name) {
+                var placePlanetSurface = place;
+                var placePlanetOrbit = placePlanetSurface.placePlanetOrbit;
+                isVisible = placePlanetOrbit.hasEnergyBeenScanned;
+            }
+            else {
+                throw new Error("Unexpected placeTypeName: " + placeTypeName);
+            }
+            return isVisible;
+        }, visualScanContact);
+        var energySourceMappable = new Mappable(visualScanContact);
         var returnValue = new Entity(this.name, [
+            energySourceCollidable,
+            energySourceDrawable,
             this,
-            Collidable.fromCollider(energySourceCollider),
-            Drawable.fromVisual(visual),
-            Locatable.fromPos(this.pos),
+            energySourceLocatable,
+            energySourceMappable
         ]);
         return returnValue;
     }

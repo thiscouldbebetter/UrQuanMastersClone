@@ -12,7 +12,8 @@ class Flagship
 	items: any[];
 	shipsMax: number;
 
-	itemHolder: ItemHolder;
+	itemHolderCargo: ItemHolder;
+	itemHolderOther: ItemHolder;
 
 	_acceleration: number;
 	_cargoMax: number;
@@ -51,7 +52,8 @@ class Flagship
 		this.numberOfLanders = numberOfLanders;
 		this.crew = crew;
 		this.fuel = fuel;
-		this.itemHolder = ItemHolder.fromItems(items);
+		this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(items);
+		this.itemHolderOther = ItemHolder.create();
 		this.shipsMax = shipsMax;
 
 		this.cachesCalculate();
@@ -74,14 +76,9 @@ class Flagship
 		}
 	}
 
-	cargoCurrent(): number
+	cargoCurrentOverMax(world: World): string
 	{
-		return 0; // todo
-	}
-
-	cargoCurrentOverMax(): string
-	{
-		return this.cargoCurrent() + "/" + this._cargoMax;
+		return this.itemHolderCargo.massOfAllItemsOverMax(world);
 	}
 
 	components(): ShipComponentDefn[]
@@ -213,12 +210,24 @@ class Flagship
 	{
 		var returnValue =
 		(
-			this.itemHolder.hasItemWithDefnName("Biodata")
-			|| this.itemHolder.hasItemWithDefnName("RainbowWorldLocations")
-			|| this.itemHolder.hasItemWithCategoryName("PrecursorArtifact", world)
+			this.itemHolderOther.hasItemWithDefnName("Biodata")
+			|| this.itemHolderOther.hasItemWithDefnName("RainbowWorldLocations")
+			|| this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world)
 		);
 
 		return returnValue;
+	}
+
+	itemHolderCargoBuildOrUpdate(items: Item[]): ItemHolder
+	{
+		if (this.itemHolderCargo == null)
+		{
+			this.itemHolderCargo = ItemHolder.fromItems(items);
+		}
+
+		// todo - Set max.
+
+		return this.itemHolderCargo;
 	}
 
 	thrustersCurrent(): number
@@ -239,5 +248,225 @@ class Flagship
 	turningJetsCurrentOverMax(): string
 	{
 		return this.turningJetsCurrent() + "/" + this.turningJetsMax;
+	}
+
+	// Controls.
+
+	toControlSidebar(world: WorldExtended): ControlBase
+	{
+		var flagship = this;
+		var containerSidebarSize = Coords.fromXY(100, 300); // hack
+		var marginWidth = 8;
+		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
+		var fontHeight = 10;
+		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
+		var labelSize = Coords.fromXY(childControlWidth, fontHeight);
+		var containerFlagshipSize = Coords.fromXY
+		(
+			containerSidebarSize.x - marginSize.x * 2,
+			(containerSidebarSize.y - marginSize.x * 3) * 0.4
+		);
+
+		var containerFlagship = ControlContainer.from4
+		(
+			"containerFlagship",
+			Coords.fromXY(marginSize.x, marginSize.y), // hack - pos
+			containerFlagshipSize,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelFlagship",
+					Coords.fromXY(0, labelSize.y), // pos
+					labelSize,
+					true, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext(flagship.name),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelCrew",
+					Coords.fromXY(marginSize.x, labelSize.y * 2),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Crew:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoCrew",
+					Coords.fromXY(marginSize.x * 4, labelSize.y * 2),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						flagship, (c: Flagship) => c.crewCurrentOverMax()
+					),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelFuel",
+					Coords.fromXY(marginSize.x, labelSize.y * 3),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Fuel:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoFuel",
+					Coords.fromXY(marginSize.x * 4, labelSize.y * 3),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						flagship, (c: Flagship) => c.fuelCurrentOverMax()
+					),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelLanders",
+					Coords.fromXY(marginSize.x, labelSize.y * 4),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Landers:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoLanders",
+					Coords.fromXY(marginSize.x * 6, labelSize.y * 4),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						flagship, (c: Flagship) => "" + c.numberOfLanders
+					),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelCargo",
+					Coords.fromXY(marginSize.x, labelSize.y * 5),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Cargo:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoCargo",
+					Coords.fromXY(marginSize.x * 5, labelSize.y * 5),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						flagship,
+						(c: Flagship) => c.cargoCurrentOverMax(world)
+					),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelPosition",
+					Coords.fromXY(marginSize.x, labelSize.y * 6),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Loc:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoPosition",
+					Coords.fromXY(marginSize.x * 4, labelSize.y * 6),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						world.player.shipGroup,
+						(c: ShipGroup) => c.posInHyperspace(world).toStringXY()
+					),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelDate",
+					Coords.fromXY(marginSize.x, labelSize.y * 7),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Date:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoDate",
+					Coords.fromXY(marginSize.x * 4, labelSize.y * 7),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						world.player.shipGroup,
+						(c: ShipGroup) => world.gameTimeAsString().split("T")[0]
+					),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"labelTime",
+					Coords.fromXY(marginSize.x, labelSize.y * 8),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContext("Time:"),
+					fontHeight
+				),
+
+				new ControlLabel
+				(
+					"infoTime",
+					Coords.fromXY(marginSize.x * 4, labelSize.y * 8),
+					labelSize,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						world.player.shipGroup,
+						(c: ShipGroup) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")
+					),
+					fontHeight
+				),
+
+			]
+		);
+
+		return containerFlagship;
 	}
 }

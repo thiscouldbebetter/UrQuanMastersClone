@@ -4,26 +4,9 @@ class PlaceHyperspace extends Place {
         super(PlaceHyperspace.name, PlaceHyperspace.name, null, // parentName
         hyperspace.size, null);
         this.hyperspace = hyperspace;
-        var actionMapView = new Action("MapView", (uwpe) => {
-            var world = uwpe.world;
-            var place = uwpe.place;
-            world.placeNext = new PlaceHyperspaceMap(place);
-        });
-        this.actions =
-            [
-                Ship.actionShowMenu(),
-                Ship.actionAccelerate(),
-                Ship.actionTurnLeft(),
-                Ship.actionTurnRight(),
-                actionMapView
-            ];
-        this._actionToInputsMappings = Ship.actionToInputsMappings();
-        this._actionToInputsMappings = this._actionToInputsMappings.concat([
-            new ActionToInputsMapping("MapView", ["Tab", "Gamepad0Button0"], null),
-        ]);
-        this._actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple(this._actionToInputsMappings, x => x.inputNames);
         // entities
         var entities = this.entitiesToSpawn;
+        entities.push(new GameClock(2880).toEntity());
         var entityDimension = hyperspace.starsystemRadiusOuter;
         // camera
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
@@ -145,10 +128,14 @@ class PlaceHyperspace extends Place {
         this._drawLoc = Disposition.create();
         this._polar = Polar.create();
     }
-    // methods
-    actionToInputsMappings() {
-        return this._actionToInputsMappings;
+    static actionMapView() {
+        return new Action("MapView", (uwpe) => {
+            var world = uwpe.world;
+            var place = uwpe.place;
+            world.placeNext = new PlaceHyperspaceMap(place);
+        });
     }
+    // methods
     entitiesShips() {
         return this.entitiesByPropertyName(Ship.name);
     }

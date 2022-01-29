@@ -1,9 +1,11 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, defn, hyperspace, factions, shipDefns, player, starsystemStart) {
+    constructor(name, dateCreated, defn, gameTimeInitial, hyperspace, factions, shipDefns, player, starsystemStart) {
         super(name, dateCreated, defn, [] // places
         );
         this.timerTicksSoFar = 0;
+        this.gameTimeInitial = gameTimeInitial;
+        this.gameSecondsSinceStart = 0;
         this.hyperspace = hyperspace;
         this.factions = factions;
         this.shipDefns = shipDefns;
@@ -26,11 +28,13 @@ class WorldExtended extends World {
             Lifeform.activityDefnAvoidPlayer(),
             ShipGroup.activityDefnDie(),
             Lifeform.activityDefnDoNothing(),
+            Combat.activityDefnEnemy(),
             Planet.activityDefnGravitate(),
             ShipGroup.activityDefnLeave(),
             Lifeform.activityDefnMoveToRandomPosition()
         ];
         var actions = Ship.actions();
+        var actionsCombat = Combat.actions();
         var actionToInputsMappings = Ship.actionToInputsMappings();
         var entityPropertyNamesToProcess = [
             Actor.name,
@@ -42,18 +46,20 @@ class WorldExtended extends World {
             Constrainable.name,
             Collidable.name,
             Boundable.name,
+            GameClock.name,
             //Drawable.name,
             //Camera.name
         ];
         var placeDefns = [
-            PlaceDefn.from4(PlaceCombat.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlaceEncounter.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlaceHyperspace.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
-            PlaceDefn.from4(PlacePlanetOrbit.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlacePlanetSurface.name, actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
-            PlaceDefn.from4(PlacePlanetVicinity.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlaceStarsystem.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from4(PlaceStation.name, actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceCombat.name, "Music_Combat", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
+            PlaceDefn.from5(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceHyperspace.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
+            PlaceDefn.from5(PlaceHyperspaceMap.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlacePlanetOrbit.name, "Music_Planet", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlacePlanetSurface.name, "Music_Planet", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
+            PlaceDefn.from5(PlacePlanetVicinity.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceStarsystem.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceStation.name, "Music_Music", actions, actionToInputsMappings, entityPropertyNamesToProcess),
         ];
         var hyperspaceSize = Coords.fromXY(1, 1).multiplyScalar(10000);
         // special
@@ -92,7 +98,7 @@ class WorldExtended extends World {
         var factionHyphae = f("Hyphae", "Mycon", c("Purple"), soi(629.1, 220.8, .12), hostile, "Sporsac");
         var factionKehlemal = f("Kehlemal", "Kohrah", c("Gray"), soi(610, 610, .25), hostile, "Silencer");
         var factionLahkemup = f("Lahkemup", "Urquan", c("Green"), soi(590, 590, .25), hostile, "Shackler");
-        var factionSilikonix = f("Konstalyxz", "Chmmr", null, null, neutral, "Gravitar");
+        var factionKonstalyxz = f("Konstalyxz", "Chmmr", null, null, neutral, "Gravitar");
         var factionMauluska = f("Mauluska", "Spathi", c("Brown"), soi(241.6, 368.7, .12), neutral, "Scuttler");
         var factionMoroz = f("Moroz", "Utwig", c("Cyan"), soi(863.0, 869.3, .1), neutral, "Punishpunj");
         var factionMuuncaf = f("Muuncaf", "Pkunk", c("Cyan"), soi(52.2, 52.5, .1), neutral, "Fireblossom");
@@ -115,6 +121,7 @@ class WorldExtended extends World {
             factionEllfyn,
             factionHyphae,
             factionKehlemal,
+            factionKonstalyxz,
             factionLahkemup,
             factionLahkemupGuardDrone,
             factionMauluska,
@@ -124,7 +131,6 @@ class WorldExtended extends World {
             factionMurch,
             factionOutsider,
             factionRaptor,
-            factionSilikonix,
             factionSupial,
             factionTempestrial,
             factionTerran,
@@ -142,7 +148,7 @@ class WorldExtended extends World {
         var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, 10, // starsystemRadiusOuter
         Coords.fromXY(300, 300), factions, starsAndPlanetsAsStringCSVCompressed);
         var starsystemStart = hyperspace.starsystemByName("Sol");
-        starsystemStart.solarSystem(); // todo
+        starsystemStart.solarSystem(universe);
         var starsystems = hyperspace.starsystems;
         var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);
         starsystemsSupergiant.forEach(starsystem => {
@@ -187,7 +193,7 @@ class WorldExtended extends World {
         playerShipGroup);
         var shipDefns = ShipDefn.Instances(universe)._All;
         var returnValue = new WorldExtended("World-" + nowAsString, now, // dateCreated
-        defn, hyperspace, factions, shipDefns, player, starsystemStart);
+        defn, new Date(Date.UTC(2155, 1, 17, 9, 27, 22)), hyperspace, factions, shipDefns, player, starsystemStart);
         return returnValue;
     }
     // instance methods
@@ -199,6 +205,12 @@ class WorldExtended extends World {
     }
     factionByName(factionName) {
         return this.factionsByName.get(factionName);
+    }
+    gameTimeAsString() {
+        var timeCurrentInMilliseconds = this.gameTimeInitial.getTime() + this.gameSecondsSinceStart * 1000;
+        var timeCurrentAsDate = new Date(timeCurrentInMilliseconds);
+        var timeCurrentAsString = timeCurrentAsDate.toISOString();
+        return timeCurrentAsString;
     }
     initialize(uwpe) {
         this.placeCurrent.initialize(uwpe.worldSet(this));

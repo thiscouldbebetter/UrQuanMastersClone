@@ -9,6 +9,7 @@ class PlacePlanetOrbit extends Place {
         this.placePlanetVicinity = placePlanetVicinity;
         if (this.planet.defn().canLand) {
             var entities = this.entitiesToSpawn;
+            entities.push(new GameClock(2880).toEntity());
             // Resources.
             var resourceRadiusBase = 5; // todo
             var resourceEntities = this.planet.resources.map(x => x.toEntity(world, this, resourceRadiusBase));
@@ -16,7 +17,8 @@ class PlacePlanetOrbit extends Place {
             // Lifeforms.
             var lifeformEntities = this.planet.lifeforms.map(x => x.toEntity(world, this.planet));
             entities.push(...lifeformEntities);
-            // todo - Energy sources.
+            var energySourceEntities = this.planet.energySources.map(x => x.toEntity(world, this.planet));
+            entities.push(...energySourceEntities);
         }
         this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y), null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
@@ -28,10 +30,31 @@ class PlacePlanetOrbit extends Place {
     // methods
     land(universe) {
         var world = universe.world;
-        var placeOrbit = world.placeCurrent;
-        var planet = placeOrbit.planet;
-        var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
-        world.placeNext = placeNext;
+        var player = world.player;
+        var flagship = player.flagship;
+        if (flagship.numberOfLanders <= 0) {
+            // todo - Notify player.
+        }
+        else {
+            var placeOrbit = world.placeCurrent;
+            var planet = placeOrbit.planet;
+            var fuelRequiredToLandPerG = 2;
+            var fuelRequiredToLand = planet.gravity * fuelRequiredToLandPerG;
+            var fuelRequiredToLandMax = 3;
+            if (fuelRequiredToLand > fuelRequiredToLandMax) {
+                fuelRequiredToLand = fuelRequiredToLandMax;
+            }
+            var fuelHeld = flagship.fuel;
+            var isFuelHeldSufficientToLand = (fuelHeld >= fuelRequiredToLand);
+            if (isFuelHeldSufficientToLand == false) {
+                // todo - Notify player.
+            }
+            else {
+                flagship.fuel -= fuelRequiredToLand;
+                var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
+                world.placeNext = placeNext;
+            }
+        }
     }
     returnToPlaceParent(universe) {
         var world = universe.world;
@@ -40,13 +63,19 @@ class PlacePlanetOrbit extends Place {
         world.placeNext = placePlanetVicinity;
     }
     scanEnergy(universe) {
+        universe.world.gameSecondsSinceStart += 60 * 60;
         this.hasEnergyBeenScanned = true;
     }
     scanLife(universe) {
+        universe.world.gameSecondsSinceStart += 60 * 60;
         this.hasLifeBeenScanned = true;
     }
     scanMinerals(universe) {
+        universe.world.gameSecondsSinceStart += 60 * 60;
         this.haveMineralsBeenScanned = true;
+    }
+    starsystem() {
+        return this.placePlanetVicinity.placeStarsystem.starsystem;
     }
     // overrides
     draw(universe, world) {
@@ -63,15 +92,15 @@ class PlacePlanetOrbit extends Place {
         var contactPosSaved = Coords.create();
         for (var i = 0; i < scanContacts.length; i++) {
             var contact = scanContacts[i];
-            var contactDrawable = contact.drawable();
-            if (contactDrawable != null) {
+            var contactMappable = Mappable.fromEntity(contact);
+            if (contactMappable != null) {
                 var contactLocatable = contact.locatable();
                 var contactLoc = contactLocatable.loc;
                 var contactPos = contactLoc.pos;
                 contactPosSaved.overwriteWith(contactPos);
                 var drawPos = this._drawPos.overwriteWith(contactPos).divide(surfaceSize).multiply(mapSize).add(mapPos);
                 contactPos.overwriteWith(drawPos);
-                var contactVisual = contactDrawable.visual;
+                var contactVisual = contactMappable.visual;
                 contactVisual.draw(uwpe.entitySet(contact), display);
                 contactPos.overwriteWith(contactPosSaved);
             }
@@ -130,10 +159,10 @@ class PlacePlanetOrbit extends Place {
                 + " km"), fontHeightShort),
             new ControlLabel("labelRotationPeriod", Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Day: " + planet.day + " hours"), fontHeightShort),
+            DataBinding.fromContext("Day: " + planet.dayInHours + " hours"), fontHeightShort),
             new ControlLabel("labelOrbitPeriod", Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Year: " + planet.year + " Earth days"), fontHeightShort),
+            DataBinding.fromContext("Year: " + planet.yearInEarthDays + " Earth days"), fontHeightShort),
             new ControlLabel("labelTemperature", Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Temperature: " + planet.temperature + " C"), fontHeightShort),

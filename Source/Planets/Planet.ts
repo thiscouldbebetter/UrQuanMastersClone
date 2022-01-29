@@ -12,12 +12,13 @@ class Planet implements EntityProperty<Planet>, Satellite
 	radius: number;
 	gravity: number;
 	orbit: number;
-	day: number;
-	year: number;
+	dayInHours: number;
+	yearInEarthDays: number;
 	tectonics: number;
 	weather: number;
 	temperature: number;
-	hasLife: boolean;
+	lifeformDefnNames: string[];
+	lifeformCount: number;
 	energySources: EnergySource[];
 
 	lifeforms: Lifeform[];
@@ -36,12 +37,13 @@ class Planet implements EntityProperty<Planet>, Satellite
 		radius: number,
 		gravity: number,
 		orbit: number,
-		day: number,
-		year: number,
+		dayInHours: number,
+		yearInEarthDays: number,
 		tectonics: number,
 		weather: number,
 		temperature: number,
-		hasLife: boolean,
+		lifeformCount: number,
+		lifeformDefnNames: string[],
 		energySources: EnergySource[]
 	)
 	{
@@ -50,21 +52,22 @@ class Planet implements EntityProperty<Planet>, Satellite
 		this.radiusOuter = radiusOuter;
 		this.posAsPolar = posAsPolar;
 		this.sizeSurface = sizeSurface;
-		this.satellites = satellites;
-		this.shipGroups = (shipGroups == null ? [] : shipGroups);
+		this.satellites = satellites || [];
+		this.shipGroups = shipGroups || [];
 
 		this.mass = Math.round(mass);
 		this.radius = Math.round(radius);
 		this.gravity = parseFloat(gravity.toFixed(2));
 		this.orbit = Math.round(orbit);
-		this.day = day;
-		this.year = year;
+		this.dayInHours = dayInHours;
+		this.yearInEarthDays = Math.round(yearInEarthDays * 100) / 100;
 		this.tectonics = tectonics;
 		this.weather = weather;
 		this.temperature = temperature;
 
-		this.hasLife = hasLife;
-		this.energySources = energySources;
+		this.lifeformCount = lifeformCount || 0;
+		this.lifeformDefnNames = lifeformDefnNames || [];
+		this.energySources = energySources || [];
 	}
 
 	static from6
@@ -79,9 +82,16 @@ class Planet implements EntityProperty<Planet>, Satellite
 	{
 		return new Planet
 		(
-			name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites,
-			null, null, null, null, null, null, null, null, null, null,
-			null, null
+			name,
+			defnName,
+			radiusOuter,
+			posAsPolar,
+			sizeSurface,
+			satellites,
+			null, null, null,
+			null, null, null,
+			null, null, null,
+			null, null, null, null
 		);
 	}
 
@@ -139,16 +149,13 @@ class Planet implements EntityProperty<Planet>, Satellite
 	{
 		this.lifeforms = new Array<Lifeform>();
 
-		if (this.hasLife)
+		for (var i = 0; i < this.lifeformCount; i++)
 		{
-			var numberOfLifeforms = 8; // todo
-			for (var i = 0; i < numberOfLifeforms; i++)
-			{
-				var lifeformPos =
-					Coords.create().randomize(randomizer).multiply(this.sizeSurface);
-				var lifeform = new Lifeform("BiteyMouse", lifeformPos);
-				this.lifeforms.push(lifeform);
-			}
+			var lifeformDefnName = ArrayHelper.random(this.lifeformDefnNames, randomizer);
+			var lifeformPos =
+				Coords.create().randomize(randomizer).multiply(this.sizeSurface);
+			var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
+			this.lifeforms.push(lifeform);
 		}
 
 		return this.lifeforms;

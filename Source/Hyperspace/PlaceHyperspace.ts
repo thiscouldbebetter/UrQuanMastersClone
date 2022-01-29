@@ -7,8 +7,6 @@ class PlaceHyperspace extends Place
 	displaySensors: Display;
 	venueControls: VenueControls;
 
-	_actionToInputsMappings: ActionToInputsMapping[];
-	_actionToInputsMappingsByInputName: Map<string, ActionToInputsMapping>;
 	_camera: Camera;
 	_drawLoc: Disposition;
 	_polar: Polar;
@@ -32,42 +30,11 @@ class PlaceHyperspace extends Place
 
 		this.hyperspace = hyperspace;
 
-		var actionMapView = new Action
-		(
-			"MapView",
-			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var world = uwpe.world;
-				var place = uwpe.place;
-
-				world.placeNext = new PlaceHyperspaceMap(place as PlaceHyperspace);
-			}
-		);
-
-		this.actions =
-		[
-			Ship.actionShowMenu(),
-			Ship.actionAccelerate(),
-			Ship.actionTurnLeft(),
-			Ship.actionTurnRight(),
-			actionMapView
-		];
-
-		this._actionToInputsMappings = Ship.actionToInputsMappings();
-		this._actionToInputsMappings = this._actionToInputsMappings.concat
-		(
-			[
-				new ActionToInputsMapping("MapView", [ "Tab", "Gamepad0Button0" ], null),
-			]
-		);
-		this._actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple
-		(
-			this._actionToInputsMappings, x => x.inputNames
-		);
-
 		// entities
 
 		var entities = this.entitiesToSpawn;
+
+		entities.push(new GameClock(2880).toEntity());
 
 		var entityDimension = hyperspace.starsystemRadiusOuter;
 
@@ -273,12 +240,22 @@ class PlaceHyperspace extends Place
 		this._polar = Polar.create();
 	}
 
-	// methods
-
-	actionToInputsMappings(): ActionToInputsMapping[]
+	static actionMapView(): Action
 	{
-		return this._actionToInputsMappings;
+		return new Action
+		(
+			"MapView",
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var world = uwpe.world;
+				var place = uwpe.place;
+
+				world.placeNext = new PlaceHyperspaceMap(place as PlaceHyperspace);
+			}
+		);
 	}
+
+	// methods
 
 	entitiesShips(): Entity[]
 	{

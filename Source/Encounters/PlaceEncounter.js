@@ -39,8 +39,7 @@ class PlaceEncounter extends Place {
                 choiceNames.push("Fight");
                 choiceActions.push(() => this.encounter.fight(universe));
             }
-            var controlRoot = universe.controlBuilder.choice(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), choiceNames, choiceActions, null // ?
-            );
+            var controlRoot = universe.controlBuilder.choice5(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), choiceNames, choiceActions);
             this.venueControls = VenueControls.fromControl(controlRoot);
         }
         this.venueControls.updateForTimerTick(universe);

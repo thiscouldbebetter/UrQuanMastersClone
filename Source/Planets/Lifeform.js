@@ -4,15 +4,16 @@ class Lifeform {
         this.defnName = defnName;
         this.pos = pos;
     }
+    // static
     defn(world) {
         return world.defnExtended().lifeformDefnByName(this.defnName);
     }
-    toEntity(worldAsWorld, planet) {
-        var world = worldAsWorld;
+    toEntity(world, planet) {
         var lifeformDefn = this.defn(world);
         var lifeformActivity = new Activity(lifeformDefn.activityDefnName, null);
         var lifeformActor = new Actor(lifeformActivity);
-        var lifeformCollider = new Sphere(Coords.create(), 5);
+        var lifeformRadius = 5;
+        var lifeformCollider = new Sphere(Coords.create(), lifeformRadius);
         var lifeformCollidable = Collidable.fromCollider(lifeformCollider);
         lifeformCollidable.canCollideAgainWithoutSeparating = true;
         var lifeformDamager = Damager.default();
@@ -31,7 +32,27 @@ class Lifeform {
             place.entitiesToSpawn.push(entityResource);
         });
         var lifeformLocatable = Locatable.fromPos(this.pos);
-        var lifeformMappable = new Mappable(lifeformVisual);
+        var colorGreen = Color.Instances().Green;
+        var visualScanContact = new VisualRectangle(Coords.ones().multiplyScalar(lifeformRadius), colorGreen, null, null);
+        visualScanContact = new VisualHidable((uwpe) => {
+            var isVisible = false;
+            var place = uwpe.place;
+            var placeTypeName = place.constructor.name;
+            if (placeTypeName == PlacePlanetOrbit.name) {
+                var placePlanetOrbit = place;
+                isVisible = placePlanetOrbit.hasLifeBeenScanned;
+            }
+            else if (placeTypeName == PlacePlanetSurface.name) {
+                var placePlanetSurface = place;
+                var placePlanetOrbit = placePlanetSurface.placePlanetOrbit;
+                isVisible = placePlanetOrbit.hasLifeBeenScanned;
+            }
+            else {
+                throw new Error("Unexpected placeTypeName: " + placeTypeName);
+            }
+            return isVisible;
+        }, visualScanContact);
+        var lifeformMappable = new Mappable(visualScanContact);
         var lifeformMovable = Movable.fromSpeedMax(lifeformDefn.speed / 4);
         var returnValue = new Entity("Lifeform" + this.defnName + Math.random(), [
             this,

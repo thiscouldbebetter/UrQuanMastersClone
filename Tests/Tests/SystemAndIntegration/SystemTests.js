@@ -13,9 +13,11 @@ class SystemTests extends TestFixture {
     playFromStart() {
         // todo
         var environment = new EnvironmentMock();
-        environment.universeBuild((u) => this.playFromStart_UniverseBuilt(u));
+        environment.universeBuild((u) => {
+            u.initialize(() => this.playFromStart_UniverseInitialized(u));
+        });
     }
-    playFromStart_UniverseBuilt(universe) {
+    playFromStart_UniverseInitialized(universe) {
         Assert.isNotNull(universe);
         var world = universe.world;
         var venueWorld = world.toVenue();
@@ -23,6 +25,7 @@ class SystemTests extends TestFixture {
         var place = world.placeCurrent;
         var starsystemSol = place.starsystem;
         Assert.areStringsEqual("Sol", starsystemSol.name);
+        this.playFromStart_WaitForTicks(universe, 5);
         var planetEarth = place.entityByName("Earth");
         Assert.isNotNull(planetEarth);
         var playerEntity = place.entityByName(Player.name);
@@ -66,8 +69,8 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
         var talker = station.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
-            "#(WE_NEED_RADIOACTIVES)",
-            "#(PLEASE_JUST_BRING_US_RADIOACTIVES)"
+            "#(THE_WHAT_FROM_WHERE)",
+            "#(THANKS_FOR_HELPING)"
         ]);
         universe.updateForTimerTick();
         venue = universe.venueCurrent;
@@ -90,7 +93,7 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual(PlacePlanetOrbit.name, placeTypeName);
         // Verify that the cargo hold contains no radioactives.
         var player = world.player;
-        var playerItemHolder = player.flagship.itemHolder;
+        var playerItemHolder = player.flagship.itemHolderCargo;
         var itemDefnNameRadioactives = "Radioactives";
         var radioactivesHeld = playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
         Assert.isNull(radioactivesHeld);

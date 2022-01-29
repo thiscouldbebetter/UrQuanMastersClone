@@ -71,14 +71,13 @@ class PlaceEncounter extends Place
 				choiceActions.push( () => this.encounter.fight(universe) );
 			}
 
-			var controlRoot = universe.controlBuilder.choice
+			var controlRoot = universe.controlBuilder.choice5
 			(
 				universe,
 				universe.display.sizeInPixels.clone(),
 				DataBinding.fromContext(messageToShow),
 				choiceNames,
-				choiceActions,
-				null // ?
+				choiceActions
 			);
 
 			this.venueControls = VenueControls.fromControl(controlRoot);

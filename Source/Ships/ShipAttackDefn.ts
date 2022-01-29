@@ -51,19 +51,37 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		this.range = this.speed * this.ticksToLive;
 	}
 
+	static fromEntity(entity: Entity): ShipAttackDefn
+	{
+		return entity.propertyByName(ShipAttackDefn.name) as ShipAttackDefn;
+	}
+
 	activate(universe: Universe, world: World, place: Place, actor: Entity): void
 	{
 		var attackDefn = this;
-		var actorLoc = actor.locatable().loc;
-		var actorPos = actorLoc.pos;
-		var actorVisual = actor.drawable().visual as VisualWrapped;
 
+		var projectileCollider =
+			new Sphere(Coords.create(), attackDefn.projectileRadius);
+		var projectileCollidable = new Collidable
+		(
+			false, // canCollideAgainWithoutSeparating
+			null, // ticks
+			projectileCollider,
+			[ Killable.name ],
+			this.projectileCollide
+		);
+
+		var actorVisual = actor.drawable().visual as VisualWrapped;
 		var projectileVisual = new VisualWrapped
 		(
 			actorVisual.sizeToWrapTo,
 			attackDefn.visualProjectile,
 		);
+		var projectileDrawable = Drawable.fromVisual(projectileVisual);
 
+		var projectileKillable = new Killable(1, null, null);
+
+		var actorLoc = actor.locatable().loc;
 		var actorOrientation = actorLoc.orientation;
 		var actorForward = actorOrientation.forward;
 		var projectileDirectionAsPolar = Polar.create().fromCoords(actorForward);
@@ -73,6 +91,7 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		var projectileDirection =
 			projectileDirectionAsPolar.toCoords(Coords.create());
 		var actorRadius = (actor.collidable().collider as Sphere).radius;
+		var actorPos = actorLoc.pos;
 		var projectilePos = actorPos.clone().add
 		(
 			projectileDirection.clone().multiplyScalar(actorRadius).double()
@@ -82,24 +101,18 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		(
 			projectileDirection
 		).multiplyScalar(this.speed);
+		var projectileLocatable = new Locatable(projectileLoc);
 
-		var projectileCollider =
-			new Sphere(Coords.create(), attackDefn.projectileRadius);
+		var projectileMovable = Movable.default();
 
 		var projectileEntityProperties = new Array<EntityPropertyBase>
 		(
 			this,
-			new Locatable(projectileLoc),
-			new Collidable
-			(
-				false, // canCollideAgainWithoutSeparating
-				null, // ticks
-				projectileCollider,
-				[ Killable.name ],
-				this.projectileCollide
-			),
-			Drawable.fromVisual(projectileVisual),
-			new Killable(1, null, null),
+			projectileCollidable,
+			projectileLocatable,
+			projectileDrawable,
+			projectileKillable,
+			projectileMovable
 		);
 
 		if (this.ticksToLive != null)
@@ -110,49 +123,36 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 			);
 		}
 
-		/*
-		if (this.activity != null)
-		{
-			//var targetEntityName = "Ship1"; // todo
-			projectileEntityProperties.push
-			(
-				new Actor(this.activity)//, targetEntityName)
-			);
-		}
-		*/
-
 		var projectileEntity = new Entity
 		(
 			"Projectile" + Math.random(), projectileEntityProperties
 		);
 
-		place.entitiesToSpawn.push(projectileEntity);
+		place.entityToSpawnAdd(projectileEntity);
 	}
 
 	projectileCollide(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place;
 		var entityProjectile = uwpe.entity;
 		var entityOther = uwpe.entity2;
 
-		var ship = Ship.fromEntity(entityProjectile);
-		var shipDefn = ship.defn(world);
-		var attackDefn = shipDefn.attackDefn;
+		var attackDefn = ShipAttackDefn.fromEntity(entityProjectile);
 
 		if (attackDefn.diesOnImpact == true)
 		{
-			entityProjectile.killable().integrity = 0;
-			(entityProjectile.drawable().visual as VisualGroup).children.push
-			(
-				attackDefn.visualImpact
-			);
+			var killable = entityProjectile.killable();
+			killable.integrity = 0;
+
+			var drawable = entityProjectile.drawable();
+			var visualWrapped = drawable.visual as VisualWrapped;
+			visualWrapped.child = attackDefn.visualImpact;
 
 			var entityImpact = new Entity
 			(
 				"Impact",
 				[
-					new Ephemeral(10, null),
+					new Ephemeral(10, null), // hack
 					entityProjectile.locatable(),
 					entityProjectile.drawable()
 				]

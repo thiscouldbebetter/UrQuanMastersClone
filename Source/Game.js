@@ -3,6 +3,9 @@ class Game {
     mediaLibraryBuild(contentDirectoryPath) {
         var imageDirectory = contentDirectoryPath + "Images/";
         var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
+        var importDirectoryPath = contentDirectoryPath + "Import/sc2/content/base/";
+        var directoryEnergySources = importDirectoryPath + "lander/energy/";
+        var energySource = EnergySource.name;
         var png = ".png";
         var audioDirectory = contentDirectoryPath + "Audio/";
         var textDirectory = contentDirectoryPath + "Text/";
@@ -11,18 +14,18 @@ class Game {
         var conversationDirectory = textDirectory + "Conversation/";
         var conversationPlaceholderPath = conversationDirectory + "Placeholder.json";
         var conversationPortrait = "Conversation-Portrait-";
-        var contentPathPrefixComms = contentDirectoryPath + "Import/sc2/content/base/comm/";
+        var contentPathPrefixComms = importDirectoryPath + "comm/";
         var mediaLibrary = new MediaLibrary(contentDirectoryPath, 
         // images
         [
             // conversation 
             new Image2("Conversation", imageDirectory + "Conversation.png"),
-            new Image2(conversationPortrait + "EarthStation", contentDirectoryPath + "Import/sc2/content/base/comm/commander/commander-000.png"),
-            new Image2(conversationPortrait + "Lahkemup", contentDirectoryPath + "Import/sc2/content/base/comm/urquan/urquan-000.png"),
-            new Image2(conversationPortrait + "Mauluska", contentDirectoryPath + "Import/sc2/content/base/comm/spathi/spathi-000.png"),
-            new Image2(conversationPortrait + "Murch", contentDirectoryPath + "Import/sc2/content/base/comm/melnorme/melnorme-000.png"),
-            new Image2(conversationPortrait + "Tempestrial", contentDirectoryPath + "Import/sc2/content/base/comm/probe/probe-000.png"),
-            new Image2(conversationPortrait + "Triunion", contentDirectoryPath + "Import/sc2/content/base/comm/zoqfotpik/zoqfotpik-000.png"),
+            new Image2(conversationPortrait + "EarthStation", importDirectoryPath + "comm/commander/commander-000.png"),
+            new Image2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
+            new Image2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
+            new Image2(conversationPortrait + "Murch", importDirectoryPath + "comm/melnorme/melnorme-000.png"),
+            new Image2(conversationPortrait + "Tempestrial", importDirectoryPath + "comm/probe/probe-000.png"),
+            new Image2(conversationPortrait + "Triunion", importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
             // opening
             new Image2("Opening", imageDirectory + "Opening.png"),
             new Image2("Producer", imageDirectory + "Producer.png"),
@@ -60,13 +63,24 @@ class Game {
             new Image2("BioDecoy", imageDirectoryLifeforms + "24-Biodecoy" + png),
             new Image2("MauluskaGourmand", imageDirectoryLifeforms + "25-MauluskaGourmand" + png),
             new Image2("FreakyBeast", imageDirectoryLifeforms + "26-FreakyBeast" + png),
+            // planets - energy sources
+            new Image2(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase-000" + png),
+            new Image2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
         ], 
         // sounds
         [
             new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
             new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
             new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
-            new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
+            //new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
+            new SoundFromFileMod("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
+            new SoundFromFileMod("Music_Combat", importDirectoryPath + "battle/battle.mod"),
+            new SoundFromFileMod("Music_Encounter", importDirectoryPath + "ui/redalert.mod"),
+            new SoundFromFileMod("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
+            new SoundFromFileMod("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
+            new SoundFromFileMod("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
+            new SoundFromFileMod("Music_Faction_EarthStation", importDirectoryPath + "comm/commander/commander.mod"),
+            new SoundFromFileMod("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
         ], 
         // videos
         [
@@ -81,9 +95,9 @@ class Game {
             //new TextString("Instructions", "../Content/Text/Instructions.txt"),
             new TextString("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
             new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
-            new TextString(conversation + "EarthStation" + content, conversationDirectory + "EarthStation-Content.txt"),
+            new TextString(conversation + "EarthStation" + content, contentPathPrefixComms + "commander/commander.txt"),
             new TextString(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
-            new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
+            //new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
             new TextString(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
             new TextString("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
             new TextString(conversation + "Amorfus", conversationPlaceholderPath),
@@ -95,7 +109,7 @@ class Game {
             new TextString(conversation + "Lahkemup", conversationPlaceholderPath),
             new TextString(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
             new TextString(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-            new TextString(conversation + "MauluskaOrphan", conversationDirectory + "MauluskaOrphan.json"),
+            new TextString(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
             new TextString(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
             new TextString(conversation + "Moroz", conversationPlaceholderPath),
             new TextString(conversation + "Muuncaf", conversationPlaceholderPath),
@@ -113,6 +127,9 @@ class Game {
             new TextString(conversation + "Twyggan", conversationPlaceholderPath),
             new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),
             new TextString(conversation + "Warpig", conversationPlaceholderPath),
+            // Energy sources.
+            new TextString(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
+            new TextString(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
         ]);
         return mediaLibrary;
     }
@@ -189,21 +206,35 @@ class Game {
             this.debug_Station(universe);
         }
         else if (debuggingModeName.startsWith("Talk")) {
-            if (debuggingModeName.endsWith("MauluskaOrphan")) {
+            var factionName = debuggingModeName.split("_")[1];
+            /*
+            if (factionName == "MauluskaOrphan")
+            {
                 this.debug_Talk_MauluskaOrphan(universe);
             }
-            else if (debuggingModeName.endsWith("Murch")) {
+            else if (factionName == "Murch")
+            {
                 this.debug_Talk_Murch(universe);
             }
-            else if (debuggingModeName.endsWith("Tempestrial")) {
+            else if (factionName == "Tempestrial")
+            {
                 this.debug_Talk_Tempestrial(universe);
             }
-            else if (debuggingModeName.endsWith("Triunion")) {
+            else if (factionName == "Triunion")
+            {
                 this.debug_Talk_Triunion(universe);
             }
-            else {
+            else
+            {
                 throw new Error("Unrecognized debugging mode: " + debuggingModeName);
             }
+            */
+            var talker = new Talker("Conversation-" + factionName, null, // quit
+            (cr, size, u) => cr.toControl_Layout_2(size, universe));
+            var entityPlayer = new Entity("Player", []);
+            var entityTalker = new Entity(factionName, [talker]);
+            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer);
+            talker.talk(uwpe);
         }
         universe.start();
     }
@@ -251,7 +282,7 @@ class Game {
         var player = world.player;
         player.resourceCredits = 1000;
         var resourceDefns = ResourceDefn.Instances();
-        var playerItemHolder = player.flagship.itemHolder;
+        var playerItemHolder = player.flagship.itemHolderCargo;
         playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
         playerItemHolder.itemAdd(new Item(resourceDefns.Exotics.name, 100));
         var starsystemSol = world.hyperspace.starsystemByName("Sol");
@@ -324,7 +355,7 @@ class Game {
         var player = world.player;
         player.resourceCredits = 0;
         var resourceDefns = ResourceDefn.Instances();
-        var playerItemHolder = player.flagship.itemHolder;
+        var playerItemHolder = player.flagship.itemHolderCargo;
         playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
         var starsystemSol = world.hyperspace.starsystemByName("Sol");
         var planetEarth = starsystemSol.planets[2];

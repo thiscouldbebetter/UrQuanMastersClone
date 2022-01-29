@@ -1,0 +1,43 @@
+{
+    "name": "Raptor-Rebel",
+    "imagePortraitName": "Conversation-Portrait-Raptor",
+    "contentTextStringName": "Conversation-Raptor-Rebel-Content",
+    "talkNodes": [
+
+{ "defnName": "Display", "content": "#(REBEL_HELLO_1)" },
+{ "defnName": "Display", "content": "#(REBEL_HELLO_2)" },
+{ "defnName": "Display", "content": "#(REBEL_HELLO_3)" },
+{ "defnName": "Display", "content": "#(REBEL_HELLO_4)" },
+{ "defnName": "Display", "content": "#(how_goes_revolution)" },
+{ "defnName": "Display", "content": "#(REBEL_REVOLUTION_1)" },
+{ "defnName": "Display", "content": "#(REBEL_REVOLUTION_2)" },
+{ "defnName": "Display", "content": "#(REBEL_REVOLUTION_3)" },
+{ "defnName": "Display", "content": "#(REBEL_REVOLUTION_4)" },
+{ "defnName": "Display", "content": "#(any_ships)" },
+{ "defnName": "Display", "content": "#(NO_ROOM)" },
+{ "defnName": "Display", "content": "#(HAVE_ALL_SHIPS)" },
+{ "defnName": "Display", "content": "#(HAVE_FEW_SHIPS)" },
+{ "defnName": "Display", "content": "#(NO_SHIPS_YET)" },
+{ "defnName": "Display", "content": "#(give_info_rebels)" },
+{ "defnName": "Display", "content": "#(WHAT_INFO)" },
+{ "defnName": "Display", "content": "#(what_about_royalty)" },
+{ "defnName": "Display", "content": "#(ABOUT_ROYALTY)" },
+{ "defnName": "Display", "content": "#(what_about_war)" },
+{ "defnName": "Display", "content": "#(ABOUT_WAR)" },
+{ "defnName": "Display", "content": "#(what_about_urquan)" },
+{ "defnName": "Display", "content": "#(ABOUT_URQUAN)" },
+{ "defnName": "Display", "content": "#(what_about_vux)" },
+{ "defnName": "Display", "content": "#(ABOUT_VUX)" },
+{ "defnName": "Display", "content": "#(what_about_clue)" },
+{ "defnName": "Display", "content": "#(ABOUT_CLUE)" },
+{ "defnName": "Display", "content": "#(enough_info)" },
+{ "defnName": "Display", "content": "#(OK_ENOUGH_INFO)" },
+{ "defnName": "Display", "content": "#(bye_rebel)" },
+{ "defnName": "Display", "content": "#(GOODBYE_REBEL)" },
+{ "defnName": "Display", "content": "#(YEHAT_CAVALRY)" },
+{ "defnName": "Display", "content": "#(what_about_pkunk_rebel)" },
+{ "defnName": "Display", "content": "#(PKUNK_ABSORBED_REBEL)" },
+{ "defnName": "Display", "content": "#(HATE_PKUNK_REBEL)" }
+
+	]
+}

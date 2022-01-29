@@ -25,12 +25,9 @@ class PlacePlanetSurface extends Place {
             new ActionToInputsMapping("Exit", ["_", "Gamepad0Button1"], true),
         ]);
         this.actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple(this._actionToInputsMappings, x => x.inputNames);
-        // constraints
-        var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
-        var constraintFriction = new Constraint_FrictionXY(0.1, null);
-        var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
         // entities
         var entities = this.entitiesToSpawn;
+        entities.push(new GameClock(2880).toEntity());
         var entityDimension = 10;
         // camera
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
@@ -51,8 +48,8 @@ class PlacePlanetSurface extends Place {
         ]);
         entities.push(entityBackground);
         // lifeforms
-        if (planet.hasLife) {
-            var lifeforms = planet.lifeforms;
+        var lifeforms = planet.lifeforms;
+        if (lifeforms.length > 0) {
             var lifeformEntities = lifeforms.map((x) => x.toEntity(world, planet));
             entities.push(...lifeformEntities);
         }
@@ -63,9 +60,44 @@ class PlacePlanetSurface extends Place {
         entities.push(...resourceEntities);
         // energySources
         var energySources = this.planet.energySources || [];
-        var energySourceEntities = energySources.map(x => x.toEntity(world, this));
+        var energySourceEntities = energySources.map(x => x.toEntity(world, this.planet));
         entities.push(...energySourceEntities);
         // player
+        var playerEntity = this.playerEntityBuild(entityDimension);
+        entities.push(playerEntity);
+        var containerSidebar = this.toControlSidebar(world, playerEntity);
+        this.venueControls = VenueControls.fromControl(containerSidebar);
+        //this.propertyNamesToProcess.push("ship");
+        // Environmental hazards.
+        var colors = Color.Instances();
+        var hazardLevels = [planet.weather, planet.tectonics, planet.temperature];
+        var hazardTypeNames = ["Weather", "Tectonics", "Temperature"];
+        var hazardColors = [colors.Yellow, colors.Brown, colors.Red];
+        for (var i = 0; i < hazardTypeNames.length; i++) {
+            var hazardLevel = hazardLevels[i];
+            if (hazardLevel > 1) {
+                var hazardTypeName = hazardTypeNames[i];
+                var hazardColor = hazardColors[i];
+                var drawable = Drawable.fromVisual(VisualRectangle.fromColorFill(hazardColor));
+                var ephemeral = Ephemeral.fromTicksToLive(20);
+                var entityHazard = new Entity(hazardTypeName, [
+                    Collidable.default(),
+                    drawable,
+                    ephemeral,
+                    Locatable.create()
+                ]);
+                var generatorHazard = new EntityGenerator(entityHazard, new RangeExtent(5, 10), // ticksPerGenerationAsRange
+                new RangeExtent(0, 10), // entitiesPerGenerationAsRange
+                1000 // entitiesGeneratedMax
+                );
+                entities.push(generatorHazard.toEntity());
+            }
+        }
+        // Helper variables.
+        this._drawPos = Coords.create();
+    }
+    // Constructor helpers.
+    playerEntityBuild(entityDimension) {
         var playerActivityDefnName = Player.activityDefn().name;
         var playerActivity = new Activity(playerActivityDefnName, null);
         var playerActor = new Actor(playerActivity);
@@ -74,6 +106,9 @@ class PlacePlanetSurface extends Place {
         null, // ticks
         playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.playerCollide);
+        var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
+        var constraintFriction = new Constraint_FrictionXY(0.1, null);
+        var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
         var playerConstrainable = new Constrainable([
             constraintFriction, constraintSpeedMax, constraintWrapXTrimY
         ]);
@@ -104,24 +139,7 @@ class PlacePlanetSurface extends Place {
             playerPlayable,
             playerShipLander
         ]);
-        entities.push(playerEntity);
-        var containerSidebar = this.toControlSidebar(world, playerEntity);
-        this.venueControls = VenueControls.fromControl(containerSidebar);
-        //this.propertyNamesToProcess.push("ship");
-        // Environmental hazards.
-        var entityHazard = new Entity("Hazard", [
-            Collidable.default(),
-            Drawable.default(),
-            Ephemeral.fromTicksToLive(20),
-            Locatable.create()
-        ]);
-        var hazardGenerator = new EntityGenerator(entityHazard, new RangeExtent(5, 10), // ticksPerGenerationAsRange
-        new RangeExtent(0, 10), // entitiesPerGenerationAsRange
-        1000 // entitiesGeneratedMax
-        );
-        entities.push(hazardGenerator.toEntity());
-        // Helper variables.
-        this._drawPos = Coords.create();
+        return playerEntity;
     }
     // methods
     actionToInputsMappings() {
@@ -133,7 +151,7 @@ class PlacePlanetSurface extends Place {
         var entityLander = place.entitiesByName.get(Player.name);
         var lander = Lander.fromEntity(entityLander);
         var itemHoldersForLander = [lander.itemHolderCargo, lander.itemHolderLifeforms];
-        var itemHolderPlayer = world.player.flagship.itemHolder;
+        var itemHolderPlayer = world.player.flagship.itemHolderCargo;
         for (var i = 0; i < itemHoldersForLander.length; i++) {
             var itemHolderLander = itemHoldersForLander[i];
             itemHolderLander.itemsAllTransferTo(itemHolderPlayer);
@@ -143,7 +161,6 @@ class PlacePlanetSurface extends Place {
     }
     playerCollide(uwpe) {
         var universe = uwpe.universe;
-        var world = uwpe.world;
         var place = uwpe.place;
         var entityPlayer = uwpe.entity;
         var entityOther = uwpe.entity2;
@@ -171,11 +188,14 @@ class PlacePlanetSurface extends Place {
         }
         else if (entityOtherEnergySource != null) {
             var energySource = entityOtherEnergySource;
-            energySource.collideWithLander(universe, world, place, entityOther, entityPlayer);
+            energySource.collideWithLander(uwpe);
         }
     }
     playerDie(uwpe) {
         this.exit(uwpe);
+    }
+    starsystem() {
+        return this.placePlanetOrbit.placePlanetVicinity.placeStarsystem.starsystem;
     }
     // Place overrides
     draw(universe, world) {

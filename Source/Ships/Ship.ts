@@ -158,61 +158,30 @@ class Ship implements EntityProperty<Ship>
 			Ship.actionAccelerate(),
 			Ship.actionTurnLeft(),
 			Ship.actionTurnRight(),
-			//actionMapView
-		];//.addLookupsByName();
+			PlaceHyperspace.actionMapView(),
+		];
 
 		return returnValues;
 	}
 
-	activityApproachPlayer
-	(
-		universe: Universe, worldAsWorld: World, place: Place, actor: Entity
-	): void
-	{
-		var world = worldAsWorld as WorldExtended;
-
-		var target = place.entitiesByName.get("Player");
-		var targetPos = target.locatable().loc.pos;
-		var actorLoc = actor.locatable().loc;
-		var actorPos = actorLoc.pos;
-
-		var targetDisplacement = targetPos.clone().subtract(actorPos);
-
-		var targetDistance = targetDisplacement.magnitude();
-		var ship = Ship.fromEntity(actor);
-
-		if (targetDistance < ship.defn(world).sensorRange)
-		{
-			var forwardAsPolar = Polar.create().fromCoords(actorLoc.orientation.forward);
-			var angleForward = forwardAsPolar.azimuthInTurns;
-
-			var targetDisplacementAsPolar = Polar.create().fromCoords(targetDisplacement);
-			var angleToTarget = targetDisplacementAsPolar.azimuthInTurns;
-
-			var angleTargetMinusForward =
-				NumberHelper.subtractWrappedToRangeMax(angleToTarget, angleForward, 1);
-
-			if (angleTargetMinusForward != 0)
-			{
-				var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-				ship.turnInDirection(world, actor, directionToTurn);
-			}
-
-			ship.accelerate(world, actor);
-		}
-	}
-
 	static actionToInputsMappings(): ActionToInputsMapping[]
 	{
+		var inactivateTrue = true;
+		var inactivateFalse = false;
+
 		var returnValues =
 		[
-			new ActionToInputsMapping("ShowMenu", ["Escape"], null),
+			new ActionToInputsMapping("ShowMenu", ["Escape"], inactivateTrue),
 
-			new ActionToInputsMapping("TurnLeft", [ "a", "ArrowLeft", "Gamepad0Left"], null),
-			new ActionToInputsMapping("TurnRight", [ "d", "ArrowRight", "Gamepad0Right"], null),
-			new ActionToInputsMapping("Accelerate", [ "w", "ArrowUp", "Gamepad0Up"], null),
+			new ActionToInputsMapping("TurnLeft", [ "a", "ArrowLeft", "Gamepad0Left"], inactivateFalse),
+			new ActionToInputsMapping("TurnRight", [ "d", "ArrowRight", "Gamepad0Right"], inactivateFalse),
+			new ActionToInputsMapping("Accelerate", [ "w", "ArrowUp", "Gamepad0Up"], inactivateFalse),
 
-		];//.addLookupsMultiple(function(x) { return x.inputNames; } );
+			new ActionToInputsMapping("Fire", [ "f", "Enter", "Gamepad0Button0"], inactivateTrue),
+			new ActionToInputsMapping("Special", [ "g", "Enter", "Gamepad0Button1"], inactivateTrue),
+
+			new ActionToInputsMapping("MapView", [ "Tab", "Gamepad0Button2" ], inactivateTrue),
+		];
 
 		return returnValues;
 	}
@@ -346,6 +315,8 @@ class Ship implements EntityProperty<Ship>
 		var shipLoc = Disposition.fromPos(shipPos);
 		var locatable = new Locatable(shipLoc);
 
+		var movable = Movable.default();
+
 		var shipEntityProperties = new Array<EntityPropertyBase>
 		(
 			actor,
@@ -355,6 +326,7 @@ class Ship implements EntityProperty<Ship>
 			itemHolder,
 			killable,
 			locatable,
+			movable,
 			this
 		);
 
@@ -472,7 +444,9 @@ class Ship implements EntityProperty<Ship>
 
 	toControlSidebar
 	(
-		containerSidebarSize: Coords, indexTopOrBottom: number, world: WorldExtended
+		containerSidebarSize: Coords,
+		indexTopOrBottom: number,
+		world: WorldExtended
 	): ControlBase
 	{
 		var ship = this;
@@ -489,6 +463,7 @@ class Ship implements EntityProperty<Ship>
 		var fontHeight = 20;
 
 		var fontHeightShort = fontHeight / 2;
+		var labelSizeWide = Coords.fromXY(containerShipSize.x - marginSize.x * 2, fontHeightShort);
 		var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
 
 		var defn = this.defn(world);
@@ -511,7 +486,7 @@ class Ship implements EntityProperty<Ship>
 						marginSize.x,
 						marginSize.y
 					), // pos
-					labelSizeShort,
+					labelSizeWide,
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(defn.factionName),

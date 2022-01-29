@@ -16,8 +16,9 @@ class PlacePlanetVicinity extends Place {
             ];
         this._actionToInputsMappings = Ship.actionToInputsMappings();
         // entities
-        var entityDimension = 10;
         var entities = this.entitiesToSpawn;
+        entities.push(new GameClock(2880).toEntity());
+        var entityDimension = 10;
         // planet
         var sizeHalf = this.size.clone().half();
         var planetRadius = entityDimension;
@@ -166,5 +167,8 @@ class PlacePlanetVicinity extends Place {
                 }
             }
         }
+    }
+    starsystem() {
+        return this.placeStarsystem.starsystem;
     }
 }

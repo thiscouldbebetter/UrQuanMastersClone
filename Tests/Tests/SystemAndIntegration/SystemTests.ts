@@ -24,11 +24,17 @@ class SystemTests extends TestFixture
 		var environment = new EnvironmentMock();
 		environment.universeBuild
 		(
-			(u: Universe) => this.playFromStart_UniverseBuilt(u)
+			(u: Universe) =>
+			{
+				u.initialize
+				(
+					() => this.playFromStart_UniverseInitialized(u)
+				)
+			}
 		);
 	}
 
-	playFromStart_UniverseBuilt(universe: Universe): void
+	playFromStart_UniverseInitialized(universe: Universe): void
 	{
 		Assert.isNotNull(universe);
 
@@ -39,6 +45,8 @@ class SystemTests extends TestFixture
 
 		var starsystemSol = (place as PlaceStarsystem).starsystem;
 		Assert.areStringsEqual("Sol", starsystemSol.name);
+
+		this.playFromStart_WaitForTicks(universe, 5);
 
 		var planetEarth = place.entityByName("Earth");
 		Assert.isNotNull(planetEarth);
@@ -109,8 +117,8 @@ class SystemTests extends TestFixture
 			universe,
 			talker,
 			[
-				"#(WE_NEED_RADIOACTIVES)",
-				"#(PLEASE_JUST_BRING_US_RADIOACTIVES)"
+				"#(THE_WHAT_FROM_WHERE)",
+				"#(THANKS_FOR_HELPING)"
 			]
 		);
 
@@ -147,7 +155,7 @@ class SystemTests extends TestFixture
 		// Verify that the cargo hold contains no radioactives.
 
 		var player = world.player;
-		var playerItemHolder = player.flagship.itemHolder;
+		var playerItemHolder = player.flagship.itemHolderCargo;
 		var itemDefnNameRadioactives = "Radioactives";
 		var radioactivesHeld =
 			playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];

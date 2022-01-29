@@ -22,6 +22,8 @@ class PlaceCombat extends Place
 
 		this.combat = combat;
 
+		this.entityToSpawnAdd(new GameClock(1).toEntity());
+
 		this.size = this.combat.size;
 
 		var actionExit = new Action
@@ -77,8 +79,6 @@ class PlaceCombat extends Place
 
 		// entities
 
-		var entityDimension = 10;
-
 		// Planet.
 
 		var planet = this.combat.encounter.planet;
@@ -99,6 +99,9 @@ class PlaceCombat extends Place
 
 		// todo - Match appearance to the actual planet.
 
+		var planetDefn = planet.defn();
+		/*
+		var entityDimension = 10;
 		var planetRadius = entityDimension;
 		var planetColor = Color.byName("Cyan");
 		var planetVisual = new VisualWrapped
@@ -106,6 +109,11 @@ class PlaceCombat extends Place
 			this.size,
 			VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor)
 		);
+		*/
+		var planetVisual: VisualBase = planetDefn.visualVicinity;
+		var planetRadius = (planetVisual as VisualCircleGradient).radius;
+		planetVisual = new VisualWrapped(this.size, planetVisual);
+
 		var planetDrawable = Drawable.fromVisual(planetVisual);
 
 		var sizeHalf = this.size.clone().half();
@@ -208,7 +216,8 @@ class PlaceCombat extends Place
 		}
 		else
 		{
-			display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+			var colorBlack = Color.byName("Black");
+			display.drawBackground(colorBlack, colorBlack);
 
 			var midpointBetweenCombatants;
 
@@ -250,6 +259,8 @@ class PlaceCombat extends Place
 
 		if (ship != null)
 		{
+			var shipEntity = entityToSpawn;
+
 			var shipEntitiesExisting = this.entitiesByPropertyName(Ship.name);
 			var shipEntityOther = shipEntitiesExisting.find(x => x.id != entityToSpawn.id);
 			var shipOtherPos =
@@ -269,6 +280,20 @@ class PlaceCombat extends Place
 			)
 			{
 				shipPos.randomize(uwpe.universe.randomizer).multiply(this.size)
+			}
+
+			var shipsFighting = this.combat.shipsFighting;
+			if (ship == shipsFighting[0])
+			{
+				shipEntity.actor().activity.defnNameSet(Player.activityDefn().name);
+			}
+			else if (ship == shipsFighting[1])
+			{
+				shipEntity.actor().activity.defnNameSet
+				(
+					//Combat.activityDefnEnemy().name
+					ActivityDefn.Instances().DoNothing.name
+				);
 			}
 		}
 	}

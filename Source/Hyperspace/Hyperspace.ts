@@ -27,8 +27,12 @@ class Hyperspace
 
 	static random
 	(
-		randomizer: Randomizer, size: Coords, numberOfStarsystems: number,
-		starsystemRadiusOuter: number, starsystemSizeInner: Coords
+		universe: Universe,
+		randomizer: Randomizer,
+		size: Coords,
+		numberOfStarsystems: number,
+		starsystemRadiusOuter: number,
+		starsystemSizeInner: Coords
 	)
 	{
 		//var planetsPerStarsystemMax = 6;
@@ -90,7 +94,7 @@ class Hyperspace
 
 		var starsystemSol = starsystems[starsystems.length - 1];
 		starsystemSol.factionName = "todo"; // Spawns "enemy".
-		starsystemSol.solarSystem();
+		starsystemSol.solarSystem(universe);
 
 		var returnValue = new Hyperspace
 		(
@@ -158,6 +162,7 @@ class Hyperspace
 		var earthDensityInGramsPerCubicCm = 5.514;
 		var earthRadiusInKm = 6371;
 		var earthOrbitRadiusInKm = 150000000;
+		var earthYearInEarthDays = 365.25;
 
 		for (var i = iOffset; i < starsAndPlanetsAsStringsCSV.length; i++)
 		{
@@ -221,10 +226,13 @@ class Hyperspace
 			var gravityAsFractionOfEarth = parseFloat(planetAsValues[22]) / 100;
 			var orbitRelativeToEarth = parseFloat(planetAsValues[27]) / 512;
 			var dayInHours = parseFloat(planetAsValues[24]) / 10;
-			var year = 365; // todo
 
 			var radiusInKm = radiusAsFractionOfEarth * earthRadiusInKm;
 			var orbitInKm = orbitRelativeToEarth * earthOrbitRadiusInKm;
+
+			var yearInEarthDays =
+				earthYearInEarthDays
+				* orbitInKm / earthOrbitRadiusInKm;
 
 			var densityAsFractionOfEarth = parseFloat(planetAsValues[20]) / 100;
 			var densityInGramsPerCubicCm =
@@ -238,7 +246,15 @@ class Hyperspace
 			var weather = parseInt(planetAsValues[12]);
 			var temperature = parseInt(planetAsValues[23]);
 
-			var hasLife = (parseInt(planetAsValues[15]) > 0);
+			var lifeformBiodataQuantity = parseInt(planetAsValues[15]);
+			var lifeformCount = lifeformBiodataQuantity; // todo
+			var lifeformDefnNames =
+			(
+				lifeformCount > 0
+				? [ "BiteyMouse" ] // todo
+				: null
+			);
+
 			var planet = new Planet
 			(
 				planetName,
@@ -246,19 +262,20 @@ class Hyperspace
 				planetRadius,
 				posAsPolar,
 				planetSize,
-				[], // satellites
-				[], // shipGroups,
+				null, // satellites
+				null, // shipGroups,
 				massInKg,
 				radiusInKm,
 				gravityAsFractionOfEarth,
 				orbitInKm,
 				dayInHours,
-				year,
+				yearInEarthDays,
 				tectonics,
 				weather,
 				temperature,
-				hasLife,
-				[] // energySources
+				lifeformCount,
+				lifeformDefnNames,
+				null // energySources
 			);
 
 			var isMoon = (orbitOrdinalParts.length > 1);
@@ -280,30 +297,6 @@ class Hyperspace
 		var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
 
 		var starsystemSol = starsystemsByName.get("Sol");
-
-		var pluto = starsystemSol.planets[8];
-		var energySourceAbandonedScuttlerMessage = "todo";
-		var energySourceAbandonedScuttler = new EnergySource
-		(
-			"AbandonedScuttler",
-			pluto.sizeSurface.clone().half().addDimensions(30, 20, 0),
-			VisualCircle.fromRadiusAndColorFill(10, Color.byName("Red")), // todo
-			(universe: Universe, world: World, place: Place, entityEnergySource: Entity, entityLander: Entity) =>
-			{
-				var controlMessage = universe.controlBuilder.message
-				(
-					universe,
-					universe.display.sizeInPixels,
-					DataBinding.fromContext(energySourceAbandonedScuttlerMessage),
-					() => alert("todo"),
-					null // ?
-				);
-
-				universe.venueNext = VenueControls.fromControl(controlMessage);
-			}
-		);
-		var energySources = [ energySourceAbandonedScuttler ];
-		pluto.energySources = energySources;
 
 		// todo - Encounter test.
 		var shipGroup = new ShipGroup

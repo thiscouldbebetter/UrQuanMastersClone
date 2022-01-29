@@ -23,7 +23,7 @@ class PlaceHyperspaceMap extends Place {
     }
     // Place
     draw(universe, worldAsWorld, display) {
-        super.draw(universe, world, display);
+        //super.draw(universe, world, display);
         var world = worldAsWorld;
         var display = this.displayMap;
         if (display == null) {
@@ -68,7 +68,7 @@ class PlaceHyperspaceMap extends Place {
                 null);
             }
         }
-        var entityForPlayer = this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
+        var entityForPlayer = this.placeHyperspaceToReturnTo.entityByName(Player.name);
         var playerPos = entityForPlayer.locatable().loc.pos;
         drawPos.overwriteWith(playerPos);
         this._camera.coordsTransformWorldToView(drawPos);
@@ -91,7 +91,7 @@ class PlaceHyperspaceMap extends Place {
         var universe = uwpe.universe;
         var world = uwpe.world;
         if (this.reticlePos == null) {
-            var entityForPlayer = this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
+            var entityForPlayer = this.placeHyperspaceToReturnTo.entityByName(Player.name);
             var playerPos = entityForPlayer.locatable().loc.pos;
             this.reticlePos = playerPos.clone();
         }
@@ -177,19 +177,11 @@ class PlaceHyperspaceMap extends Place {
         var titleSize = Coords.fromXY(containerSize.x, 25);
         var containerRightSize = Coords.fromXY((containerSize.x - marginSize.x * 3) / 3, containerSize.y - marginSize.y * 3 - titleSize.y);
         var containerMapSize = Coords.fromXY(containerSize.x - marginSize.x * 3 - containerRightSize.x, containerRightSize.y);
-        /*
         var displayMain = universe.display;
-        var displayMap = new Display2D
-        (
-            [ containerMapSize ],
-            displayMain.fontName,
-            displayMain.fontHeightInPixels,
-            Color.byName("Gray"),
-            Color.byName("Black"), // colorsForeAndBack
-            null // ?
+        var displayMap = new Display2D([containerMapSize], displayMain.fontName, displayMain.fontHeightInPixels, Color.byName("Gray"), Color.byName("Black"), // colorsForeAndBack
+        true // isInvisible
         );
-        //this.displayMap = displayMap.initializeCanvasAndGraphicsContext();
-        */
+        this.displayMap = displayMap.initialize(universe);
         var containerPlayer = world.player.toControlSidebar(world);
         var containerReticle = ControlContainer.from4("containerReticle", Coords.fromXY(marginSize.x, marginSize.y * 2 + containerPlayer.size.y), containerPlayer.size, [
             new ControlLabel("labelReticle", Coords.fromXY(containerPlayer.size.x / 2, marginSize.y), titleSize, true, // isTextCenteredHorizontally
@@ -216,7 +208,7 @@ class PlaceHyperspaceMap extends Place {
         ]);
         var controlRoot = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
         containerSize, [
-            new ControlLabel("labelHyperspaceMap", Coords.fromXY(containerSize.x / 2, marginSize.y + titleSize.y / 2), titleSize, true, // isTextCentered
+            new ControlLabel("labelHyperspaceMap", Coords.fromXY(marginSize.x, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Hyperspace Map"), fontHeight),
             ControlVisual.from4("visualMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerMapSize, DataBinding.fromContext(new VisualImageImmediate(Image2.fromSystemImage("[fromCanvas]", this.displayMap.canvas), null // ?

@@ -1,6 +1,7 @@
 
 class EnvironmentMock
 {
+	/*
 	universeBuild(callback: (u: Universe) => void): void
 	{
 		var contentDirectoryPath = "../../../Content/";
@@ -10,15 +11,19 @@ class EnvironmentMock
 			() => this.universeBuild_MediaLibraryLoaded(mediaLibrary, callback)
 		);
 	}
+	*/
 
-	universeBuild_MediaLibraryLoaded
+	universeBuild//_MediaLibraryLoaded
 	(
-		mediaLibrary: MediaLibrary,
 		callback: (u: Universe) => void
 	): void
 	{
-		var timerHelper = new TimerHelper(0);
+		var timerHelper = new TimerHelper(20);
 		var display = DisplayTest.default();
+		var soundHelper = new SoundHelperMock();
+
+		var contentDirectoryPath = "../../../Content/";
+		var mediaLibrary = new Game().mediaLibraryBuild(contentDirectoryPath);
 
 		var controlBuilder = ControlBuilder.default();
 		var worldCreator = new WorldCreator
@@ -29,7 +34,6 @@ class EnvironmentMock
 				// todo
 			} // settings
 		);
-		
 
 		var universe = new Universe
 		(
@@ -37,18 +41,24 @@ class EnvironmentMock
 			"[version]",
 			timerHelper,
 			display,
+			soundHelper,
 			mediaLibrary,
 			controlBuilder,
 			worldCreator
 		);
 
-		universe.initialize(() => {});
-		universe.soundHelper = new SoundHelperMock();
 
-		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
-		universe.worldCreate().initialize(uwpe);
-		universe.updateForTimerTick();
+		universe.initialize
+		(
+			() =>
+			{
+				var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+				universe.worldCreate().initialize(uwpe);
+				universe.updateForTimerTick();
 
-		callback(universe);
+				callback(universe);
+			}
+		);
+
 	}
 }

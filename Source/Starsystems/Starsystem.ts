@@ -52,7 +52,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		return world.factionByName(this.factionName);
 	}
 
-	solarSystem(): void
+	solarSystem(universe: Universe): void
 	{
 		this.name = "Sol";
 
@@ -61,7 +61,49 @@ class Starsystem implements EntityProperty<Starsystem>
 		var planetEarth = this.planets[2];
 		planetEarth.defnName = PlanetDefn.Instances().Shielded.name;
 
-		var moon = planetEarth.satellites[0];
+		// Put some lifeforms and a base on the moon.
+
+		var moon = planetEarth.satellites[0] as Planet;
+		moon.lifeformCount  = 16;
+		moon.lifeformDefnNames = [ "BioDecoy" ];
+
+		var moonSizeSurface = moon.sizeSurface;
+
+		var mediaLibrary = universe.mediaLibrary;
+		var textAbandonedMoonbase = "AbandonedMoonbase";
+		var abandonedMoonbaseMessage =
+			mediaLibrary.textStringGetByName(EnergySource.name + textAbandonedMoonbase).value;
+		var energySourceAbandonedMoonbase = new EnergySource
+		(
+			textAbandonedMoonbase,
+			Coords.random(universe.randomizer).multiply(moonSizeSurface),
+			new VisualImageFromLibrary
+			(
+				EnergySource.name + textAbandonedMoonbase
+			),
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+				var controlMessage = universe.controlBuilder.message
+				(
+					universe,
+					universe.display.sizeInPixels,
+					DataBinding.fromContext(abandonedMoonbaseMessage),
+					() =>
+					{
+						// todo
+					},
+					null, // showMessageOnly
+					5 // fontHeight
+				);
+
+				universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
+			}
+		);
+		var energySources = [ energySourceAbandonedMoonbase ];
+		moon.energySources = energySources;
+
+		// Put a station in orbit around the Earth.
 
 		var station = new Station
 		(
@@ -74,6 +116,8 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		planetEarth.satellites.splice(0, 0, station);
 
+		// Add a guard drone in the Earth system.
+
 		var enemyShipDefnName = "GuardDrone";
 		var enemyShip = new Ship(enemyShipDefnName);
 		var enemyShipGroup = new ShipGroup
@@ -85,6 +129,50 @@ class Starsystem implements EntityProperty<Starsystem>
 		);
 
 		planetEarth.shipGroups.push(enemyShipGroup);
+
+		// Put an orphaned ship on Pluto.
+
+		var pluto = this.planets[8];
+		var textMauluskaOrphan = "MauluskaOrphan";
+		var mediaLibrary = universe.mediaLibrary;
+		var energySourceMauluskaOrphanMessage =
+			mediaLibrary.textStringGetByName(EnergySource.name + textMauluskaOrphan).value;
+		var energySourceMauluskaOrphan = new EnergySource
+		(
+			textMauluskaOrphan,
+			pluto.sizeSurface.clone().half().addDimensions(30, 20, 0),
+			new VisualImageFromLibrary
+			(
+				EnergySource.name + textMauluskaOrphan
+			),
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+				var controlMessage = universe.controlBuilder.message
+				(
+					universe,
+					universe.display.sizeInPixels,
+					DataBinding.fromContext(energySourceMauluskaOrphanMessage),
+					() =>
+					{
+						var conversationDefnSerialized =
+							mediaLibrary.textStringGetByName("Conversation-" + textMauluskaOrphan).value;
+						var conversationDefn =
+							ConversationDefn.deserialize(conversationDefnSerialized);
+						var conversationRun = new ConversationRun(conversationDefn, null, null, null, null);
+						var conversationVenue = conversationRun.toVenue(universe);
+						universe.venueTransitionTo(conversationVenue);
+					},
+					null, // showMessageOnly
+					5 // fontHeight
+				);
+
+				universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
+			}
+		);
+		var energySources = [ energySourceMauluskaOrphan ];
+		pluto.energySources = energySources;
+
 	}
 
 	contentsRandomize(randomizer: Randomizer): void

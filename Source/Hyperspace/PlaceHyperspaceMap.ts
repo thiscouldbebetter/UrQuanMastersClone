@@ -64,7 +64,7 @@ class PlaceHyperspaceMap extends Place
 
 	draw(universe: Universe, worldAsWorld: World, display: Display): void
 	{
-		super.draw(universe, world, display);
+		//super.draw(universe, world, display);
 
 		var world = worldAsWorld as WorldExtended;
 
@@ -141,7 +141,7 @@ class PlaceHyperspaceMap extends Place
 		}
 
 		var entityForPlayer =
-			this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
+			this.placeHyperspaceToReturnTo.entityByName(Player.name);
 		var playerPos = entityForPlayer.locatable().loc.pos;
 		drawPos.overwriteWith(playerPos);
 		this._camera.coordsTransformWorldToView(drawPos);
@@ -176,7 +176,7 @@ class PlaceHyperspaceMap extends Place
 		if (this.reticlePos == null)
 		{
 			var entityForPlayer =
-				this.placeHyperspaceToReturnTo.entitiesByPropertyName("playable")[0];
+				this.placeHyperspaceToReturnTo.entityByName(Player.name);
 			var playerPos = entityForPlayer.locatable().loc.pos;
 			this.reticlePos = playerPos.clone();
 		}
@@ -325,7 +325,6 @@ class PlaceHyperspaceMap extends Place
 			containerRightSize.y
 		);
 
-		/*
 		var displayMain = universe.display;
 		var displayMap = new Display2D
 		(
@@ -334,10 +333,9 @@ class PlaceHyperspaceMap extends Place
 			displayMain.fontHeightInPixels,
 			Color.byName("Gray"),
 			Color.byName("Black"), // colorsForeAndBack
-			null // ?
+			true // isInvisible
 		);
-		//this.displayMap = displayMap.initializeCanvasAndGraphicsContext();
-		*/
+		this.displayMap = displayMap.initialize(universe);
 
 		var containerPlayer = world.player.toControlSidebar(world);
 
@@ -447,8 +445,8 @@ class PlaceHyperspaceMap extends Place
 					"labelHyperspaceMap",
 					Coords.fromXY
 					(
-						containerSize.x / 2,
-						marginSize.y + titleSize.y / 2
+						marginSize.x,
+						marginSize.y
 					),
 					titleSize,
 					true, // isTextCentered

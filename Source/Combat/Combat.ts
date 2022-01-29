@@ -29,15 +29,30 @@ class Combat
 		this._midpointBetweenPoints = Coords.create();
 	}
 
-	enemyActivityDefn()
+	static actions(): Action[]
 	{
-		return new ActivityDefn("Enemy", this.enemyActivityDefnPerform);
+		var returnValues =
+		[
+			Ship.actionShowMenu(),
+			Ship.actionAccelerate(),
+			Ship.actionTurnLeft(),
+			Ship.actionTurnRight(),
+			Ship.actionFire(),
+			Ship.actionSpecial()
+		];
+
+		return returnValues;
 	}
 
-	enemyActivityDefnPerform
+	static activityDefnEnemy(): ActivityDefn
+	{
+		return new ActivityDefn("CombatEnemy", Combat.activityDefnEnemyPerform);
+	}
+
+	static activityDefnEnemyPerform
 	(
 		uwpe: UniverseWorldPlaceEntities
-	)
+	): void
 	{
 		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place as PlaceCombat;
@@ -101,15 +116,17 @@ class Combat
 		var placeCombat = world.placeCurrent as PlaceCombat;
 		var uwpe = new UniverseWorldPlaceEntities(universe, world, placeCombat, null, null);
 
-		for (var i = 0; i < this.shipsFighting.length; i++)
+		var shipsFighting = this.shipsFighting
+		for (var i = 0; i < shipsFighting.length; i++)
 		{
-			var ship = this.shipsFighting[i];
+			var ship = shipsFighting[i];
 			var shipEntity = ship.toEntity(uwpe);
 			if (placeCombat.entityById(shipEntity.id) == null)
 			{
 				placeCombat.entityToSpawnAdd(shipEntity);
 			}
 		}
+
 		var venueControls = placeCombat.venueControls;
 		venueControls.controlRoot = this.toControlSidebar(universe.world as WorldExtended);
 	}
@@ -206,13 +223,12 @@ class Combat
 			+ numberOfShipsDestroyed + " ships destroyed.\n"
 			+ creditsSalvaged + " credits worth of resources salvaged.\n";
 
-		var returnValue = universe.controlBuilder.message
+		var returnValue = universe.controlBuilder.message4
 		(
 			universe,
 			size,
 			DataBinding.fromContext(message),
-			() => this.exit(universe),
-			null
+			() => this.exit(universe)
 		);
 		return returnValue;
 	}

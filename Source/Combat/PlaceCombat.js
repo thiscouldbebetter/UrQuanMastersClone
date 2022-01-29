@@ -5,6 +5,7 @@ class PlaceCombat extends Place {
         combat.size, null // entities
         );
         this.combat = combat;
+        this.entityToSpawnAdd(new GameClock(1).toEntity());
         this.size = this.combat.size;
         var actionExit = new Action("Exit", (uwpe) => {
             var place = uwpe.place;
@@ -36,7 +37,6 @@ class PlaceCombat extends Place {
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         this.entityToSpawnAdd(cameraAsEntity);
         // entities
-        var entityDimension = 10;
         // Planet.
         var planet = this.combat.encounter.planet;
         var planetActivity = new Activity(Planet.activityDefnGravitate().name, null);
@@ -47,9 +47,20 @@ class PlaceCombat extends Place {
         planetCollider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.planetCollide);
         // todo - Match appearance to the actual planet.
+        var planetDefn = planet.defn();
+        /*
+        var entityDimension = 10;
         var planetRadius = entityDimension;
         var planetColor = Color.byName("Cyan");
-        var planetVisual = new VisualWrapped(this.size, VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor));
+        var planetVisual = new VisualWrapped
+        (
+            this.size,
+            VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor)
+        );
+        */
+        var planetVisual = planetDefn.visualVicinity;
+        var planetRadius = planetVisual.radius;
+        planetVisual = new VisualWrapped(this.size, planetVisual);
         var planetDrawable = Drawable.fromVisual(planetVisual);
         var sizeHalf = this.size.clone().half();
         var planetPos = sizeHalf.clone();
@@ -116,7 +127,8 @@ class PlaceCombat extends Place {
             // Do nothing.
         }
         else {
-            display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+            var colorBlack = Color.byName("Black");
+            display.drawBackground(colorBlack, colorBlack);
             var midpointBetweenCombatants;
             var camera = this._camera;
             var cameraPos = camera.loc.pos;
@@ -139,6 +151,7 @@ class PlaceCombat extends Place {
         var entityToSpawn = uwpe.entity;
         var ship = Ship.fromEntity(entityToSpawn);
         if (ship != null) {
+            var shipEntity = entityToSpawn;
             var shipEntitiesExisting = this.entitiesByPropertyName(Ship.name);
             var shipEntityOther = shipEntitiesExisting.find(x => x.id != entityToSpawn.id);
             var shipOtherPos = (shipEntityOther == null ? Coords.create() : shipEntityOther.locatable().loc.pos);
@@ -149,6 +162,15 @@ class PlaceCombat extends Place {
             while (shipPos.clone().subtract(planetPos).magnitude() < distanceMin
                 || shipPos.clone().subtract(shipOtherPos).magnitude() < distanceMin) {
                 shipPos.randomize(uwpe.universe.randomizer).multiply(this.size);
+            }
+            var shipsFighting = this.combat.shipsFighting;
+            if (ship == shipsFighting[0]) {
+                shipEntity.actor().activity.defnNameSet(Player.activityDefn().name);
+            }
+            else if (ship == shipsFighting[1]) {
+                shipEntity.actor().activity.defnNameSet(
+                //Combat.activityDefnEnemy().name
+                ActivityDefn.Instances().DoNothing.name);
             }
         }
     }

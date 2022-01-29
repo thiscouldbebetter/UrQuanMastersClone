@@ -40,6 +40,7 @@ var VisualCircleGradient = gf.VisualCircleGradient;
 var VisualDirectional = gf.VisualDirectional;
 var VisualDynamic = gf.VisualDynamic;
 var VisualGroup = gf.VisualGroup;
+var VisualHidable = gf.VisualHidable;
 var VisualImageFromLibrary = gf.VisualImageFromLibrary;
 var VisualImageImmediate = gf.VisualImageImmediate;
 var VisualImageScaled = gf.VisualImageScaled;
@@ -100,14 +101,17 @@ var ActionToInputsMapping = gf.ActionToInputsMapping;
 var Input = gf.Input;
 var InputHelper = gf.InputHelper;
 // Media.
+var BinaryFile = gf.BinaryFile;
 var Font = gf.Font;
 var Image2 = gf.Image2;
 var MediaLibrary = gf.MediaLibrary;
-var SoundFromFile = gf.SoundFromFile;
 var TextString = gf.TextString;
 var VenueVideo = gf.VenueVideo;
 var Video = gf.Video;
 var VideoHelper = gf.VideoHelper;
+var SoundFromFile = gf.SoundFromFile;
+var SoundFromFileMod = gf.SoundFromFileMod;
+var SoundNone = gf.SoundNone;
 var VisualSound = gf.VisualSound;
 // Model.
 var Entity = gf.Entity;

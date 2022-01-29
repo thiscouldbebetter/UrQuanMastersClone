@@ -16,12 +16,20 @@ class ShipAttackDefn {
         this.effectOnImpact = effectOnImpact;
         this.range = this.speed * this.ticksToLive;
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(ShipAttackDefn.name);
+    }
     activate(universe, world, place, actor) {
         var attackDefn = this;
-        var actorLoc = actor.locatable().loc;
-        var actorPos = actorLoc.pos;
+        var projectileCollider = new Sphere(Coords.create(), attackDefn.projectileRadius);
+        var projectileCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
+        null, // ticks
+        projectileCollider, [Killable.name], this.projectileCollide);
         var actorVisual = actor.drawable().visual;
         var projectileVisual = new VisualWrapped(actorVisual.sizeToWrapTo, attackDefn.visualProjectile);
+        var projectileDrawable = Drawable.fromVisual(projectileVisual);
+        var projectileKillable = new Killable(1, null, null);
+        var actorLoc = actor.locatable().loc;
         var actorOrientation = actorLoc.orientation;
         var actorForward = actorOrientation.forward;
         var projectileDirectionAsPolar = Polar.create().fromCoords(actorForward);
@@ -30,40 +38,30 @@ class ShipAttackDefn {
             NumberHelper.wrapToRangeMinMax(projectileDirectionAsPolar.azimuthInTurns, 0, 1);
         var projectileDirection = projectileDirectionAsPolar.toCoords(Coords.create());
         var actorRadius = actor.collidable().collider.radius;
+        var actorPos = actorLoc.pos;
         var projectilePos = actorPos.clone().add(projectileDirection.clone().multiplyScalar(actorRadius).double());
         var projectileLoc = Disposition.fromPos(projectilePos);
         projectileLoc.vel.overwriteWith(projectileDirection).multiplyScalar(this.speed);
-        var projectileCollider = new Sphere(Coords.create(), attackDefn.projectileRadius);
-        var projectileEntityProperties = new Array(this, new Locatable(projectileLoc), new Collidable(false, // canCollideAgainWithoutSeparating
-        null, // ticks
-        projectileCollider, [Killable.name], this.projectileCollide), Drawable.fromVisual(projectileVisual), new Killable(1, null, null));
+        var projectileLocatable = new Locatable(projectileLoc);
+        var projectileMovable = Movable.default();
+        var projectileEntityProperties = new Array(this, projectileCollidable, projectileLocatable, projectileDrawable, projectileKillable, projectileMovable);
         if (this.ticksToLive != null) {
             projectileEntityProperties.push(new Ephemeral(this.ticksToLive, null));
         }
-        /*
-        if (this.activity != null)
-        {
-            //var targetEntityName = "Ship1"; // todo
-            projectileEntityProperties.push
-            (
-                new Actor(this.activity)//, targetEntityName)
-            );
-        }
-        */
         var projectileEntity = new Entity("Projectile" + Math.random(), projectileEntityProperties);
-        place.entitiesToSpawn.push(projectileEntity);
+        place.entityToSpawnAdd(projectileEntity);
     }
     projectileCollide(uwpe) {
-        var world = uwpe.world;
         var place = uwpe.place;
         var entityProjectile = uwpe.entity;
         var entityOther = uwpe.entity2;
-        var ship = Ship.fromEntity(entityProjectile);
-        var shipDefn = ship.defn(world);
-        var attackDefn = shipDefn.attackDefn;
+        var attackDefn = ShipAttackDefn.fromEntity(entityProjectile);
         if (attackDefn.diesOnImpact == true) {
-            entityProjectile.killable().integrity = 0;
-            entityProjectile.drawable().visual.children.push(attackDefn.visualImpact);
+            var killable = entityProjectile.killable();
+            killable.integrity = 0;
+            var drawable = entityProjectile.drawable();
+            var visualWrapped = drawable.visual;
+            visualWrapped.child = attackDefn.visualImpact;
             var entityImpact = new Entity("Impact", [
                 new Ephemeral(10, null),
                 entityProjectile.locatable(),

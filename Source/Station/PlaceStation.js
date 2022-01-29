@@ -56,7 +56,7 @@ class PlaceStation extends Place {
         if (this.venueControls == null) {
             var messageToShow = "[Station]";
             var placeStation = this;
-            var controlRoot = universe.controlBuilder.choice(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), ["Talk", "Dock", "Leave",], [
+            var controlRoot = universe.controlBuilder.choice5(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), ["Talk", "Dock", "Leave",], [
                 () => // talk
                  {
                     placeStation.talk(universe);
@@ -69,8 +69,7 @@ class PlaceStation extends Place {
                  {
                     placeStation.leave(universe);
                 }
-            ], null //?
-            );
+            ]);
             this.venueControls = new VenueControls(controlRoot, null);
         }
         this.venueControls.updateForTimerTick(universe);

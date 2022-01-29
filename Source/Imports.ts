@@ -58,6 +58,7 @@ import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
 import VisualDynamic = gf.VisualDynamic;
 import VisualGroup = gf.VisualGroup;
+import VisualHidable = gf.VisualHidable;
 import VisualImage = gf.VisualImage;
 import VisualImageFromLibrary = gf.VisualImageFromLibrary;
 import VisualImageImmediate = gf.VisualImageImmediate;
@@ -141,16 +142,22 @@ import InputHelper = gf.InputHelper;
 
 // Media.
 
+import BinaryFile = gf.BinaryFile;
 import Font = gf.Font;
 import Image2 = gf.Image2;
 import MediaLibrary = gf.MediaLibrary;
-import Sound = gf.Sound;
-import SoundFromFile = gf.SoundFromFile;
-import SoundHelper = gf.SoundHelper;
 import TextString = gf.TextString;
 import VenueVideo = gf.VenueVideo;
 import Video = gf.Video;
 import VideoHelper = gf.VideoHelper;
+
+// Media - Audio.
+
+import Sound = gf.Sound;
+import SoundFromFile = gf.SoundFromFile;
+import SoundFromFileMod = gf.SoundFromFileMod;
+import SoundHelper = gf.SoundHelper;
+import SoundNone = gf.SoundNone;
 import VisualSound = gf.VisualSound;
 
 // Model.
