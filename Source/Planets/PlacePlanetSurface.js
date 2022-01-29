@@ -27,7 +27,7 @@ class PlacePlanetSurface extends Place {
         this.actionToInputsMappingsByInputName = ArrayHelper.addLookupsMultiple(this._actionToInputsMappings, x => x.inputNames);
         // entities
         var entities = this.entitiesToSpawn;
-        entities.push(new GameClock(60).toEntity());
+        entities.push(new GameClock(2880).toEntity());
         var entityDimension = 10;
         // camera
         this._camera = new Camera(Coords.fromXY(300, 300), // hack

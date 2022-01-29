@@ -9,7 +9,7 @@ class PlacePlanetOrbit extends Place {
         this.placePlanetVicinity = placePlanetVicinity;
         if (this.planet.defn().canLand) {
             var entities = this.entitiesToSpawn;
-            entities.push(new GameClock(60).toEntity());
+            entities.push(new GameClock(2880).toEntity());
             // Resources.
             var resourceRadiusBase = 5; // todo
             var resourceEntities = this.planet.resources.map(x => x.toEntity(world, this, resourceRadiusBase));

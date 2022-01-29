@@ -74,7 +74,7 @@ class Game {
             new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
             //new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
             new SoundFromFileMod("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
-            new SoundFromFileMod("Music_Battle", importDirectoryPath + "battle/battle.mod"),
+            new SoundFromFileMod("Music_Combat", importDirectoryPath + "battle/battle.mod"),
             new SoundFromFileMod("Music_Encounter", importDirectoryPath + "ui/redalert.mod"),
             new SoundFromFileMod("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
             new SoundFromFileMod("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
@@ -206,21 +206,35 @@ class Game {
             this.debug_Station(universe);
         }
         else if (debuggingModeName.startsWith("Talk")) {
-            if (debuggingModeName.endsWith("MauluskaOrphan")) {
+            var factionName = debuggingModeName.split("_")[1];
+            /*
+            if (factionName == "MauluskaOrphan")
+            {
                 this.debug_Talk_MauluskaOrphan(universe);
             }
-            else if (debuggingModeName.endsWith("Murch")) {
+            else if (factionName == "Murch")
+            {
                 this.debug_Talk_Murch(universe);
             }
-            else if (debuggingModeName.endsWith("Tempestrial")) {
+            else if (factionName == "Tempestrial")
+            {
                 this.debug_Talk_Tempestrial(universe);
             }
-            else if (debuggingModeName.endsWith("Triunion")) {
+            else if (factionName == "Triunion")
+            {
                 this.debug_Talk_Triunion(universe);
             }
-            else {
+            else
+            {
                 throw new Error("Unrecognized debugging mode: " + debuggingModeName);
             }
+            */
+            var talker = new Talker("Conversation-" + factionName, null, // quit
+            (cr, size, u) => cr.toControl_Layout_2(size, universe));
+            var entityPlayer = new Entity("Player", []);
+            var entityTalker = new Entity(factionName, [talker]);
+            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer);
+            talker.talk(uwpe);
         }
         universe.start();
     }

@@ -1,25 +1,35 @@
 "use strict";
 class EnvironmentMock {
-    universeBuild(callback) {
+    /*
+    universeBuild(callback: (u: Universe) => void): void
+    {
         var contentDirectoryPath = "../../../Content/";
         var mediaLibrary = new Game().mediaLibraryBuild(contentDirectoryPath);
-        mediaLibrary.waitForItemsAllToLoad(() => this.universeBuild_MediaLibraryLoaded(mediaLibrary, callback));
+        mediaLibrary.waitForItemsAllToLoad
+        (
+            () => this.universeBuild_MediaLibraryLoaded(mediaLibrary, callback)
+        );
     }
-    universeBuild_MediaLibraryLoaded(mediaLibrary, callback) {
-        var timerHelper = new TimerHelper(0);
+    */
+    universeBuild //_MediaLibraryLoaded
+    (callback) {
+        var timerHelper = new TimerHelper(20);
         var display = DisplayTest.default();
+        var soundHelper = new SoundHelperMock();
+        var contentDirectoryPath = "../../../Content/";
+        var mediaLibrary = new Game().mediaLibraryBuild(contentDirectoryPath);
         var controlBuilder = ControlBuilder.default();
         var worldCreator = new WorldCreator((u, wc) => WorldExtended.create(u), null, // ?
         {
         // todo
         } // settings
         );
-        var universe = new Universe("TestUniverse", "[version]", timerHelper, display, mediaLibrary, controlBuilder, worldCreator);
-        universe.initialize(() => { });
-        universe.soundHelper = new SoundHelperMock();
-        var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
-        universe.worldCreate().initialize(uwpe);
-        universe.updateForTimerTick();
-        callback(universe);
+        var universe = new Universe("TestUniverse", "[version]", timerHelper, display, soundHelper, mediaLibrary, controlBuilder, worldCreator);
+        universe.initialize(() => {
+            var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+            universe.worldCreate().initialize(uwpe);
+            universe.updateForTimerTick();
+            callback(universe);
+        });
     }
 }

@@ -34,7 +34,7 @@ class PlaceHyperspace extends Place
 
 		var entities = this.entitiesToSpawn;
 
-		entities.push(new GameClock(60 * 60).toEntity());
+		entities.push(new GameClock(2880).toEntity());
 
 		var entityDimension = hyperspace.starsystemRadiusOuter;
 

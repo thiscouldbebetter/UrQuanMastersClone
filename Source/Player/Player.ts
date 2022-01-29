@@ -7,7 +7,7 @@ class Player
 	factionsKnownNames: string[];
 	shipGroup: ShipGroup;
 
-	variableLookup: Map<string,any>;
+	variableLookup: Map<string, any>;
 	vars: Map<string,any>;
 
 	_factionsAllied: Faction[];

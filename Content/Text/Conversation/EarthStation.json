@@ -5,14 +5,49 @@
     "contentTextStringName": "Conversation-EarthStation-Content",
     "talkNodes": [
 
+{ "defnName": "VariablesImport", "content": "u.world.player.variableLookup" },
+
+{ "defnName": "Display", "content": "#(ARE_YOU_SUPPLY_SHIP)" },
+{ "defnName": "Option", "content": "#(no_but_well_help)", "next": "#(THE_WHAT_FROM_WHERE)" },
+{ "defnName": "Option", "content": "#(yes_this_is_supply_ship)", "next": "#(ABOUT_TIME)" },
+{ "defnName": "Option", "content": "#(what_slave_planet)", "next": "#(DONT_KNOW_WHO_YOU_ARE)" },
+{ "defnName": "Prompt" },
+
+{ "name": "#(THE_WHAT_FROM_WHERE)", "defnName": "Display", "content": "#(THE_WHAT_FROM_WHERE)" },
+
+{ "name": "RadioactivesNeeded", "defnName": "DoNothing" },
+{ "defnName": "OptionsClear" },
+{ "defnName": "Option", "content": "#(well_go_get_them_now)", "next": "#(THANKS_FOR_HELPING)" },
+{ "name": "#(where_get_radios)", "defnName": "Option", "content": "#(where_get_radios)", "next": "#(RADIOS_ON_MERCURY)" },
+{ "defnName": "Prompt" },
+
+{ "name": "#(ABOUT_TIME)", "defnName": "Display", "content": "#(ABOUT_TIME)" },
+{ "defnName": "OptionsClear" },
+{ "defnName": "Option", "content": "#(i_lied)", "next": "#(DONT_KNOW_WHO_YOU_ARE)" },
+{ "defnName": "Option", "content": "#(plumb_out)", "next": "#(WHAT_KIND_OF_IDIOT)" },
+{ "defnName": "Prompt" },
+
+{ "name": "#(DONT_KNOW_WHO_YOU_ARE)", "defnName": "Display", "content": "#(DONT_KNOW_WHO_YOU_ARE)" },
+{ "defnName": "Goto", "next": "RadioactivesNeeded" },
+
+{ "name": "#(WHAT_KIND_OF_IDIOT)", "defnName": "Display", "content": "#(WHAT_KIND_OF_IDIOT)" },
+{ "defnName": "Goto", "next": "RadioactivesNeeded" },
+
+{ "name": "#(THANKS_FOR_HELPING)", "defnName": "Display", "content": "#(THANKS_FOR_HELPING)" },
+{ "defnName": "Goto", "next": "Done" },
+
+{ "name": "#(RADIOS_ON_MERCURY)", "defnName": "Display", "content": "#(RADIOS_ON_MERCURY)" },
+{ "defnName": "Disable", "next": "#(where_get_radios)" },
+{ "defnName": "Prompt" },
+
 { "defnName": "Display", "content": "#(GLAD_WHEN_YOU_COME_BACK)" },
+{ "defnName": "Goto", "next": "Done" },
+
 { "defnName": "Display", "content": "#(GIVE_FUEL)" },
 { "defnName": "Display", "content": "#(GIVE_FUEL_AGAIN)" },
-{ "defnName": "Display", "content": "#(ARE_YOU_SUPPLY_SHIP)" },
-{ "defnName": "Display", "content": "#(DO_YOU_HAVE_RADIO_THIS_TIME)" },
+
 { "defnName": "Display", "content": "#(HERE_IS_ANOTHER_LANDER)" },
-{ "defnName": "Display", "content": "#(THE_WHAT_FROM_WHERE)" },
-{ "defnName": "Display", "content": "#(ABOUT_TIME)" },
+
 { "defnName": "Display", "content": "#(MESSAGE_GARBLED_1)" },
 { "defnName": "Display", "content": "#(MESSAGE_GARBLED_2)" },
 { "defnName": "Display", "content": "#(HERE_IS_A_NEW_LANDER)" },
@@ -24,11 +59,10 @@
 { "defnName": "Display", "content": "#(FUEL_UP0)" },
 { "defnName": "Display", "content": "#(FUEL_UP1)" },
 { "defnName": "Display", "content": "#(WHAT_KIND_OF_IDIOT)" },
-{ "defnName": "Display", "content": "#(DONT_KNOW_WHO_YOU_ARE)" },
+
 { "defnName": "Display", "content": "#(THATS_IMPOSSIBLE)" },
 { "defnName": "Display", "content": "#(ASK_AWAY)" },
-{ "defnName": "Display", "content": "#(RADIOS_ON_MERCURY)" },
-{ "defnName": "Display", "content": "#(THANKS_FOR_HELPING)" },
+
 { "defnName": "Display", "content": "#(STARBASE_IS)" },
 { "defnName": "Display", "content": "#(HAPPENED_TO_EARTH)" },
 { "defnName": "Display", "content": "#(URQUAN_LEFT)" },
@@ -56,16 +90,11 @@
 { "defnName": "Display", "content": "#(overthrow_evil_aliens)" },
 { "defnName": "Display", "content": "#(annihilate_those_monsters)" },
 { "defnName": "Display", "content": "#(cook_their_butts)" },
-{ "defnName": "Display", "content": "#(where_get_radios)" },
-{ "defnName": "Display", "content": "#(well_go_get_them_now)" },
+
 { "defnName": "Display", "content": "#(we_will_transfer_now)" },
 { "defnName": "Display", "content": "#(what_will_you_give_us)" },
 { "defnName": "Display", "content": "#(before_radios_we_need_info)" },
-{ "defnName": "Display", "content": "#(no_but_well_help)" },
-{ "defnName": "Display", "content": "#(yes_this_is_supply_ship)" },
-{ "defnName": "Display", "content": "#(what_slave_planet)" },
-{ "defnName": "Display", "content": "#(i_lied)" },
-{ "defnName": "Display", "content": "#(plumb_out)" },
+
 { "defnName": "Display", "content": "#(we_are_vindicator)" },
 { "defnName": "Display", "content": "#(first_give_info)" },
 { "defnName": "Display", "content": "#(we_must_go_now)" },
@@ -98,7 +127,11 @@
 { "defnName": "Display", "content": "#(we_destroyed_it)" },
 { "defnName": "Display", "content": "#(what_probe)" },
 { "defnName": "Display", "content": "#(take_care_of_base_again)" },
-{ "defnName": "Display", "content": "#(goodbye_commander)" }
+{ "defnName": "Display", "content": "#(goodbye_commander)" },
+
+{ "name": "Done", "defnName": "DoNothing" },
+{ "defnName": "VariablesExport", "content": "u.world.player.variableLookup.set($key$, $value$)" },
+{ "defnName": "Quit" }
 
     ]
 }

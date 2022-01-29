@@ -17,7 +17,7 @@ class PlaceStarsystem extends Place {
         this._actionToInputsMappings = Ship.actionToInputsMappings();
         // entities
         var entities = this.entitiesToSpawn;
-        entities.push(new GameClock(60).toEntity());
+        entities.push(new GameClock(2880).toEntity());
         var entityDimension = 10;
         // sun
         var sunEntity = this.sunEntityBuild(entityDimension);
