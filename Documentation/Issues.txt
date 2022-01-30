@@ -3,7 +3,6 @@ Issues
 
 General
 -------
-No music from MODs.
 Very few sound effects.
 Can't use devices.
 New game should start with slideshow.
@@ -33,6 +32,7 @@ No circle indicating reachable distances.
 
 Starsystem
 ----------
+Orbits are not color-coded to show temperature ranges.
 Other ship groups cannot move between starsystem and planet vicinities.
 
 

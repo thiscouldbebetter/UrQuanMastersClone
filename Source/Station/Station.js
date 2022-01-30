@@ -13,11 +13,12 @@ class Station {
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
     }
-    toEntity(primaryPos) {
+    toEntity(primary, primaryPos) {
         var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
         var collidable = Collidable.fromCollider(collider);
+        var orbitColor = primary.orbitColor();
         var visual = new VisualGroup([
-            new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, Color.byName("Gray"), null), primaryPos, null // ?
+            new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, orbitColor, null), primaryPos, null // ?
             ),
             VisualRectangle.fromSizeAndColorFill(Coords.fromXY(1, 1).multiplyScalar(this.radiusOuter), this.color)
         ]);

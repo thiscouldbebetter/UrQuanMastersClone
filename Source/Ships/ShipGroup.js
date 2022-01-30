@@ -66,6 +66,7 @@ class ShipGroup {
             var placeSize = actorPlace.size;
             targetPos = actorPos.clone().add(actorForward.clone().multiply(placeSize));
             entityTarget = Locatable.fromPos(targetPos).toEntity();
+            activity.targetEntitySet(entityTarget);
         }
         else {
             targetPos = entityTarget.locatable().loc.pos;
@@ -76,6 +77,13 @@ class ShipGroup {
         if (distanceToTarget < distanceMin) {
             actorPos.overwriteWith(targetPos);
             actorPlace.entityToRemoveAdd(entityActor);
+            var placeTypeName = actorPlace.constructor.name;
+            if (placeTypeName == PlacePlanetVicinity.name) {
+                var placePlanetVicinity = actorPlace;
+                var planet = placePlanetVicinity.planet;
+                var shipGroup = ShipGroup.fromEntity(entityActor);
+                ArrayHelper.remove(planet.shipGroups, shipGroup);
+            }
         }
         else {
             actorLoc.vel.add(displacementToTarget.normalize()); // todo - * acceleration.

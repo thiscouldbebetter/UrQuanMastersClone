@@ -25,7 +25,8 @@ class PlacePlanetVicinity extends Place {
         var planetPos = sizeHalf.clone();
         var orbitMultiplier = 16;
         var planetOrbitRadius = planet.posAsPolar.radius * orbitMultiplier;
-        var planetOrbitVisual = new VisualAnchor(new VisualCircle(planetOrbitRadius, null, Color.byName("Gray"), null), planetPos.clone().add(new Polar(planet.posAsPolar.azimuthInTurns + .5, planetOrbitRadius, null).wrap().toCoords(Coords.create())), // posToAnchorAt
+        var planetOrbitColor = planet.orbitColor();
+        var planetOrbitVisual = new VisualAnchor(new VisualCircle(planetOrbitRadius, null, planetOrbitColor, null), planetPos.clone().add(new Polar(planet.posAsPolar.azimuthInTurns + .5, planetOrbitRadius, null).wrap().toCoords(Coords.create())), // posToAnchorAt
         null // ?
         );
         var planetDefn = planet.defn();
@@ -46,7 +47,7 @@ class PlacePlanetVicinity extends Place {
         var satellites = planet.satellites;
         for (var i = 0; i < satellites.length; i++) {
             var satellite = satellites[i];
-            var satelliteEntity = satellite.toEntity(planetPos);
+            var satelliteEntity = satellite.toEntity(planet, planetPos);
             entities.push(satelliteEntity);
         }
         var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
@@ -61,18 +62,15 @@ class PlacePlanetVicinity extends Place {
             playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             this.playerCollide);
             var playerConstrainable = new Constrainable([constraintSpeedMax]);
-            var playerColor = Color.byName("Gray");
-            var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-            var playerVisual = new VisualGroup([
-                playerVisualBody
-            ]);
-            var playerDrawable = Drawable.fromVisual(playerVisual);
             var playerItemHolder = ItemHolder.create();
             var playerLocatable = new Locatable(playerLoc);
             var playerMovable = Movable.default();
             var playerPlayable = new Playable();
             var playerShipGroup = world.player.shipGroup;
             var playerShip = playerShipGroup.ships[0];
+            var playerShipDefn = playerShip.defn(world);
+            var playerVisual = playerShipDefn.visual;
+            var playerDrawable = Drawable.fromVisual(playerVisual);
             var playerEntity = new Entity(Player.name, [
                 playerActor,
                 playerCollidable,
