@@ -32,7 +32,6 @@ No circle indicating reachable distances.
 
 Starsystem
 ----------
-Orbits are not color-coded to show temperature ranges.
 Other ship groups cannot move between starsystem and planet vicinities.
 
 

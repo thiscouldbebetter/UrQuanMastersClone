@@ -69,18 +69,30 @@ class PlacePlanetSurface extends Place {
         this.venueControls = VenueControls.fromControl(containerSidebar);
         //this.propertyNamesToProcess.push("ship");
         // Environmental hazards.
-        var colors = Color.Instances();
         var hazardLevels = [planet.weather, planet.tectonics, planet.temperature];
         var hazardTypeNames = ["Weather", "Tectonics", "Temperature"];
-        var hazardColors = [colors.Yellow, colors.Brown, colors.Red];
+        var hazardVisualNames = ["Lightning", "Earthquake", "Hotspot"];
+        var imagesPerVisual = 12;
         for (var i = 0; i < hazardTypeNames.length; i++) {
             var hazardLevel = hazardLevels[i];
             if (hazardLevel > 1) {
+                var hazardVisualName = hazardVisualNames[i];
+                var visualsForFrames = [];
+                for (var j = 0; j < imagesPerVisual; j++) {
+                    var imageName = hazardVisualName + "-" + StringHelper.padStart(j.toString(), 3, "0");
+                    var visualForFrame = new VisualImageFromLibrary(imageName);
+                    visualsForFrames.push(visualForFrame);
+                }
+                var hazardVisual = VisualAnimation.fromNameAndFrames(hazardVisualName, visualsForFrames);
                 var hazardTypeName = hazardTypeNames[i];
-                var hazardColor = hazardColors[i];
-                var drawable = Drawable.fromVisual(VisualRectangle.fromColorFill(hazardColor));
+                var visual = new VisualGroup([
+                    hazardVisual,
+                    VisualSound.fromSoundName("Sound")
+                ]);
+                var drawable = Drawable.fromVisual(visual);
                 var ephemeral = Ephemeral.fromTicksToLive(20);
                 var entityHazard = new Entity(hazardTypeName, [
+                    Animatable2.create(),
                     Collidable.default(),
                     drawable,
                     ephemeral,
@@ -88,8 +100,8 @@ class PlacePlanetSurface extends Place {
                 ]);
                 var generatorHazard = new EntityGenerator(entityHazard, new RangeExtent(5, 10), // ticksPerGenerationAsRange
                 new RangeExtent(0, 10), // entitiesPerGenerationAsRange
-                1000 // entitiesGeneratedMax
-                );
+                1000, // entitiesGeneratedMax
+                new RangeExtent(0, 0));
                 entities.push(generatorHazard.toEntity());
             }
         }

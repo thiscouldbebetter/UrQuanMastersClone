@@ -73,6 +73,7 @@ import VisualText = gf.VisualText;
 
 // Display - Visuals - Animation.
 
+import Animatable2 = gf.Animatable2;
 import VisualAnimation = gf.VisualAnimation;
 
 // Geometry.

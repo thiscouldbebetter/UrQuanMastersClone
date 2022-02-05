@@ -3,9 +3,11 @@ class Game
 {
 	mediaLibraryBuild(contentDirectoryPath: string): MediaLibrary
 	{
-		var imageDirectory = contentDirectoryPath + "Images/";
-		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
 		var importDirectoryPath = contentDirectoryPath + "Import/sc2/content/base/";
+
+		var imageDirectory = contentDirectoryPath + "Images/";
+		var imageDirectoryHazards = importDirectoryPath + "lander/hazard/";
+		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
 		var directoryEnergySources = importDirectoryPath + "lander/energy/";
 		var energySource = EnergySource.name;
 		var png = ".png";
@@ -23,67 +25,107 @@ class Game
 		var contentPathPrefixComms =
 			importDirectoryPath + "comm/";
 
+		var images =
+		[
+			// conversation 
+			new Image2("Conversation", imageDirectory + "Conversation.png"),
+			new Image2(conversationPortrait + "EarthStation", importDirectoryPath + "comm/commander/commander-000.png"),
+			new Image2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
+			new Image2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
+			new Image2(conversationPortrait + "Murch", importDirectoryPath + "comm/melnorme/melnorme-000.png"),
+			new Image2(conversationPortrait + "Tempestrial", importDirectoryPath + "comm/probe/probe-000.png"),
+			new Image2(conversationPortrait + "Triunion", importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
+
+			// opening
+			new Image2("Opening", imageDirectory + "Opening.png"),
+			new Image2("Producer", imageDirectory + "Producer.png"),
+			new Image2("Title", imageDirectory + "Title.png"),
+
+			// opening - slides
+			new Image2("Black", imageDirectory + "Slides/Black-1x1px.png"),
+			new Image2("Red", imageDirectory + "Slides/Red-1x1px.png"),
+			new Image2("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
+
+			// planets
+			new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
+
+			// planets - lifeforms
+			new Image2("RadarBlossom", 		imageDirectoryLifeforms + "01-RadarBlossom" 	+ png),
+			new Image2("LavaPool", 			imageDirectoryLifeforms + "02-LavaPool" 		+ png),
+			new Image2("SquirtPod", 		imageDirectoryLifeforms + "03-SquirtPod" 		+ png),
+			new Image2("ClapperBush", 		imageDirectoryLifeforms + "04-ClapperBush" 		+ png),
+			new Image2("CarouselTree", 		imageDirectoryLifeforms + "05-CarouselTree" 	+ png),
+			new Image2("BlueTube", 			imageDirectoryLifeforms + "06-BlueTube" 		+ png),
+			new Image2("BrassNeedler", 		imageDirectoryLifeforms + "07-BrassNeedler" 	+ png),
+			new Image2("CreepingBean", 		imageDirectoryLifeforms + "08-CreepingBean" 	+ png),
+			new Image2("LightningAnemone", 	imageDirectoryLifeforms + "09-LightningAnemone" + png),
+			new Image2("Radiooculopod", 	imageDirectoryLifeforms + "10-Radiooculopod" 	+ png),
+			new Image2("SwarmsOfThings", 	imageDirectoryLifeforms + "11-SwarmsOfThings" 	+ png),
+			new Image2("ElasticSphere", 	imageDirectoryLifeforms + "12-ElasticSphere" 	+ png),
+			new Image2("TriopticSquid", 	imageDirectoryLifeforms + "13-TriopticSquid" 	+ png),
+			new Image2("LeapingLizard", 	imageDirectoryLifeforms + "14-LeapingLizard" 	+ png),
+			new Image2("BloodyBathmat", 	imageDirectoryLifeforms + "15-BloodyBathmat" 	+ png),
+			new Image2("BiteyMouse", 		imageDirectoryLifeforms + "16-BiteyMouse" 		+ png),
+			new Image2("SmushedDuckling", 	imageDirectoryLifeforms + "17-SmushedDuckling" 	+ png),
+			new Image2("FungusAmungus", 	imageDirectoryLifeforms + "18-FungusAmungus" 	+ png),
+			new Image2("WaddleEye", 		imageDirectoryLifeforms + "19-WaddleEye" 		+ png),
+			new Image2("SpuriousEaglet", 	imageDirectoryLifeforms + "20-SpuriousEaglet" 	+ png),
+			new Image2("CottonCandycane", 	imageDirectoryLifeforms + "21-CottonCandycane" + png),
+			new Image2("BulgingEyeworm", 	imageDirectoryLifeforms + "22-BulgingEyeworm" 	+ png),
+			new Image2("PopperUpper", 		imageDirectoryLifeforms + "23-PopperUpper" 		+ png),
+
+			new Image2("BioDecoy", 			imageDirectoryLifeforms + "24-Biodecoy" 		+ png),
+			new Image2("MauluskaGourmand", 	imageDirectoryLifeforms + "25-MauluskaGourmand" + png),
+			new Image2("FreakyBeast", 		imageDirectoryLifeforms + "26-FreakyBeast" 		+ png),
+
+			// planets - energy sources
+			new Image2(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase-000" + png),
+			new Image2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
+		];
+
+		var hazardImages = [];
+
+		var hazardNamePairs =
+		[
+			[ "Lightning", "lightning" ],
+			[ "Earthquake", "quake" ],
+			[ "Hotspot", "lavaspot" ]
+		];
+		var imagesPerHazard = 12;
+
+		for (var h = 0; h < hazardNamePairs.length; h++)
+		{
+			var hazardNamePair = hazardNamePairs[h];
+
+			var hazardImageName = hazardNamePair[0];
+			var hazardFileNamePrefix = hazardNamePair[1];
+
+			for (var i = 0; i < imagesPerHazard; i++)
+			{
+				var imageIndexPadded = "-" + StringHelper.padStart(i.toString(), 3, "0");
+
+				var imageFilePath =
+					imageDirectoryHazards + hazardFileNamePrefix + imageIndexPadded + png;
+
+				var hazardImage = new Image2
+				(
+					hazardImageName + imageIndexPadded,
+					imageFilePath
+				);
+
+				hazardImages.push(hazardImage);
+			}
+
+		}
+
+		images.push(...hazardImages);
+
 		var mediaLibrary = new MediaLibrary
 		(
 			contentDirectoryPath,
 
-			// images
-			[
-				// conversation 
-				new Image2("Conversation", imageDirectory + "Conversation.png"),
-				new Image2(conversationPortrait + "EarthStation", importDirectoryPath + "comm/commander/commander-000.png"),
-				new Image2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
-				new Image2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
-				new Image2(conversationPortrait + "Murch", importDirectoryPath + "comm/melnorme/melnorme-000.png"),
-				new Image2(conversationPortrait + "Tempestrial", importDirectoryPath + "comm/probe/probe-000.png"),
-				new Image2(conversationPortrait + "Triunion", importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
+			images,
 
-				// opening
-				new Image2("Opening", imageDirectory + "Opening.png"),
-				new Image2("Producer", imageDirectory + "Producer.png"),
-				new Image2("Title", imageDirectory + "Title.png"),
-
-				// opening - slides
-				new Image2("Black", imageDirectory + "Slides/Black-1x1px.png"),
-				new Image2("Red", imageDirectory + "Slides/Red-1x1px.png"),
-				new Image2("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
-
-				// planets
-				new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
-
-				// planets-lifeforms
-				new Image2("RadarBlossom", 		imageDirectoryLifeforms + "01-RadarBlossom" 	+ png),
-				new Image2("LavaPool", 			imageDirectoryLifeforms + "02-LavaPool" 		+ png),
-				new Image2("SquirtPod", 		imageDirectoryLifeforms + "03-SquirtPod" 		+ png),
-				new Image2("ClapperBush", 		imageDirectoryLifeforms + "04-ClapperBush" 		+ png),
-				new Image2("CarouselTree", 		imageDirectoryLifeforms + "05-CarouselTree" 	+ png),
-				new Image2("BlueTube", 			imageDirectoryLifeforms + "06-BlueTube" 		+ png),
-				new Image2("BrassNeedler", 		imageDirectoryLifeforms + "07-BrassNeedler" 	+ png),
-				new Image2("CreepingBean", 		imageDirectoryLifeforms + "08-CreepingBean" 	+ png),
-				new Image2("LightningAnemone", 	imageDirectoryLifeforms + "09-LightningAnemone" + png),
-				new Image2("Radiooculopod", 	imageDirectoryLifeforms + "10-Radiooculopod" 	+ png),
-				new Image2("SwarmsOfThings", 	imageDirectoryLifeforms + "11-SwarmsOfThings" 	+ png),
-				new Image2("ElasticSphere", 	imageDirectoryLifeforms + "12-ElasticSphere" 	+ png),
-				new Image2("TriopticSquid", 	imageDirectoryLifeforms + "13-TriopticSquid" 	+ png),
-				new Image2("LeapingLizard", 	imageDirectoryLifeforms + "14-LeapingLizard" 	+ png),
-				new Image2("BloodyBathmat", 	imageDirectoryLifeforms + "15-BloodyBathmat" 	+ png),
-				new Image2("BiteyMouse", 		imageDirectoryLifeforms + "16-BiteyMouse" 		+ png),
-				new Image2("SmushedDuckling", 	imageDirectoryLifeforms + "17-SmushedDuckling" 	+ png),
-				new Image2("FungusAmungus", 	imageDirectoryLifeforms + "18-FungusAmungus" 	+ png),
-				new Image2("WaddleEye", 		imageDirectoryLifeforms + "19-WaddleEye" 		+ png),
-				new Image2("SpuriousEaglet", 	imageDirectoryLifeforms + "20-SpuriousEaglet" 	+ png),
-				new Image2("CottonCandycane", 	imageDirectoryLifeforms + "21-CottonCandycane" + png),
-				new Image2("BulgingEyeworm", 	imageDirectoryLifeforms + "22-BulgingEyeworm" 	+ png),
-				new Image2("PopperUpper", 		imageDirectoryLifeforms + "23-PopperUpper" 		+ png),
-
-				new Image2("BioDecoy", 			imageDirectoryLifeforms + "24-Biodecoy" 		+ png),
-				new Image2("MauluskaGourmand", 	imageDirectoryLifeforms + "25-MauluskaGourmand" + png),
-				new Image2("FreakyBeast", 		imageDirectoryLifeforms + "26-FreakyBeast" 		+ png),
-
-				// planets - energy sources
-				new Image2(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase-000" + png),
-				new Image2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
-			],
 			// sounds
 			[
 				new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
@@ -102,6 +144,7 @@ class Game
 				new SoundFromFileMod("Music_Faction_EarthStation", importDirectoryPath + "comm/commander/commander.mod"),
 				new SoundFromFileMod("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
 			],
+
 			// videos
 			[
 				new Video("Movie", contentDirectoryPath + "Video/Movie.webm"),
