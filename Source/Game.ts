@@ -380,9 +380,21 @@ class Game
 
 	debug_Combat(universe: Universe): void
 	{
+		var world = universe.world as WorldExtended;
+
 		var displaySize = universe.display.sizeInPixels;
 		var combatSize = Coords.fromXY(1, 1).multiplyScalar(displaySize.y * 2);
-		var encounter = null; // todo
+		var starsystem = world.hyperspace.starsystems[0];
+		var planet = starsystem.planets[0];
+		var encounter = new Encounter
+		(
+			planet,
+			"EarthStation", // factionName
+			null, // entityPlayer
+			null, // entityOther
+			null, // placeToReturnTo
+			null // posToReturnTo
+		);
 		var shipDefnInstances = ShipDefn.Instances(universe);
 		var shipDefnsByName = shipDefnInstances._AllByName;
 		/*
@@ -424,7 +436,14 @@ class Game
 					enemyShips
 				)
 			]
-		).initialize(universe, universe.world, null);
+		).initialize
+		(
+			universe, world, null
+		);
+
+		var placeCombat = combat.toPlace(world);
+		world.placeCurrent = placeCombat;
+
 		var controlShipSelect = combat.toControlShipSelect
 		(
 			universe, displaySize

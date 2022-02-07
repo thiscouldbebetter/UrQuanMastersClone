@@ -133,6 +133,13 @@ class ShipGroup {
         var posInverted = this._posInverted.overwriteWithDimensions(pos.x, hyperspaceSize.y - pos.y, 0).round();
         return posInverted;
     }
+    shipSelectOptimum() {
+        if (this.shipSelected == null) {
+            var ship = this.ships[0]; // todo
+            this.shipSelected = ship;
+        }
+        return this.shipSelected;
+    }
     toEntity(world, place) {
         var shipGroup = this;
         var faction = shipGroup.faction(world);

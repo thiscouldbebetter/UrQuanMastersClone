@@ -39,7 +39,7 @@ class Encounter
 		var world = universe.world as WorldExtended;
 		var encounter = this;
 		var displaySize = universe.display.sizeInPixels;
-		var combatSize = Coords.fromXY(1, 1).multiplyScalar(displaySize.y * 2);
+		var combatSize = Coords.fromXY(1, 1).multiplyScalar(displaySize.y * 4);
 		var player = world.player;
 		var shipGroupOther = ShipGroup.fromEntity(encounter.entityOther);
 		var shipGroups = [player.shipGroup, shipGroupOther];

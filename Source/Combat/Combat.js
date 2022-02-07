@@ -73,8 +73,11 @@ class Combat {
                 placeCombat.entityToSpawnAdd(shipEntity);
             }
         }
-        var venueControls = placeCombat.venueControls;
-        venueControls.controlRoot = this.toControlSidebar(universe.world);
+        var venueWorld = world.toVenue();
+        placeCombat.venueControls = new VenueControls(this.toControlSidebar(world), false // ignoreInputs?
+        );
+        world.placeNext = placeCombat;
+        universe.venueNext = venueWorld;
     }
     initialize(universe, world, place) {
         var uwpe = new UniverseWorldPlaceEntities(universe, world, place, null, null);
@@ -92,7 +95,8 @@ class Combat {
     }
     updateForTimerTick(uwpe) {
         if (this.shipsFighting[1] == null) {
-            this.shipsFighting[1] = this.shipGroups[1].shipSelected;
+            var shipGroup1 = this.shipGroups[1];
+            this.shipsFighting[1] = shipGroup1.shipSelectOptimum();
         }
     }
     // wrapping
@@ -136,6 +140,10 @@ class Combat {
         return returnValue;
     }
     toControlShipSelect(universe, size) {
+        // hack
+        if (this.shipsFighting[1] == null) {
+            this.shipsFighting[1] = this.shipGroups[1].shipSelectOptimum();
+        }
         var combat = this;
         var world = universe.world;
         // todo - Variable sizes.

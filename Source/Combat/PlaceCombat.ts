@@ -310,7 +310,10 @@ class PlaceCombat extends Place
 
 		var controlShipSelect = this.combat.toControlShipSelect(universe, universe.display.sizeInPixels);
 
-		this.venueControls = VenueControls.fromControl(controlShipSelect);
+		if (this.venueControls == null)
+		{
+			this.venueControls = VenueControls.fromControl(controlShipSelect);
+		}
 	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void

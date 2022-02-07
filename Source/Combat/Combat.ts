@@ -112,11 +112,11 @@ class Combat
 
 	fight(universe: Universe): void
 	{
-		var world = universe.world;
+		var world = universe.world as WorldExtended;
 		var placeCombat = world.placeCurrent as PlaceCombat;
 		var uwpe = new UniverseWorldPlaceEntities(universe, world, placeCombat, null, null);
 
-		var shipsFighting = this.shipsFighting
+		var shipsFighting = this.shipsFighting;
 		for (var i = 0; i < shipsFighting.length; i++)
 		{
 			var ship = shipsFighting[i];
@@ -127,8 +127,15 @@ class Combat
 			}
 		}
 
-		var venueControls = placeCombat.venueControls;
-		venueControls.controlRoot = this.toControlSidebar(universe.world as WorldExtended);
+		var venueWorld = world.toVenue();
+		placeCombat.venueControls = new VenueControls
+		(
+			this.toControlSidebar(world), false // ignoreInputs?
+		);
+
+		world.placeNext = placeCombat;
+		universe.venueNext = venueWorld;
+		
 	}
 
 	initialize(universe: Universe, world: World, place: Place): Combat
@@ -161,13 +168,20 @@ class Combat
 	{
 		if (this.shipsFighting[1] == null)
 		{
-			this.shipsFighting[1] = this.shipGroups[1].shipSelected;
+			var shipGroup1 = this.shipGroups[1];
+			this.shipsFighting[1] = shipGroup1.shipSelectOptimum();
 		}
 	}
 
 	// wrapping
 
-	displacementOfPointsWrappedToRange(displacementToOverwrite: Coords, pos0: Coords, pos1: Coords, size: Coords): Coords
+	displacementOfPointsWrappedToRange
+	(
+		displacementToOverwrite: Coords,
+		pos0: Coords,
+		pos1: Coords,
+		size: Coords
+	): Coords
 	{
 		var displacement = pos1.clone().subtract(pos0);
 		var displacementMinSoFar = displacement.clone();
@@ -235,6 +249,12 @@ class Combat
 
 	toControlShipSelect(universe: Universe, size: Coords): ControlBase
 	{
+		// hack
+		if (this.shipsFighting[1] == null)
+		{
+			this.shipsFighting[1] = this.shipGroups[1].shipSelectOptimum();
+		}
+
 		var combat = this;
 		var world = universe.world as WorldExtended;
 

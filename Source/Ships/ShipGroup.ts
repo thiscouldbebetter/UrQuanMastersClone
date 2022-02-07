@@ -235,6 +235,17 @@ class ShipGroup implements EntityPropertyBase
 		return posInverted;
 	}
 
+	shipSelectOptimum(): Ship
+	{
+		if (this.shipSelected == null)
+		{
+			var ship = this.ships[0]; // todo
+			this.shipSelected = ship;
+		}
+
+		return this.shipSelected;
+	}
+
 	toEntity
 	(
 		world: WorldExtended, place: Place
