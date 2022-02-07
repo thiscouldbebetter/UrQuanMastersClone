@@ -27,7 +27,7 @@ class PlaceStarsystem extends Place {
         var planets = starsystem.planets;
         for (var i = 0; i < planets.length; i++) {
             var planet = planets[i];
-            var planetEntity = planet.toEntity(sunPos);
+            var planetEntity = planet.toEntity(null, sunPos);
             entities.push(planetEntity);
         }
         var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
@@ -42,18 +42,23 @@ class PlaceStarsystem extends Place {
             playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             this.playerCollide);
             var playerConstrainable = new Constrainable([constraintSpeedMax]);
-            var playerColor = Color.byName("Gray");
-            var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-            var playerVisual = new VisualGroup([
-                playerVisualBody
-            ]);
-            var playerDrawable = Drawable.fromVisual(playerVisual);
             var playerItemHolder = ItemHolder.create();
             var playerLocatable = new Locatable(playerLoc);
             var playerMovable = Movable.default();
             var playerPlayable = new Playable();
             var playerShipGroup = world.player.shipGroup;
             var playerShip = playerShipGroup.ships[0];
+            /*
+            var playerColor = Color.byName("Gray");
+            var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
+            var playerVisual = new VisualGroup
+            ([
+                playerVisualBody
+            ]);
+            */
+            var playerShipDefn = playerShip.defn(world);
+            var playerVisual = playerShipDefn.visual;
+            var playerDrawable = Drawable.fromVisual(playerVisual);
             var playerEntity = new Entity(Player.name, [
                 playerActor,
                 playerCollidable,

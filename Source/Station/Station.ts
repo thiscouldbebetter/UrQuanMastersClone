@@ -33,16 +33,18 @@ class Station implements EntityProperty<Station>, Satellite
 		return world.defnExtended().factionByName(this.factionName);
 	}
 
-	toEntity(primaryPos: Coords): Entity
+	toEntity(primary: Planet, primaryPos: Coords): Entity
 	{
 		var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
-		var collidable = Collidable.fromCollider(collider)
+		var collidable = Collidable.fromCollider(collider);
+
+		var orbitColor = primary.orbitColor();
 
 		var visual = new VisualGroup
 		([
 			new VisualAnchor
 			(
-				new VisualCircle(this.posAsPolar.radius, null, Color.byName("Gray"), null),
+				new VisualCircle(this.posAsPolar.radius, null, orbitColor, null),
 				primaryPos,
 				null // ?
 			),

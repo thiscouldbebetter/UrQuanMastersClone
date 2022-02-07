@@ -181,7 +181,9 @@ class PlaceCombat extends Place {
         var place = uwpe.place;
         this.combat.initialize(universe, world, place);
         var controlShipSelect = this.combat.toControlShipSelect(universe, universe.display.sizeInPixels);
-        this.venueControls = VenueControls.fromControl(controlShipSelect);
+        if (this.venueControls == null) {
+            this.venueControls = VenueControls.fromControl(controlShipSelect);
+        }
     }
     updateForTimerTick(uwpe) {
         super.updateForTimerTick(uwpe);

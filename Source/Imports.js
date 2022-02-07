@@ -52,6 +52,7 @@ var VisualRectangle = gf.VisualRectangle;
 var VisualSelect = gf.VisualSelect;
 var VisualText = gf.VisualText;
 // Display - Visuals - Animation.
+var Animatable2 = gf.Animatable2;
 var VisualAnimation = gf.VisualAnimation;
 // Geometry.
 var Camera = gf.Camera;

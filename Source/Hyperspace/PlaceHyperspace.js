@@ -82,32 +82,46 @@ class PlaceHyperspace extends Place {
         }
         if (playerLoc != null) {
             // player
+            var playerActor = new Actor(new Activity(Player.activityDefn().name, null));
             var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
-            var playerColor = Color.byName("Gray");
-            var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-            var playerVisual = new VisualGroup([
-                playerVisualBody,
-            ]);
+            var playerCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
+            null, // ticks
+            playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
+            this.playerCollide);
             var playerShipGroup = world.player.shipGroup;
             var playerShip = playerShipGroup.ships[0];
+            /*
+            var playerColor = Color.byName("Gray");
+            var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
+            var playerVisual = new VisualGroup
+            ([
+                playerVisualBody,
+            ]);
+            */
+            var playerShipDefn = playerShip.defn(world);
+            var playerVisual = playerShipDefn.visual;
+            var playerDrawable = Drawable.fromVisual(playerVisual);
             var constraintFriction = new Constraint_FrictionDry(0.01);
             var constraintTrimToRange = new Constraint_TrimToPlaceSize();
+            var playerConstrainable = new Constrainable([
+                constraintFriction,
+                constraintTrimToRange
+            ]);
+            var playerFuelable = new Fuelable();
+            var playerItemHolder = ItemHolder.create();
+            var playerLocatable = new Locatable(playerLoc);
+            var playerMovable = Movable.default();
+            var playerPlayable = new Playable();
             var playerEntity = new Entity(Player.name, [
-                new Actor(new Activity(Player.activityDefn().name, null)),
-                new Collidable(false, // canCollideAgainWithoutSeparating
-                null, // ticks
-                playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
-                this.playerCollide),
-                new Constrainable([
-                    constraintFriction,
-                    constraintTrimToRange
-                ]),
-                Drawable.fromVisual(playerVisual),
-                new Fuelable(),
-                ItemHolder.create(),
-                new Locatable(playerLoc),
-                Movable.default(),
-                new Playable(),
+                playerActor,
+                playerCollidable,
+                playerConstrainable,
+                playerDrawable,
+                playerFuelable,
+                playerItemHolder,
+                playerLocatable,
+                playerMovable,
+                playerPlayable,
                 playerShipGroup,
                 playerShip
             ]);

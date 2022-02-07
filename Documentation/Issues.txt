@@ -3,7 +3,6 @@ Issues
 
 General
 -------
-No music from MODs.
 Very few sound effects.
 Can't use devices.
 New game should start with slideshow.

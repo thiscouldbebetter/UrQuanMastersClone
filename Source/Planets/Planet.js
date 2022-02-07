@@ -87,11 +87,22 @@ class Planet {
             planet.resources = resources;
         }
     }
-    toEntity(primaryPos) {
+    orbitColor() {
+        var temperature = this.temperature;
+        var orbitColorName = (temperature > 100
+            ? "Brown"
+            : temperature > 0
+                ? "GreenDark"
+                : "BlueDark");
+        var orbitColor = Color.byName(orbitColorName);
+        return orbitColor;
+    }
+    toEntity(primary, primaryPos) {
         var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
+        var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
         var planetDefn = this.defn();
         var visual = new VisualGroup([
-            new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, Color.byName("Gray"), null), primaryPos, null // ?
+            new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, orbitColor, null), primaryPos, null // ?
             ),
             //VisualCircle.fromRadiusAndColorFill(this.radiusOuter, planetDefn.color)
             planetDefn.visualStarsystem
@@ -106,9 +117,12 @@ class Planet {
         return returnValue;
     }
     toPlace(world) {
-        return new PlacePlanetVicinity(world, this, null, // playerLoc
-        null // placeStarsystem
-        );
+        if (this._place == null) {
+            this._place = new PlacePlanetVicinity(world, this, null, // playerLoc
+            null // placeStarsystem
+            );
+        }
+        return this._place;
     }
     // EntityProperty.
     finalize(uwpe) { }

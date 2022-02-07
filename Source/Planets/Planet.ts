@@ -197,12 +197,29 @@ class Planet implements EntityProperty<Planet>, Satellite
 		}
 	}
 
-	toEntity(primaryPos: Coords): Entity
+	orbitColor(): Color
+	{
+		var temperature = this.temperature;
+		var orbitColorName =
+		(
+			temperature > 100
+			? "Brown"
+			: temperature > 0
+			? "GreenDark"
+			: "BlueDark"
+		);
+		var orbitColor = Color.byName(orbitColorName);
+		return orbitColor;
+	}
+
+	toEntity(primary: Planet, primaryPos: Coords): Entity
 	{
 		var pos = primaryPos.clone().add
 		(
 			this.posAsPolar.toCoords(Coords.create())
 		);
+
+		var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
 
 		var planetDefn = this.defn();
 		var visual = new VisualGroup
@@ -211,7 +228,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			(
 				new VisualCircle
 				(
-					this.posAsPolar.radius, null, Color.byName("Gray"), null
+					this.posAsPolar.radius, null, orbitColor, null
 				),
 				primaryPos,
 				null // ?
@@ -236,15 +253,20 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return returnValue;
 	}
 
+	_place: PlacePlanetVicinity;
 	toPlace(world: World): PlacePlanetVicinity
 	{
-		return new PlacePlanetVicinity
-		(
-			world as WorldExtended,
-			this,
-			null, // playerLoc
-			null // placeStarsystem
-		);
+		if (this._place == null)
+		{
+			this._place = new PlacePlanetVicinity
+			(
+				world as WorldExtended,
+				this,
+				null, // playerLoc
+				null // placeStarsystem
+			);
+		}
+		return this._place;
 	}
 
 	// EntityProperty.

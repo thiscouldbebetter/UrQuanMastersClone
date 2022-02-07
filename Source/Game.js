@@ -1,9 +1,10 @@
 "use strict";
 class Game {
     mediaLibraryBuild(contentDirectoryPath) {
-        var imageDirectory = contentDirectoryPath + "Images/";
-        var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
         var importDirectoryPath = contentDirectoryPath + "Import/sc2/content/base/";
+        var imageDirectory = contentDirectoryPath + "Images/";
+        var imageDirectoryHazards = importDirectoryPath + "lander/hazard/";
+        var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
         var directoryEnergySources = importDirectoryPath + "lander/energy/";
         var energySource = EnergySource.name;
         var png = ".png";
@@ -15,9 +16,7 @@ class Game {
         var conversationPlaceholderPath = conversationDirectory + "Placeholder.json";
         var conversationPortrait = "Conversation-Portrait-";
         var contentPathPrefixComms = importDirectoryPath + "comm/";
-        var mediaLibrary = new MediaLibrary(contentDirectoryPath, 
-        // images
-        [
+        var images = [
             // conversation 
             new Image2("Conversation", imageDirectory + "Conversation.png"),
             new Image2(conversationPortrait + "EarthStation", importDirectoryPath + "comm/commander/commander-000.png"),
@@ -36,7 +35,7 @@ class Game {
             new Image2("Cyan", imageDirectory + "Slides/Cyan-1x1px.png"),
             // planets
             new Image2("PlanetSurface", imageDirectory + "PlanetSurface.png"),
-            // planets-lifeforms
+            // planets - lifeforms
             new Image2("RadarBlossom", imageDirectoryLifeforms + "01-RadarBlossom" + png),
             new Image2("LavaPool", imageDirectoryLifeforms + "02-LavaPool" + png),
             new Image2("SquirtPod", imageDirectoryLifeforms + "03-SquirtPod" + png),
@@ -66,7 +65,27 @@ class Game {
             // planets - energy sources
             new Image2(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase-000" + png),
             new Image2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
-        ], 
+        ];
+        var hazardImages = [];
+        var hazardNamePairs = [
+            ["Lightning", "lightning"],
+            ["Earthquake", "quake"],
+            ["Hotspot", "lavaspot"]
+        ];
+        var imagesPerHazard = 12;
+        for (var h = 0; h < hazardNamePairs.length; h++) {
+            var hazardNamePair = hazardNamePairs[h];
+            var hazardImageName = hazardNamePair[0];
+            var hazardFileNamePrefix = hazardNamePair[1];
+            for (var i = 0; i < imagesPerHazard; i++) {
+                var imageIndexPadded = "-" + StringHelper.padStart(i.toString(), 3, "0");
+                var imageFilePath = imageDirectoryHazards + hazardFileNamePrefix + imageIndexPadded + png;
+                var hazardImage = new Image2(hazardImageName + imageIndexPadded, imageFilePath);
+                hazardImages.push(hazardImage);
+            }
+        }
+        images.push(...hazardImages);
+        var mediaLibrary = new MediaLibrary(contentDirectoryPath, images, 
         // sounds
         [
             new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
@@ -239,9 +258,17 @@ class Game {
         universe.start();
     }
     debug_Combat(universe) {
+        var world = universe.world;
         var displaySize = universe.display.sizeInPixels;
         var combatSize = Coords.fromXY(1, 1).multiplyScalar(displaySize.y * 2);
-        var encounter = null; // todo
+        var starsystem = world.hyperspace.starsystems[0];
+        var planet = starsystem.planets[0];
+        var encounter = new Encounter(planet, "EarthStation", // factionName
+        null, // entityPlayer
+        null, // entityOther
+        null, // placeToReturnTo
+        null // posToReturnTo
+        );
         var shipDefnInstances = ShipDefn.Instances(universe);
         var shipDefnsByName = shipDefnInstances._AllByName;
         /*
@@ -269,7 +296,9 @@ class Game {
             new ShipGroup("Other", null, // factionName
             null, // pos
             enemyShips)
-        ]).initialize(universe, universe.world, null);
+        ]).initialize(universe, world, null);
+        var placeCombat = combat.toPlace(world);
+        world.placeCurrent = placeCombat;
         var controlShipSelect = combat.toControlShipSelect(universe, displaySize);
         var venueNext = VenueControls.fromControl(controlShipSelect);
         universe.venueNext = venueNext;

@@ -301,7 +301,7 @@ class WorldExtended extends World
 			factionTriunion,
 			factionTwyggan,
 			factionUgglegruj,
-			factionWarpig,
+			factionWarpig
 		];
 
 		var shipDefns = ShipDefn.Instances(universe)._All;
