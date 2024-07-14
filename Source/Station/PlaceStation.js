@@ -1,5 +1,5 @@
 "use strict";
-class PlaceStation extends Place {
+class PlaceStation extends PlaceBase {
     constructor(world, station, placePlanetVicinity) {
         super(PlaceStation.name, PlaceStation.name, null, // parentName
         null, // size
@@ -19,7 +19,7 @@ class PlaceStation extends Place {
         var world = universe.world;
         var place = world.placeCurrent;
         var placePrev = place.placePlanetVicinity;
-        var size = placePrev.size;
+        var size = placePrev.size();
         var planet = placePrev.planet;
         var station = place.station;
         var playerPosNext = station.posAsPolar.toCoords(Coords.create()).add(size.clone().half()).add(Coords.fromXY(3, 0).multiplyScalar(10));
@@ -36,7 +36,7 @@ class PlaceStation extends Place {
         var conversationResourceName = "Conversation-" + conversationDefnName;
         var conversationQuit = () => {
             world.placeCurrent = placeStation.placePlanetVicinity;
-            universe.venueNext = new VenueWorld(world);
+            universe.venueNextSet(new VenueWorld(world));
         };
         var stationEntity = placeStation.entityByName(Station.name);
         var talker = stationEntity.talker();
@@ -76,7 +76,7 @@ class PlaceStation extends Place {
     }
     returnToPlace(world) {
         var placeNext = this.placeToReturnTo;
-        var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+        var playerFromPlaceNext = placeNext.entityByName(Player.name);
         var playerLoc = playerFromPlaceNext.locatable().loc;
         playerLoc.pos.overwriteWith(this.posToReturnTo);
         playerLoc.vel.clear();

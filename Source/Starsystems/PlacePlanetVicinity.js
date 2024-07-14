@@ -1,5 +1,5 @@
 "use strict";
-class PlacePlanetVicinity extends Place {
+class PlacePlanetVicinity extends PlaceBase {
     constructor(world, planet, playerLoc, placeStarsystem) {
         super(PlacePlanetVicinity.name + ":" + planet.name, PlacePlanetVicinity.name, // defnName
         null, // parentName
@@ -20,7 +20,7 @@ class PlacePlanetVicinity extends Place {
         entities.push(new GameClock(2880).toEntity());
         var entityDimension = 10;
         // planet
-        var sizeHalf = this.size.clone().half();
+        var sizeHalf = this.size().clone().half();
         var planetRadius = entityDimension;
         var planetPos = sizeHalf.clone();
         var orbitMultiplier = 16;
@@ -95,8 +95,8 @@ class PlacePlanetVicinity extends Place {
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
         var wallsEntity = new Entity("Walls", [
-            new Locatable(Disposition.fromPos(this.size.clone().half())),
-            Collidable.fromCollider(new ShapeInverse(new Box(Coords.create(), this.size)))
+            new Locatable(Disposition.fromPos(this.size().clone().half())),
+            Collidable.fromCollider(new ShapeInverse(new Box(Coords.create(), this.size())))
         ]);
         entities.push(wallsEntity);
         var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), // todo
@@ -111,10 +111,10 @@ class PlacePlanetVicinity extends Place {
     draw(universe, world) {
         var display = universe.display;
         display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
-        var player = this.entitiesByName.get(Player.name);
+        var player = this.entityByName(Player.name);
         var playerLoc = player.locatable().loc;
         var camera = this._camera;
-        camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(camera.viewSizeHalf, this.size.clone().subtract(camera.viewSizeHalf));
+        camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(camera.viewSizeHalf, this.size().clone().subtract(camera.viewSizeHalf));
         super.draw(universe, world, display);
         this.venueControls.draw(universe);
     }

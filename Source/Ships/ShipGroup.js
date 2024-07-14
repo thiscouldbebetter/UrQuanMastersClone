@@ -22,7 +22,7 @@ class ShipGroup {
         if (targetEntity == null) {
             var place = uwpe.place;
             var entityToTargetName = Player.name;
-            targetEntity = place.entitiesByName.get(entityToTargetName);
+            targetEntity = place.entityByName(entityToTargetName);
             actor.activity.targetEntitySet(targetEntity);
         }
         ShipGroup.activityDefnApproachTarget_Perform(uwpe);
@@ -63,7 +63,7 @@ class ShipGroup {
         var targetPos;
         if (entityTarget == null) {
             var actorForward = actorLoc.orientation.forward;
-            var placeSize = actorPlace.size;
+            var placeSize = actorPlace.size();
             targetPos = actorPos.clone().add(actorForward.clone().multiply(placeSize));
             entityTarget = Locatable.fromPos(targetPos).toEntity();
             activity.targetEntitySet(entityTarget);
@@ -97,13 +97,13 @@ class ShipGroup {
         var place = world.placeCurrent;
         var placeTypeName = place.constructor.name;
         if (placeTypeName == PlaceHyperspace.name) {
-            var shipGroupEntity = place.entities.find(x => ShipGroup.fromEntity(x) == this);
+            var shipGroupEntity = place.entitiesAll().find(x => ShipGroup.fromEntity(x) == this);
             pos = shipGroupEntity.locatable().loc.pos;
         }
         else if (placeTypeName == PlaceHyperspaceMap.name) {
             var placeHyperspaceMap = place;
             var placeHyperspace = placeHyperspaceMap.placeHyperspaceToReturnTo;
-            var shipGroupEntity = placeHyperspace.entities.find(x => ShipGroup.fromEntity(x) == this);
+            var shipGroupEntity = placeHyperspace.entitiesAll().find(x => ShipGroup.fromEntity(x) == this);
             pos = shipGroupEntity.locatable().loc.pos;
         }
         else if (placeTypeName == PlaceStarsystem.name) {
@@ -178,7 +178,7 @@ class ShipGroup {
             ArrayHelper.remove(shipGroupsInPlace, shipGroup);
         };
         var shipKillable = new Killable(1, null, shipKill);
-        var shipPos = Coords.random(null).multiply(place.size);
+        var shipPos = Coords.random(null).multiply(place.size());
         var shipLoc = Disposition.fromPos(shipPos);
         var shipLocatable = new Locatable(shipLoc);
         var shipMovable = Movable.default();

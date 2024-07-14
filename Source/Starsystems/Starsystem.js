@@ -34,8 +34,7 @@ class Starsystem {
             var controlMessage = universe.controlBuilder.message(universe, universe.display.sizeInPixels, DataBinding.fromContext(abandonedMoonbaseMessage), () => {
                 // todo
             }, null, // showMessageOnly
-            5 // fontHeight
-            );
+            FontNameAndHeight.fromHeightInPixels(5));
             universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
         });
         var energySources = [energySourceAbandonedMoonbase];
@@ -66,8 +65,7 @@ class Starsystem {
                 var conversationVenue = conversationRun.toVenue(universe);
                 universe.venueTransitionTo(conversationVenue);
             }, null, // showMessageOnly
-            5 // fontHeight
-            );
+            FontNameAndHeight.fromHeightInPixels(5));
             universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
         });
         var energySources = [energySourceMauluskaOrphan];
@@ -119,6 +117,13 @@ class Starsystem {
     }
     toPlace(world, playerLoc, planetDeparted) {
         return new PlaceStarsystem(world, this, playerLoc, planetDeparted);
+    }
+    // Clonable.
+    clone() {
+        throw new Error("todo");
+    }
+    overwriteWith(other) {
+        throw new Error("todo");
     }
     // EntityProperty.
     finalize(uwpe) { }

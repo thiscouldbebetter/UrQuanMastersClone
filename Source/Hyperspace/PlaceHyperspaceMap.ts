@@ -1,5 +1,5 @@
 
-class PlaceHyperspaceMap extends Place
+class PlaceHyperspaceMap extends PlaceBase
 {
 	placeHyperspaceToReturnTo: PlaceHyperspace;
 
@@ -129,10 +129,10 @@ class PlaceHyperspaceMap extends Place
 				display.drawText
 				(
 					faction.name,
-					10, //fontHeightInPixels,
+					FontNameAndHeight.fromHeightInPixels(10),
 					drawPos,
 					factionColor,
-					Color.byName("Gray"),
+					Color.Instances().Gray,
 					false, // areColorsReversed,
 					true, // isCentered,
 					null, // widthMaxInPixels
@@ -306,7 +306,9 @@ class PlaceHyperspaceMap extends Place
 	{
 		var containerSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
+		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var fontHeightShort = 10;
+		var fontShort = FontNameAndHeight.fromHeightInPixels(fontHeightShort);
 		var marginWidth = 8;
 		var buttonSize = Coords.fromXY(1, 1).multiplyScalar(25);
 		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
@@ -329,10 +331,9 @@ class PlaceHyperspaceMap extends Place
 		var displayMap = new Display2D
 		(
 			[ containerMapSize ],
-			displayMain.fontName,
-			displayMain.fontHeightInPixels,
-			Color.byName("Gray"),
-			Color.byName("Black"), // colorsForeAndBack
+			displayMain.fontNameAndHeight,
+			Color.Instances().Gray,
+			Color.Instances().Black, // colorsForeAndBack
 			true // isInvisible
 		);
 		this.displayMap = displayMap.initialize(universe);
@@ -360,7 +361,7 @@ class PlaceHyperspaceMap extends Place
 					true, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Reticle"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -371,7 +372,7 @@ class PlaceHyperspaceMap extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Pos:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -386,7 +387,7 @@ class PlaceHyperspaceMap extends Place
 						this,
 						(c: PlaceHyperspaceMap) => c.reticlePosAsStringXY()
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -397,7 +398,7 @@ class PlaceHyperspaceMap extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fuel:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -413,7 +414,7 @@ class PlaceHyperspaceMap extends Place
 						(c: PlaceHyperspaceMap) =>
 							"" + c.fuelFromPlayerShipGroupToReticle(world)
 					),
-					fontHeightShort
+					fontShort
 				),
 			]
 		);
@@ -452,7 +453,7 @@ class PlaceHyperspaceMap extends Place
 					true, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Hyperspace Map"),
-					fontHeight
+					font
 				),
 
 				ControlVisual.from4
@@ -485,7 +486,7 @@ class PlaceHyperspaceMap extends Place
 					marginSize,
 					buttonSize,
 					"<",
-					fontHeight,
+					font,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() =>

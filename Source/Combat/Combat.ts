@@ -106,8 +106,8 @@ class Combat
 		var player = world.player;
 		player.resourceCredits += creditsForShipsDestroyed;
 
-		world.placeNext = this.encounter.placeToReturnTo;
-		universe.venueNext = new VenueWorld(world);
+		world.placeNextSet(this.encounter.placeToReturnTo);
+		universe.venueNextSet(new VenueWorld(world) );
 	}
 
 	fight(universe: Universe): void
@@ -133,8 +133,8 @@ class Combat
 			this.toControlSidebar(world), false // ignoreInputs?
 		);
 
-		world.placeNext = placeCombat;
-		universe.venueNext = venueWorld;
+		world.placeNextSet(placeCombat);
+		universe.venueNextSet(venueWorld);
 		
 	}
 
@@ -263,7 +263,9 @@ class Combat
 		var marginWidth = 10;
 		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
 		var fontHeightTitle = size.x / 20;
+		var fontTitle = FontNameAndHeight.fromHeightInPixels(fontHeightTitle);
 		var fontHeight = fontHeightTitle / 2;
+		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var titleSize = Coords.fromXY(size.x - marginSize.x * 2, fontHeightTitle);
 		var headingSize = Coords.fromXY((size.x - marginSize.x * 3) / 2, fontHeight);
 		var buttonHeight = fontHeightTitle;
@@ -293,7 +295,7 @@ class Combat
 				combat, (c: Combat) => c.shipGroups[0].ships
 			),
 			bindingForOptionText,
-			fontHeight,
+			font,
 			new DataBinding
 			(
 				combat,
@@ -321,7 +323,7 @@ class Combat
 				combat, (c: Combat) => c.shipGroups[1].ships
 			),
 			bindingForOptionText,
-			fontHeight,
+			font,
 			new DataBinding
 			(
 				combat,
@@ -346,7 +348,7 @@ class Combat
 					true, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Ship Select"),
-					fontHeightTitle
+					fontTitle
 				),
 
 				new ControlLabel
@@ -357,7 +359,7 @@ class Combat
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.shipGroups[0].name + ":"),
-					fontHeight
+					FontNameAndHeight.fromHeightInPixels(fontHeight)
 				),
 
 				listShipsYours,
@@ -371,8 +373,8 @@ class Combat
 						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
 					),
 					buttonSizeSelect,
-					"Select",
-					fontHeight,
+					DataBinding.fromContextAndGet(combat, () => "Select"),
+					font,
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(
@@ -395,8 +397,8 @@ class Combat
 						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
 					),
 					buttonSizeSelect,
-					"Random",
-					fontHeight,
+					DataBinding.fromContextAndGet(combat, () => "Random"),
+					font,
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(
@@ -425,7 +427,7 @@ class Combat
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.shipGroups[1].name + ":"),
-					fontHeight
+					font
 				),
 
 				listShipsTheirs,
@@ -439,8 +441,8 @@ class Combat
 						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
 					),
 					buttonSizeSelect,
-					"Select",
-					fontHeight,
+					DataBinding.fromContext("Select"),
+					font,
 					true, // hasBorder
 					DataBinding.fromFalse(), // isEnabled,
 					() =>
@@ -460,8 +462,8 @@ class Combat
 						size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2
 					),
 					buttonSizeSelect,
-					"Random",
-					fontHeight,
+					DataBinding.fromContext("Random"),
+					font,
 					true, // hasBorder
 					DataBinding.fromFalse(), // isEnabled,
 					() =>
@@ -480,8 +482,8 @@ class Combat
 					"buttonFight",
 					Coords.fromXY(marginSize.x, size.y - marginSize.y - buttonSizeFight.y),
 					buttonSizeFight,
-					"Fight",
-					fontHeight,
+					DataBinding.fromContextAndGet(combat, () => "Fight"),
+					font,
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(

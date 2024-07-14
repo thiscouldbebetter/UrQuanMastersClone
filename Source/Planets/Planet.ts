@@ -120,7 +120,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			var shipLoc = ship.locatable().loc;
 			var shipPos = shipLoc.pos;
 			var displacement =
-				shipPos.clone().subtractWrappedToRangeMax(planetPos, place.size);
+				shipPos.clone().subtractWrappedToRangeMax(planetPos, place.size() );
 			var distance = displacement.magnitude();
 			if (distance > 0)
 			{
@@ -268,6 +268,12 @@ class Planet implements EntityProperty<Planet>, Satellite
 		}
 		return this._place;
 	}
+
+	// Clonable.
+
+	clone(): Planet { throw new Error("todo"); }
+
+	overwriteWith(other: Planet): Planet { throw new Error("todo"); }
 
 	// EntityProperty.
 

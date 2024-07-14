@@ -21,10 +21,10 @@ class Encounter {
         var shipGroupOther = ShipGroup.fromEntity(encounter.entityOther);
         var shipGroups = [player.shipGroup, shipGroupOther];
         var combat = new Combat(combatSize, encounter, shipGroups);
-        world.placeNext = combat.toPlace(world);
+        world.placeNextSet(combat.toPlace(world));
         // These lines are necessary.
         var venueNext = new VenueWorld(world);
-        universe.venueNext = venueNext;
+        universe.venueNextSet(venueNext);
     }
     goToPlaceNext(universe) {
         if (this.doesEndInCombat) {
@@ -32,13 +32,13 @@ class Encounter {
         }
         else {
             var placeNext = this.placeToReturnTo;
-            var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+            var playerFromPlaceNext = placeNext.entityByName(Player.name);
             var playerLoc = playerFromPlaceNext.locatable().loc;
             playerLoc.pos.overwriteWith(this.posToReturnTo);
             playerLoc.vel.clear();
             var world = universe.world;
-            world.placeNext = placeNext;
-            universe.venueNext = world.toVenue();
+            world.placeNextSet(placeNext);
+            universe.venueNextSet(world.toVenue());
         }
     }
     posInHyperspace() {

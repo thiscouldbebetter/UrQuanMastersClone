@@ -1,5 +1,5 @@
 "use strict";
-class PlaceHyperspace extends Place {
+class PlaceHyperspace extends PlaceBase {
     constructor(universe, hyperspace, starsystemDeparted, playerLoc) {
         super(PlaceHyperspace.name, PlaceHyperspace.name, null, // parentName
         hyperspace.size, null);
@@ -127,7 +127,7 @@ class PlaceHyperspace extends Place {
             ]);
             if (starsystemDeparted != null) {
                 var starsystemName = starsystemDeparted.name;
-                var entityForStarsystemDeparted = this.entitiesByName.get(starsystemName);
+                var entityForStarsystemDeparted = this.entityByName(starsystemName);
                 playerEntity.collidable().entitiesAlreadyCollidedWith.push(entityForStarsystemDeparted);
             }
             entities.push(playerEntity);
@@ -178,7 +178,7 @@ class PlaceHyperspace extends Place {
             var shipGroup = new ShipGroup(factionName + " Ship Group", factionName, shipGroupPos, [new Ship(shipDefnName)]);
             var entityShipGroup = place.shipGroupToEntity(world, place, shipGroup);
             place.hyperspace.shipGroups.push(shipGroup);
-            place.entitiesToSpawn.push(entityShipGroup);
+            place.entityToSpawnAdd(entityShipGroup);
         }
     }
     playerCollide(uwpe, collision) {
@@ -208,7 +208,7 @@ class PlaceHyperspace extends Place {
             var encounter = new Encounter(planetClosest, shipGroupOther.factionName, entityPlayer, entityOther, place, playerPos);
             var placeEncounter = new PlaceEncounter(world, encounter);
             world.placeNext = placeEncounter;
-            place.entitiesToRemove.push(entityOther);
+            place.entityToRemoveAdd(entityOther);
             ArrayHelper.remove(place.hyperspace.shipGroups, shipGroupOther);
         }
         else if (entityOtherFaction != null) {
@@ -246,9 +246,9 @@ class PlaceHyperspace extends Place {
         var marginWidth = 8;
         var size = Coords.fromXY(1, 1).multiplyScalar(containerSidebar.size.x - marginWidth * 2);
         var display = universe.display;
-        this.displaySensors = new Display2D([size], display.fontName, display.fontHeightInPixels, Color.byName("Yellow"), Color.byName("GreenDark"), true // isInvisible
+        this.displaySensors = new Display2D([size], display.fontNameAndHeight, Color.Instances().Yellow, Color.Instances().GreenDark, true // isInvisible
         );
-        var imageSensors = this.displaySensors.initialize(null).toImage();
+        var imageSensors = this.displaySensors.initialize(null).toImage("Sensors");
         var controlVisualSensors = ControlVisual.from4("controlVisualSensors", Coords.fromXY(8, 152), // pos
         size, DataBinding.fromContext(new VisualImageImmediate(imageSensors, null)));
         containerSidebar.children.push(controlVisualSensors);
@@ -258,10 +258,10 @@ class PlaceHyperspace extends Place {
     draw(universe, world) {
         var display = universe.display;
         display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
-        var player = this.entitiesByName.get(Player.name);
+        var player = this.entityByName(Player.name);
         var playerLoc = player.locatable().loc;
         var camera = this._camera;
-        camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(camera.viewSizeHalf, this.size.clone().subtract(camera.viewSizeHalf));
+        camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(camera.viewSizeHalf, this.size().clone().subtract(camera.viewSizeHalf));
         super.draw(universe, world, display);
         this.draw_Sensors();
         this.venueControls.draw(universe);

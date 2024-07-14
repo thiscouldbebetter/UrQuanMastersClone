@@ -22,12 +22,11 @@ class WorldDefnExtended extends WorldDefn
 	{
 		super
 		(
-			null, // actions
-			activityDefns,
-			null,
-			resourceDefns.map(x => x.toItemDefn()),
-			placeDefns,
-			null
+			[
+				activityDefns,
+				resourceDefns.map(x => x.toItemDefn()),
+				placeDefns
+			]
 		);
 
 		this.factions = factions;

@@ -259,6 +259,7 @@ class Flagship
 		var marginWidth = 8;
 		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
 		var fontHeight = 10;
+		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
 		var labelSize = Coords.fromXY(childControlWidth, fontHeight);
 		var containerFlagshipSize = Coords.fromXY
@@ -282,7 +283,7 @@ class Flagship
 					true, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(flagship.name),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -293,7 +294,7 @@ class Flagship
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Crew:"),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -307,7 +308,7 @@ class Flagship
 					(
 						flagship, (c: Flagship) => c.crewCurrentOverMax()
 					),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -318,7 +319,7 @@ class Flagship
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fuel:"),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -332,7 +333,7 @@ class Flagship
 					(
 						flagship, (c: Flagship) => c.fuelCurrentOverMax()
 					),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -343,7 +344,7 @@ class Flagship
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Landers:"),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -357,7 +358,7 @@ class Flagship
 					(
 						flagship, (c: Flagship) => "" + c.numberOfLanders
 					),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -368,7 +369,7 @@ class Flagship
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Cargo:"),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -383,7 +384,7 @@ class Flagship
 						flagship,
 						(c: Flagship) => c.cargoCurrentOverMax(world)
 					),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -394,7 +395,7 @@ class Flagship
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Loc:"),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -409,7 +410,7 @@ class Flagship
 						world.player.shipGroup,
 						(c: ShipGroup) => c.posInHyperspace(world).toStringXY()
 					),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -420,7 +421,7 @@ class Flagship
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Date:"),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -435,7 +436,7 @@ class Flagship
 						world.player.shipGroup,
 						(c: ShipGroup) => world.gameTimeAsString().split("T")[0]
 					),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -446,7 +447,7 @@ class Flagship
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Time:"),
-					fontHeight
+					font
 				),
 
 				new ControlLabel
@@ -461,7 +462,7 @@ class Flagship
 						world.player.shipGroup,
 						(c: ShipGroup) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")
 					),
-					fontHeight
+					font
 				),
 
 			]

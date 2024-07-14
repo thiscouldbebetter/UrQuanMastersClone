@@ -1,5 +1,5 @@
 
-class PlaceStarsystem extends Place
+class PlaceStarsystem extends PlaceBase
 {
 	world: World;
 	starsystem: Starsystem;
@@ -31,7 +31,7 @@ class PlaceStarsystem extends Place
 		);
 
 		this.starsystem = starsystem;
-		this.size = this.starsystem.sizeInner;
+		this._size = this.starsystem.sizeInner;
 
 		this.actions =
 		[
@@ -165,7 +165,7 @@ class PlaceStarsystem extends Place
 
 		this._camera = new Camera
 		(
-			new Coords(1, 1, 0).multiplyScalar(this.size.y),
+			new Coords(1, 1, 0).multiplyScalar(this.size().y),
 			null, // focalLength
 			Disposition.fromOrientation
 			(
@@ -182,26 +182,18 @@ class PlaceStarsystem extends Place
 			[
 				new Locatable
 				(
-					Disposition.fromPos(this.size.clone().half() )
+					Disposition.fromPos(this.size().clone().half() )
 				),
 				Collidable.fromCollider
 				(
 					new ShapeInverse
 					(
-						new Box(Coords.create(), this.size)
+						new Box(Coords.create(), this.size() )
 					)
 				)
 			]
 		);
 		entities.push(wallsEntity);
-
-		// CollisionTracker.
-
-		/*
-		var collisionTracker = new CollisionTracker(this.starsystem.sizeInner);
-		var entityForCollisionTracker = collisionTracker.toEntity();
-		entities.push(entityForCollisionTracker);
-		*/
 
 		// Sidebar.
 
@@ -223,7 +215,7 @@ class PlaceStarsystem extends Place
 
 	sunEntityBuild(entityDimension: number): Entity
 	{
-		var sizeHalf = this.size.clone().half();
+		var sizeHalf = this.size().clone().half();
 
 		var sunPos = sizeHalf.clone();
 		var sunLocatable = new Locatable(Disposition.fromPos(sunPos) );
@@ -320,7 +312,7 @@ class PlaceStarsystem extends Place
 				entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
 
 				var planet = entityOtherPlanet;
-				var sizeNext = place.size.clone();
+				var sizeNext = place.size().clone();
 				var playerOrientation = entityPlayer.locatable().loc.orientation;
 				var heading = playerOrientation.forward.headingInTurns();
 				var playerPosNext = new Polar
@@ -366,7 +358,7 @@ class PlaceStarsystem extends Place
 
 		display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
 
-		var player = this.entitiesByName.get(Player.name);
+		var player = this.entityByName(Player.name);
 		if (player == null)
 		{
 			return; // hack
@@ -380,7 +372,7 @@ class PlaceStarsystem extends Place
 		).trimToRangeMinMax
 		(
 			camera.viewSizeHalf,
-			this.size.clone().subtract(camera.viewSizeHalf)
+			this.size().clone().subtract(camera.viewSizeHalf)
 		);
 
 		super.draw(universe, world, universe.display);

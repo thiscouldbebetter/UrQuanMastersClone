@@ -116,7 +116,10 @@ import Sphere = gf.Sphere;
 
 // Geometry - Shapes - Map.
 
+import MapCell = gf.MapCell;
 import MapLocated = gf.MapLocated;
+import MapOfCells = gf.MapOfCells;
+import MapOfCellsCellSource = gf.MapOfCellsCellSource;
 
 // Geometry - Shapes - Meshes.
 
@@ -145,6 +148,7 @@ import InputHelper = gf.InputHelper;
 
 import BinaryFile = gf.BinaryFile;
 import Font = gf.Font;
+import FontNameAndHeight = gf.FontNameAndHeight;
 import Image2 = gf.Image2;
 import MediaLibrary = gf.MediaLibrary;
 import TextString = gf.TextString;
@@ -170,6 +174,7 @@ import EntityPropertyBase = gf.EntityPropertyBase;
 import Ephemeral = gf.Ephemeral;
 import Namable = gf.Namable;
 import Place = gf.Place;
+import PlaceBase = gf.PlaceBase;
 import PlaceDefn = gf.PlaceDefn;
 import Playable = gf.Playable;
 import Universe = gf.Universe;

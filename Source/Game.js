@@ -26,9 +26,9 @@ class Game {
             new Image2(conversationPortrait + "Tempestrial", importDirectoryPath + "comm/probe/probe-000.png"),
             new Image2(conversationPortrait + "Triunion", importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
             // opening
-            new Image2("Opening", imageDirectory + "Opening.png"),
-            new Image2("Producer", imageDirectory + "Producer.png"),
-            new Image2("Title", imageDirectory + "Title.png"),
+            new Image2("Titles_Opening", imageDirectory + "Titles/Opening.png"),
+            new Image2("Titles_Producer", imageDirectory + "Titles/Producer.png"),
+            new Image2("Titles_Title", imageDirectory + "Titles/Title.png"),
             // opening - slides
             new Image2("Black", imageDirectory + "Slides/Black-1x1px.png"),
             new Image2("Red", imageDirectory + "Slides/Red-1x1px.png"),
@@ -163,26 +163,25 @@ class Game {
             displaySizeInPixelsDefault,
             displaySizeInPixelsDefault.clone().half(),
             displaySizeInPixelsDefault.clone().multiplyScalar(2),
-        ], "Font", // fontName
-        10, // fontHeightInPixels
-        Color.byName("Gray"), Color.byName("White"), // colorFore, colorBack
+        ], new FontNameAndHeight("Font", 10), Color.Instances().Gray, Color.Instances().White, // colorFore, colorBack
         false // isInvisible
         );
         var timerHelper = new TimerHelper(24);
         var controlBuilder = ControlBuilder.fromStyles([ControlStyle.Instances().Dark]);
         var universe = Universe.create("SpaceAdventureClone", "0.0.0-20220109", timerHelper, display, mediaLibrary, controlBuilder, WorldCreator.fromWorldCreate(WorldExtended.create));
+        var colors = Color.Instances();
+        var colorBlackName = colors.Black.name;
         var controlSlideshowIntro = universe.controlBuilder.slideshow(universe, displaySizeInPixelsDefault, [
-            ["Black", "At first, it was black."],
-            ["Red", "Then, it turned red."],
-            ["Cyan", "Then it turned, I want to say, cyan?"],
-            ["Black", "Then it was black again."],
-            ["Black", "Whew!  That was quite a ride."],
-            ["Black", "Anyway, here's a game."],
-        ], universe.venueNext);
-        universe.venueNext = new VenueControls(controlSlideshowIntro, false // ignoreInputs
-        );
-        universe.venueNext =
-            controlBuilder.venueTransitionalFromTo(null, universe.venueNext);
+            [colorBlackName, "At first, it was black."],
+            [colors.Red.name, "Then, it turned red."],
+            [colors.Cyan.name, "Then it turned, I want to say, cyan?"],
+            [colorBlackName, "Then it was black again."],
+            [colorBlackName, "Whew!  That was quite a ride."],
+            [colorBlackName, "Anyway, here's a game."],
+        ], universe.venueNext());
+        universe.venueNextSet(new VenueControls(controlSlideshowIntro, false // ignoreInputs
+        ));
+        universe.venueNextSet(controlBuilder.venueTransitionalFromTo(null, universe.venueNext()));
         var universeDebugOrStart;
         if (universe.debuggingModeName != null) {
             universeDebugOrStart = () => this.debug(universe);
@@ -195,7 +194,7 @@ class Game {
     debug(universe) {
         var world = WorldExtended.create(universe);
         universe.world = world;
-        universe.venueNext = new VenueWorld(world);
+        universe.venueNextSet(new VenueWorld(world));
         var debuggingModeName = universe.debuggingModeName;
         if (debuggingModeName == "Combat") {
             this.debug_Combat(universe);
@@ -301,7 +300,7 @@ class Game {
         world.placeCurrent = placeCombat;
         var controlShipSelect = combat.toControlShipSelect(universe, displaySize);
         var venueNext = VenueControls.fromControl(controlShipSelect);
-        universe.venueNext = venueNext;
+        universe.venueNextSet(venueNext);
     }
     debug_Docks(universe) {
         var world = universe.world;

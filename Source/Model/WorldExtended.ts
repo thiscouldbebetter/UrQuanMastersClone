@@ -28,12 +28,14 @@ class WorldExtended extends World
 		starsystemStart: Starsystem
 	)
 	{
+
 		super
 		(
 			name,
 			dateCreated,
 			defn,
-			[] // places
+			null, // placeGetByName
+			null // placeInitialName
 		);
 
 		this.timerTicksSoFar = 0;

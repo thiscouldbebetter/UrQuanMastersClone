@@ -1,5 +1,5 @@
 
-class PlaceStation extends Place
+class PlaceStation extends PlaceBase
 {
 	station: Station;
 	placePlanetVicinity: PlacePlanetVicinity;
@@ -42,7 +42,7 @@ class PlaceStation extends Place
 		var world = universe.world as WorldExtended;
 		var place = (world.placeCurrent as PlaceStation);
 		var placePrev = place.placePlanetVicinity;
-		var size = placePrev.size;
+		var size = placePrev.size();
 		var planet = placePrev.planet;
 		var station = place.station;
 		var playerPosNext = station.posAsPolar.toCoords
@@ -75,7 +75,7 @@ class PlaceStation extends Place
 		var conversationQuit = () =>
 		{
 			world.placeCurrent = placeStation.placePlanetVicinity;
-			universe.venueNext = new VenueWorld(world);
+			universe.venueNextSet(new VenueWorld(world) );
 		};
 
 		var stationEntity = placeStation.entityByName(Station.name);
@@ -139,7 +139,7 @@ class PlaceStation extends Place
 	returnToPlace(world: World): void
 	{
 		var placeNext = this.placeToReturnTo;
-		var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+		var playerFromPlaceNext = placeNext.entityByName(Player.name);
 		var playerLoc = playerFromPlaceNext.locatable().loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();

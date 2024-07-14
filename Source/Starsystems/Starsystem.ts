@@ -94,7 +94,7 @@ class Starsystem implements EntityProperty<Starsystem>
 						// todo
 					},
 					null, // showMessageOnly
-					5 // fontHeight
+					FontNameAndHeight.fromHeightInPixels(5)
 				);
 
 				universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
@@ -164,7 +164,7 @@ class Starsystem implements EntityProperty<Starsystem>
 						universe.venueTransitionTo(conversationVenue);
 					},
 					null, // showMessageOnly
-					5 // fontHeight
+					FontNameAndHeight.fromHeightInPixels(5)
 				);
 
 				universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
@@ -271,6 +271,18 @@ class Starsystem implements EntityProperty<Starsystem>
 	): PlaceStarsystem
 	{
 		return new PlaceStarsystem(world, this, playerLoc, planetDeparted);
+	}
+
+	// Clonable.
+
+	clone(): Starsystem
+	{
+		throw new Error("todo");
+	}
+
+	overwriteWith(other: Starsystem): Starsystem
+	{
+		throw new Error("todo");
 	}
 
 	// EntityProperty.

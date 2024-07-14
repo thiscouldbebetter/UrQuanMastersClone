@@ -1,5 +1,5 @@
 
-class PlacePlanetOrbit extends Place
+class PlacePlanetOrbit extends PlaceBase
 {
 	planet: Planet;
 	placePlanetVicinity: PlacePlanetVicinity;
@@ -176,7 +176,7 @@ class PlacePlanetOrbit extends Place
 		var mapSize = controlMap.size;
 		var surfaceSize = this.planet.sizeSurface;
 
-		var scanContacts = this.entities;
+		var scanContacts = this.entitiesAll();
 		var contactPosSaved = Coords.create();
 		for (var i = 0; i < scanContacts.length; i++)
 		{
@@ -239,7 +239,9 @@ class PlacePlanetOrbit extends Place
 
 		var containerMainSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
+		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var fontHeightShort = fontHeight / 2;
+		var fontShort = FontNameAndHeight.fromHeightInPixels(fontHeightShort);
 		var buttonBackSize = Coords.fromXY(1, 1).multiplyScalar(1.6 * fontHeightShort);
 		var marginWidth = 8;
 		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
@@ -302,7 +304,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Name: " + planet.name),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -318,7 +320,7 @@ class PlacePlanetOrbit extends Place
 						+ planet.mass.toExponential(3).replace("e", " x 10^").replace("+", "")
 						+ " kg"
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -329,7 +331,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Radius: " + planet.radius + " km"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -340,7 +342,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Surface Gravity: " + planet.gravity + "g"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -356,7 +358,7 @@ class PlacePlanetOrbit extends Place
 						+ planet.orbit.toExponential(3).replace("e", " x 10^").replace("+", "")
 						+ " km"
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -367,7 +369,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Day: " + planet.dayInHours + " hours"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -378,7 +380,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Year: " + planet.yearInEarthDays + " Earth days"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -389,7 +391,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Temperature: " + planet.temperature + " C"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -400,7 +402,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Weather: Class " + planet.weather),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -411,7 +413,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Tectonics: Class " + planet.tectonics),
-					fontHeightShort
+					fontShort
 				),
 			]
 		);
@@ -484,7 +486,7 @@ class PlacePlanetOrbit extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Scan:"),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlContainer.from4
@@ -510,7 +512,7 @@ class PlacePlanetOrbit extends Place
 							),
 							buttonScanSize,
 							"Mineral",
-							fontHeightShort,
+							fontShort,
 							true, // hasBorder,
 							canLandAsBinding, // isEnabled,
 							() => placePlanetOrbit.scanMinerals(universe)
@@ -526,7 +528,7 @@ class PlacePlanetOrbit extends Place
 							),
 							buttonScanSize,
 							"Life",
-							fontHeightShort,
+							fontShort,
 							true, // hasBorder,
 							canLandAsBinding, // isEnabled,
 							() => placePlanetOrbit.scanLife(universe)
@@ -542,7 +544,7 @@ class PlacePlanetOrbit extends Place
 							),
 							buttonScanSize,
 							"Energy",
-							fontHeightShort,
+							fontShort,
 							true, // hasBorder,
 							canLandAsBinding, // isEnabled,
 							() => placePlanetOrbit.scanEnergy(universe)
@@ -560,7 +562,7 @@ class PlacePlanetOrbit extends Place
 					),
 					buttonSizeRight,
 					"Land",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					canLandAsBinding, // isEnabled,
 					() => placePlanetOrbit.land(universe)
@@ -582,7 +584,7 @@ class PlacePlanetOrbit extends Place
 					true, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Orbit"),
-					fontHeight
+					font
 				),
 
 				containerInfo,
@@ -609,8 +611,8 @@ class PlacePlanetOrbit extends Place
 							(
 								new VisualImageScaled
 								(
-									new VisualImageFromLibrary("PlanetSurface"),
-									containerMapSize
+									containerMapSize,
+									new VisualImageFromLibrary("PlanetSurface")
 								)
 							)
 						),
@@ -625,7 +627,7 @@ class PlacePlanetOrbit extends Place
 					marginSize,
 					buttonBackSize,
 					"<",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() => placePlanetOrbit.returnToPlaceParent(universe)

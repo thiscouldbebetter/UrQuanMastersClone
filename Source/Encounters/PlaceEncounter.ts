@@ -1,5 +1,5 @@
 
-class PlaceEncounter extends Place
+class PlaceEncounter extends PlaceBase
 {
 	encounter: Encounter;
 

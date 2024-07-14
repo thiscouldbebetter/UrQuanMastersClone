@@ -1,5 +1,5 @@
 "use strict";
-class PlaceHyperspaceMap extends Place {
+class PlaceHyperspaceMap extends PlaceBase {
     constructor(placeHyperspaceToReturnTo) {
         super(PlaceHyperspaceMap.name, PlaceHyperspaceMap.name, null, // parentName
         null, // size
@@ -62,8 +62,7 @@ class PlaceHyperspaceMap extends Place {
                 var factionZoneRadiusScaled = factionZone.radius * magnificationFactor;
                 var factionColor = faction.color;
                 display.drawCircle(drawPos, factionZoneRadiusScaled, null, factionColor, null);
-                display.drawText(faction.name, 10, //fontHeightInPixels,
-                drawPos, factionColor, Color.byName("Gray"), false, // areColorsReversed,
+                display.drawText(faction.name, FontNameAndHeight.fromHeightInPixels(10), drawPos, factionColor, Color.Instances().Gray, false, // areColorsReversed,
                 true, // isCentered,
                 null);
             }
@@ -170,7 +169,9 @@ class PlaceHyperspaceMap extends Place {
     toControl(universe, world) {
         var containerSize = universe.display.sizeInPixels.clone();
         var fontHeight = 20;
+        var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
         var fontHeightShort = 10;
+        var fontShort = FontNameAndHeight.fromHeightInPixels(fontHeightShort);
         var marginWidth = 8;
         var buttonSize = Coords.fromXY(1, 1).multiplyScalar(25);
         var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
@@ -178,7 +179,7 @@ class PlaceHyperspaceMap extends Place {
         var containerRightSize = Coords.fromXY((containerSize.x - marginSize.x * 3) / 3, containerSize.y - marginSize.y * 3 - titleSize.y);
         var containerMapSize = Coords.fromXY(containerSize.x - marginSize.x * 3 - containerRightSize.x, containerRightSize.y);
         var displayMain = universe.display;
-        var displayMap = new Display2D([containerMapSize], displayMain.fontName, displayMain.fontHeightInPixels, Color.byName("Gray"), Color.byName("Black"), // colorsForeAndBack
+        var displayMap = new Display2D([containerMapSize], displayMain.fontNameAndHeight, Color.Instances().Gray, Color.Instances().Black, // colorsForeAndBack
         true // isInvisible
         );
         this.displayMap = displayMap.initialize(universe);
@@ -186,19 +187,19 @@ class PlaceHyperspaceMap extends Place {
         var containerReticle = ControlContainer.from4("containerReticle", Coords.fromXY(marginSize.x, marginSize.y * 2 + containerPlayer.size.y), containerPlayer.size, [
             new ControlLabel("labelReticle", Coords.fromXY(containerPlayer.size.x / 2, marginSize.y), titleSize, true, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Reticle"), fontHeightShort),
+            DataBinding.fromContext("Reticle"), fontShort),
             new ControlLabel("labelPos", Coords.fromXY(marginSize.x, marginSize.y * 2), titleSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Pos:"), fontHeightShort),
+            DataBinding.fromContext("Pos:"), fontShort),
             new ControlLabel("infoPos", Coords.fromXY(marginSize.x * 4, marginSize.y * 2), titleSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(this, (c) => c.reticlePosAsStringXY()), fontHeightShort),
+            DataBinding.fromContextAndGet(this, (c) => c.reticlePosAsStringXY()), fontShort),
             new ControlLabel("labelFuel", Coords.fromXY(marginSize.x, marginSize.y * 3), titleSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Fuel:"), fontHeightShort),
+            DataBinding.fromContext("Fuel:"), fontShort),
             new ControlLabel("infoFuel", Coords.fromXY(marginSize.x * 4, marginSize.y * 3), titleSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(this, (c) => "" + c.fuelFromPlayerShipGroupToReticle(world)), fontHeightShort),
+            DataBinding.fromContextAndGet(this, (c) => "" + c.fuelFromPlayerShipGroupToReticle(world)), fontShort),
         ]);
         var containerSidebar = ControlContainer.from4("containerRight", Coords.fromXY(marginSize.x * 2 + containerMapSize.x, marginSize.y * 2 + titleSize.y), containerRightSize, 
         // children
@@ -210,11 +211,11 @@ class PlaceHyperspaceMap extends Place {
         containerSize, [
             new ControlLabel("labelHyperspaceMap", Coords.fromXY(marginSize.x, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Hyperspace Map"), fontHeight),
+            DataBinding.fromContext("Hyperspace Map"), font),
             ControlVisual.from4("visualMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerMapSize, DataBinding.fromContext(new VisualImageImmediate(Image2.fromSystemImage("[fromCanvas]", this.displayMap.canvas), null // ?
             ))),
             containerSidebar,
-            ControlButton.from8("buttonBack", marginSize, buttonSize, "<", fontHeight, true, // hasBorder,
+            ControlButton.from8("buttonBack", marginSize, buttonSize, "<", font, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
             () => {
                 var world = universe.world;

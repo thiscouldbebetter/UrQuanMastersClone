@@ -1,12 +1,12 @@
 "use strict";
-class PlacePlanetSurface extends Place {
+class PlacePlanetSurface extends PlaceBase {
     constructor(worldAsWorld, planet, placePlanetOrbit) {
         super(PlacePlanetSurface.name, PlacePlanetSurface.name, null, // parentName
         Coords.fromXY(300, 300), null // entities
         );
         var world = worldAsWorld;
         this.planet = planet;
-        this.size = this.planet.sizeSurface;
+        this.size = () => this.planet.sizeSurface;
         this.placePlanetOrbit = placePlanetOrbit;
         var actionExit = new Action("Exit", this.exit);
         var actionFire = Ship.actionFire();
@@ -40,7 +40,7 @@ class PlacePlanetSurface extends Place {
         var visualBackgroundImage = new VisualImageFromLibrary("PlanetSurface");
         var planetSizeSurface = this.planet.sizeSurface;
         visualBackgroundImage =
-            new VisualImageScaled(visualBackgroundImage, planetSizeSurface);
+            new VisualImageScaled(planetSizeSurface, visualBackgroundImage);
         var visualBackground = new VisualWrapped(planetSizeSurface, visualBackgroundImage);
         var entityBackground = new Entity("Background", [
             Locatable.fromPos(this.planet.sizeSurface.clone().half()),
@@ -126,12 +126,12 @@ class PlacePlanetSurface extends Place {
         ]);
         var playerColor = Color.byName("Gray");
         var playerVisual = ShipDefn.visual(entityDimension, playerColor, Color.byName("Black"));
-        playerVisual = new VisualWrapped(this.size, playerVisual);
+        playerVisual = new VisualWrapped(this.size(), playerVisual);
         var playerDrawable = Drawable.fromVisual(playerVisual);
         var crewAvailableForLander = 12; // todo
         var playerKillable = new Killable(crewAvailableForLander, null, this.playerDie);
         var playerLander = Lander.fromKillableCrew(playerKillable);
-        var playerPos = this.size.clone().half(); // todo
+        var playerPos = this.size().clone().half(); // todo
         var playerLoc = Disposition.fromPos(playerPos);
         var playerLocatable = new Locatable(playerLoc);
         var playerMappable = new Mappable(playerVisual);
@@ -160,7 +160,7 @@ class PlacePlanetSurface extends Place {
     exit(uwpe) {
         var world = uwpe.world;
         var place = uwpe.place;
-        var entityLander = place.entitiesByName.get(Player.name);
+        var entityLander = place.entityByName(Player.name);
         var lander = Lander.fromEntity(entityLander);
         var itemHoldersForLander = [lander.itemHolderCargo, lander.itemHolderLifeforms];
         var itemHolderPlayer = world.player.flagship.itemHolderCargo;
@@ -189,7 +189,7 @@ class PlacePlanetSurface extends Place {
                 throw new Error("todo");
             }
             itemHolder.itemAdd(entityOther.item());
-            place.entitiesToRemove.push(entityOther);
+            place.entityToRemoveAdd(entityOther);
         }
         else if (entityOtherName.startsWith(Lifeform.name)) {
             var lifeformDamager = entityOther.damager();
@@ -212,7 +212,7 @@ class PlacePlanetSurface extends Place {
     // Place overrides
     draw(universe, world) {
         var display = universe.display;
-        var player = this.entitiesByName.get(Player.name);
+        var player = this.entityByName(Player.name);
         var playerLoc = player.locatable().loc;
         var camera = this._camera;
         var planetSize = this.planet.sizeSurface;
@@ -229,7 +229,7 @@ class PlacePlanetSurface extends Place {
         var mapSize = controlMap.size;
         var surfaceSize = this.planet.sizeSurface;
         var display = universe.display;
-        var scanContacts = this.entities;
+        var scanContacts = this.entitiesAll();
         var contactPosSaved = Coords.create();
         for (var i = 0; i < scanContacts.length; i++) {
             var contact = scanContacts[i];
@@ -255,6 +255,7 @@ class PlacePlanetSurface extends Place {
         var marginWidth = 10;
         var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
         var fontHeight = 10;
+        var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
         var childControlWidth = containerSidebarSize.x - marginWidth * 2;
         var labelSize = Coords.fromXY(childControlWidth, fontHeight);
         var minimapSize = Coords.fromXY(1, .5).multiplyScalar(childControlWidth);
@@ -266,38 +267,38 @@ class PlacePlanetSurface extends Place {
         [
             new ControlLabel("labelMap", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Map:"), fontHeight),
+            DataBinding.fromContext("Map:"), font),
             ControlContainer.from4("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
             minimapSize, [
                 ControlVisual.from4("visualMap", Coords.fromXY(0, 0), minimapSize, DataBinding.fromContext(VisualRectangle.fromSizeAndColorFill(minimapSize, Color.byName("Gray"))))
             ]),
             new ControlLabel("labelLander", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Lander:"), fontHeight),
+            DataBinding.fromContext("Lander:"), font),
             ControlContainer.from4("containerLander", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 2 + minimapSize.y), // pos
             containerLanderSize, [
                 new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContext("Crew:"), fontHeight),
+                DataBinding.fromContext("Crew:"), font),
                 new ControlLabel("infoCrew", Coords.fromXY(marginSize.x * 5, marginSize.y), labelSize, false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(lander, (c) => c.crewCurrentOverMax()), fontHeight),
+                DataBinding.fromContextAndGet(lander, (c) => c.crewCurrentOverMax()), font),
                 new ControlLabel("labelCargo", Coords.fromXY(marginSize.x, marginSize.y * 2), labelSize, false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContext("Cargo:"), fontHeight),
+                DataBinding.fromContext("Cargo:"), font),
                 new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, marginSize.y * 2), labelSize, false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(lander, (c) => c.cargoCurrentOverMax(world)), fontHeight),
+                DataBinding.fromContextAndGet(lander, (c) => c.cargoCurrentOverMax(world)), font),
                 new ControlLabel("labelData", Coords.fromXY(marginSize.x, marginSize.y * 3), labelSize, false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContext("Biodata:"), fontHeight),
+                DataBinding.fromContext("Biodata:"), font),
                 new ControlLabel("infoData", Coords.fromXY(marginSize.x * 5, marginSize.y * 3), labelSize, false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(lander, (c) => c.lifeformsCurrentOverMax(world)), fontHeight),
+                DataBinding.fromContextAndGet(lander, (c) => c.lifeformsCurrentOverMax(world)), font),
             ] // children
             ),
             ControlButton.from8("buttonLeave", Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y), // pos
-            Coords.fromXY(containerLanderSize.x, labelSize.y * 2), "Launch", fontHeight, true, // hasBorder
+            Coords.fromXY(containerLanderSize.x, labelSize.y * 2), "Launch", font, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => this.exit(new UniverseWorldPlaceEntities(null, world, this, null, null))),
         ]);

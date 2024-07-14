@@ -1,12 +1,12 @@
 "use strict";
-class PlaceCombat extends Place {
+class PlaceCombat extends PlaceBase {
     constructor(worldAsWorld, combat) {
         super(PlaceCombat.name, PlaceCombat.name, null, // parentName
         combat.size, null // entities
         );
         this.combat = combat;
         this.entityToSpawnAdd(new GameClock(1).toEntity());
-        this.size = this.combat.size;
+        this.size = () => this.combat.size;
         var actionExit = new Action("Exit", (uwpe) => {
             var place = uwpe.place;
             var encounter = place.combat.encounter;
@@ -60,9 +60,9 @@ class PlaceCombat extends Place {
         */
         var planetVisual = planetDefn.visualVicinity;
         var planetRadius = planetVisual.radius;
-        planetVisual = new VisualWrapped(this.size, planetVisual);
+        planetVisual = new VisualWrapped(this.size(), planetVisual);
         var planetDrawable = Drawable.fromVisual(planetVisual);
-        var sizeHalf = this.size.clone().half();
+        var sizeHalf = this.size().clone().half();
         var planetPos = sizeHalf.clone();
         var planetLocatable = Locatable.fromPos(planetPos);
         var planetEntity = new Entity("Planet", [
@@ -73,7 +73,6 @@ class PlaceCombat extends Place {
             planet
         ]);
         this.entityToSpawnAdd(planetEntity);
-        this.entitiesByName = ArrayHelper.addLookupsByName(this.entities);
     }
     // methods
     actionToInputsMappings() {
@@ -90,12 +89,12 @@ class PlaceCombat extends Place {
         else if (shipGroups[1].ships.length > 0) {
             var controlShipSelect = combat.toControlShipSelect(universe, universe.display.sizeInPixels);
             var venueNext = VenueControls.fromControl(controlShipSelect);
-            universe.venueNext = venueNext;
+            universe.venueNextSet(venueNext);
         }
         else {
             var controlCombatDebriefing = combat.toControlDebriefing(universe, universe.display.sizeInPixels);
             var venueNext = VenueControls.fromControl(controlCombatDebriefing);
-            universe.venueNext = venueNext;
+            universe.venueNextSet(venueNext);
         }
     }
     entitiesShips() {
@@ -139,7 +138,7 @@ class PlaceCombat extends Place {
              {
                 midpointBetweenCombatants =
                     this.combat.midpointOfPointsWrappedToRange(cameraPos, // midpointToOverwrite
-                    ships[0].locatable().loc.pos, ships[1].locatable().loc.pos, this.size);
+                    ships[0].locatable().loc.pos, ships[1].locatable().loc.pos, this.size());
             }
             cameraPos.overwriteWith(midpointBetweenCombatants);
         }
@@ -161,7 +160,9 @@ class PlaceCombat extends Place {
             var distanceMin = 100;
             while (shipPos.clone().subtract(planetPos).magnitude() < distanceMin
                 || shipPos.clone().subtract(shipOtherPos).magnitude() < distanceMin) {
-                shipPos.randomize(uwpe.universe.randomizer).multiply(this.size);
+                shipPos
+                    .randomize(uwpe.universe.randomizer)
+                    .multiply(this.size());
             }
             var shipsFighting = this.combat.shipsFighting;
             if (ship == shipsFighting[0]) {

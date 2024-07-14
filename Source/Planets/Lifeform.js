@@ -29,7 +29,7 @@ class Lifeform {
             var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
             var radius = entity.collidable().collider.radius;
             var entityResource = resource.toEntity(world, place, radius);
-            place.entitiesToSpawn.push(entityResource);
+            place.entityToSpawnAdd(entityResource);
         });
         var lifeformLocatable = Locatable.fromPos(this.pos);
         var colorGreen = Color.Instances().Green;
@@ -86,7 +86,7 @@ class Lifeform {
                     Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
                 }
                 else {
-                    var distancePerTick = entityActor.movable().speedMax;
+                    var distancePerTick = entityActor.movable().speedMax(uwpe);
                     if (distanceToTarget < distancePerTick) {
                         actorPos.overwriteWith(targetPos);
                     }
@@ -112,7 +112,7 @@ class Lifeform {
                 var displacementToTarget = targetPos.clone().subtract(actorPos);
                 var distanceToTarget = displacementToTarget.magnitude();
                 var detectionDistanceMax = 150; // todo
-                var distancePerTick = entityActor.movable().speedMax;
+                var distancePerTick = entityActor.movable().speedMax(uwpe);
                 if (distanceToTarget > detectionDistanceMax) {
                     Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
                 }
@@ -134,7 +134,7 @@ class Lifeform {
         var activity = actor.activity;
         var entityTarget = activity.targetEntity();
         if (entityTarget == null) {
-            var targetPos = Coords.create().randomize(uwpe.universe.randomizer).multiply(uwpe.place.size);
+            var targetPos = Coords.create().randomize(uwpe.universe.randomizer).multiply(uwpe.place.size());
             entityTarget = Locatable.fromPos(targetPos).toEntity();
             activity.targetEntitySet(entityTarget);
         }
@@ -143,7 +143,7 @@ class Lifeform {
         var actorPos = actorLoc.pos;
         var displacementToTarget = targetPos.clone().subtract(actorPos);
         var distanceToTarget = displacementToTarget.magnitude();
-        var distancePerTick = entityActor.movable().speedMax;
+        var distancePerTick = entityActor.movable().speedMax(uwpe);
         if (distanceToTarget < distancePerTick) {
             activity.targetEntityClear();
         }
@@ -151,6 +151,9 @@ class Lifeform {
             actorLoc.vel.overwriteWith(displacementToTarget).divideScalar(distanceToTarget).multiplyScalar(distancePerTick);
         }
     }
+    // Clonable.
+    clone() { throw new Error("todo"); }
+    overwriteWith(other) { throw new Error("todo"); }
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }

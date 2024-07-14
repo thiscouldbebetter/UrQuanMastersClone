@@ -93,6 +93,10 @@ class EnergySource implements EntityProperty<EnergySource>
 		return returnValue;
 	}
 
+	// Clonable.
+	clone(): EnergySource { throw new Error("todo"); }
+	overwriteWith(other: EnergySource): EnergySource { throw new Error("todo"); }
+
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}

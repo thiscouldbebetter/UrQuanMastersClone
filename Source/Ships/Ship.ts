@@ -113,9 +113,9 @@ class Ship implements EntityProperty<Ship>
 				);
 				venueNext = VenueFader.fromVenuesToAndFrom
 				(
-					venueNext, universe.venueCurrent
+					venueNext, universe.venueCurrent()
 				);
-				universe.venueNext = venueNext;
+				universe.venueNextSet(venueNext);
 			}
 		);
 	}
@@ -255,7 +255,7 @@ class Ship implements EntityProperty<Ship>
 			]
 		);
 
-		place.entitiesToSpawn.push(entityExplosion);
+		place.entityToSpawnAdd(entityExplosion);
 	}
 
 	energyCurrentOverMax(world: WorldExtended): string
@@ -303,7 +303,7 @@ class Ship implements EntityProperty<Ship>
 		var shipVisualBody = defn.visual;
 		var shipVisual = new VisualWrapped
 		(
-			place.size, shipVisualBody
+			place.size(), shipVisualBody
 		);
 		var drawable = Drawable.fromVisual(shipVisual);
 
@@ -440,6 +440,18 @@ class Ship implements EntityProperty<Ship>
 		this.turnInDirection(world, entity, 1);
 	}
 
+	// Clonable.
+
+	clone(): Ship
+	{
+		throw new Error("todo");
+	}
+
+	overwriteWith(other: Ship): Ship
+	{
+		throw new Error("todo");
+	}
+
 	// controls
 
 	toControlSidebar
@@ -461,8 +473,10 @@ class Ship implements EntityProperty<Ship>
 		);
 
 		var fontHeight = 20;
+		//var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 
 		var fontHeightShort = fontHeight / 2;
+		var fontShort = FontNameAndHeight.fromHeightInPixels(fontHeightShort);
 		var labelSizeWide = Coords.fromXY(containerShipSize.x - marginSize.x * 2, fontHeightShort);
 		var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
 
@@ -490,7 +504,7 @@ class Ship implements EntityProperty<Ship>
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(defn.factionName),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -505,7 +519,7 @@ class Ship implements EntityProperty<Ship>
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Crew:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -523,7 +537,7 @@ class Ship implements EntityProperty<Ship>
 					(
 						ship, (c: Ship) => c.crewCurrentOverMax(world)
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -534,7 +548,7 @@ class Ship implements EntityProperty<Ship>
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Energy:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -552,7 +566,7 @@ class Ship implements EntityProperty<Ship>
 					(
 						ship, (c: Ship) => c.energyCurrentOverMax(world)
 					),
-					fontHeightShort
+					fontShort
 				),
 			]
 		);

@@ -1,8 +1,8 @@
 
-class PlacePlanetVicinity extends Place
+class PlacePlanetVicinity extends PlaceBase
 {
 	world: World;
-	size: Coords;
+	_size: Coords;
 	planet: Planet;
 	playerLoc: Disposition;
 	placeStarsystem: PlaceStarsystem;
@@ -53,7 +53,7 @@ class PlacePlanetVicinity extends Place
 
 		// planet
 
-		var sizeHalf = this.size.clone().half();
+		var sizeHalf = this.size().clone().half();
 
 		var planetRadius = entityDimension;
 		var planetPos = sizeHalf.clone();
@@ -193,13 +193,13 @@ class PlacePlanetVicinity extends Place
 			[
 				new Locatable
 				(
-					Disposition.fromPos(this.size.clone().half() )
+					Disposition.fromPos(this.size().clone().half() )
 				),
 				Collidable.fromCollider
 				(
 					new ShapeInverse
 					(
-						new Box(Coords.create(), this.size)
+						new Box(Coords.create(), this.size() )
 					)
 				)
 			]
@@ -229,7 +229,7 @@ class PlacePlanetVicinity extends Place
 
 		display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
 
-		var player = this.entitiesByName.get(Player.name);
+		var player = this.entityByName(Player.name);
 		var playerLoc = player.locatable().loc;
 
 		var camera = this._camera;
@@ -239,7 +239,7 @@ class PlacePlanetVicinity extends Place
 		).trimToRangeMinMax
 		(
 			camera.viewSizeHalf,
-			this.size.clone().subtract(camera.viewSizeHalf)
+			this.size().clone().subtract(camera.viewSizeHalf)
 		);
 
 		super.draw(universe, world, display);

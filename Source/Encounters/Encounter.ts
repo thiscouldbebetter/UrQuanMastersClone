@@ -45,11 +45,11 @@ class Encounter
 		var shipGroups = [player.shipGroup, shipGroupOther];
 		var combat = new Combat(combatSize, encounter, shipGroups);
 
-		world.placeNext = combat.toPlace(world);
+		world.placeNextSet(combat.toPlace(world) );
 
 		// These lines are necessary.
 		var venueNext = new VenueWorld(world);
-		universe.venueNext = venueNext;
+		universe.venueNextSet(venueNext);
 	}
 
 	goToPlaceNext(universe: Universe): void
@@ -61,13 +61,13 @@ class Encounter
 		else
 		{
 			var placeNext = this.placeToReturnTo;
-			var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+			var playerFromPlaceNext = placeNext.entityByName(Player.name);
 			var playerLoc = playerFromPlaceNext.locatable().loc;
 			playerLoc.pos.overwriteWith(this.posToReturnTo);
 			playerLoc.vel.clear();
 			var world = universe.world;
-			world.placeNext = placeNext;
-			universe.venueNext = world.toVenue();
+			world.placeNextSet(placeNext);
+			universe.venueNextSet(world.toVenue() );
 		}
 	}
 
@@ -80,7 +80,7 @@ class Encounter
 
 		if (placeTypeName == PlaceHyperspace.name)
 		{
-			returnPos = place.player().locatable().loc.pos;
+			returnPos = (place as PlaceBase).player().locatable().loc.pos;
 		}
 		else if (placeTypeName == PlaceStarsystem.name)
 		{

@@ -158,7 +158,7 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 				]
 			);
 
-			place.entitiesToSpawn.push(entityImpact);
+			place.entityToSpawnAdd(entityImpact);
 		}
 
 		var entityOtherKillable = entityOther.killable();
@@ -173,6 +173,11 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 			}
 		}
 	}
+
+	// Clonable.
+
+	clone(): ShipAttackDefn { throw new Error("todo"); }
+	overwriteWith(other: ShipAttackDefn): ShipAttackDefn { throw new Error("todo"); }
 
 	// EntityProperty.
 

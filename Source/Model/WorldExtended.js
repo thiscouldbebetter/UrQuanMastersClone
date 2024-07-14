@@ -1,7 +1,8 @@
 "use strict";
 class WorldExtended extends World {
     constructor(name, dateCreated, defn, gameTimeInitial, hyperspace, factions, shipDefns, player, starsystemStart) {
-        super(name, dateCreated, defn, [] // places
+        super(name, dateCreated, defn, null, // placeGetByName
+        null // placeInitialName
         );
         this.timerTicksSoFar = 0;
         this.gameTimeInitial = gameTimeInitial;

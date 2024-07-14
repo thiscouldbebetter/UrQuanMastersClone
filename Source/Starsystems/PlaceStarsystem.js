@@ -1,12 +1,12 @@
 "use strict";
-class PlaceStarsystem extends Place {
+class PlaceStarsystem extends PlaceBase {
     constructor(world, starsystem, playerLoc, planetDeparted) {
         super(PlaceStarsystem.name, PlaceStarsystem.name, null, // parentName
         Coords.fromXY(300, 300), // size
         null // entities
         );
         this.starsystem = starsystem;
-        this.size = this.starsystem.sizeInner;
+        this._size = this.starsystem.sizeInner;
         this.actions =
             [
                 Ship.actionShowMenu(),
@@ -87,22 +87,16 @@ class PlaceStarsystem extends Place {
         }
         var entitiesForShipGroups = this.starsystem.shipGroups.map(x => x.toEntity(world, this));
         entities.push(...entitiesForShipGroups);
-        this._camera = new Camera(new Coords(1, 1, 0).multiplyScalar(this.size.y), null, // focalLength
+        this._camera = new Camera(new Coords(1, 1, 0).multiplyScalar(this.size().y), null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
         var wallsEntity = new Entity("Walls", [
-            new Locatable(Disposition.fromPos(this.size.clone().half())),
-            Collidable.fromCollider(new ShapeInverse(new Box(Coords.create(), this.size)))
+            new Locatable(Disposition.fromPos(this.size().clone().half())),
+            Collidable.fromCollider(new ShapeInverse(new Box(Coords.create(), this.size())))
         ]);
         entities.push(wallsEntity);
-        // CollisionTracker.
-        /*
-        var collisionTracker = new CollisionTracker(this.starsystem.sizeInner);
-        var entityForCollisionTracker = collisionTracker.toEntity();
-        entities.push(entityForCollisionTracker);
-        */
         // Sidebar.
         var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), // todo
         Coords.fromXY(100, 300), // size
@@ -113,7 +107,7 @@ class PlaceStarsystem extends Place {
     }
     // Constructor helpers.
     sunEntityBuild(entityDimension) {
-        var sizeHalf = this.size.clone().half();
+        var sizeHalf = this.size().clone().half();
         var sunPos = sizeHalf.clone();
         var sunLocatable = new Locatable(Disposition.fromPos(sunPos));
         var sunRadius = entityDimension * 1.5;
@@ -165,7 +159,7 @@ class PlaceStarsystem extends Place {
             if (entityOtherPlanet != null) {
                 entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
                 var planet = entityOtherPlanet;
-                var sizeNext = place.size.clone();
+                var sizeNext = place.size().clone();
                 var playerOrientation = entityPlayer.locatable().loc.orientation;
                 var heading = playerOrientation.forward.headingInTurns();
                 var playerPosNext = new Polar(heading + .5, .4 * sizeNext.y, null).wrap().toCoords(Coords.create()).add(sizeNext.clone().half());
@@ -186,13 +180,13 @@ class PlaceStarsystem extends Place {
     draw(universe, world) {
         var display = universe.display;
         display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
-        var player = this.entitiesByName.get(Player.name);
+        var player = this.entityByName(Player.name);
         if (player == null) {
             return; // hack
         }
         var playerLoc = player.locatable().loc;
         var camera = this._camera;
-        camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(camera.viewSizeHalf, this.size.clone().subtract(camera.viewSizeHalf));
+        camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(camera.viewSizeHalf, this.size().clone().subtract(camera.viewSizeHalf));
         super.draw(universe, world, universe.display);
         this.venueControls.draw(universe);
     }

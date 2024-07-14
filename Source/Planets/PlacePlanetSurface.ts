@@ -1,5 +1,5 @@
 
-class PlacePlanetSurface extends Place
+class PlacePlanetSurface extends PlaceBase
 {
 	planet: Planet;
 	placePlanetOrbit: PlacePlanetOrbit;
@@ -31,7 +31,7 @@ class PlacePlanetSurface extends Place
 		var world = worldAsWorld as WorldExtended;
 
 		this.planet = planet;
-		this.size = this.planet.sizeSurface;
+		this.size = () => this.planet.sizeSurface;
 		this.placePlanetOrbit = placePlanetOrbit;
 
 		var actionExit = new Action
@@ -93,7 +93,7 @@ class PlacePlanetSurface extends Place
 			new VisualImageFromLibrary("PlanetSurface");
 		var planetSizeSurface = this.planet.sizeSurface;
 		visualBackgroundImage =
-			new VisualImageScaled(visualBackgroundImage, planetSizeSurface);
+			new VisualImageScaled(planetSizeSurface, visualBackgroundImage);
 		var visualBackground =
 			new VisualWrapped(planetSizeSurface, visualBackgroundImage);
 
@@ -252,7 +252,7 @@ class PlacePlanetSurface extends Place
 		(
 			entityDimension, playerColor, Color.byName("Black")
 		);
-		playerVisual = new VisualWrapped(this.size, playerVisual);
+		playerVisual = new VisualWrapped(this.size(), playerVisual);
 		var playerDrawable = Drawable.fromVisual(playerVisual);
 
 		var crewAvailableForLander = 12; // todo
@@ -263,7 +263,7 @@ class PlacePlanetSurface extends Place
 
 		var playerLander = Lander.fromKillableCrew(playerKillable);
 
-		var playerPos = this.size.clone().half(); // todo
+		var playerPos = this.size().clone().half(); // todo
 		var playerLoc = Disposition.fromPos(playerPos);
 		var playerLocatable = new Locatable(playerLoc);
 
@@ -308,7 +308,7 @@ class PlacePlanetSurface extends Place
 		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place as PlacePlanetSurface;
 
-		var entityLander = place.entitiesByName.get(Player.name);
+		var entityLander = place.entityByName(Player.name);
 		var lander = Lander.fromEntity(entityLander);
 		var itemHoldersForLander = [ lander.itemHolderCargo, lander.itemHolderLifeforms ];
 
@@ -352,7 +352,7 @@ class PlacePlanetSurface extends Place
 			}
 
 			itemHolder.itemAdd(entityOther.item());
-			place.entitiesToRemove.push(entityOther);
+			place.entityToRemoveAdd(entityOther);
 		}
 		else if (entityOtherName.startsWith(Lifeform.name))
 		{
@@ -385,7 +385,7 @@ class PlacePlanetSurface extends Place
 	{
 		var display = universe.display;
 
-		var player = this.entitiesByName.get(Player.name);
+		var player = this.entityByName(Player.name);
 		var playerLoc = player.locatable().loc;
 
 		var camera = this._camera;
@@ -421,7 +421,7 @@ class PlacePlanetSurface extends Place
 		var surfaceSize = this.planet.sizeSurface;
 		var display = universe.display;
 
-		var scanContacts = this.entities;
+		var scanContacts = this.entitiesAll();
 		var contactPosSaved = Coords.create();
 
 		for (var i = 0; i < scanContacts.length; i++)
@@ -471,6 +471,7 @@ class PlacePlanetSurface extends Place
 		var marginWidth = 10;
 		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
 		var fontHeight = 10;
+		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var childControlWidth = containerSidebarSize.x - marginWidth * 2;
 		var labelSize = Coords.fromXY(childControlWidth, fontHeight);
 		var minimapSize = Coords.fromXY(1, .5).multiplyScalar(childControlWidth);
@@ -493,7 +494,7 @@ class PlacePlanetSurface extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Map:"),
-					fontHeight
+					font
 				),
 
 				ControlContainer.from4
@@ -526,7 +527,7 @@ class PlacePlanetSurface extends Place
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Lander:"),
-					fontHeight
+					font
 				),
 
 				ControlContainer.from4
@@ -547,7 +548,7 @@ class PlacePlanetSurface extends Place
 							false, // isTextCenteredHorizontally
 							false, // isTextCenteredVertically
 							DataBinding.fromContext("Crew:"),
-							fontHeight
+							font
 						),
 
 						new ControlLabel
@@ -561,7 +562,7 @@ class PlacePlanetSurface extends Place
 							(
 								lander, (c: Lander) => c.crewCurrentOverMax()
 							),
-							fontHeight
+							font
 						),
 
 						new ControlLabel
@@ -572,7 +573,7 @@ class PlacePlanetSurface extends Place
 							false, // isTextCenteredHorizontally
 							false, // isTextCenteredVertically
 							DataBinding.fromContext("Cargo:"),
-							fontHeight
+							font
 						),
 
 						new ControlLabel
@@ -586,7 +587,7 @@ class PlacePlanetSurface extends Place
 							(
 								lander, (c: Lander) => c.cargoCurrentOverMax(world)
 							),
-							fontHeight
+							font
 						),
 
 						new ControlLabel
@@ -597,7 +598,7 @@ class PlacePlanetSurface extends Place
 							false, // isTextCenteredHorizontally
 							false, // isTextCenteredVertically
 							DataBinding.fromContext("Biodata:"),
-							fontHeight
+							font
 						),
 
 						new ControlLabel
@@ -611,7 +612,7 @@ class PlacePlanetSurface extends Place
 							(
 								lander, (c: Lander) => c.lifeformsCurrentOverMax(world)
 							),
-							fontHeight
+							font
 						),
 
 					]// children
@@ -627,7 +628,7 @@ class PlacePlanetSurface extends Place
 					), // pos
 					Coords.fromXY(containerLanderSize.x, labelSize.y * 2),
 					"Launch",
-					fontHeight,
+					font,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => this.exit(new UniverseWorldPlaceEntities(null, world, this, null, null) )

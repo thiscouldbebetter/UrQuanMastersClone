@@ -81,6 +81,18 @@ class Station implements EntityProperty<Station>, Satellite
 		return returnValue;
 	}
 
+	// Clonable.
+
+	clone(): Station
+	{
+		throw new Error("todo");
+	}
+
+	overwriteWith(other: Station): Station
+	{
+		throw new Error("todo");
+	}
+
 	// Controls.
 
 	toControl(cr: ConversationRun, size: Coords, universe: Universe): ControlBase

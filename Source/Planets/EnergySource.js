@@ -50,6 +50,9 @@ class EnergySource {
         ]);
         return returnValue;
     }
+    // Clonable.
+    clone() { throw new Error("todo"); }
+    overwriteWith(other) { throw new Error("todo"); }
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }

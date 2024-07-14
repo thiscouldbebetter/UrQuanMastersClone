@@ -55,8 +55,8 @@ class Ship {
         return new Action("ShowMenu", (uwpe) => {
             var universe = uwpe.universe;
             var venueNext = VenueControls.fromControl(universe.controlBuilder.gameAndSettings1(universe));
-            venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-            universe.venueNext = venueNext;
+            venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent());
+            universe.venueNextSet(venueNext);
         });
     }
     static actionTurnLeft() {
@@ -140,7 +140,7 @@ class Ship {
             Drawable.fromVisual(visualToRecycle),
             entityShipToDie.locatable(),
         ]);
-        place.entitiesToSpawn.push(entityExplosion);
+        place.entityToSpawnAdd(entityExplosion);
     }
     energyCurrentOverMax(world) {
         return Math.floor(this.energy) + "/" + this.defn(world).energyMax;
@@ -169,7 +169,7 @@ class Ship {
         ]);
         var defn = this.defn(world);
         var shipVisualBody = defn.visual;
-        var shipVisual = new VisualWrapped(place.size, shipVisualBody);
+        var shipVisual = new VisualWrapped(place.size(), shipVisualBody);
         var drawable = Drawable.fromVisual(shipVisual);
         var itemHolder = ItemHolder.create();
         var killable = new Killable(this.crew, null, this.die);
@@ -238,6 +238,13 @@ class Ship {
     turnRight(world, entity) {
         this.turnInDirection(world, entity, 1);
     }
+    // Clonable.
+    clone() {
+        throw new Error("todo");
+    }
+    overwriteWith(other) {
+        throw new Error("todo");
+    }
     // controls
     toControlSidebar(containerSidebarSize, indexTopOrBottom, world) {
         var ship = this;
@@ -245,7 +252,9 @@ class Ship {
         var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
         var containerShipSize = Coords.fromXY(containerSidebarSize.x - marginSize.x * 2, (containerSidebarSize.y - marginSize.y * 3) / 2);
         var fontHeight = 20;
+        //var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
         var fontHeightShort = fontHeight / 2;
+        var fontShort = FontNameAndHeight.fromHeightInPixels(fontHeightShort);
         var labelSizeWide = Coords.fromXY(containerShipSize.x - marginSize.x * 2, fontHeightShort);
         var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
         var defn = this.defn(world);
@@ -253,23 +262,23 @@ class Ship {
             new ControlLabel("labelName", Coords.fromXY(marginSize.x, marginSize.y), // pos
             labelSizeWide, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext(defn.factionName), fontHeightShort),
+            DataBinding.fromContext(defn.factionName), fontShort),
             new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos
             labelSizeShort, false, // isTextCentered
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Crew:"), fontHeightShort),
+            DataBinding.fromContext("Crew:"), fontShort),
             new ControlLabel("infoCrew", Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 2 + labelSizeShort.y), // pos
             labelSizeShort, false, // isTextCentered
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(ship, (c) => c.crewCurrentOverMax(world)), fontHeightShort),
+            DataBinding.fromContextAndGet(ship, (c) => c.crewCurrentOverMax(world)), fontShort),
             new ControlLabel("labelEnergy", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
             labelSizeShort, false, // isTextCentered
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Energy:"), fontHeightShort),
+            DataBinding.fromContext("Energy:"), fontShort),
             new ControlLabel("infoEnergy", Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
             labelSizeShort, false, // isTextCentered
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(ship, (c) => c.energyCurrentOverMax(world)), fontHeightShort),
+            DataBinding.fromContextAndGet(ship, (c) => c.energyCurrentOverMax(world)), fontShort),
         ]);
         return returnValue;
     }

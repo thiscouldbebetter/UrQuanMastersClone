@@ -55,7 +55,7 @@ class Lifeform implements EntityProperty<Lifeform>
 				var radius = (entity.collidable().collider as Sphere).radius;
 				var entityResource =
 					resource.toEntity(world, place, radius);
-				place.entitiesToSpawn.push(entityResource);
+				place.entityToSpawnAdd(entityResource);
 			}
 		);
 
@@ -145,7 +145,7 @@ class Lifeform implements EntityProperty<Lifeform>
 					}
 					else
 					{
-						var distancePerTick = entityActor.movable().speedMax;
+						var distancePerTick = entityActor.movable().speedMax(uwpe);
 						if (distanceToTarget < distancePerTick)
 						{
 							actorPos.overwriteWith(targetPos);
@@ -191,7 +191,7 @@ class Lifeform implements EntityProperty<Lifeform>
 					var displacementToTarget = targetPos.clone().subtract(actorPos);
 					var distanceToTarget = displacementToTarget.magnitude();
 					var detectionDistanceMax = 150; // todo
-					var distancePerTick = entityActor.movable().speedMax;
+					var distancePerTick = entityActor.movable().speedMax(uwpe);
 					if (distanceToTarget > detectionDistanceMax)
 					{
 						Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
@@ -248,7 +248,7 @@ class Lifeform implements EntityProperty<Lifeform>
 				uwpe.universe.randomizer
 			).multiply
 			(
-				uwpe.place.size
+				uwpe.place.size()
 			);
 			entityTarget = Locatable.fromPos(targetPos).toEntity();
 			activity.targetEntitySet(entityTarget);
@@ -258,7 +258,7 @@ class Lifeform implements EntityProperty<Lifeform>
 		var actorPos = actorLoc.pos;
 		var displacementToTarget = targetPos.clone().subtract(actorPos);
 		var distanceToTarget = displacementToTarget.magnitude();
-		var distancePerTick = entityActor.movable().speedMax;
+		var distancePerTick = entityActor.movable().speedMax(uwpe);
 		if (distanceToTarget < distancePerTick)
 		{
 			activity.targetEntityClear();
@@ -278,6 +278,9 @@ class Lifeform implements EntityProperty<Lifeform>
 		}
 	}
 
+	// Clonable.
+	clone(): Lifeform { throw new Error("todo"); }
+	overwriteWith(other: Lifeform): Lifeform { throw new Error("todo"); }
 
 	// EntityProperty.
 

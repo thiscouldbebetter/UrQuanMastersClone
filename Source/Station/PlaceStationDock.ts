@@ -1,5 +1,5 @@
 
-class PlaceStationDock extends Place
+class PlaceStationDock extends PlaceBase
 {
 	placeStation: PlaceStation;
 
@@ -311,7 +311,9 @@ class PlaceStationDock extends Place
 
 		var containerDockSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
+		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var fontHeightShort = fontHeight / 2;
+		var fontShort = FontNameAndHeight.fromHeightInPixels(fontHeightShort);
 		var buttonBackSize = Coords.fromXY(1, 1).multiplyScalar(fontHeightShort * 1.6);
 		var marginWidth = 8;
 		var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
@@ -396,7 +398,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Available:"),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlList.from8
@@ -417,7 +419,7 @@ class PlaceStationDock extends Place
 					(
 						(c: ShipComponentDefn) => c.name
 					), // bindingForItemText
-					fontHeightShort,
+					fontShort,
 					new DataBinding
 					(
 						placeStationDock,
@@ -437,7 +439,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeComponents,
 					"Build",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() => this.componentBackboneBuild(universe)
@@ -455,7 +457,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Installed:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -474,7 +476,7 @@ class PlaceStationDock extends Place
 						player.flagship,
 						(c: Flagship) => c.componentsBackboneCurrentOverMax()
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlList.from8
@@ -495,7 +497,7 @@ class PlaceStationDock extends Place
 					(
 						(c: ShipComponentDefn) => c.name
 					), // bindingForItemText
-					fontHeightShort,
+					fontShort,
 					new DataBinding
 					(
 						placeStationDock,
@@ -515,7 +517,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeComponents,
 					"Scrap",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() => this.componentBackboneScrap(universe)
@@ -533,7 +535,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Weapons:"),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlList.from8
@@ -554,7 +556,7 @@ class PlaceStationDock extends Place
 					(
 						(c: ShipWeaponSlot) => c.nameAndComponentInstalled() // bindingForItemText
 					),
-					fontHeightShort,
+					fontShort,
 					new DataBinding
 					(
 						placeStationDock,
@@ -574,7 +576,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeComponents,
 					"Up",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() =>
@@ -595,7 +597,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Thrusters:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -614,7 +616,7 @@ class PlaceStationDock extends Place
 						player.flagship,
 						(c: Flagship) => c.thrustersCurrentOverMax()
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlButton.from8
@@ -627,7 +629,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"+",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.componentThrusterBuild.bind(this)
@@ -643,7 +645,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"-",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.componentThrusterScrap.bind(this)
@@ -661,7 +663,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Turning Jets:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -680,7 +682,7 @@ class PlaceStationDock extends Place
 						player.flagship,
 						(c: Flagship) => c.turningJetsCurrentOverMax()
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlButton.from8
@@ -693,7 +695,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"+",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.componentTurningJetsBuild.bind(this)
@@ -709,7 +711,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"-",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.componentTurningJetsScrap.bind(this)
@@ -744,7 +746,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Available:"),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlList.from8
@@ -765,7 +767,7 @@ class PlaceStationDock extends Place
 					(
 						(c: ShipDefn) => c.fullNameAndValue()
 					), // bindingForItemText
-					fontHeightShort,
+					fontShort,
 					new DataBinding
 					(
 						placeStationDock,
@@ -785,7 +787,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeShips,
 					"Build",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					this.shipBuild.bind(this)
@@ -803,7 +805,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fleet:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -822,7 +824,7 @@ class PlaceStationDock extends Place
 						player,
 						(c: Player) => c.shipsCurrentOverMax()
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlList.from8
@@ -843,7 +845,7 @@ class PlaceStationDock extends Place
 					(
 						(c: Ship) => c.fullNameAndCrew(world)
 					), // bindingForItemText
-					fontHeightShort,
+					fontShort,
 					new DataBinding
 					(
 						placeStationDock,
@@ -863,7 +865,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeShipsSmall,
 					"Scrap",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					this.shipScrap.bind(this)
@@ -879,7 +881,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeShipsSmall,
 					"Crew+",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					this.crewAdd.bind(this)
@@ -895,7 +897,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeShipsSmall,
 					"Crew-",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					this.crewRemove.bind(this)
@@ -922,7 +924,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Resources:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -936,7 +938,7 @@ class PlaceStationDock extends Place
 					(
 						player, (c: Player) => "" + c.resourceCredits
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -947,7 +949,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fuel:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -961,7 +963,7 @@ class PlaceStationDock extends Place
 					(
 						player, (c: Player) => c.flagship.fuelCurrentOverMax()
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlButton.from8
@@ -974,7 +976,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"+",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.fuelAdd.bind(this)
@@ -990,7 +992,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"-",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.fuelRemove.bind(this)
@@ -1008,7 +1010,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Landers:"),
-					fontHeightShort
+					fontShort
 				),
 
 				new ControlLabel
@@ -1027,7 +1029,7 @@ class PlaceStationDock extends Place
 						player.flagship,
 						(c: Flagship) => "" + c.numberOfLanders
 					),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlButton.from8
@@ -1040,7 +1042,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"+",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.landerAdd.bind(this)
@@ -1056,7 +1058,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeSmall,
 					"-",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					this.landerRemove.bind(this)
@@ -1073,7 +1075,7 @@ class PlaceStationDock extends Place
 					false, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Minerals:"),
-					fontHeightShort
+					fontShort
 				),
 
 				ControlList.from8
@@ -1094,7 +1096,7 @@ class PlaceStationDock extends Place
 					(
 						(c: Item) => c.toString(null)
 					), // bindingForItemText
-					fontHeightShort,
+					fontShort,
 					DataBinding.fromContext(null), // bindingForItemSelected
 					DataBinding.fromContext(null) // bindingForItemValue
 				),
@@ -1109,7 +1111,7 @@ class PlaceStationDock extends Place
 					),
 					buttonSizeRight,
 					"Offload",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() => // click
@@ -1135,7 +1137,7 @@ class PlaceStationDock extends Place
 					true, // isTextCentered
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Dock"),
-					fontHeight
+					font
 				),
 
 				containerComponents,
@@ -1150,7 +1152,7 @@ class PlaceStationDock extends Place
 					marginSize,
 					buttonBackSize,
 					"<",
-					fontHeightShort,
+					fontShort,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() =>
@@ -1170,7 +1172,7 @@ class PlaceStationDock extends Place
 	returnToPlace(world: World): void
 	{
 		var placeNext = this.placeToReturnTo;
-		var playerFromPlaceNext = placeNext.entitiesByName.get(Player.name);
+		var playerFromPlaceNext = placeNext.entityByName(Player.name);
 		var playerLoc = playerFromPlaceNext.locatable().loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();

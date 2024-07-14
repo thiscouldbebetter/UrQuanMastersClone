@@ -21,6 +21,7 @@
 <script type="text/javascript" src="Framework/Source/Controls/ControlScrollbar.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlSelect.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlSelectOption.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlSoundScheme.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlStyle.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlTextBox.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlVisual.js"></script>
@@ -68,7 +69,6 @@
 
 <script type="text/javascript" src="Framework/Source/Geometry/Collisions/Collision.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionTracker.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_FrictionDry.js"></script>
@@ -103,6 +103,9 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapLocated.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Maps/MapOfCells.js"></script>
 
+<!-- Moved this here because it depends on MapOfCells. -->
+<script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionTracker.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transforms.js"></script>
@@ -119,9 +122,9 @@
 
 <script type="text/javascript" src="Framework/Source/Media/BinaryFile.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Font.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/FontNameAndHeight.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Image.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/MediaLibrary.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/TextString.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/VenueVideo.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Video.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/VideoHelper.js"></script>
@@ -158,6 +161,8 @@
 <script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSourceType.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSource_WavFile.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Media/Text/TextString.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityGenerator.js"></script>
@@ -192,6 +197,7 @@
 <script type="text/javascript" src="Framework/Source/Model/Physics/Movable.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Places/Place.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/Places/PlaceBase.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Places/PlaceDefn.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Talk/ConversationDefn.js"></script>
@@ -219,8 +225,10 @@
 <script type="text/javascript" src="Framework/Source/Utility/DiceRoll.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/IDHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/PlatformHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/Randomizer.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/RandomizerSystem.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/Reference.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/Stack.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/TimerHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/URLParser.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/ValueBreakGroup.js"></script>

@@ -144,6 +144,7 @@ class Flagship {
         var marginWidth = 8;
         var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
         var fontHeight = 10;
+        var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
         var childControlWidth = containerSidebarSize.x - marginWidth * 2;
         var labelSize = Coords.fromXY(childControlWidth, fontHeight);
         var containerFlagshipSize = Coords.fromXY(containerSidebarSize.x - marginSize.x * 2, (containerSidebarSize.y - marginSize.x * 3) * 0.4);
@@ -154,49 +155,49 @@ class Flagship {
             new ControlLabel("labelFlagship", Coords.fromXY(0, labelSize.y), // pos
             labelSize, true, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext(flagship.name), fontHeight),
+            DataBinding.fromContext(flagship.name), font),
             new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Crew:"), fontHeight),
+            DataBinding.fromContext("Crew:"), font),
             new ControlLabel("infoCrew", Coords.fromXY(marginSize.x * 4, labelSize.y * 2), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(flagship, (c) => c.crewCurrentOverMax()), fontHeight),
+            DataBinding.fromContextAndGet(flagship, (c) => c.crewCurrentOverMax()), font),
             new ControlLabel("labelFuel", Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Fuel:"), fontHeight),
+            DataBinding.fromContext("Fuel:"), font),
             new ControlLabel("infoFuel", Coords.fromXY(marginSize.x * 4, labelSize.y * 3), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(flagship, (c) => c.fuelCurrentOverMax()), fontHeight),
+            DataBinding.fromContextAndGet(flagship, (c) => c.fuelCurrentOverMax()), font),
             new ControlLabel("labelLanders", Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Landers:"), fontHeight),
+            DataBinding.fromContext("Landers:"), font),
             new ControlLabel("infoLanders", Coords.fromXY(marginSize.x * 6, labelSize.y * 4), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(flagship, (c) => "" + c.numberOfLanders), fontHeight),
+            DataBinding.fromContextAndGet(flagship, (c) => "" + c.numberOfLanders), font),
             new ControlLabel("labelCargo", Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Cargo:"), fontHeight),
+            DataBinding.fromContext("Cargo:"), font),
             new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, labelSize.y * 5), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax(world)), fontHeight),
+            DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax(world)), font),
             new ControlLabel("labelPosition", Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Loc:"), fontHeight),
+            DataBinding.fromContext("Loc:"), font),
             new ControlLabel("infoPosition", Coords.fromXY(marginSize.x * 4, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(world.player.shipGroup, (c) => c.posInHyperspace(world).toStringXY()), fontHeight),
+            DataBinding.fromContextAndGet(world.player.shipGroup, (c) => c.posInHyperspace(world).toStringXY()), font),
             new ControlLabel("labelDate", Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Date:"), fontHeight),
+            DataBinding.fromContext("Date:"), font),
             new ControlLabel("infoDate", Coords.fromXY(marginSize.x * 4, labelSize.y * 7), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[0]), fontHeight),
+            DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[0]), font),
             new ControlLabel("labelTime", Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Time:"), fontHeight),
+            DataBinding.fromContext("Time:"), font),
             new ControlLabel("infoTime", Coords.fromXY(marginSize.x * 4, labelSize.y * 8), labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")), fontHeight),
+            DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")), font),
         ]);
         return containerFlagship;
     }

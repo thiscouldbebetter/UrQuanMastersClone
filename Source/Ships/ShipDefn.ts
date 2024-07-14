@@ -182,8 +182,8 @@ class ShipDefn_Instances
 			headingCount: number
 		) =>
 		{
-			var imagesForHeadings = [];
-			var visualsForHeadings = [];
+			var imagesForHeadings = new Array<Image2>();
+			var visualsForHeadings = new Array<VisualBase>();
 
 			for (var i = 0; i < headingCount; i++)
 			{
@@ -201,7 +201,13 @@ class ShipDefn_Instances
 				(
 					imageName, imagePath
 				);
-				imageForHeading.load();
+				imageForHeading.load
+				(
+					() =>
+					{
+						// todo
+					}
+				);
 				imagesForHeadings.push(imageForHeading);
 				var visualForHeading: VisualImage =
 					new VisualImageFromLibrary(imageName);
@@ -209,7 +215,7 @@ class ShipDefn_Instances
 				var shipSizeIndex = i % shipSizesForHeadings.length;
 				var imageSizeForHeading = shipSizesForHeadings[shipSizeIndex].clone();
 				visualForHeading =
-					new VisualImageScaled(visualForHeading, imageSizeForHeading);
+					new VisualImageScaled(imageSizeForHeading, visualForHeading);
 				visualsForHeadings.push(visualForHeading);
 			}
 
@@ -473,7 +479,7 @@ class ShipDefn_Instances
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
 				var targetEntityName = actor.actor().activity.targetEntity().name;
-				var target = place.entitiesByName.get(targetEntityName);
+				var target = place.entityByName(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
@@ -750,7 +756,7 @@ class ShipDefn_Instances
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
 				var targetEntityName = actor.actor().activity.targetEntity().name;
-				var target = place.entitiesByName.get(targetEntityName);
+				var target = place.entityByName(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
@@ -795,7 +801,7 @@ class ShipDefn_Instances
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
 				var targetEntityName = actor.actor().activity.targetEntity().name;
-				var target = place.entitiesByName.get(targetEntityName);
+				var target = place.entityByName(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
@@ -866,7 +872,7 @@ class ShipDefn_Instances
 				var actorLoc = actor.locatable().loc;
 				var actorPos = actorLoc.pos;
 				var targetEntityName = actor.actor().activity.targetEntity().name;
-				var target = place.entitiesByName.get(targetEntityName);
+				var target = place.entityByName(targetEntityName);
 				var targetPos = target.locatable().loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();

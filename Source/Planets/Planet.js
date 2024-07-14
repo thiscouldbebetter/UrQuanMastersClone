@@ -37,7 +37,7 @@ class Planet {
             var ship = entitiesShips[i];
             var shipLoc = ship.locatable().loc;
             var shipPos = shipLoc.pos;
-            var displacement = shipPos.clone().subtractWrappedToRangeMax(planetPos, place.size);
+            var displacement = shipPos.clone().subtractWrappedToRangeMax(planetPos, place.size());
             var distance = displacement.magnitude();
             if (distance > 0) {
                 var direction = displacement.divideScalar(distance);
@@ -111,7 +111,7 @@ class Planet {
         var returnValue = new Entity(this.name, [
             Collidable.fromCollider(collider),
             Drawable.fromVisual(visual),
-            this,
+            this, // planet
             Locatable.fromPos(pos),
         ]);
         return returnValue;
@@ -124,6 +124,9 @@ class Planet {
         }
         return this._place;
     }
+    // Clonable.
+    clone() { throw new Error("todo"); }
+    overwriteWith(other) { throw new Error("todo"); }
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) {

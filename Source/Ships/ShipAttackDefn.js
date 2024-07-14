@@ -63,11 +63,11 @@ class ShipAttackDefn {
             var visualWrapped = drawable.visual;
             visualWrapped.child = attackDefn.visualImpact;
             var entityImpact = new Entity("Impact", [
-                new Ephemeral(10, null),
+                new Ephemeral(10, null), // hack
                 entityProjectile.locatable(),
                 entityProjectile.drawable()
             ]);
-            place.entitiesToSpawn.push(entityImpact);
+            place.entityToSpawnAdd(entityImpact);
         }
         var entityOtherKillable = entityOther.killable();
         if (entityOtherKillable != null) {
@@ -79,6 +79,9 @@ class ShipAttackDefn {
             }
         }
     }
+    // Clonable.
+    clone() { throw new Error("todo"); }
+    overwriteWith(other) { throw new Error("todo"); }
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }

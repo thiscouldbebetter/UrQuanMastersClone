@@ -35,6 +35,13 @@ class Station {
         ]);
         return returnValue;
     }
+    // Clonable.
+    clone() {
+        throw new Error("todo");
+    }
+    overwriteWith(other) {
+        throw new Error("todo");
+    }
     // Controls.
     toControl(cr, size, universe) {
         return cr.toControl_Layout_2(size, universe);

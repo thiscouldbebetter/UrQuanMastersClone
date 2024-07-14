@@ -88,6 +88,7 @@ var ShapeGroupAny = gf.ShapeGroupAny;
 var ShapeInverse = gf.ShapeInverse;
 var Sphere = gf.Sphere;
 // Geometry - Shapes - Map.
+var MapOfCells = gf.MapOfCells;
 var MapLocated = gf.MapLocated;
 // Geometry - Shapes - Meshes.
 var Mesh = gf.Mesh;
@@ -104,6 +105,7 @@ var InputHelper = gf.InputHelper;
 // Media.
 var BinaryFile = gf.BinaryFile;
 var Font = gf.Font;
+var FontNameAndHeight = gf.FontNameAndHeight;
 var Image2 = gf.Image2;
 var MediaLibrary = gf.MediaLibrary;
 var TextString = gf.TextString;
@@ -119,7 +121,7 @@ var Entity = gf.Entity;
 var EntityBuilder = gf.EntityBuilder;
 var EntityGenerator = gf.EntityGenerator;
 var Ephemeral = gf.Ephemeral;
-var Place = gf.Place;
+var PlaceBase = gf.PlaceBase;
 var PlaceDefn = gf.PlaceDefn;
 var Playable = gf.Playable;
 var Universe = gf.Universe;
@@ -169,6 +171,7 @@ var CompressorLZW = gf.CompressorLZW;
 var DateTime = gf.DateTime;
 var IDHelper = gf.IDHelper;
 var PlatformHelper = gf.PlatformHelper;
+var Randomizer = gf.Randomizer;
 var RandomizerSystem = gf.RandomizerSystem;
 var Reference = gf.Reference;
 var TimerHelper = gf.TimerHelper;

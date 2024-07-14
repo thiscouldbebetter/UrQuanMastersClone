@@ -1,5 +1,5 @@
 
-class PlaceCombat extends Place
+class PlaceCombat extends PlaceBase
 {
 	combat: Combat;
 
@@ -24,7 +24,7 @@ class PlaceCombat extends Place
 
 		this.entityToSpawnAdd(new GameClock(1).toEntity());
 
-		this.size = this.combat.size;
+		this.size = () => this.combat.size;
 
 		var actionExit = new Action
 		(
@@ -112,11 +112,11 @@ class PlaceCombat extends Place
 		*/
 		var planetVisual: VisualBase = planetDefn.visualVicinity;
 		var planetRadius = (planetVisual as VisualCircleGradient).radius;
-		planetVisual = new VisualWrapped(this.size, planetVisual);
+		planetVisual = new VisualWrapped(this.size(), planetVisual);
 
 		var planetDrawable = Drawable.fromVisual(planetVisual);
 
-		var sizeHalf = this.size.clone().half();
+		var sizeHalf = this.size().clone().half();
 		var planetPos = sizeHalf.clone();
 		var planetLocatable = Locatable.fromPos(planetPos);
 
@@ -133,8 +133,6 @@ class PlaceCombat extends Place
 		);
 
 		this.entityToSpawnAdd(planetEntity);
-
-		this.entitiesByName = ArrayHelper.addLookupsByName(this.entities);
 	}
 
 	// methods
@@ -161,14 +159,14 @@ class PlaceCombat extends Place
 			var controlShipSelect =
 				combat.toControlShipSelect(universe, universe.display.sizeInPixels);
 			var venueNext = VenueControls.fromControl(controlShipSelect);
-			universe.venueNext = venueNext;
+			universe.venueNextSet(venueNext);
 		}
 		else
 		{
 			var controlCombatDebriefing =
 				combat.toControlDebriefing(universe, universe.display.sizeInPixels);
 			var venueNext = VenueControls.fromControl(controlCombatDebriefing);
-			universe.venueNext = venueNext;
+			universe.venueNextSet(venueNext);
 		}
 	}
 
@@ -237,7 +235,7 @@ class PlaceCombat extends Place
 						cameraPos, // midpointToOverwrite
 						ships[0].locatable().loc.pos,
 						ships[1].locatable().loc.pos,
-						this.size
+						this.size()
 					);
 			}
 
@@ -279,7 +277,9 @@ class PlaceCombat extends Place
 				|| shipPos.clone().subtract(shipOtherPos).magnitude() < distanceMin
 			)
 			{
-				shipPos.randomize(uwpe.universe.randomizer).multiply(this.size)
+				shipPos
+					.randomize(uwpe.universe.randomizer)
+					.multiply(this.size() );
 			}
 
 			var shipsFighting = this.combat.shipsFighting;

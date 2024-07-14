@@ -1,5 +1,5 @@
 "use strict";
-class PlaceEncounter extends Place {
+class PlaceEncounter extends PlaceBase {
     constructor(world, encounter) {
         super(PlaceEncounter.name, PlaceEncounter.name, null, // parentName
         null, // size
