@@ -230,6 +230,7 @@ class ShipGroup {
             ship.initialize(uwpe);
         }
     }
+    propertyName() { return ShipGroup.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

@@ -287,6 +287,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 		this.lifeformsGenerate(randomizer);
 	}
 
+	propertyName(): string { return Planet.name; }
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		// Do nothing.

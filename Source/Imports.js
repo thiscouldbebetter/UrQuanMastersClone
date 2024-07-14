@@ -58,7 +58,9 @@ var VisualAnimation = gf.VisualAnimation;
 var Camera = gf.Camera;
 var Collision = gf.Collision;
 var CollisionHelper = gf.CollisionHelper;
-var CollisionTracker = gf.CollisionTracker;
+var CollisionTrackerBase = gf.CollisionTrackerBase;
+var CollisionTrackerBruteForce = gf.CollisionTrackerBruteForce;
+var CollisionTrackerMapped = gf.CollisionTrackerMapped;
 var Constraint_FrictionDry = gf.Constraint_FrictionDry;
 var Constraint_FrictionXY = gf.Constraint_FrictionXY;
 var Constraint_SpeedMaxXY = gf.Constraint_SpeedMaxXY;
@@ -87,9 +89,8 @@ var ShapeGroupAll = gf.ShapeGroupAll;
 var ShapeGroupAny = gf.ShapeGroupAny;
 var ShapeInverse = gf.ShapeInverse;
 var Sphere = gf.Sphere;
-// Geometry - Shapes - Map.
-var MapOfCells = gf.MapOfCells;
 var MapLocated = gf.MapLocated;
+var MapOfCells = gf.MapOfCells;
 // Geometry - Shapes - Meshes.
 var Mesh = gf.Mesh;
 var Transform_Locate = gf.Transform_Locate;

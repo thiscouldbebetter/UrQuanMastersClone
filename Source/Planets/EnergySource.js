@@ -56,6 +56,7 @@ class EnergySource {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return EnergySource.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

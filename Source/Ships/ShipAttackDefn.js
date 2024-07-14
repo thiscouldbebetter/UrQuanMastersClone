@@ -85,6 +85,7 @@ class ShipAttackDefn {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return ShipAttackDefn.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

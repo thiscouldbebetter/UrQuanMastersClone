@@ -157,6 +157,7 @@ class Lifeform {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Lifeform.name; }
     updateForTimerTick(uwpe) { }
     equals(other) { return false; }
 }

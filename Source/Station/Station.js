@@ -49,6 +49,7 @@ class Station {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Station.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

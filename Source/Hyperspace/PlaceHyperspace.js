@@ -133,7 +133,7 @@ class PlaceHyperspace extends PlaceBase {
             entities.push(playerEntity);
         }
         // CollisionTracker.
-        var collisionTracker = new CollisionTracker(this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64));
+        var collisionTracker = new CollisionTrackerMapped(this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64));
         var entityForCollisionTracker = collisionTracker.toEntity();
         entities.splice(0, 0, entityForCollisionTracker); // hack - Must come before stationary entities.
         var containerSidebar = this.toControlSidebar(universe);

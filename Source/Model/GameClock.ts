@@ -30,6 +30,7 @@ class GameClock implements EntityProperty<GameClock>
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return GameClock.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var world = uwpe.world as WorldExtended;

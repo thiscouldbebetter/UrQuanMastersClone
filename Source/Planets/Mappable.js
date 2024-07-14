@@ -9,6 +9,7 @@ class Mappable {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Mappable.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) {

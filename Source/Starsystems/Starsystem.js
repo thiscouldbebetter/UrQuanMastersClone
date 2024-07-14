@@ -128,6 +128,7 @@ class Starsystem {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Starsystem.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

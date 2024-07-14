@@ -31,6 +31,7 @@ class Faction {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Faction.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

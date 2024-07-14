@@ -243,9 +243,10 @@ class PlaceHyperspace extends PlaceBase
 
 		// CollisionTracker.
 
-		var collisionTracker = new CollisionTracker
+		var collisionTracker = new CollisionTrackerMapped
 		(
-			this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64)
+			this.hyperspace.size,
+			Coords.fromXY(1, 1).multiplyScalar(64)
 		);
 		var entityForCollisionTracker = collisionTracker.toEntity();
 		entities.splice(0, 0, entityForCollisionTracker); // hack - Must come before stationary entities.
@@ -288,7 +289,11 @@ class PlaceHyperspace extends PlaceBase
 
 	factionShipGroupSpawnIfNeeded
 	(
-		universe: Universe, world: World, placeAsPlace: Place, entityPlayer: Entity, entityOther: Entity
+		universe: Universe,
+		world: World,
+		placeAsPlace: Place,
+		entityPlayer: Entity,
+		entityOther: Entity
 	): void
 	{
 		var place = placeAsPlace as PlaceHyperspace;

@@ -393,6 +393,8 @@ class ShipGroup implements EntityPropertyBase
 		}
 	}
 
+	propertyName(): string { return ShipGroup.name; }
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.

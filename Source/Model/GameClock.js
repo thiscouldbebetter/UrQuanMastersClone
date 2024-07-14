@@ -17,6 +17,7 @@ class GameClock {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return GameClock.name; }
     updateForTimerTick(uwpe) {
         var world = uwpe.world;
         var timerHelper = uwpe.universe.timerHelper;

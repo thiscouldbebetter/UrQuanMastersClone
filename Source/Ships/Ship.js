@@ -193,6 +193,7 @@ class Ship {
             this.energy = defn.energyMax;
         }
     }
+    propertyName() { return Ship.name; }
     updateForTimerTick(uwpe) {
         var world = uwpe.world;
         var entityShip = uwpe.entity;

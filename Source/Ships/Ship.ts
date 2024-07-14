@@ -360,6 +360,8 @@ class Ship implements EntityProperty<Ship>
 		}
 	}
 
+	propertyName(): string { return Ship.name; }
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var world = uwpe.world;

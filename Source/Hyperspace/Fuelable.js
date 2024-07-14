@@ -3,6 +3,7 @@ class Fuelable {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Fuelable.name; }
     updateForTimerTick(uwpe) {
         var world = uwpe.world;
         var entityFuelable = uwpe.entity;

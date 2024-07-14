@@ -71,6 +71,8 @@ class Faction implements EntityPropertyBase
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 
+	propertyName(): string { return Faction.name; }
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.

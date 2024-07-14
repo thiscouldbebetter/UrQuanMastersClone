@@ -7,6 +7,8 @@ class Fuelable implements EntityPropertyBase
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 
+	propertyName(): string { return Fuelable.name; }
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var world = uwpe.world as WorldExtended;

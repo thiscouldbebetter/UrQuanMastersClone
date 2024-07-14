@@ -96,6 +96,7 @@ class WorldExtended extends World
 			Killable.name,
 			Playable.name,
 
+			CollisionTrackerBase.name,
 			Locatable.name,
 			Constrainable.name,
 			Collidable.name,

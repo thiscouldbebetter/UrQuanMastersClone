@@ -135,6 +135,7 @@ class Planet {
         this.mineralsGenerate(randomizer);
         this.lifeformsGenerate(randomizer);
     }
+    propertyName() { return Planet.name; }
     updateForTimerTick(uwpe) {
         // Do nothing.
     }

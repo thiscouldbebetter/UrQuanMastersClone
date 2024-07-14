@@ -43,6 +43,7 @@ class WorldExtended extends World {
             Ephemeral.name,
             Killable.name,
             Playable.name,
+            CollisionTrackerBase.name,
             Locatable.name,
             Constrainable.name,
             Collidable.name,

@@ -286,6 +286,7 @@ class Lifeform implements EntityProperty<Lifeform>
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return Lifeform.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	equals(other: Lifeform): boolean { return false; }
