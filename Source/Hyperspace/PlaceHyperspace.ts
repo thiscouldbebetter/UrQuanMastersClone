@@ -176,6 +176,8 @@ class PlaceHyperspace extends PlaceBase
 				this.playerCollide
 			);
 
+			var playerBoundable = Boundable.fromCollidable(playerCollidable);
+
 			var playerShipGroup = world.player.shipGroup;
 			var playerShip = playerShipGroup.ships[0];
 
@@ -215,6 +217,7 @@ class PlaceHyperspace extends PlaceBase
 				Player.name,
 				[
 					playerActor,
+					playerBoundable,
 					playerCollidable,
 					playerConstrainable,
 					playerDrawable,
@@ -425,6 +428,8 @@ class PlaceHyperspace extends PlaceBase
 
 		var collidable = Collidable.fromCollider(new Sphere(Coords.create(), 5));
 
+		var boundable = Boundable.fromCollidable(collidable);
+
 		var ship0 = shipGroup.ships[0];
 		var drawable = Drawable.fromVisual(ship0.defn(world).visual);
 
@@ -446,6 +451,7 @@ class PlaceHyperspace extends PlaceBase
 			[
 				actor,
 				//faction,
+				boundable,
 				collidable,
 				drawable,
 				locatable,

@@ -13,7 +13,8 @@ class EnvironmentMock {
     */
     universeBuild //_MediaLibraryLoaded
     (callback) {
-        var timerHelper = new TimerHelper(20);
+        var timerHelper = new TimerHelper(25);
+        timerHelper.ticksSoFar = 0; // hack
         var display = DisplayTest.default();
         var soundHelper = new SoundHelperMock();
         var contentDirectoryPath = "../../../Content/";

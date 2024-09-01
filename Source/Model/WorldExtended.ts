@@ -34,7 +34,7 @@ class WorldExtended extends World
 			name,
 			dateCreated,
 			defn,
-			null, // placeGetByName
+			null,
 			null // placeInitialName
 		);
 
@@ -502,6 +502,11 @@ class WorldExtended extends World
 	}
 
 	// World overrides.
+
+	placeGetByName(name: string): Place
+	{
+		return this.placeCurrent; // hack
+	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{

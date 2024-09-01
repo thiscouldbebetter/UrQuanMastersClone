@@ -31,7 +31,7 @@ class SystemTests extends TestFixture {
         var playerEntity = place.entityByName(Player.name);
         Assert.isNotNull(playerEntity);
         // Move the player's ship to Earth.
-        this.playFromStart_MoveToEntityWithName(universe, "Earth");
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
         // Make sure the place transitions to a planet vicinity.
         place = world.placeCurrent;
         var placeTypeName = place.constructor.name;
@@ -59,10 +59,9 @@ class SystemTests extends TestFixture {
         var stationName = "EarthStation";
         var station = place.entityByName(stationName);
         Assert.isNotNull(station);
-        this.playFromStart_MoveToEntityWithName(universe, stationName);
-        // hack - Should these be necessary?
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
+        // hack - Should this be necessary?
+        this.playFromStart_WaitForTicks(universe, 100);
         // Talk to the station.
         venue = universe.venueCurrent();
         venueTypeName = venue.constructor.name;
@@ -77,17 +76,17 @@ class SystemTests extends TestFixture {
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueWorld.name, venueTypeName);
         // Move the player beyond the edge of the screen to exit the planet vicinity.
-        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
+        this.playFromStart_LeavePlanetVicinityAndWait(universe);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
         // Move the player to Mercury.
-        this.playFromStart_MoveToEntityWithName(universe, "Mercury");
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Mercury");
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
         // Orbit the planet.
-        this.playFromStart_MoveToEntityWithName(universe, Planet.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, Planet.name);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetOrbit.name, placeTypeName);
@@ -105,12 +104,12 @@ class SystemTests extends TestFixture {
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetSurface.name, placeTypeName);
         // Pick up enough resources to be sure to get the radioactives.
-        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
-        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
-        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
-        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
-        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
-        this.playFromStart_MoveToEntityWithName(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, Resource.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, Resource.name);
         // Launch and return to the ship in orbit.
         var placeSurface = place;
         placeSurface.exit(new UniverseWorldPlaceEntities(universe, world, placeSurface, null, null));
@@ -129,15 +128,15 @@ class SystemTests extends TestFixture {
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
         // Leave the Mercury vicinity and return to the Earth Station.
-        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
+        this.playFromStart_LeavePlanetVicinityAndWait(universe);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
-        this.playFromStart_MoveToEntityWithName(universe, "Earth");
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
-        this.playFromStart_MoveToEntityWithName(universe, stationName);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
         venue = universe.venueCurrent();
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
@@ -153,13 +152,14 @@ class SystemTests extends TestFixture {
             null, // Help me take 'em down.
             "Goodbye"
         ]);
+        // todo - Battle with a returning Araknoid.
         universe.updateForTimerTick();
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
         // Leave the Sol system and go to hyperspace.
-        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
-        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
+        this.playFromStart_LeavePlanetVicinityAndWait(universe);
+        this.playFromStart_LeaveStarsystemAndWait(universe);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceHyperspace.name, placeTypeName);
@@ -213,7 +213,8 @@ class SystemTests extends TestFixture {
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceHyperspace.name, placeTypeName);
         // Go to the nearby Alpha Centauri starsystem.
-        this.playFromStart_MoveToEntityWithName(universe, "Alpha Centauri");
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Alpha Centauri");
+        this.playFromStart_WaitForTicks(universe, 1000);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
@@ -228,13 +229,13 @@ class SystemTests extends TestFixture {
                 var planet = planets[i];
                 shipGroupMurch = planet.shipGroups.find(x => x.factionName == factionNameMurch);
                 if (shipGroupMurch != null) {
-                    this.playFromStart_MoveToEntityWithName(universe, planet.name);
+                    this.playFromStart_MoveToEntityWithNameAndWait(universe, planet.name);
                     break;
                 }
             }
         }
         var place = world.placeCurrent;
-        this.playFromStart_MoveToEntityWithName(universe, shipGroupMurch.name);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, shipGroupMurch.name);
         // Gather resources.
         // Gather lifeforms.
         // Return to Earth station.
@@ -249,16 +250,25 @@ class SystemTests extends TestFixture {
         }
         return targetFound;
     }
+    playFromStart_LeavePlanetVicinityAndWait(universe) {
+        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
+        // hack - Is this necessary?
+        // Some delay may be needed to wait for the fader to finish fading.
+        // The way the test is set up, this wait requires some fine-tuning.
+        this.playFromStart_WaitForTicks(universe, 250);
+    }
     playFromStart_LeavePlanetVicinityOrStarsystem(universe) {
         var place = universe.world.placeCurrent;
         var player = place.entityByName(Player.name);
         var playerPos = player.locatable().loc.pos;
         var placeSize = place.size();
         playerPos.overwriteWith(placeSize).double();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick(); // hack - Why does this take two ticks?
     }
-    playFromStart_MoveToEntityWithName(universe, targetEntityName) {
+    playFromStart_LeaveStarsystemAndWait(universe) {
+        this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
+        this.playFromStart_WaitForTicks(universe, 10); // hack - Necessary?
+    }
+    playFromStart_MoveToEntityWithNameAndWait(universe, targetEntityName) {
         var place = universe.world.placeCurrent;
         var player = place.entityByName(Player.name);
         var playerPos = player.locatable().loc.pos;
@@ -267,12 +277,8 @@ class SystemTests extends TestFixture {
             var targetPos = target.locatable().loc.pos;
             playerPos.overwriteWith(targetPos);
         }
-        // hack
-        // Only need this many sometimes.
-        // Why do we ever need more than one?
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
-        universe.updateForTimerTick();
+        // hack - How long is necessary to wait?
+        this.playFromStart_WaitForTicks(universe, 50);
     }
     playFromStart_TalkToTalker(universe, talker, optionsToSelect) {
         var conversationRun = talker.conversationRun;
@@ -291,6 +297,7 @@ class SystemTests extends TestFixture {
     playFromStart_WaitForTicks(universe, ticksToWait) {
         for (var i = 0; i < ticksToWait; i++) {
             universe.updateForTimerTick();
+            universe.timerHelper.ticksSoFar++; // hack
         }
     }
 }

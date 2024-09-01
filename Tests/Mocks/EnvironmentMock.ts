@@ -18,7 +18,9 @@ class EnvironmentMock
 		callback: (u: Universe) => void
 	): void
 	{
-		var timerHelper = new TimerHelper(20);
+		var timerHelper = new TimerHelper(25);
+		timerHelper.ticksSoFar = 0; // hack
+
 		var display = DisplayTest.default();
 		var soundHelper = new SoundHelperMock();
 

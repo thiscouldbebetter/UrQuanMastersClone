@@ -118,6 +118,7 @@ class PlacePlanetSurface extends PlaceBase {
         null, // ticks
         playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.playerCollide);
+        var playerBoundable = Boundable.fromCollidable(playerCollidable);
         var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
         var constraintFriction = new Constraint_FrictionXY(0.1, null);
         var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
@@ -140,6 +141,7 @@ class PlacePlanetSurface extends PlaceBase {
         var playerShipLander = new Ship("Lander");
         var playerEntity = new Entity("Player", [
             playerActor,
+            playerBoundable,
             playerCollidable,
             playerConstrainable,
             playerDrawable,

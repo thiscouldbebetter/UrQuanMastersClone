@@ -88,6 +88,7 @@ class PlaceHyperspace extends PlaceBase {
             null, // ticks
             playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
             this.playerCollide);
+            var playerBoundable = Boundable.fromCollidable(playerCollidable);
             var playerShipGroup = world.player.shipGroup;
             var playerShip = playerShipGroup.ships[0];
             /*
@@ -114,6 +115,7 @@ class PlaceHyperspace extends PlaceBase {
             var playerPlayable = new Playable();
             var playerEntity = new Entity(Player.name, [
                 playerActor,
+                playerBoundable,
                 playerCollidable,
                 playerConstrainable,
                 playerDrawable,
@@ -219,6 +221,7 @@ class PlaceHyperspace extends PlaceBase {
         var world = worldAsWorld;
         var actor = new Actor(new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
         var collidable = Collidable.fromCollider(new Sphere(Coords.create(), 5));
+        var boundable = Boundable.fromCollidable(collidable);
         var ship0 = shipGroup.ships[0];
         var drawable = Drawable.fromVisual(ship0.defn(world).visual);
         var shipGroupPos = shipGroup.pos;
@@ -229,6 +232,7 @@ class PlaceHyperspace extends PlaceBase {
         var entityShipGroup = new Entity(shipGroup.name + Math.random(), [
             actor,
             //faction,
+            boundable,
             collidable,
             drawable,
             locatable,

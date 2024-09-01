@@ -1,8 +1,7 @@
 "use strict";
 class WorldExtended extends World {
     constructor(name, dateCreated, defn, gameTimeInitial, hyperspace, factions, shipDefns, player, starsystemStart) {
-        super(name, dateCreated, defn, null, // placeGetByName
-        null // placeInitialName
+        super(name, dateCreated, defn, null, null // placeInitialName
         );
         this.timerTicksSoFar = 0;
         this.gameTimeInitial = gameTimeInitial;
@@ -243,6 +242,9 @@ class WorldExtended extends World {
         return this.shipDefnsByName.get(shipDefnName);
     }
     // World overrides.
+    placeGetByName(name) {
+        return this.placeCurrent; // hack
+    }
     updateForTimerTick(uwpe) {
         uwpe.worldSet(this);
         if (this.placeNext != null) {
