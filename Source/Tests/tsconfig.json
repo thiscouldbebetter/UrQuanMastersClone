@@ -58,15 +58,14 @@
     "newLine": "LF"
   },
 
-  "include" : [ ".", "../Source/" ],
+  "include" : [ ".", "../" ],
   "exclude" :
   [
-    "../Source/Imports.ts",
-    "../Source/Framework/Source/main.ts",
-    "../Source/Framework/Source/Imports.ts",
-    "../Source/Framework/Source/Demo/",
-    "../Source/Framework/Source/Media/Text/BinaryFileToImageTranscoder/Source/Imports.ts",
-    "../Source/Framework/Stub/",
-    "../Source/Framework/Tests/"
+    "../Framework/Source/main.ts",
+    "../Framework/Source/Imports.ts",
+    "../Framework/Source/Demo/",
+    "../Framework/Source/Media/Text/BinaryFileToImageTranscoder/Source/Imports.ts",
+    "../Framework/Stub/",
+    "../Framework/Tests/"
   ]
 }

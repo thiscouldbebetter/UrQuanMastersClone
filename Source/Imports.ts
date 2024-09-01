@@ -243,6 +243,13 @@ import BitStream = gf.BitStream;
 import ByteStreamFromString = gf.ByteStreamFromString;
 import CompressorLZW = gf.CompressorLZW;
 
+// Tests.
+
+import Assert = gf.Assert;
+import DisplayTest = gf.DisplayTest;
+import TestFixture = gf.TestFixture;
+import TestSuite = gf.TestSuite;
+
 // Utility.
 
 import DateTime = gf.DateTime;

@@ -169,6 +169,11 @@ var VenueFileUpload = gf.VenueFileUpload;
 var BitStream = gf.BitStream;
 var ByteStreamFromString = gf.ByteStreamFromString;
 var CompressorLZW = gf.CompressorLZW;
+// Tests.
+var Assert = gf.Assert;
+var DisplayTest = gf.DisplayTest;
+var TestFixture = gf.TestFixture;
+var TestSuite = gf.TestSuite;
 // Utility.
 var DateTime = gf.DateTime;
 var IDHelper = gf.IDHelper;

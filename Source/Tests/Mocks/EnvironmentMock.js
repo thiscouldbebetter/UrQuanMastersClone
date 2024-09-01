@@ -17,7 +17,7 @@ class EnvironmentMock {
         timerHelper.ticksSoFar = 0; // hack
         var display = DisplayTest.default();
         var soundHelper = new SoundHelperMock();
-        var contentDirectoryPath = "../../../Content/";
+        var contentDirectoryPath = "../../../../Content/";
         var mediaLibrary = new Game().mediaLibraryBuild(contentDirectoryPath);
         var controlBuilder = ControlBuilder.default();
         var worldCreator = new WorldCreator((u, wc) => WorldExtended.create(u), null, // ?
