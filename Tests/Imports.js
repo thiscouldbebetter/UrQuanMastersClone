@@ -12,6 +12,7 @@ var ControlActionNames = gf.ControlActionNames;
 var ControlBase = gf.ControlBase;
 var ControlBuilder = gf.ControlBuilder;
 var ControlButton = gf.ControlButton;
+var ControlColorScheme = gf.ControlColorScheme;
 var ControlContainer = gf.ControlContainer;
 var ControlContainerTransparent = gf.ControlContainerTransparent;
 var ControlLabel = gf.ControlLabel;
@@ -21,10 +22,8 @@ var ControlScrollbar = gf.ControlScrollbar;
 var ControlSelect = gf.ControlSelect;
 var ControlSelectOption = gf.ControlSelectOption;
 var ControlStyle = gf.ControlStyle;
-var ControlTabbed = gf.ControlTabbed;
 var ControlTextBox = gf.ControlTextBox;
 var ControlVisual = gf.ControlVisual;
-var Controllable = gf.Controllable;
 var DataBinding = gf.DataBinding;
 var VenueControls = gf.VenueControls;
 var VenueMessage = gf.VenueMessage;
@@ -54,26 +53,27 @@ var VisualRectangle = gf.VisualRectangle;
 var VisualSelect = gf.VisualSelect;
 var VisualText = gf.VisualText;
 // Display - Visuals - Animation.
+var Animatable2 = gf.Animatable2;
 var VisualAnimation = gf.VisualAnimation;
 // Geometry.
 var Camera = gf.Camera;
+var Collision = gf.Collision;
+var CollisionHelper = gf.CollisionHelper;
+var CollisionTrackerBase = gf.CollisionTrackerBase;
+var CollisionTrackerBruteForce = gf.CollisionTrackerBruteForce;
+var CollisionTrackerMapped = gf.CollisionTrackerMapped;
+var Constraint_FrictionDry = gf.Constraint_FrictionDry;
+var Constraint_FrictionXY = gf.Constraint_FrictionXY;
+var Constraint_SpeedMaxXY = gf.Constraint_SpeedMaxXY;
+var Constraint_TrimToPlaceSize = gf.Constraint_TrimToPlaceSize;
+var Constraint_WrapToPlaceSize = gf.Constraint_WrapToPlaceSize;
+var Constraint_WrapToPlaceSizeXTrimY = gf.Constraint_WrapToPlaceSizeXTrimY;
 var Coords = gf.Coords;
 var Disposition = gf.Disposition;
 var Orientation = gf.Orientation;
 var Polar = gf.Polar;
 var RangeExtent = gf.RangeExtent;
 var Rotation = gf.Rotation;
-// Geometry - Collisions.
-var Collision = gf.Collision;
-var CollisionHelper = gf.CollisionHelper;
-var CollisionTracker = gf.CollisionTracker;
-// Geometry - Constraints.
-var Constraint_FrictionDry = gf.Constraint_FrictionDry;
-var Constraint_FrictionXY = gf.Constraint_FrictionXY;
-var Constraint_TrimToPlaceSize = gf.Constraint_TrimToPlaceSize;
-var Constraint_WrapToPlaceSize = gf.Constraint_WrapToPlaceSize;
-var Constraint_WrapToPlaceSizeXTrimY = gf.Constraint_WrapToPlaceSizeXTrimY;
-var Constraint_SpeedMaxXY = gf.Constraint_SpeedMaxXY;
 // Geometry - Shapes.
 var Box = gf.Box;
 var BoxRotated = gf.BoxRotated;
@@ -90,11 +90,10 @@ var ShapeGroupAll = gf.ShapeGroupAll;
 var ShapeGroupAny = gf.ShapeGroupAny;
 var ShapeInverse = gf.ShapeInverse;
 var Sphere = gf.Sphere;
-// Geometry - Shapes - Map.
 var MapLocated = gf.MapLocated;
+var MapOfCells = gf.MapOfCells;
 // Geometry - Shapes - Meshes.
 var Mesh = gf.Mesh;
-;
 var Transform_Locate = gf.Transform_Locate;
 var Transform_Orient = gf.Transform_Orient;
 var Transform_Rotate2D = gf.Transform_Rotate2D;
@@ -106,10 +105,11 @@ var ActionToInputsMapping = gf.ActionToInputsMapping;
 var Input = gf.Input;
 var InputHelper = gf.InputHelper;
 // Media.
+var BinaryFile = gf.BinaryFile;
 var Font = gf.Font;
+var FontNameAndHeight = gf.FontNameAndHeight;
 var Image2 = gf.Image2;
 var MediaLibrary = gf.MediaLibrary;
-var PlaceDefn = gf.PlaceDefn;
 var TextString = gf.TextString;
 var VenueVideo = gf.VenueVideo;
 var Video = gf.Video;
@@ -117,13 +117,15 @@ var VideoHelper = gf.VideoHelper;
 var SoundFromFile = gf.SoundFromFile;
 var SoundFromFileMod = gf.SoundFromFileMod;
 var SoundHelperLive = gf.SoundHelperLive;
+var SoundNone = gf.SoundNone;
 var VisualSound = gf.VisualSound;
 // Model.
 var Entity = gf.Entity;
 var EntityBuilder = gf.EntityBuilder;
 var EntityGenerator = gf.EntityGenerator;
 var Ephemeral = gf.Ephemeral;
-var Place = gf.Place;
+var PlaceBase = gf.PlaceBase;
+var PlaceDefn = gf.PlaceDefn;
 var Playable = gf.Playable;
 var Universe = gf.Universe;
 var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
@@ -143,7 +145,6 @@ var Killable = gf.Killable;
 // Model - Items.
 var Item = gf.Item;
 var ItemDefn = gf.ItemDefn;
-var ItemCategory = gf.ItemCategory;
 var ItemHolder = gf.ItemHolder;
 // Model - Physics.
 var Boundable = gf.Boundable;
@@ -177,6 +178,7 @@ var TestSuite = gf.TestSuite;
 var DateTime = gf.DateTime;
 var IDHelper = gf.IDHelper;
 var PlatformHelper = gf.PlatformHelper;
+var Randomizer = gf.Randomizer;
 var RandomizerSystem = gf.RandomizerSystem;
 var Reference = gf.Reference;
 var TimerHelper = gf.TimerHelper;

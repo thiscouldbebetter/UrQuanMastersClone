@@ -15,7 +15,6 @@ import StringHelper = gf.StringHelper;
 // hack
 
 import EntityProperty = gf.EntityProperty;
-import EntityPropertyBase = gf.EntityPropertyBase;
 
 // Controls.
 
@@ -23,6 +22,7 @@ import ControlActionNames = gf.ControlActionNames;
 import ControlBase = gf.ControlBase;
 import ControlBuilder = gf.ControlBuilder;
 import ControlButton = gf.ControlButton;
+import ControlColorScheme = gf.ControlColorScheme;
 import ControlContainer = gf.ControlContainer;
 import ControlContainerTransparent = gf.ControlContainerTransparent;
 import ControlLabel = gf.ControlLabel;
@@ -32,10 +32,8 @@ import ControlScrollbar = gf.ControlScrollbar;
 import ControlSelect = gf.ControlSelect;
 import ControlSelectOption = gf.ControlSelectOption;
 import ControlStyle = gf.ControlStyle;
-import ControlTabbed = gf.ControlTabbed;
 import ControlTextBox = gf.ControlTextBox;
 import ControlVisual = gf.ControlVisual;
-import Controllable = gf.Controllable;
 import DataBinding = gf.DataBinding;
 import VenueControls = gf.VenueControls;
 import VenueMessage = gf.VenueMessage;
@@ -54,8 +52,8 @@ import VenueLayered = gf.VenueLayered;
 // Display - Visuals.
 
 import Visual = gf.Visual;
-import VisualAnchor = gf.VisualAnchor;
 import VisualBase = gf.VisualBase;
+import VisualAnchor = gf.VisualAnchor;
 import VisualCircle = gf.VisualCircle;
 import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
@@ -76,32 +74,30 @@ import VisualText = gf.VisualText;
 
 // Display - Visuals - Animation.
 
+import Animatable2 = gf.Animatable2;
 import VisualAnimation = gf.VisualAnimation;
 
 // Geometry.
 
 import Camera = gf.Camera;
+import Collision = gf.Collision;
+import CollisionHelper = gf.CollisionHelper;
+import CollisionTracker = gf.CollisionTracker;
+import CollisionTrackerBase = gf.CollisionTrackerBase;
+import CollisionTrackerBruteForce = gf.CollisionTrackerBruteForce;
+import CollisionTrackerMapped = gf.CollisionTrackerMapped;
+import Constraint_FrictionDry = gf.Constraint_FrictionDry;
+import Constraint_FrictionXY = gf.Constraint_FrictionXY;
+import Constraint_SpeedMaxXY = gf.Constraint_SpeedMaxXY;
+import Constraint_TrimToPlaceSize = gf.Constraint_TrimToPlaceSize;
+import Constraint_WrapToPlaceSize = gf.Constraint_WrapToPlaceSize;
+import Constraint_WrapToPlaceSizeXTrimY = gf.Constraint_WrapToPlaceSizeXTrimY;
 import Coords = gf.Coords;
 import Disposition = gf.Disposition;
 import Orientation = gf.Orientation;
 import Polar = gf.Polar;
 import RangeExtent = gf.RangeExtent;
 import Rotation = gf.Rotation;
-
-// Geometry - Collisions.
-
-import Collision = gf.Collision;
-import CollisionHelper = gf.CollisionHelper;
-import CollisionTracker = gf.CollisionTracker;
-
-// Geometry - Constraints.
-
-import Constraint_FrictionDry = gf.Constraint_FrictionDry;
-import Constraint_FrictionXY = gf.Constraint_FrictionXY;
-import Constraint_TrimToPlaceSize = gf.Constraint_TrimToPlaceSize;
-import Constraint_WrapToPlaceSize = gf.Constraint_WrapToPlaceSize;
-import Constraint_WrapToPlaceSizeXTrimY = gf.Constraint_WrapToPlaceSizeXTrimY;
-import Constraint_SpeedMaxXY = gf.Constraint_SpeedMaxXY;
 
 // Geometry - Shapes.
 
@@ -115,6 +111,7 @@ import Path = gf.Path;
 import PathBuilder = gf.PathBuilder;
 import Plane = gf.Plane;
 import Ray = gf.Ray;
+import ShapeBase = gf.ShapeBase;
 import ShapeContainer = gf.ShapeContainer;
 import ShapeGroupAll = gf.ShapeGroupAll;
 import ShapeGroupAny = gf.ShapeGroupAny;
@@ -123,22 +120,26 @@ import Sphere = gf.Sphere;
 
 // Geometry - Shapes - Map.
 
+import MapCell = gf.MapCell;
 import MapLocated = gf.MapLocated;
+import MapOfCells = gf.MapOfCells;
+import MapOfCellsCellSource = gf.MapOfCellsCellSource;
 
 // Geometry - Shapes - Meshes.
 
-import Mesh = gf.Mesh;;
+import Mesh = gf.Mesh;
 
 // Geometry - Transforms.
 
 import Transform = gf.Transform;
 import TransformBase = gf.TransformBase;
+import Transformable = gf.Transformable;
+import TransformableBase = gf.TransformableBase;
 import Transform_Locate = gf.Transform_Locate;
 import Transform_Orient = gf.Transform_Orient;
 import Transform_Rotate2D = gf.Transform_Rotate2D;
 import Transform_Scale = gf.Transform_Scale;
 import Transform_Translate = gf.Transform_Translate;
-import Transformable = gf.Transformable;
 import Transforms = gf.Transforms;
 
 // Input.
@@ -149,10 +150,11 @@ import InputHelper = gf.InputHelper;
 
 // Media.
 
+import BinaryFile = gf.BinaryFile;
 import Font = gf.Font;
+import FontNameAndHeight = gf.FontNameAndHeight;
 import Image2 = gf.Image2;
 import MediaLibrary = gf.MediaLibrary;
-import PlaceDefn = gf.PlaceDefn;
 import TextString = gf.TextString;
 import VenueVideo = gf.VenueVideo;
 import Video = gf.Video;
@@ -165,6 +167,7 @@ import SoundFromFile = gf.SoundFromFile;
 import SoundFromFileMod = gf.SoundFromFileMod;
 import SoundHelper = gf.SoundHelper;
 import SoundHelperLive = gf.SoundHelperLive;
+import SoundNone = gf.SoundNone;
 import VisualSound = gf.VisualSound;
 
 // Model.
@@ -172,9 +175,12 @@ import VisualSound = gf.VisualSound;
 import Entity = gf.Entity;
 import EntityBuilder = gf.EntityBuilder;
 import EntityGenerator = gf.EntityGenerator;
+import EntityPropertyBase = gf.EntityPropertyBase;
 import Ephemeral = gf.Ephemeral;
 import Namable = gf.Namable;
 import Place = gf.Place;
+import PlaceBase = gf.PlaceBase;
+import PlaceDefn = gf.PlaceDefn;
 import Playable = gf.Playable;
 import Universe = gf.Universe;
 import UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
@@ -201,7 +207,6 @@ import Killable = gf.Killable;
 
 import Item = gf.Item;
 import ItemDefn = gf.ItemDefn;
-import ItemCategory = gf.ItemCategory;
 import ItemHolder = gf.ItemHolder;
 
 // Model - Physics.

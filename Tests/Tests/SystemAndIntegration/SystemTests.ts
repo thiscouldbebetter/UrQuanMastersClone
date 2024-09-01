@@ -40,7 +40,7 @@ class SystemTests extends TestFixture
 
 		var world = universe.world as WorldExtended;
 		var venueWorld = world.toVenue();
-		universe.venueNext = venueWorld;
+		universe.venueNextSet(venueWorld);
 		var place = world.placeCurrent;
 
 		var starsystemSol = (place as PlaceStarsystem).starsystem;
@@ -69,7 +69,7 @@ class SystemTests extends TestFixture
 
 		this.playFromStart_WaitForTicks(universe, 1000);
 
-		var venue = universe.venueCurrent;
+		var venue = universe.venueCurrent();
 		var venueTypeName = venue.constructor.name;
 		Assert.areStringsEqual(VenueControls.name, venueTypeName);
 
@@ -81,7 +81,7 @@ class SystemTests extends TestFixture
 			containerConversation.childByName("buttonNextUnderPortrait") as ControlButton<unknown>;
 		Assert.isNotNull(buttonNext);
 
-		while (universe.venueCurrent == venueConversation)
+		while (universe.venueCurrent() == venueConversation)
 		{
 			buttonNext.click();
 			universe.updateForTimerTick();
@@ -89,7 +89,7 @@ class SystemTests extends TestFixture
 
 		// Verify that we're back in the world venue.
 
-		venue = universe.venueCurrent;
+		venue = universe.venueCurrent();
 		venueTypeName = venue.constructor.name;
 		Assert.areStringsEqual(VenueWorld.name, venueTypeName);
 
@@ -107,7 +107,7 @@ class SystemTests extends TestFixture
 
 		// Talk to the station.
 
-		venue = universe.venueCurrent;
+		venue = universe.venueCurrent();
 		venueTypeName = venue.constructor.name;
 		Assert.areStringsEqual(VenueControls.name, venueTypeName);
 
@@ -124,7 +124,7 @@ class SystemTests extends TestFixture
 
 		universe.updateForTimerTick();
 
-		venue = universe.venueCurrent;
+		venue = universe.venueCurrent();
 		venueTypeName = venue.constructor.name;
 		Assert.areStringsEqual(VenueWorld.name, venueTypeName);
 
@@ -228,7 +228,7 @@ class SystemTests extends TestFixture
 
 		this.playFromStart_MoveToEntityWithName(universe, stationName);
 
-		venue = universe.venueCurrent;
+		venue = universe.venueCurrent();
 		venueTypeName = venue.constructor.name;
 		Assert.areStringsEqual(VenueControls.name, venueTypeName);
 
@@ -319,7 +319,7 @@ class SystemTests extends TestFixture
 
 		// Verify that we're seeing a briefing screen.
 
-		venue = universe.venueCurrent;
+		venue = universe.venueCurrent();
 		venueTypeName = venue.constructor.name;
 		Assert.areStringsEqual(VenueControls.name, venueTypeName);
 
@@ -396,8 +396,10 @@ class SystemTests extends TestFixture
 
 		if (targetFound == null)
 		{
+			var placeEntities = place.entitiesAll();
+
 			targetFound =
-				place.entities.find
+				placeEntities.find
 				(
 					(x: Entity) => x.name.startsWith(targetEntityName)
 				);
@@ -412,7 +414,8 @@ class SystemTests extends TestFixture
 
 		var player = place.entityByName(Player.name);
 		var playerPos = player.locatable().loc.pos;
-		playerPos.overwriteWith(place.size).double();
+		var placeSize = place.size();
+		playerPos.overwriteWith(placeSize).double();
 
 		universe.updateForTimerTick();
 		universe.updateForTimerTick(); // hack - Why does this take two ticks?

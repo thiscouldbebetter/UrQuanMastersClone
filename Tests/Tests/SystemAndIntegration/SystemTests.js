@@ -21,7 +21,7 @@ class SystemTests extends TestFixture {
         Assert.isNotNull(universe);
         var world = universe.world;
         var venueWorld = world.toVenue();
-        universe.venueNext = venueWorld;
+        universe.venueNextSet(venueWorld);
         var place = world.placeCurrent;
         var starsystemSol = place.starsystem;
         Assert.areStringsEqual("Sol", starsystemSol.name);
@@ -39,7 +39,7 @@ class SystemTests extends TestFixture {
         // Wait for the guard drone to approach the player
         // and initiate a conversation.
         this.playFromStart_WaitForTicks(universe, 1000);
-        var venue = universe.venueCurrent;
+        var venue = universe.venueCurrent();
         var venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
         // Leave the conversation.
@@ -47,12 +47,12 @@ class SystemTests extends TestFixture {
         var containerConversation = venueConversation.controlRoot;
         var buttonNext = containerConversation.childByName("buttonNextUnderPortrait");
         Assert.isNotNull(buttonNext);
-        while (universe.venueCurrent == venueConversation) {
+        while (universe.venueCurrent() == venueConversation) {
             buttonNext.click();
             universe.updateForTimerTick();
         }
         // Verify that we're back in the world venue.
-        venue = universe.venueCurrent;
+        venue = universe.venueCurrent();
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueWorld.name, venueTypeName);
         // Move the player to the station.
@@ -64,7 +64,7 @@ class SystemTests extends TestFixture {
         universe.updateForTimerTick();
         universe.updateForTimerTick();
         // Talk to the station.
-        venue = universe.venueCurrent;
+        venue = universe.venueCurrent();
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
         var talker = station.talker();
@@ -73,7 +73,7 @@ class SystemTests extends TestFixture {
             "#(THANKS_FOR_HELPING)"
         ]);
         universe.updateForTimerTick();
-        venue = universe.venueCurrent;
+        venue = universe.venueCurrent();
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueWorld.name, venueTypeName);
         // Move the player beyond the edge of the screen to exit the planet vicinity.
@@ -138,7 +138,7 @@ class SystemTests extends TestFixture {
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
         this.playFromStart_MoveToEntityWithName(universe, stationName);
-        venue = universe.venueCurrent;
+        venue = universe.venueCurrent();
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
         // Talk to the station commander.
@@ -147,10 +147,10 @@ class SystemTests extends TestFixture {
         this.playFromStart_TalkToTalker(universe, talker, [
             "Radioactives.Yes",
             "FightTheLahkemup",
-            null,
-            null,
-            null,
-            null,
+            null, // I'm from the coalition.
+            null, // We got shipwrecked.
+            null, // We found this ship.
+            null, // Help me take 'em down.
             "Goodbye"
         ]);
         universe.updateForTimerTick();
@@ -196,7 +196,7 @@ class SystemTests extends TestFixture {
         shipEnemyAsEntity.killable().kill();
         this.playFromStart_WaitForTicks(universe, 100);
         // Verify that we're seeing a briefing screen.
-        venue = universe.venueCurrent;
+        venue = universe.venueCurrent();
         venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(VenueControls.name, venueTypeName);
         var creditBefore = player.resourceCredits;
@@ -243,8 +243,9 @@ class SystemTests extends TestFixture {
         var place = universe.world.placeCurrent;
         var targetFound = place.entityByName(targetEntityName);
         if (targetFound == null) {
+            var placeEntities = place.entitiesAll();
             targetFound =
-                place.entities.find((x) => x.name.startsWith(targetEntityName));
+                placeEntities.find((x) => x.name.startsWith(targetEntityName));
         }
         return targetFound;
     }
@@ -252,7 +253,8 @@ class SystemTests extends TestFixture {
         var place = universe.world.placeCurrent;
         var player = place.entityByName(Player.name);
         var playerPos = player.locatable().loc.pos;
-        playerPos.overwriteWith(place.size).double();
+        var placeSize = place.size();
+        playerPos.overwriteWith(placeSize).double();
         universe.updateForTimerTick();
         universe.updateForTimerTick(); // hack - Why does this take two ticks?
     }
