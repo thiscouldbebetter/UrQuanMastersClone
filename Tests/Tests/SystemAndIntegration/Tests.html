@@ -1,13 +1,14 @@
 <html>
 <body>
 
+
+<!-- hack - These have to come first. -->
 <script type="text/javascript" src="../../../Source/Framework/Source/Helpers/ArrayHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Helpers/NumberHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Helpers/StringHelper.js"></script>
-
-<!-- hack -->
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/EntityProperty.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Maps/MapOfCells.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlActionNames.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlBase.js"></script>
@@ -22,6 +23,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlScrollbar.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSelect.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSelectOption.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSoundScheme.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlStyle.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlTabbed.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlTextBox.js"></script>
@@ -97,7 +99,6 @@
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Maps/MapCell.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Maps/MapLocated.js"></script>
-<script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Maps/MapOfCells.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 
@@ -116,9 +117,9 @@
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/BinaryFile.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/Font.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Media/FontNameAndHeight.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/Image.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/MediaLibrary.js"></script>
-<script type="text/javascript" src="../../../Source/Framework/Source/Media/TextString.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/VenueVideo.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/Video.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/VideoHelper.js"></script>
@@ -155,6 +156,8 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSourceType.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSource_WavFile.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Media/Text/TextString.js"></script>
+
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/EntityBuilder.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/EntityGenerator.js"></script>
@@ -190,6 +193,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Movable.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Places/Place.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Places/PlaceBase.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Places/PlaceDefn.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/ConversationDefn.js"></script>
@@ -214,8 +218,10 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/Debug.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/IDHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/PlatformHelper.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Utility/Randomizer.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/RandomizerSystem.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/Reference.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Utility/Stack.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/TimerHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/URLParser.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Utility/ValueBreakGroup.js"></script>
