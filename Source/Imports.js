@@ -115,6 +115,7 @@ var Video = gf.Video;
 var VideoHelper = gf.VideoHelper;
 var SoundFromFile = gf.SoundFromFile;
 var SoundFromFileMod = gf.SoundFromFileMod;
+var SoundHelperLive = gf.SoundHelperLive;
 var SoundNone = gf.SoundNone;
 var VisualSound = gf.VisualSound;
 // Model.

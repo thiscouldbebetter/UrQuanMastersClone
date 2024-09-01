@@ -165,6 +165,7 @@ import Sound = gf.Sound;
 import SoundFromFile = gf.SoundFromFile;
 import SoundFromFileMod = gf.SoundFromFileMod;
 import SoundHelper = gf.SoundHelper;
+import SoundHelperLive = gf.SoundHelperLive;
 import SoundNone = gf.SoundNone;
 import VisualSound = gf.VisualSound;
 

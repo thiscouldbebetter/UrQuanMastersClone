@@ -168,7 +168,7 @@ class Game {
         );
         var timerHelper = new TimerHelper(24);
         var controlBuilder = ControlBuilder.fromStyles([ControlStyle.Instances().Dark]);
-        var universe = Universe.create("SpaceAdventureClone", "0.0.0-20220109", timerHelper, display, mediaLibrary, controlBuilder, WorldCreator.fromWorldCreate(WorldExtended.create));
+        var universe = Universe.create("SpaceAdventureClone", "0.0.0-20240901", timerHelper, display, new SoundHelperLive(), mediaLibrary, controlBuilder, WorldCreator.fromWorldCreate(WorldExtended.create));
         var colors = Color.Instances();
         var colorBlackName = colors.Black.name;
         var controlSlideshowIntro = universe.controlBuilder.slideshow(universe, displaySizeInPixelsDefault, [

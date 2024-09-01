@@ -241,9 +241,10 @@ class Game
 		var universe = Universe.create
 		(
 			"SpaceAdventureClone",
-			"0.0.0-20220109",
+			"0.0.0-20240901",
 			timerHelper,
 			display,
+			new SoundHelperLive(),
 			mediaLibrary,
 			controlBuilder,
 			WorldCreator.fromWorldCreate(WorldExtended.create)
