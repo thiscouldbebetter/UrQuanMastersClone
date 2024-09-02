@@ -31,7 +31,9 @@ class PlacePlanetOrbit extends PlaceBase
 		this.planet = planet;
 		this.placePlanetVicinity = placePlanetVicinity;
 
-		if (this.planet.defn().canLand)
+		var planetDefn = this.planet.defn();
+
+		if (planetDefn.canLand)
 		{
 			var entities = this.entitiesToSpawn;
 
@@ -210,6 +212,20 @@ class PlacePlanetOrbit extends PlaceBase
 
 				contactPos.overwriteWith(contactPosSaved);
 			}
+		}
+	}
+
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var planet = this.planet;
+		var planetDefn = planet.defn();
+		if (planetDefn.name == "Rainbow")
+		{
+			var universe = uwpe.universe;
+			var world = universe.world as WorldExtended;
+			var player = world.player;
+			var starsystem = this.placePlanetVicinity.placeStarsystem.starsystem;
+			player.rainbowWorldKnownStarsystemAdd(starsystem);
 		}
 	}
 

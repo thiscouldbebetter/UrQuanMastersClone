@@ -286,24 +286,18 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelCrew",
 					Coords.fromXY(marginSize.x, labelSize.y * 2),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Crew:"),
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoCrew",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 2),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						flagship, (c: Flagship) => c.crewCurrentOverMax()
@@ -311,24 +305,18 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelFuel",
 					Coords.fromXY(marginSize.x, labelSize.y * 3),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fuel:"),
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoFuel",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 3),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						flagship, (c: Flagship) => c.fuelCurrentOverMax()
@@ -336,24 +324,18 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelLanders",
 					Coords.fromXY(marginSize.x, labelSize.y * 4),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Landers:"),
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoLanders",
 					Coords.fromXY(marginSize.x * 6, labelSize.y * 4),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						flagship, (c: Flagship) => "" + c.numberOfLanders
@@ -361,24 +343,18 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelCargo",
 					Coords.fromXY(marginSize.x, labelSize.y * 5),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Cargo:"),
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoCargo",
 					Coords.fromXY(marginSize.x * 5, labelSize.y * 5),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						flagship,
@@ -387,24 +363,20 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelPosition",
 					Coords.fromXY(marginSize.x, labelSize.y * 6),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Loc:"),
 					font
 				),
 
 				new ControlLabel
 				(
-					"infoPosition",
+					"todo",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 6),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
+					false, false,
 					DataBinding.fromContextAndGet
 					(
 						world.player.shipGroup,
@@ -413,24 +385,18 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelDate",
 					Coords.fromXY(marginSize.x, labelSize.y * 7),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Date:"),
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoDate",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 7),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						world.player.shipGroup,
@@ -439,24 +405,18 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelTime",
 					Coords.fromXY(marginSize.x, labelSize.y * 8),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Time:"),
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoTime",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 8),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						world.player.shipGroup,

@@ -212,13 +212,38 @@ class SystemTests extends TestFixture {
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceHyperspace.name, placeTypeName);
-        // Go to the nearby Alpha Centauri starsystem.
+        // Cheat and jump to the Groombridge system,
+        // in order to find a rainbow world,
+        // in order to have some info to sell to the traders.
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Groombridge");
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
+        var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
+        Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Groombridge I");
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlacePlanetVicinity.name, placeTypeName);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Planet");
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlacePlanetOrbit.name, placeTypeName);
+        placeOrbit = place;
+        var planet = placeOrbit.planet;
+        Assert.areStringsEqual("Rainbow", planet.defnName);
+        var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
+        Assert.areNumbersEqual(1, rainbowWorldLocationsKnownButUnsoldCount);
+        placeOrbit.returnToPlaceParent(universe);
+        this.playFromStart_LeavePlanetVicinityAndWait(universe);
+        this.playFromStart_LeaveStarsystemAndWait(universe);
+        // Go to the Alpha Centauri starsystem, the nearest supergiant to Sol.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Alpha Centauri");
         //this.playFromStart_WaitForTicks(universe, 1000);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
-        Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
-        // Look for a Trader ship, in the main starsystem and in each planet vicinity.
+        Assert.areStringsEqual(Planet.name, placeTypeName);
+        // Look for a trader ship, in the main starsystem and in each planet vicinity.
         var placeStarsystem = place;
         var starsystem = placeStarsystem.starsystem;
         var factionNameMurch = world.factionByName("Murch").name;

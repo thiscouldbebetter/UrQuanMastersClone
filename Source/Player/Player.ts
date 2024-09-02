@@ -1,3 +1,4 @@
+
 class Player
 {
 	name: string;
@@ -12,6 +13,7 @@ class Player
 
 	_factionsAllied: Faction[];
 	_factionsKnown: Faction[];
+	_rainbowWorldLocations: RainbowWorldLocation[];
 	_shipDefnsAvailable: ShipDefn[];
 	_shipComponentDefnsKnown: ShipComponentDefn[];
 	_shipComponentDefnsKnownBackbone: ShipComponentDefn[];
@@ -37,6 +39,8 @@ class Player
 
 		// Abbreviate for scripts.
 		this.vars = this.variableLookup;
+
+		this._rainbowWorldLocations = [];
 	}
 
 	static activityDefn(): ActivityDefn
@@ -130,6 +134,26 @@ class Player
 		{
 			var ship = ships[i];
 			ship.initialize(uwpe);
+		}
+	}
+
+	rainbowWorldLocationsKnownButUnsoldCount(): number
+	{
+		var returnValue = this._rainbowWorldLocations.filter(x => x.sold == false).length;
+		return returnValue;
+	}
+
+	rainbowWorldKnownStarsystemAdd(starsystemContainingRainbowWorld: Starsystem): void
+	{
+		var starsystemName = starsystemContainingRainbowWorld.name;
+
+		var rainbowWorldIsAlreadyKnown =
+			this._rainbowWorldLocations.some(x => x.starsystemName == starsystemName);
+
+		if (rainbowWorldIsAlreadyKnown == false)
+		{
+			var rainbowWorldLocation = new RainbowWorldLocation(starsystemName, false);
+			this._rainbowWorldLocations.push(rainbowWorldLocation);
 		}
 	}
 
@@ -229,5 +253,17 @@ class Player
 		var containerSidebar = containerFlagship;
 
 		return containerSidebar;
+	}
+}
+
+class RainbowWorldLocation
+{
+	starsystemName: string;
+	sold: boolean;
+
+	constructor(starsystemName: string, sold: boolean)
+	{
+		this.starsystemName = starsystemName;
+		this.sold = sold;
 	}
 }

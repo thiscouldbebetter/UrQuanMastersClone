@@ -10,6 +10,7 @@ class Player {
         this.variableLookup = new Map();
         // Abbreviate for scripts.
         this.vars = this.variableLookup;
+        this._rainbowWorldLocations = [];
     }
     static activityDefn() {
         return new ActivityDefn("AcceptUserInput", Player.activityDefnPerform);
@@ -68,6 +69,18 @@ class Player {
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
             ship.initialize(uwpe);
+        }
+    }
+    rainbowWorldLocationsKnownButUnsoldCount() {
+        var returnValue = this._rainbowWorldLocations.filter(x => x.sold == false).length;
+        return returnValue;
+    }
+    rainbowWorldKnownStarsystemAdd(starsystemContainingRainbowWorld) {
+        var starsystemName = starsystemContainingRainbowWorld.name;
+        var rainbowWorldIsAlreadyKnown = this._rainbowWorldLocations.some(x => x.starsystemName == starsystemName);
+        if (rainbowWorldIsAlreadyKnown == false) {
+            var rainbowWorldLocation = new RainbowWorldLocation(starsystemName, false);
+            this._rainbowWorldLocations.push(rainbowWorldLocation);
         }
     }
     shipComponentDefnsKnown() {
@@ -137,5 +150,11 @@ class Player {
         */
         var containerSidebar = containerFlagship;
         return containerSidebar;
+    }
+}
+class RainbowWorldLocation {
+    constructor(starsystemName, sold) {
+        this.starsystemName = starsystemName;
+        this.sold = sold;
     }
 }
