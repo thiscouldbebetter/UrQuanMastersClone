@@ -224,7 +224,15 @@ class WorldExtended extends World
 
 		// normal
 
-		var f = (name: string, nameOriginal: string, color: Color, sphereOfInfluence: Sphere, relations: any, shipDefnName: string) =>
+		var f =
+		(
+			name: string,
+			nameOriginal: string,
+			color: Color,
+			sphereOfInfluence: Sphere,
+			relations: any,
+			shipDefnName: string
+		) =>
 		{
 			var talksImmediately = (sphereOfInfluence == null);
 
@@ -250,7 +258,7 @@ class WorldExtended extends World
 				radius * hyperspaceSize.x
 			);
 		}
-		
+
 		var c = (colorName: string) => Color.byName(colorName);
 
 		var hostile = Faction.RelationsHostile;

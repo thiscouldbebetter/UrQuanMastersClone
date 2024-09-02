@@ -137,16 +137,23 @@ class PlaceHyperspace extends PlaceBase
 			var factionCollider = faction.sphereOfInfluence;
 			if (factionCollider != null)
 			{
-				var factionEntity = new Entity
-				(
-					"Faction" + faction.name,
-					[
-						Collidable.fromCollider(factionCollider),
-						faction,
-						Locatable.create()
-					]
-				);
-				entities.push(factionEntity);
+				var factionCollidable = Collidable.fromCollider(factionCollider);
+				var factionBoundable = Boundable.fromCollidable(factionCollidable);
+
+				if (factionCollider != null)
+				{
+					var factionEntity = new Entity
+					(
+						"Faction" + faction.name,
+						[
+							factionBoundable,
+							factionCollidable,
+							faction,
+							Locatable.create()
+						]
+					);
+					entities.push(factionEntity);
+				}
 			}
 		}
 
@@ -233,8 +240,9 @@ class PlaceHyperspace extends PlaceBase
 
 			if (starsystemDeparted != null)
 			{
-				var starsystemName = starsystemDeparted.name;
-				var entityForStarsystemDeparted = this.entityByName(starsystemName);
+				var entities = this.entitiesToSpawn; // hack
+				var entityForStarsystemDeparted =
+					entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
 				playerEntity.collidable().entitiesAlreadyCollidedWith.push
 				(
 					entityForStarsystemDeparted

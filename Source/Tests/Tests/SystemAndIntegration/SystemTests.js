@@ -214,7 +214,7 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual(PlaceHyperspace.name, placeTypeName);
         // Go to the nearby Alpha Centauri starsystem.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Alpha Centauri");
-        this.playFromStart_WaitForTicks(universe, 1000);
+        //this.playFromStart_WaitForTicks(universe, 1000);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
         Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
@@ -234,8 +234,26 @@ class SystemTests extends TestFixture {
                 }
             }
         }
-        var place = world.placeCurrent;
+        Assert.isNotNull(shipGroupMurch);
+        // Move to the trader's ship and start an encouter.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, shipGroupMurch.name);
+        place = world.placeCurrent;
+        placeTypeName = place.constructor.name;
+        Assert.areStringsEqual(PlaceEncounter.name, placeTypeName);
+        // Talk to the traders.
+        placeEncounter = place;
+        placeEncounter.encounter.talk(universe);
+        universe.updateForTimerTick();
+        var encounter = placeEncounter.encounter;
+        var entityOther = encounter.entityOther;
+        talker = entityOther.talker();
+        this.playFromStart_TalkToTalker(universe, talker, [
+            null, // "How did you know about us before meeting us?"
+            "#(HELLO_AND_DOWN_TO_BUSINESS_1)", // "Shall we begin trading now?"
+            null, // "Why did your bridge turn purple?"
+            "Business-Sell", // "I have some things I would like to sell."
+        ]);
+        Assert.isTrue(true);
         // Gather resources.
         // Gather lifeforms.
         // Return to Earth station.
@@ -266,7 +284,7 @@ class SystemTests extends TestFixture {
     }
     playFromStart_LeaveStarsystemAndWait(universe) {
         this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
-        this.playFromStart_WaitForTicks(universe, 10); // hack - Necessary?
+        this.playFromStart_WaitForTicks(universe, 10); // hack - Exactly how long is necessary?
     }
     playFromStart_MoveToEntityWithNameAndWait(universe, targetEntityName) {
         var place = universe.world.placeCurrent;
@@ -278,7 +296,7 @@ class SystemTests extends TestFixture {
             playerPos.overwriteWith(targetPos);
         }
         // hack - How long is necessary to wait?
-        this.playFromStart_WaitForTicks(universe, 50);
+        this.playFromStart_WaitForTicks(universe, 30);
     }
     playFromStart_TalkToTalker(universe, talker, optionsToSelect) {
         var conversationRun = talker.conversationRun;

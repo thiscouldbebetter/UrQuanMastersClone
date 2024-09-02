@@ -72,7 +72,7 @@ class PlaceStarsystem extends PlaceBase {
                 playerShipGroup
             ]);
             if (planetDeparted != null) {
-                var entityForPlanetDeparted = entities.filter(x => Planet.fromEntity(x) == planetDeparted)[0];
+                var entityForPlanetDeparted = entities.find(x => Planet.fromEntity(x) == planetDeparted);
                 playerCollidable.entitiesAlreadyCollidedWith.push(entityForPlanetDeparted);
             }
             entities.push(playerEntity);
@@ -147,8 +147,9 @@ class PlaceStarsystem extends PlaceBase {
             var hyperspace = world.hyperspace;
             var playerLoc = entityPlayer.locatable().loc;
             var playerPosNext = place.starsystem.posInHyperspace.clone();
+            var playerDisposition = new Disposition(playerPosNext, playerLoc.orientation.clone(), Hyperspace.name);
             world.placeNext = new PlaceHyperspace(universe, hyperspace, place.starsystem, // starsystemDeparted
-            new Disposition(playerPosNext, playerLoc.orientation.clone(), Hyperspace.name));
+            playerDisposition);
         }
         else if (entityOtherName.startsWith("Sun")) {
             // Do nothing.
