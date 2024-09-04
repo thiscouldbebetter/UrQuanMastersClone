@@ -188,18 +188,10 @@ class PlaceHyperspaceMap extends PlaceBase {
             new ControlLabel("labelReticle", Coords.fromXY(containerPlayer.size.x / 2, marginSize.y), titleSize, true, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Reticle"), fontShort),
-            new ControlLabel("labelPos", Coords.fromXY(marginSize.x, marginSize.y * 2), titleSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Pos:"), fontShort),
-            new ControlLabel("infoPos", Coords.fromXY(marginSize.x * 4, marginSize.y * 2), titleSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(this, (c) => c.reticlePosAsStringXY()), fontShort),
-            new ControlLabel("labelFuel", Coords.fromXY(marginSize.x, marginSize.y * 3), titleSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Fuel:"), fontShort),
-            new ControlLabel("infoFuel", Coords.fromXY(marginSize.x * 4, marginSize.y * 3), titleSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(this, (c) => "" + c.fuelFromPlayerShipGroupToReticle(world)), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2), titleSize, DataBinding.fromContext("Pos:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2), titleSize, DataBinding.fromContextAndGet(this, (c) => c.reticlePosAsStringXY()), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3), titleSize, DataBinding.fromContext("Fuel:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 3), titleSize, DataBinding.fromContextAndGet(this, (c) => "" + c.fuelFromPlayerShipGroupToReticle(world)), fontShort),
         ]);
         var containerSidebar = ControlContainer.from4("containerRight", Coords.fromXY(marginSize.x * 2 + containerMapSize.x, marginSize.y * 2 + titleSize.y), containerRightSize, 
         // children
@@ -215,13 +207,11 @@ class PlaceHyperspaceMap extends PlaceBase {
             ControlVisual.from4("visualMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerMapSize, DataBinding.fromContext(new VisualImageImmediate(Image2.fromSystemImage("[fromCanvas]", this.displayMap.canvas), null // ?
             ))),
             containerSidebar,
-            ControlButton.from8("buttonBack", marginSize, buttonSize, "<", font, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            () => {
+            ControlButton.from5(marginSize, buttonSize, "<", font, () => {
                 var world = universe.world;
                 var place = world.placeCurrent;
                 var placeNext = place.placeHyperspaceToReturnTo;
-                world.placeNext = placeNext;
+                world.placeNextSet(placeNext);
             }),
         ]);
         return controlRoot;

@@ -281,7 +281,8 @@ class PlaceHyperspace extends PlaceBase
 				var world = uwpe.world;
 				var place = uwpe.place;
 
-				world.placeNext = new PlaceHyperspaceMap(place as PlaceHyperspace);
+				var placeNext = new PlaceHyperspaceMap(place as PlaceHyperspace);
+				world.placeNextSet(placeNext);
 			}
 		);
 	}
@@ -378,7 +379,7 @@ class PlaceHyperspace extends PlaceBase
 				starsystem.sizeInner.clone().half()
 			);
 
-			world.placeNext = starsystem.toPlace
+			var placeNext = starsystem.toPlace
 			(
 				world,
 				Disposition.fromPosAndOrientation
@@ -388,6 +389,8 @@ class PlaceHyperspace extends PlaceBase
 				),
 				null // planet
 			);
+
+			world.placeNextSet(placeNext);
 		}
 		else if (entityOtherShipGroup != null)
 		{
@@ -405,7 +408,7 @@ class PlaceHyperspace extends PlaceBase
 				playerPos
 			);
 			var placeEncounter = new PlaceEncounter(world, encounter);
-			world.placeNext = placeEncounter;
+			world.placeNextSet(placeEncounter);
 
 			place.entityToRemoveAdd(entityOther);
 			ArrayHelper.remove(place.hyperspace.shipGroups, shipGroupOther);

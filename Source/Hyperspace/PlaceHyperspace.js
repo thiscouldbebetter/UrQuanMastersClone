@@ -153,7 +153,8 @@ class PlaceHyperspace extends PlaceBase {
         return new Action("MapView", (uwpe) => {
             var world = uwpe.world;
             var place = uwpe.place;
-            world.placeNext = new PlaceHyperspaceMap(place);
+            var placeNext = new PlaceHyperspaceMap(place);
+            world.placeNextSet(placeNext);
         });
     }
     // methods
@@ -204,8 +205,9 @@ class PlaceHyperspace extends PlaceBase {
             var playerPosNextAsPolar = Polar.create().fromCoords(playerOrientation.forward).addToAzimuthInTurns(.5).wrap();
             playerPosNextAsPolar.radius = starsystem.sizeInner.x * .45;
             var playerPosNext = playerPosNextAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
-            world.placeNext = starsystem.toPlace(world, Disposition.fromPosAndOrientation(playerPosNext, playerOrientation.clone()), null // planet
+            var placeNext = starsystem.toPlace(world, Disposition.fromPosAndOrientation(playerPosNext, playerOrientation.clone()), null // planet
             );
+            world.placeNextSet(placeNext);
         }
         else if (entityOtherShipGroup != null) {
             var shipGroupOther = entityOtherShipGroup;
@@ -214,7 +216,7 @@ class PlaceHyperspace extends PlaceBase {
             var planetClosest = ArrayHelper.random(starsystemClosest.planets, universe.randomizer);
             var encounter = new Encounter(planetClosest, shipGroupOther.factionName, entityPlayer, entityOther, place, playerPos);
             var placeEncounter = new PlaceEncounter(world, encounter);
-            world.placeNext = placeEncounter;
+            world.placeNextSet(placeEncounter);
             place.entityToRemoveAdd(entityOther);
             ArrayHelper.remove(place.hyperspace.shipGroups, shipGroupOther);
         }

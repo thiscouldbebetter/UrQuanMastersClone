@@ -479,7 +479,7 @@ class Game
 		var placePlanetVicinity = null;
 		var placeStation = new PlaceStation(world, station, placePlanetVicinity);
 		var placeStationDocks = new PlaceStationDock(world, placeStation);
-		world.placeNext = placeStationDocks;
+		world.placeNextSet(placeStationDocks);
 	}
 
 	debug_Hyperspace(universe: Universe): void
@@ -490,7 +490,7 @@ class Game
 		var playerPos = starsystemSol.posInHyperspace.clone();
 		var playerLoc = Disposition.fromPos(playerPos);
 		var placeHyperspace = new PlaceHyperspace(universe, hyperspace, starsystemSol, playerLoc);
-		world.placeNext = placeHyperspace;
+		world.placeNextSet(placeHyperspace);
 	}
 
 	debug_HyperspaceMap(universe: Universe): void
@@ -507,7 +507,7 @@ class Game
 		);
 		placeHyperspace.updateForTimerTick(uwpe);
 		var placeMap = new PlaceHyperspaceMap(placeHyperspace);
-		world.placeNext = placeMap;
+		world.placeNextSet(placeMap);
 	}
 
 	debug_Planet(universe: Universe): void
@@ -522,7 +522,7 @@ class Game
 		planet.initialize(uwpe);
 		var placePlanetVicinity = null;
 		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
-		world.placeNext = placePlanetOrbit;
+		world.placeNextSet(placePlanetOrbit);
 	}
 
 	debug_Planet2(universe: Universe): void
@@ -530,14 +530,14 @@ class Game
 		var world = universe.world as WorldExtended;
 		var starsystem = world.hyperspace.starsystems.find(x => x.name == "Eta Giclas");
 		var planet = starsystem.planets[4]; // E Giclas V
-		var uwpe = new UniverseWorldPlaceEntities
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld
 		(
-			universe, world, null, null, null
+			universe, world
 		);
 		planet.initialize(uwpe);
 		var placePlanetVicinity = null;
 		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
-		world.placeNext = placePlanetOrbit;
+		world.placeNextSet(placePlanetOrbit);
 	}
 
 	debug_PlanetEnergy(universe: Universe): void
@@ -547,7 +547,7 @@ class Game
 		var planet = starsystem.planets[8]; // Pluto
 		var placePlanetVicinity = null;
 		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
-		world.placeNext = placePlanetOrbit;
+		world.placeNextSet(placePlanetOrbit);
 	}
 
 	debug_StarsystemSol(universe: Universe): void
@@ -562,7 +562,7 @@ class Game
 			new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))
 		);
 		var place = starsystemSol.toPlace(world, playerLoc, null);
-		world.placeNext = place;
+		world.placeNextSet(place);
 	}
 
 	debug_Station(universe: Universe): void
@@ -580,7 +580,7 @@ class Game
 		var station = planetEarth.satellites[0] as Station;
 		var placePlanetVicinity = planetEarth.toPlace(world);
 		var placeStation = new PlaceStation(world, station, placePlanetVicinity);
-		world.placeNext = placeStation;
+		world.placeNextSet(placeStation);
 	}
 
 	debug_Talk_MauluskaOrphan(universe: Universe): void

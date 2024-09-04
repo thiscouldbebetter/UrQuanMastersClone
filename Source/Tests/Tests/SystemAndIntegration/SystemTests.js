@@ -10,14 +10,14 @@ class SystemTests extends TestFixture {
         return returnTests;
     }
     // Tests.
-    playFromStart() {
+    playFromStart(callback) {
         // todo
         var environment = new EnvironmentMock();
         environment.universeBuild((u) => {
-            u.initialize(() => this.playFromStart_UniverseInitialized(u));
+            u.initialize(() => this.playFromStart_UniverseInitialized(callback, u));
         });
     }
-    playFromStart_UniverseInitialized(universe) {
+    playFromStart_UniverseInitialized(callback, universe) {
         Assert.isNotNull(universe);
         var world = universe.world;
         var venueWorld = world.toVenue();
@@ -235,6 +235,7 @@ class SystemTests extends TestFixture {
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
         Assert.areNumbersEqual(1, rainbowWorldLocationsKnownButUnsoldCount);
         placeOrbit.returnToPlaceParent(universe);
+        universe.updateForTimerTick();
         this.playFromStart_LeavePlanetVicinityAndWait(universe);
         this.playFromStart_LeaveStarsystemAndWait(universe);
         // Go to the Alpha Centauri starsystem, the nearest supergiant to Sol.
@@ -242,7 +243,7 @@ class SystemTests extends TestFixture {
         //this.playFromStart_WaitForTicks(universe, 1000);
         place = world.placeCurrent;
         placeTypeName = place.constructor.name;
-        Assert.areStringsEqual(Planet.name, placeTypeName);
+        Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
         // Look for a trader ship, in the main starsystem and in each planet vicinity.
         var placeStarsystem = place;
         var starsystem = placeStarsystem.starsystem;
@@ -282,6 +283,7 @@ class SystemTests extends TestFixture {
         // Gather resources.
         // Gather lifeforms.
         // Return to Earth station.
+        callback();
     }
     playFromStart_FindEntityWithName(universe, targetEntityName) {
         var place = universe.world.placeCurrent;

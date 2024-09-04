@@ -364,24 +364,18 @@ class PlaceHyperspaceMap extends PlaceBase
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelPos",
 					Coords.fromXY(marginSize.x, marginSize.y * 2),
 					titleSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Pos:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoPos",
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 2),
 					titleSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this,
@@ -390,24 +384,18 @@ class PlaceHyperspaceMap extends PlaceBase
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelFuel",
 					Coords.fromXY(marginSize.x, marginSize.y * 3),
 					titleSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fuel:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoFuel",
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 3),
 					titleSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this,
@@ -480,21 +468,18 @@ class PlaceHyperspaceMap extends PlaceBase
 
 				containerSidebar,
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonBack",
 					marginSize,
 					buttonSize,
 					"<",
 					font,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					() =>
 					{
 						var world = universe.world;
 						var place = world.placeCurrent as PlaceHyperspaceMap;
 						var placeNext = place.placeHyperspaceToReturnTo;
-						world.placeNext = placeNext;
+						world.placeNextSet(placeNext);
 					}
 				),
 			]

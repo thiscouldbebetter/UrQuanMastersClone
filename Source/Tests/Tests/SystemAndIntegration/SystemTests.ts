@@ -6,7 +6,7 @@ class SystemTests extends TestFixture
 		super(SystemTests.name);
 	}
 
-	tests(): ( () => void )[]
+	tests(): ( (callback: () => void) => void )[]
 	{
 		var returnTests =
 		[
@@ -18,7 +18,7 @@ class SystemTests extends TestFixture
 
 	// Tests.
 
-	playFromStart(): void
+	playFromStart(callback: () => void ): void
 	{
 		// todo
 		var environment = new EnvironmentMock();
@@ -28,13 +28,13 @@ class SystemTests extends TestFixture
 			{
 				u.initialize
 				(
-					() => this.playFromStart_UniverseInitialized(u)
+					() => this.playFromStart_UniverseInitialized(callback, u)
 				)
 			}
 		);
 	}
 
-	playFromStart_UniverseInitialized(universe: Universe): void
+	playFromStart_UniverseInitialized(callback: () => void, universe: Universe): void
 	{
 		Assert.isNotNull(universe);
 
@@ -204,7 +204,6 @@ class SystemTests extends TestFixture
 
 		var placeOrbit = place as PlacePlanetOrbit;
 		placeOrbit.returnToPlaceParent(universe);
-
 		universe.updateForTimerTick();
 
 		place = world.placeCurrent;
@@ -375,6 +374,7 @@ class SystemTests extends TestFixture
 		Assert.areNumbersEqual(1, rainbowWorldLocationsKnownButUnsoldCount); 
 
 		placeOrbit.returnToPlaceParent(universe);
+		universe.updateForTimerTick();
 
 		this.playFromStart_LeavePlanetVicinityAndWait(universe);
 
@@ -386,7 +386,7 @@ class SystemTests extends TestFixture
 		//this.playFromStart_WaitForTicks(universe, 1000);
 		place = world.placeCurrent;
 		placeTypeName = place.constructor.name;
-		Assert.areStringsEqual(Planet.name, placeTypeName);
+		Assert.areStringsEqual(PlaceStarsystem.name, placeTypeName);
 
 		// Look for a trader ship, in the main starsystem and in each planet vicinity.
 
@@ -452,6 +452,7 @@ class SystemTests extends TestFixture
 		// Gather lifeforms.
 		// Return to Earth station.
 
+		callback();
 	}
 
 	playFromStart_FindEntityWithName(universe: Universe, targetEntityName: string): Entity
