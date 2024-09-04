@@ -62,7 +62,12 @@ class Player {
         return this._factionsKnown;
     }
     hasInfoToSell(world) {
-        return this.flagship.hasInfoToSell(world);
+        var returnValue = this.hasInfoToSell_RainbowWorldLocations()
+            || this.flagship.hasInfoToSell(world);
+        return returnValue;
+    }
+    hasInfoToSell_RainbowWorldLocations() {
+        return (this.rainbowWorldLocationsKnownButUnsoldCount() > 0);
     }
     initialize(uwpe) {
         var ships = this.shipGroup.ships;
