@@ -1,192 +1,148 @@
-{
-    "name": "EarthStation",
-    "imagePortraitName": "Conversation-Portrait-EarthStation",
-    "soundMusicName": "Music_Faction_EarthStation",
-    "contentTextStringName": "Conversation-EarthStation-Content",
-    "talkNodes": [
+name=EarthStation
+contentTextStringName=Conversation-EarthStation-Content
+imagePortraitName=Conversation-Portrait-EarthStation
+soundMusicName=Music_Faction_EarthStation
 
-{ "defnName": "VariablesImport", "content": "u.world.player.variableLookup" },
-
-{ "defnName": "JumpIfTrue", "content": "RadioactivesRequested", "next": "#(DO_YOU_HAVE_RADIO_THIS_TIME)" },
-
-{ "defnName": "Display", "content": "#(ARE_YOU_SUPPLY_SHIP)" },
-{ "defnName": "Option", "content": "#(no_but_well_help)", "next": "#(THE_WHAT_FROM_WHERE)" },
-{ "defnName": "Option", "content": "#(yes_this_is_supply_ship)", "next": "#(ABOUT_TIME)" },
-{ "defnName": "Option", "content": "#(what_slave_planet)", "next": "#(DONT_KNOW_WHO_YOU_ARE)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(THE_WHAT_FROM_WHERE)", "defnName": "Display", "content": "#(THE_WHAT_FROM_WHERE)" },
-
-{ "name": "RadioactivesNeeded", "defnName": "DoNothing" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(well_go_get_them_now)", "next": "#(THANKS_FOR_HELPING)" },
-{ "name": "#(where_get_radios)", "defnName": "Option", "content": "#(where_get_radios)", "next": "#(RADIOS_ON_MERCURY)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(ABOUT_TIME)", "defnName": "Display", "content": "#(ABOUT_TIME)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(i_lied)", "next": "#(DONT_KNOW_WHO_YOU_ARE)" },
-{ "defnName": "Option", "content": "#(plumb_out)", "next": "#(WHAT_KIND_OF_IDIOT)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(DONT_KNOW_WHO_YOU_ARE)", "defnName": "Display", "content": "#(DONT_KNOW_WHO_YOU_ARE)" },
-{ "defnName": "Goto", "next": "RadioactivesNeeded" },
-
-{ "name": "#(WHAT_KIND_OF_IDIOT)", "defnName": "Display", "content": "#(WHAT_KIND_OF_IDIOT)" },
-{ "defnName": "Goto", "next": "RadioactivesNeeded" },
-
-{ "name": "#(THANKS_FOR_HELPING)", "defnName": "Display", "content": "#(THANKS_FOR_HELPING)" },
-{ "defnName": "Goto", "next": "Done" },
-
-{ "name": "#(RADIOS_ON_MERCURY)", "defnName": "Display", "content": "#(RADIOS_ON_MERCURY)" },
-{ "defnName": "Disable", "next": "#(where_get_radios)" },
-{ "defnName": "Prompt" },
-
-{ "defnName": "Display", "content": "#(GLAD_WHEN_YOU_COME_BACK)" },
-{ "defnName": "Goto", "next": "Done" },
-
-{ "name": "(DO_YOU_HAVE_RADIO_THIS_TIME)", "defnName": "Display", "content": "#(DO_YOU_HAVE_RADIO_THIS_TIME) " },
-
-{ "defnName": "Option", "content": "#(we_will_transfer_now)", "next": "#(FUEL_UP0)" },
-{ "defnName": "Option", "content": "#(what_will_you_give_us)", "next": "#(MESSAGE_GARBLED_1)" },
-{ "defnName": "Option", "content": "#(before_radios_we_need_info)", "next": "#(MESSAGE_GARBLED_2)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(MESSAGE_GARBLED_1)", "defnName": "Display", "content": "#(MESSAGE_GARBLED_1)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(MESSAGE_GARBLED_2)", "defnName": "Display", "content": "#(MESSAGE_GARBLED_2)" },
-{ "defnName": "Prompt" },
-
-{ "next": "#(FUEL_UP0)", "defnName": "Display", "content": "#(FUEL_UP0)" },
-{ "next": "#(FUEL_UP1)", "defnName": "Display", "content": "#(FUEL_UP1)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(we_are_vindicator)" },
-{ "defnName": "Option", "content": "#(first_give_info)", "next": "#(ASK_AWAY)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(ASK_AWAY)", "defnName": "Display", "content": "#(ASK_AWAY)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(whats_this_starbase)", "next": "#(STARBASE_IS)" },
-{ "defnName": "Option", "content": "#(we_are_vindicator)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(STARBASE_IS)", "defnName": "Display", "content": "#(STARBASE_IS)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Display", "content": "#(what_about_earth)", "next": "#(HAPPENED_TO_EARTH)" },
-{ "defnName": "Option", "content": "#(we_are_vindicator)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(HAPPENED_TO_EARTH)", "defnName": "Display", "content": "#(HAPPENED_TO_EARTH)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(where_are_urquan)", "next": "#(URQUAN_LEFT)" },
-{ "defnName": "Option", "content": "#(we_are_vindicator)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(URQUAN_LEFT)", "defnName": "Display", "content": "#(URQUAN_LEFT)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(what_was_red_thing)", "next": "#(THAT_WAS_PROBE)" },
-{ "defnName": "Option", "content": "#(we_are_vindicator)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(THAT_WAS_PROBE)", "defnName": "Display", "content": "#(THAT_WAS_PROBE)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(it_went_away)", "next": "#(DEEP_TROUBLE)" },
-{ "defnName": "Option", "content": "#(we_destroyed_it)" },
-{ "defnName": "Option", "content": "#(what_probe)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(DEEP_TROUBLE)", "defnName": "Display", "content": "#(DEEP_TROUBLE)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(we_are_vindicator)", "next": "#(THATS_IMPOSSIBLE)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(THATS_IMPOSSIBLE)", "defnName": "Display", "content": "#(THATS_IMPOSSIBLE)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(our_mission_was_secret)", "next": "#(ACKNOWLEDGE_SECRET)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(ACKNOWLEDGE_SECRET)", "defnName": "Display", "content": "#(ACKNOWLEDGE_SECRET)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(we_are_here_to_help)", "next": "#(BASE_ON_MOON)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(BASE_ON_MOON)", "defnName": "Display", "content": "#(BASE_ON_MOON)" },
-{ "defnName": "OptionsClear" },
-{ "defnName": "Option", "content": "#(we_will_take_care_of_base)" },
-{ "name": "#(tell_me_about_base)", "defnName": "Option", "content": "#(tell_me_about_base)", "next": "#(ABOUT_BASE)" },
-{ "name": "#(tell_me_again)", "defnName": "Option", "content": "#(tell_me_again)", "disabled": "true" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(ABOUT_BASE)", "defnName": "Display", "content": "#(ABOUT_BASE)" },
-{ "defnName": "Disable", "content": "#(tell_me_about_base)" },
-{ "defnName": "Enable", "content": "#(tell_me_again)" },
-{ "defnName": "Prompt" },
-
-{ "name": "#(GOOD_LUCK_WITH_BASE)", "defnName": "Display", "content": "#(GOOD_LUCK_WITH_BASE)" },
-{ "defnName": "Goto", "next": "Done" },
-
-{ "defnName": "Display", "content": "#(GIVE_FUEL)" },
-{ "defnName": "Display", "content": "#(GIVE_FUEL_AGAIN)" },
-
-{ "defnName": "Display", "content": "#(HERE_IS_ANOTHER_LANDER)" },
-
-{ "defnName": "Display", "content": "#(HERE_IS_A_NEW_LANDER)" },
-{ "defnName": "Display", "content": "#(THIS_MAY_SEEM_SILLY)" },
-{ "defnName": "Display", "content": "#(OK_THE_NAFS)" },
-{ "defnName": "Display", "content": "#(OK_THE_CAN)" },
-{ "defnName": "Display", "content": "#(OK_THE_UFW)" },
-{ "defnName": "Display", "content": "#(OK_THE_NAME_IS_EMPIRE)" },
-
-
-
-
-{ "defnName": "Display", "content": "#(DEALT_WITH_BASE_YET)" },
-{ "defnName": "Display", "content": "#(HERE_COMES_ILWRATH)" },
-{ "defnName": "Display", "content": "#(VERY_IMPRESSIVE)" },
-{ "defnName": "Display", "content": "#(IT_WAS_ABANDONED)" },
-{ "defnName": "Display", "content": "#(YOU_REALLY_FOUGHT_BASE)" },
-{ "defnName": "Display", "content": "#(IM_GLAD_YOU_WON)" },
-{ "defnName": "Display", "content": "#(IM_SURE_IT_WAS_DIFFICULT)" },
-
-{ "defnName": "Display", "content": "#(GOOD_NEWS)" },
-{ "defnName": "Display", "content": "#(SURE_HOPE)" },
-{ "defnName": "Display", "content": "#(ABOUT_BASE_AGAIN)" },
-{ "defnName": "Display", "content": "#(COOK_BUTTS)" },
-{ "defnName": "Display", "content": "#(OVERTHROW_ALIENS)" },
-{ "defnName": "Display", "content": "#(KILL_MONSTERS)" },
-{ "defnName": "Display", "content": "#(GOOD_LUCK_AGAIN)" },
-{ "defnName": "Display", "content": "#(STARBASE_WILL_BE_READY)" },
-{ "defnName": "Display", "content": "#(overthrow_evil_aliens)" },
-{ "defnName": "Display", "content": "#(annihilate_those_monsters)" },
-{ "defnName": "Display", "content": "#(cook_their_butts)" },
-
-{ "defnName": "Display", "content": "#(we_must_go_now)" },
-{ "defnName": "Display", "content": "#(where_can_i_get_radios)" },
-{ "defnName": "Display", "content": "#(ok_i_will_get_radios)" },
-
-
-{ "defnName": "Display", "content": "#(base_was_abandoned)" },
-{ "defnName": "Display", "content": "#(we_fought_them)" },
-{ "defnName": "Display", "content": "#(oh_yes_big_fight)" },
-{ "defnName": "Display", "content": "#(i_lied_it_was_abandoned)" },
-{ "defnName": "Display", "content": "#(i_cant_talk_about_it)" },
-{ "defnName": "Display", "content": "#(name_1)" },
-{ "defnName": "Display", "content": "#(name_2)" },
-{ "defnName": "Display", "content": "#(name_3)" },
-{ "defnName": "Display", "content": "#(name_4)" },
-{ "defnName": "Display", "content": "#(i_lost_my_lander)" },
-{ "defnName": "Display", "content": "#(i_lost_another_lander)" },
-{ "defnName": "Display", "content": "#(need_fuel_mercury)" },
-{ "defnName": "Display", "content": "#(need_fuel_luna)" },
-{ "defnName": "Display", "content": "#(need_fuel_again)" },
-
-{ "defnName": "Display", "content": "#(take_care_of_base_again)" },
-{ "defnName": "Display", "content": "#(goodbye_commander)" },
-
-{ "name": "Done", "defnName": "DoNothing" },
-{ "defnName": "VariablesExport", "content": "u.world.player.variableLookup.set($key$, $value$)" },
-{ "defnName": "Quit" }
-
-    ]
-}
+|VariablesImport|u.world.player.variableLookup
+|JumpIfTrue|RadioactivesRequested|#(DO_YOU_HAVE_RADIO_THIS_TIME)
+|Display|#(ARE_YOU_SUPPLY_SHIP)
+|Option|#(no_but_well_help)|#(THE_WHAT_FROM_WHERE)
+|Option|#(yes_this_is_supply_ship)|#(ABOUT_TIME)
+|Option|#(what_slave_planet)|#(DONT_KNOW_WHO_YOU_ARE)
+|Prompt
+#(THE_WHAT_FROM_WHERE)|Display|#(THE_WHAT_FROM_WHERE)
+RadioactivesNeeded|DoNothing
+|OptionsClear
+|Option|#(well_go_get_them_now)|#(THANKS_FOR_HELPING)
+#(where_get_radios)|Option|#(where_get_radios)|#(RADIOS_ON_MERCURY)
+|Prompt
+#(ABOUT_TIME)|Display|#(ABOUT_TIME)
+|OptionsClear
+|Option|#(i_lied)|#(DONT_KNOW_WHO_YOU_ARE)
+|Option|#(plumb_out)|#(WHAT_KIND_OF_IDIOT)
+|Prompt
+#(DONT_KNOW_WHO_YOU_ARE)|Display|#(DONT_KNOW_WHO_YOU_ARE)
+|Goto||RadioactivesNeeded
+#(WHAT_KIND_OF_IDIOT)|Display|#(WHAT_KIND_OF_IDIOT)
+|Goto||RadioactivesNeeded
+#(THANKS_FOR_HELPING)|Display|#(THANKS_FOR_HELPING)
+|Goto||Done
+#(RADIOS_ON_MERCURY)|Display|#(RADIOS_ON_MERCURY)
+|Disable||#(where_get_radios)
+|Prompt
+|Display|#(GLAD_WHEN_YOU_COME_BACK)
+|Goto||Done
+#(DO_YOU_HAVE_RADIO_THIS_TIME)|Display|#(DO_YOU_HAVE_RADIO_THIS_TIME) 
+|Option|#(we_will_transfer_now)|#(FUEL_UP0)
+|Option|#(what_will_you_give_us)|#(MESSAGE_GARBLED_1)
+|Option|#(before_radios_we_need_info)|#(MESSAGE_GARBLED_2)
+|Prompt
+#(MESSAGE_GARBLED_1)|Display|#(MESSAGE_GARBLED_1)
+|Prompt
+#(MESSAGE_GARBLED_2)|Display|#(MESSAGE_GARBLED_2)
+|Prompt
+#(FUEL_UP0)|Display|#(FUEL_UP0)
+#(FUEL_UP1)|Display|#(FUEL_UP1)
+|OptionsClear
+|Option|#(we_are_vindicator)
+|Option|#(first_give_info)|#(ASK_AWAY)
+|Prompt
+#(ASK_AWAY)|Display|#(ASK_AWAY)
+|OptionsClear
+|Option|#(whats_this_starbase)|#(STARBASE_IS)
+|Option|#(we_are_vindicator)
+|Prompt
+#(STARBASE_IS)|Display|#(STARBASE_IS)
+|OptionsClear
+|Display|#(what_about_earth)|#(HAPPENED_TO_EARTH)
+|Option|#(we_are_vindicator)
+|Prompt
+#(HAPPENED_TO_EARTH)|Display|#(HAPPENED_TO_EARTH)
+|OptionsClear
+|Option|#(where_are_urquan)|#(URQUAN_LEFT)
+|Option|#(we_are_vindicator)
+|Prompt
+#(URQUAN_LEFT)|Display|#(URQUAN_LEFT)
+|OptionsClear
+|Option|#(what_was_red_thing)|#(THAT_WAS_PROBE)
+|Option|#(we_are_vindicator)
+|Prompt
+#(THAT_WAS_PROBE)|Display|#(THAT_WAS_PROBE)
+|OptionsClear
+|Option|#(it_went_away)|#(DEEP_TROUBLE)
+|Option|#(we_destroyed_it)
+|Option|#(what_probe)
+|Prompt
+#(DEEP_TROUBLE)|Display|#(DEEP_TROUBLE)
+|OptionsClear
+|Option|#(we_are_vindicator)|#(THATS_IMPOSSIBLE)
+|Prompt
+#(THATS_IMPOSSIBLE)|Display|#(THATS_IMPOSSIBLE)
+|OptionsClear
+|Option|#(our_mission_was_secret)|#(ACKNOWLEDGE_SECRET)
+|Prompt
+#(ACKNOWLEDGE_SECRET)|Display|#(ACKNOWLEDGE_SECRET)
+|OptionsClear
+|Option|#(we_are_here_to_help)|#(BASE_ON_MOON)
+|Prompt
+#(BASE_ON_MOON)|Display|#(BASE_ON_MOON)
+|OptionsClear
+|Option|#(we_will_take_care_of_base)
+#(tell_me_about_base)|Option|#(tell_me_about_base)|#(ABOUT_BASE)
+#(tell_me_again)|Option|#(tell_me_again)
+|Prompt
+#(ABOUT_BASE)|Display|#(ABOUT_BASE)
+|Disable|#(tell_me_about_base)
+|Enable|#(tell_me_again)
+|Prompt
+#(GOOD_LUCK_WITH_BASE)|Display|#(GOOD_LUCK_WITH_BASE)
+|Goto||Done
+|Display|#(GIVE_FUEL)
+|Display|#(GIVE_FUEL_AGAIN)
+|Display|#(HERE_IS_ANOTHER_LANDER)
+|Display|#(HERE_IS_A_NEW_LANDER)
+|Display|#(THIS_MAY_SEEM_SILLY)
+|Display|#(OK_THE_NAFS)
+|Display|#(OK_THE_CAN)
+|Display|#(OK_THE_UFW)
+|Display|#(OK_THE_NAME_IS_EMPIRE)
+|Display|#(DEALT_WITH_BASE_YET)
+|Display|#(HERE_COMES_ILWRATH)
+|Display|#(VERY_IMPRESSIVE)
+|Display|#(IT_WAS_ABANDONED)
+|Display|#(YOU_REALLY_FOUGHT_BASE)
+|Display|#(IM_GLAD_YOU_WON)
+|Display|#(IM_SURE_IT_WAS_DIFFICULT)
+|Display|#(GOOD_NEWS)
+|Display|#(SURE_HOPE)
+|Display|#(ABOUT_BASE_AGAIN)
+|Display|#(COOK_BUTTS)
+|Display|#(OVERTHROW_ALIENS)
+|Display|#(KILL_MONSTERS)
+|Display|#(GOOD_LUCK_AGAIN)
+|Display|#(STARBASE_WILL_BE_READY)
+|Display|#(overthrow_evil_aliens)
+|Display|#(annihilate_those_monsters)
+|Display|#(cook_their_butts)
+|Display|#(we_must_go_now)
+|Display|#(where_can_i_get_radios)
+|Display|#(ok_i_will_get_radios)
+|Display|#(base_was_abandoned)
+|Display|#(we_fought_them)
+|Display|#(oh_yes_big_fight)
+|Display|#(i_lied_it_was_abandoned)
+|Display|#(i_cant_talk_about_it)
+|Display|#(name_1)
+|Display|#(name_2)
+|Display|#(name_3)
+|Display|#(name_4)
+|Display|#(i_lost_my_lander)
+|Display|#(i_lost_another_lander)
+|Display|#(need_fuel_mercury)
+|Display|#(need_fuel_luna)
+|Display|#(need_fuel_again)
+|Display|#(take_care_of_base_again)
+|Display|#(goodbye_commander)
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key$, $value$)
+|Quit

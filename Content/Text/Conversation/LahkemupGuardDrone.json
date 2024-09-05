@@ -1,14 +1,9 @@
-{
-    "name": "LahkemupGuardDrone",
-    "imagePortraitName": "Conversation-Portrait-Lahkemup",
-    "soundMusicName": "Music_Faction_Lahkemup",
-    "contentTextStringName": "Conversation-Lahkemup-Content",
-    "talkNodes": [
+name=LahkemupGuardDrone
+contentTextStringName=Conversation-Lahkemup-Content
+imagePortraitName=Conversation-Portrait-Lahkemup
+soundMusicName=Music_Faction_Lahkemup
 
-{ "defnName": "Display", "content": "#(SEND_MESSAGE)"},
-{ "defnName": "Quit" },
-{ "name": "Finalize", "defnName": "DoNothing" },
-{ "defnName": "Script", "content": "cr.talker().actor().activity.defnNameSet('Leave')" }
-
-    ]
-}
+|Display|#(SEND_MESSAGE)
+|Quit
+Finalize|DoNothing
+|Script|cr.talker().actor().activity.defnNameSet('Leave')
