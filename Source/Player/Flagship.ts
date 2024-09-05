@@ -209,13 +209,20 @@ class Flagship
 	hasInfoToSell(world: World): boolean
 	{
 		var returnValue =
-		(
-			this.itemHolderOther.hasItemWithDefnName("Biodata")
-			|| this.itemHolderOther.hasItemWithDefnName("RainbowWorldLocations")
-			|| this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world)
-		);
+			this.hasInfoToSell_Biodata()
+			|| this.hasInfoToSell_PrecursorArtifacts(world);
 
 		return returnValue;
+	}
+
+	hasInfoToSell_Biodata(): boolean
+	{
+		return this.itemHolderOther.hasItemWithDefnName("Biodata");
+	}
+
+	hasInfoToSell_PrecursorArtifacts(world: World): boolean
+	{
+		return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
 	}
 
 	itemHolderCargoBuildOrUpdate(items: Item[]): ItemHolder

@@ -146,10 +146,10 @@ class SystemTests extends TestFixture {
         this.playFromStart_TalkToTalker(universe, talker, [
             "Radioactives.Yes",
             "FightTheLahkemup",
-            null, // I'm from the coalition.
-            null, // We got shipwrecked.
-            null, // We found this ship.
-            null, // Help me take 'em down.
+            null,
+            null,
+            null,
+            null,
             "Goodbye"
         ]);
         // todo - Battle with a returning Araknoid.
@@ -274,9 +274,9 @@ class SystemTests extends TestFixture {
         var entityOther = encounter.entityOther;
         talker = entityOther.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
-            null, // "How did you know about us before meeting us?"
-            "#(HELLO_AND_DOWN_TO_BUSINESS_1)", // "Shall we begin trading now?"
-            null, // "Why did your bridge turn purple?"
+            null,
+            "#(HELLO_AND_DOWN_TO_BUSINESS_1)",
+            null,
             "Business-Sell", // "I have some things I would like to sell."
         ]);
         Assert.isTrue(true);

@@ -252,7 +252,7 @@
 { "defnName": "Display", "content": "#(NOTHING_TO_SELL)" },
 { "defnName": "Goto", "next": "Business" },
 
-{ "name": "WHAT_TO_SELL", "defnName": "Display", "content": "#(WHAT_TO_SELL)" },
+{ "name": "#(WHAT_TO_SELL)", "defnName": "Display", "content": "#(WHAT_TO_SELL)" },
 { "defnName": "OptionsClear" },
 { "defnName": "Option", "content": "#(sell_life_data)", "next": "Business-Sell-LifeData" },
 { "defnName": "Option", "content": "#(sell_rainbow_locations)", "next": "Business-Sell-Locations" },

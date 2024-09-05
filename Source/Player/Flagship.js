@@ -113,10 +113,15 @@ class Flagship {
         return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
     }
     hasInfoToSell(world) {
-        var returnValue = (this.itemHolderOther.hasItemWithDefnName("Biodata")
-            || this.itemHolderOther.hasItemWithDefnName("RainbowWorldLocations")
-            || this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world));
+        var returnValue = this.hasInfoToSell_Biodata()
+            || this.hasInfoToSell_PrecursorArtifacts(world);
         return returnValue;
+    }
+    hasInfoToSell_Biodata() {
+        return this.itemHolderOther.hasItemWithDefnName("Biodata");
+    }
+    hasInfoToSell_PrecursorArtifacts(world) {
+        return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
     }
     itemHolderCargoBuildOrUpdate(items) {
         if (this.itemHolderCargo == null) {

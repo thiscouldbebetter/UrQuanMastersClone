@@ -124,7 +124,16 @@ class Player
 
 	hasInfoToSell(world: World): boolean
 	{
-		return this.flagship.hasInfoToSell(world);
+		var returnValue =
+			this.hasInfoToSell_RainbowWorldLocations()
+			|| this.flagship.hasInfoToSell(world);
+
+		return returnValue;
+	}
+
+	hasInfoToSell_RainbowWorldLocations(): boolean
+	{
+		return (this.rainbowWorldLocationsKnownButUnsoldCount() > 0);
 	}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
