@@ -9,6 +9,7 @@ imagePortraitName=Conversation-Portrait-Murch
 |Display|#(KNOW_OF_YOU)||(u, cr) => cr.varGet('Murch_TimesGreeted') != 0
 #(how_know)|Option|#(how_know)|#(KNOW_BECAUSE)|(u, cr) => cr.varGet('Murch_TimesGreeted') != 0
 |Prompt
+
 #(KNOW_BECAUSE)|Display|#(KNOW_BECAUSE)
 |Disable||#(how_know)
 Questions|DoNothing
@@ -21,6 +22,7 @@ Questions|DoNothing
 #(trade_is_for_the_weak)|Option|#(trade_is_for_the_weak)|#(WERE_NOT_AFRAID)
 |Option|#(no_trade_now)|#(OK_NO_TRADE_NOW_BYE)
 |Prompt
+
 #(NO_TALK_ABOUT_OURSELVES)|Display|#(NO_TALK_ABOUT_OURSELVES)
 |Disable||#(what_about_yourselves)
 |OptionsClear
@@ -33,10 +35,12 @@ Questions|DoNothing
 |OptionsClear
 |Option|#(giving_is_good_1)|#(GIVING_IS_BAD_1)
 |Prompt
+
 #(GIVING_IS_BAD_1)|Display|#(GIVING_IS_BAD_1)
 |OptionsClear
 |Option|#(giving_is_good_2)|#(GIVING_IS_BAD_2)
 |Prompt
+
 #(GIVING_IS_BAD_2)|Display|#(GIVING_IS_BAD_2)
 |Goto||Questions
 #(WERE_NOT_AFRAID)|Display|#(WERE_NOT_AFRAID)
@@ -44,6 +48,7 @@ Questions|DoNothing
 |OptionsClear
 |Option|#(why_blue_light)|#(BLUE_IS_MAD)
 |Prompt
+
 #(BLUE_IS_MAD)|Display|#(BLUE_IS_MAD)
 Hostile|OptionsClear
 #(we_strong_1)|Option|#(we_strong_1)|#(YOU_NOT_STRONG_1)
@@ -52,10 +57,12 @@ Hostile|OptionsClear
 |Option|#(just_testing)|#(REALLY_TESTING)
 |Option|#(youre_on)|#(YOU_GIVE_US_NO_CHOICE)
 |Prompt
+
 #(REALLY_TESTING)|Display|#(REALLY_TESTING)
 |OptionsClear
 |Option|#(yes_really_testing)|#(TEST_RESULTS)
 |Prompt
+
 #(TEST_RESULTS)|Display|#(TEST_RESULTS)
 |Goto||Questions
 #(YOU_NOT_STRONG_1)|Display|#(YOU_NOT_STRONG_1)
@@ -75,6 +82,7 @@ Hostile|OptionsClear
 |OptionsClear
 |Option|#(why_turned_purple)|#(TURNED_PURPLE_BECAUSE)
 |Prompt
+
 #(TURNED_PURPLE_BECAUSE)|Display|#(TURNED_PURPLE_BECAUSE)
 |OptionsClear
 |Display|#(TRADING_INFO)
@@ -98,6 +106,7 @@ Hostile|OptionsClear
 |Option|#(so_we_can_attack)
 |Option|#(bye_melnorme_slightly_angry)
 |Prompt|#(bye_melnorme_slightly_angry)
+
 |Display|#(HELLO_SLIGHTLY_ANGRY_1)
 |Display|#(HELLO_SLIGHTLY_ANGRY_2)
 |Display|#(HELLO_SLIGHTLY_ANGRY_3)
@@ -117,6 +126,7 @@ Hostile|OptionsClear
 |Option|#(well_if_thats_the_way_you_feel)
 |Option|#(you_hate_us_so_we_go_away)
 |Prompt
+
 |Display|#(HATE_YOU_GOODBYE)
 |Display|#(WE_FIGHT_AGAIN)
 |Display|#(RESCUE_EXPLANATION)
@@ -165,6 +175,7 @@ Business|DoNothing
 |Option|#(sell)|Business-Sell
 |Option|#(be_leaving_now)|Done
 |Prompt
+
 Business-Credit|DoNothing
 |Display|#(CREDIT_IS0)
 |Display|#(CREDIT_IS1)
@@ -184,6 +195,7 @@ Business-Buy|DoNothing
 |Option|#(buy_technology)|Business-Buy-Tech
 |Option|#(done_buying)|#(OK_DONE_BUYING)
 |Prompt
+
 #(OK_DONE_BUYING)|Display|#(OK_DONE_BUYING)
 |Goto||Business
 Business-Sell|DoNothing
@@ -199,6 +211,7 @@ Business-Sell|DoNothing
 |Option|#(changed_mind_no_sell)|#(OK_DONE_SELLING)
 |Option|#(done_selling)|#(OK_DONE_SELLING)
 |Prompt
+
 #(OK_DONE_SELLING)|Display|#(OK_DONE_SELLING)
 |Goto||Business
 Business-Sell-LifeData|DoNothing
@@ -227,6 +240,7 @@ Business-Buy-Fuel|DoNothing
 |Display|#(fill_me_up)|#(GOT_FUEL)
 |Option|#(done_buying_fuel)|Business-Buy
 |Prompt
+
 #(GOT_FUEL)|Display|#(GOT_FUEL)
 |Goto||Business-Buy
 |Display|#(NO_ROOM_FOR_FUEL)
@@ -251,6 +265,7 @@ Business-Buy-Info|DoNothing
 |Option|#(done_buying_info)||(u, cr) => true
 |Enable|#(done_buying_info)
 |Prompt
+
 Business-Buy-Info-NeverMind|DoNothing
 |Display|#(OK_NO_BUY_INFO)
 |Goto||Business-Buy
@@ -312,6 +327,7 @@ Business-Buy-Tech|DoNothing
 |Option|#(done_buying_new_tech)|#(OK_DONE_BUYING_NEW_TECH)|(u, cr) => true
 |Enable|#(done_buying_new_tech)
 |Prompt
+
 #(BUY_NEW_TECH_INTRO)|Display|#(BUY_NEW_TECH_INTRO)
 |Disable||#(BUY_NEW_TECH_INTRO)
 Business-Buy-Tech-Next|DoNothing
@@ -331,7 +347,8 @@ Business-Buy-Tech-Next|DoNothing
 |Display|#(NEW_TECH_13)||(u, cr) => cr.varGet('Murch_TechsBought') != 12
 |Option|#(buy_new_tech)|Business-Buy-Tech-Next-Yes
 #(no_buy_new_tech)|Option|#(no_buy_new_tech)|#(OK_NO_BUY_NEW_TECH)
-_637|Prompt
+|Prompt
+
 Business-Buy-Tech-Next-Yes|DoNothing
 |Display|#(OK_BUY_NEW_TECH)
 |Display|#(OK_BUY_NEW_TECH_1)||(u, cr) => cr.varGet('Murch_TechsBought') != 0
