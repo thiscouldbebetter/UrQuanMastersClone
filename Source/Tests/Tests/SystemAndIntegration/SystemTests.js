@@ -105,7 +105,7 @@ class SystemTests extends TestFixture {
         // Verify that the cargo holds now contain something.
         var radioactivesHeld = playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
         Assert.isNotNull(radioactivesHeld);
-        // Exit orbit.
+        // Exit Mercury orbit.
         this.playFromStart_LeavePlanetOrbitAndWait(universe);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Leave the Mercury vicinity and return to the Earth Station.

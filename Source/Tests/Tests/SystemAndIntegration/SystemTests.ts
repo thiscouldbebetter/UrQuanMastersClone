@@ -177,7 +177,7 @@ class SystemTests extends TestFixture
 			playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
 		Assert.isNotNull(radioactivesHeld);
 
-		// Exit orbit.
+		// Exit Mercury orbit.
 
 		this.playFromStart_LeavePlanetOrbitAndWait(universe);
 		this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);

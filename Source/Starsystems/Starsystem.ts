@@ -64,6 +64,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		// Put some lifeforms and a base on the moon.
 
 		var moon = planetEarth.satellites[0] as Planet;
+		moon.name = "Moon";
 		moon.lifeformCount  = 16;
 		moon.lifeformDefnNames = [ "BioDecoy" ];
 
