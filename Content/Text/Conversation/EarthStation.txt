@@ -55,12 +55,12 @@ RadioactivesNeeded|DoNothing
 #(FUEL_UP0)|Display|#(FUEL_UP0)
 #(FUEL_UP1)|Display|#(FUEL_UP1)
 |OptionsClear
-#(we_are_vindicator)|Option|#(we_are_vindicator)
+#(we_are_vindicator)|Option|#(we_are_vindicator)|#(THATS_IMPOSSIBLE)
 |Prompt
 
 #(THATS_IMPOSSIBLE)|Display|#(THATS_IMPOSSIBLE)
 |OptionsClear
-|Option|#(our_mission_was_secret)|#(ACKNOWLEDGE_SECRET)
+#(our_mission_was_secret)|Option|#(our_mission_was_secret)|#(ACKNOWLEDGE_SECRET)
 |Prompt
 
 #(ACKNOWLEDGE_SECRET)|Display|#(ACKNOWLEDGE_SECRET)
@@ -76,10 +76,10 @@ RadioactivesNeeded|DoNothing
 
 #(STARBASE_IS)|Display|#(STARBASE_IS)
 |OptionsClear
-#(what_about_earth)|Display|#(what_about_earth)
+#(what_about_earth)|Option|#(what_about_earth)|#(HAPPENED_TO_EARTH)
 |Prompt
 
-|Display|#(HAPPENED_TO_EARTH)
+#(HAPPENED_TO_EARTH)|Display|#(HAPPENED_TO_EARTH)
 |OptionsClear
 #(where_are_urquan)|Option|#(where_are_urquan)|#(URQUAN_LEFT)
 |Prompt
@@ -92,8 +92,8 @@ RadioactivesNeeded|DoNothing
 #(THAT_WAS_PROBE)|Display|#(THAT_WAS_PROBE)
 |OptionsClear
 #(it_went_away)|Option|#(it_went_away)|#(DEEP_TROUBLE)
-|Option|#(we_destroyed_it)
-|Option|#(what_probe)
+|Option|#(we_destroyed_it)|#(GOOD_NEWS)
+|Option|#(what_probe)|#(SURE_HOPE)
 |Prompt
 
 #(DEEP_TROUBLE)|Display|#(DEEP_TROUBLE)
@@ -101,11 +101,17 @@ RadioactivesNeeded|DoNothing
 #(we_are_here_to_help2)|Option|#(we_are_here_to_help)|#(BASE_ON_MOON)
 |Prompt
 
+#(GOOD_NEWS)|Display|#(GOOD_NEWS)
+|Goto|#(we_are_here_to_help2)
+
+#(SURE_HOPE)|Display|#(SURE_HOPE)
+|Goto|#(we_are_here_to_help2)
+
 #(BASE_ON_MOON)|Display|#(BASE_ON_MOON)
 |OptionsClear
 #(we_will_take_care_of_base)|Option|#(we_will_take_care_of_base)|#(GOOD_LUCK_WITH_BASE)
 #(tell_me_about_base)|Option|#(tell_me_about_base)|#(ABOUT_BASE)
-#(tell_me_again)|Option|#(tell_me_again)
+#(tell_me_again)|Option|#(tell_me_again)|#(ABOUT_BASE)
 |Prompt
 
 #(ABOUT_BASE)|Display|#(ABOUT_BASE)
@@ -132,8 +138,6 @@ RadioactivesNeeded|DoNothing
 |Display|#(YOU_REALLY_FOUGHT_BASE)
 |Display|#(IM_GLAD_YOU_WON)
 |Display|#(IM_SURE_IT_WAS_DIFFICULT)
-|Display|#(GOOD_NEWS)
-|Display|#(SURE_HOPE)
 |Display|#(ABOUT_BASE_AGAIN)
 |Display|#(COOK_BUTTS)
 |Display|#(OVERTHROW_ALIENS)
