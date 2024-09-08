@@ -158,7 +158,8 @@ class Game
 				//new TextString("Instructions", "../Content/Text/Instructions.txt"),
 				new TextString("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
 
-				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
+				//new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
+				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.txt"),
 				new TextString(conversation + "EarthStation" + content, contentPathPrefixComms + "commander/commander.txt"),
 				new TextString(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
 				//new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),

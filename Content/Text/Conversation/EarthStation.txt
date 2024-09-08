@@ -13,6 +13,7 @@ soundMusicName=Music_Faction_EarthStation
 
 #(THE_WHAT_FROM_WHERE)|Display|#(THE_WHAT_FROM_WHERE)
 RadioactivesNeeded|DoNothing
+|VariableSet|RadioactivesRequested|true
 |OptionsClear
 #(well_go_get_them_now)|Option|#(well_go_get_them_now)|#(THANKS_FOR_HELPING)
 #(where_get_radios)|Option|#(where_get_radios)|#(RADIOS_ON_MERCURY)
@@ -26,6 +27,7 @@ RadioactivesNeeded|DoNothing
 
 #(DONT_KNOW_WHO_YOU_ARE)|Display|#(DONT_KNOW_WHO_YOU_ARE)
 |Goto||RadioactivesNeeded
+
 #(WHAT_KIND_OF_IDIOT)|Display|#(WHAT_KIND_OF_IDIOT)
 |Goto||RadioactivesNeeded
 
@@ -161,5 +163,5 @@ RadioactivesNeeded|DoNothing
 |Display|#(goodbye_commander)
 
 Done|DoNothing
-|VariablesExport|u.world.player.variableLookup.set($key$, $value$)
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
 |Quit

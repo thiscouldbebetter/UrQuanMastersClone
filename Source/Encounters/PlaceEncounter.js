@@ -3,7 +3,7 @@ class PlaceEncounter extends PlaceBase {
     constructor(world, encounter) {
         super(PlaceEncounter.name, PlaceEncounter.name, null, // parentName
         null, // size
-        null // entities
+        [encounter.entityPlayer, encounter.entityOther] // entities
         );
         this.encounter = encounter;
     }

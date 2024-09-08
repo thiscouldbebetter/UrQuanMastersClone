@@ -171,11 +171,14 @@ class PlacePlanetSurface extends PlaceBase {
             itemHolderLander.itemsAllTransferTo(itemHolderPlayer);
         }
         var placePlanetOrbit = place.placePlanetOrbit;
-        world.placeNext = placePlanetOrbit;
+        world.placeNextSet(placePlanetOrbit);
     }
     playerCollide(uwpe) {
         var universe = uwpe.universe;
         var place = uwpe.place;
+        if (uwpe.entity2.name == Player.name) {
+            uwpe.entitiesSwap();
+        }
         var entityPlayer = uwpe.entity;
         var entityOther = uwpe.entity2;
         var lander = Lander.fromEntity(entityPlayer);

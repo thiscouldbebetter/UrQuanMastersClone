@@ -119,7 +119,7 @@ class PlacePlanetOrbit extends PlaceBase
 				flagship.fuel -= fuelRequiredToLand;
 
 				var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
-				world.placeNext = placeNext;
+				world.placeNextSet(placeNext);
 			}
 		}
 
@@ -131,7 +131,7 @@ class PlacePlanetOrbit extends PlaceBase
 		var world = universe.world;
 		var placeOrbit = world.placeCurrent as PlacePlanetOrbit;
 		var placePlanetVicinity = placeOrbit.placePlanetVicinity;
-		world.placeNext = placePlanetVicinity;
+		world.placeNextSet(placePlanetVicinity);
 	}
 
 	scanEnergy(universe: Universe): void

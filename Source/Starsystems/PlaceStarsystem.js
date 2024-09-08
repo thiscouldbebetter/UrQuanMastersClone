@@ -140,6 +140,9 @@ class PlaceStarsystem extends PlaceBase {
         var universe = uwpe.universe;
         var world = uwpe.world;
         var place = uwpe.place;
+        if (uwpe.entity2.name == Player.name) {
+            uwpe.entitiesSwap();
+        }
         var entityPlayer = uwpe.entity;
         var entityOther = uwpe.entity2;
         var entityOtherName = entityOther.name;
@@ -148,8 +151,9 @@ class PlaceStarsystem extends PlaceBase {
             var playerLoc = entityPlayer.locatable().loc;
             var playerPosNext = place.starsystem.posInHyperspace.clone();
             var playerDisposition = new Disposition(playerPosNext, playerLoc.orientation.clone(), Hyperspace.name);
-            world.placeNext = new PlaceHyperspace(universe, hyperspace, place.starsystem, // starsystemDeparted
+            var placeHyperspace = new PlaceHyperspace(universe, hyperspace, place.starsystem, // starsystemDeparted
             playerDisposition);
+            world.placeNextSet(placeHyperspace);
         }
         else if (entityOtherName.startsWith("Sun")) {
             // Do nothing.
@@ -165,15 +169,17 @@ class PlaceStarsystem extends PlaceBase {
                 var heading = playerOrientation.forward.headingInTurns();
                 var playerPosNext = new Polar(heading + .5, .4 * sizeNext.y, null).wrap().toCoords(Coords.create()).add(sizeNext.clone().half());
                 var playerLocNext = new Disposition(playerPosNext, playerOrientation, null);
-                world.placeNext = new PlacePlanetVicinity(world, planet, playerLocNext, place);
+                var placePlanetVicinity = new PlacePlanetVicinity(world, planet, playerLocNext, place);
+                world.placeNextSet(placePlanetVicinity);
             }
             else if (entityOtherShipGroup != null) {
                 entityOther.collidable().ticksUntilCanCollide = 100; // hack
                 var shipGroup = entityOtherShipGroup;
+                var playerPos = entityPlayer.locatable().loc.pos;
                 var encounter = new Encounter(place.starsystem.planets[0], // todo
-                shipGroup.factionName, entityPlayer, entityOther, place, entityPlayer.locatable().loc.pos);
+                shipGroup.factionName, entityPlayer, entityOther, place, playerPos);
                 var placeEncounter = new PlaceEncounter(world, encounter);
-                world.placeNext = placeEncounter;
+                world.placeNextSet(placeEncounter);
             }
         }
     }

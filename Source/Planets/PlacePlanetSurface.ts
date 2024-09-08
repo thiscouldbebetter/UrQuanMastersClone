@@ -324,13 +324,19 @@ class PlacePlanetSurface extends PlaceBase
 		}
 
 		var placePlanetOrbit = place.placePlanetOrbit;
-		world.placeNext = placePlanetOrbit;
+		world.placeNextSet(placePlanetOrbit);
 	}
 
 	playerCollide(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var universe = uwpe.universe;
 		var place = uwpe.place;
+
+		if (uwpe.entity2.name == Player.name)
+		{
+			uwpe.entitiesSwap();
+		}
+
 		var entityPlayer = uwpe.entity;
 		var entityOther = uwpe.entity2;
 

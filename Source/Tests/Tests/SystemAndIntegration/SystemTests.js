@@ -116,7 +116,8 @@ class SystemTests extends TestFixture {
         this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
         this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
         // Talk to the station commander.
-        station = place().entityByName(stationName);
+        var placeEncounter = place();
+        station = placeEncounter.entityByName(stationName);
         talker = station.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
             // "Do you have the radioactives?"
@@ -348,7 +349,10 @@ class SystemTests extends TestFixture {
                 conversationRun.optionSelectNext();
             }
             else {
-                conversationRun.optionSelectByName(optionToSelect);
+                var optionFound = conversationRun.optionSelectByName(optionToSelect);
+                if (optionFound == null) {
+                    throw new Error("No option found with name: " + optionToSelect);
+                }
             }
             conversationRun.nextUntilPrompt(universe);
         }

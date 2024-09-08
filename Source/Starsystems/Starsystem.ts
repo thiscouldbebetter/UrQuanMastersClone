@@ -243,6 +243,8 @@ class Starsystem implements EntityProperty<Starsystem>
 
 	stationBuild(planetWithStation: Planet): void
 	{
+		throw new Error("Not yet implemented!");
+
 		var numberOfPlanets = this.planets.length;
 		var distanceBetweenPlanetOrbits =
 			this.sizeInner.clone().half().y / (numberOfPlanets + 1);

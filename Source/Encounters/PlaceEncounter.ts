@@ -13,7 +13,7 @@ class PlaceEncounter extends PlaceBase
 			PlaceEncounter.name,
 			null, // parentName
 			null, // size
-			null // entities
+			[ encounter.entityPlayer, encounter.entityOther] // entities
 		);
 
 		this.encounter = encounter;

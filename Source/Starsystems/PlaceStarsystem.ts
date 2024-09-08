@@ -275,6 +275,12 @@ class PlaceStarsystem extends PlaceBase
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place as PlaceStarsystem;
+
+		if (uwpe.entity2.name == Player.name)
+		{
+			uwpe.entitiesSwap();
+		}
+
 		var entityPlayer = uwpe.entity;
 		var entityOther = uwpe.entity2;
 
@@ -292,13 +298,14 @@ class PlaceStarsystem extends PlaceBase
 				Hyperspace.name
 			);
 
-			world.placeNext = new PlaceHyperspace
+			var placeHyperspace = new PlaceHyperspace
 			(
 				universe,
 				hyperspace,
 				place.starsystem, // starsystemDeparted
 				playerDisposition
 			);
+			world.placeNextSet(placeHyperspace);
 		}
 		else if (entityOtherName.startsWith("Sun"))
 		{
@@ -328,15 +335,17 @@ class PlaceStarsystem extends PlaceBase
 					sizeNext.clone().half()
 				);
 				var playerLocNext = new Disposition(playerPosNext, playerOrientation, null);
-				world.placeNext = new PlacePlanetVicinity
+				var placePlanetVicinity = new PlacePlanetVicinity
 				(
 					world, planet, playerLocNext, place
 				);
+				world.placeNextSet(placePlanetVicinity);
 			}
 			else if (entityOtherShipGroup != null)
 			{
 				entityOther.collidable().ticksUntilCanCollide = 100; // hack
 				var shipGroup = entityOtherShipGroup;
+				var playerPos = entityPlayer.locatable().loc.pos;
 				var encounter = new Encounter
 				(
 					place.starsystem.planets[0], // todo
@@ -344,10 +353,10 @@ class PlaceStarsystem extends PlaceBase
 					entityPlayer,
 					entityOther,
 					place,
-					entityPlayer.locatable().loc.pos
+					playerPos
 				);
 				var placeEncounter = new PlaceEncounter(world, encounter);
-				world.placeNext = placeEncounter;
+				world.placeNextSet(placeEncounter);
 			}
 		}
 	}

@@ -251,7 +251,7 @@ class WorldExtended extends World {
             this.placeCurrent.finalize(uwpe);
             this.placeCurrent = this.placeNext;
             this.placeCurrent.initialize(uwpe);
-            this.placeNext = null;
+            this.placeNextSet(null);
         }
         this.placeCurrent.updateForTimerTick(uwpe);
         this.timerTicksSoFar++;

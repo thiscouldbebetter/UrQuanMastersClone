@@ -34,7 +34,7 @@ class PlaceStation extends PlaceBase
 		var world = universe.world as WorldExtended;
 		var placeStation = world.placeCurrent as PlaceStation;
 		var placeNext = new PlaceStationDock(world, placeStation);
-		world.placeNext = placeNext;
+		world.placeNextSet(placeNext);
 	}
 
 	leave(universe: Universe): void
@@ -60,7 +60,7 @@ class PlaceStation extends PlaceBase
 		(
 			world, planet, playerLocNext, placePrev.placeStarsystem
 		);
-		world.placeNext = placeNext;
+		world.placeNextSet(placeNext);
 	}
 
 	talk(universe: Universe): void
@@ -143,6 +143,6 @@ class PlaceStation extends PlaceBase
 		var playerLoc = playerFromPlaceNext.locatable().loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
-		world.placeNext = placeNext;
+		world.placeNextSet(placeNext);
 	}
 }

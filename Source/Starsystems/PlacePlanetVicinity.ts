@@ -251,6 +251,12 @@ class PlacePlanetVicinity extends PlaceBase
 	{
 		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place as PlacePlanetVicinity;
+
+		if (uwpe.entity2.name == Player.name)
+		{
+			uwpe.entitiesSwap();
+		}
+
 		var entityPlayer = uwpe.entity;
 		var entityOther = uwpe.entity2;
 
@@ -271,10 +277,11 @@ class PlacePlanetVicinity extends PlaceBase
 				entityPlayer.locatable().loc.orientation.clone(),
 				null
 			);
-			world.placeNext = starsystem.toPlace
+			var starsystemAsPlace = starsystem.toPlace
 			(
 				world, dispositionNext, planet
 			);
+			world.placeNextSet(starsystemAsPlace);
 		}
 		else
 		{
@@ -288,10 +295,11 @@ class PlacePlanetVicinity extends PlaceBase
 				playerLoc.pos.overwriteWith(planetPos);
 				playerLoc.vel.clear();
 				entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
-				world.placeNext = new PlacePlanetOrbit
+				var placePlanetOrbit = new PlacePlanetOrbit
 				(
 					world, entityOtherPlanet, place
 				);
+				world.placeNextSet(placePlanetOrbit);
 			}
 			else if (entityOtherShipGroup != null)
 			{
@@ -307,7 +315,7 @@ class PlacePlanetVicinity extends PlaceBase
 					entityPlayer.locatable().loc.pos
 				);
 				var placeEncounter = new PlaceEncounter(world, encounter);
-				world.placeNext = placeEncounter;
+				world.placeNextSet(placeEncounter);
 			}
 			else if (entityOtherStation != null)
 			{
@@ -315,11 +323,12 @@ class PlacePlanetVicinity extends PlaceBase
 				var faction = station.faction(world);
 				if (faction.relationsWithPlayer == Faction.RelationsAllied)
 				{
-					world.placeNext = new PlaceStation(world, station, place);
+					world.placeNextSet(new PlaceStation(world, station, place) );
 				}
 				else
 				{
 					entityOther.collidable().ticksUntilCanCollide = 50; // hack
+					var playerPos = entityPlayer.locatable().loc.pos;
 					var encounter = new Encounter
 					(
 						this.planet,
@@ -327,7 +336,7 @@ class PlacePlanetVicinity extends PlaceBase
 						entityPlayer,
 						entityOther,
 						place,
-						entityPlayer.locatable().loc.pos
+						playerPos
 					);
 					var placeEncounter = new PlaceEncounter(world, encounter);
 					world.placeNext = placeEncounter;

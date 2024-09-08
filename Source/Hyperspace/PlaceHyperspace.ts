@@ -349,14 +349,17 @@ class PlaceHyperspace extends PlaceBase
 		}
 	}
 
-	playerCollide
-	(
-		uwpe: UniverseWorldPlaceEntities, collision: Collision
-	): void
+	playerCollide(uwpe: UniverseWorldPlaceEntities, collision: Collision): void
 	{
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place as PlaceHyperspace;
+
+		if (uwpe.entity2.name == Player.name)
+		{
+			uwpe.entitiesSwap();
+		}
+
 		var entityPlayer = uwpe.entity;
 		var entityOther = uwpe.entity2;
 

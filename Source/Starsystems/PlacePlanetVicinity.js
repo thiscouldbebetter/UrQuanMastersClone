@@ -121,6 +121,9 @@ class PlacePlanetVicinity extends PlaceBase {
     playerCollide(uwpe) {
         var world = uwpe.world;
         var place = uwpe.place;
+        if (uwpe.entity2.name == Player.name) {
+            uwpe.entitiesSwap();
+        }
         var entityPlayer = uwpe.entity;
         var entityOther = uwpe.entity2;
         var entityOtherName = entityOther.name;
@@ -130,7 +133,8 @@ class PlacePlanetVicinity extends PlaceBase {
             var starsystem = placeStarsystem.starsystem;
             var posNext = planet.posAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
             var dispositionNext = new Disposition(posNext, entityPlayer.locatable().loc.orientation.clone(), null);
-            world.placeNext = starsystem.toPlace(world, dispositionNext, planet);
+            var starsystemAsPlace = starsystem.toPlace(world, dispositionNext, planet);
+            world.placeNextSet(starsystemAsPlace);
         }
         else {
             var entityOtherPlanet = Planet.fromEntity(entityOther);
@@ -142,24 +146,26 @@ class PlacePlanetVicinity extends PlaceBase {
                 playerLoc.pos.overwriteWith(planetPos);
                 playerLoc.vel.clear();
                 entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
-                world.placeNext = new PlacePlanetOrbit(world, entityOtherPlanet, place);
+                var placePlanetOrbit = new PlacePlanetOrbit(world, entityOtherPlanet, place);
+                world.placeNextSet(placePlanetOrbit);
             }
             else if (entityOtherShipGroup != null) {
                 entityOther.collidable().ticksUntilCanCollide = 100; // hack
                 var shipGroup = entityOtherShipGroup;
                 var encounter = new Encounter(place.planet, shipGroup.factionName, entityPlayer, entityOther, place, entityPlayer.locatable().loc.pos);
                 var placeEncounter = new PlaceEncounter(world, encounter);
-                world.placeNext = placeEncounter;
+                world.placeNextSet(placeEncounter);
             }
             else if (entityOtherStation != null) {
                 var station = entityOtherStation;
                 var faction = station.faction(world);
                 if (faction.relationsWithPlayer == Faction.RelationsAllied) {
-                    world.placeNext = new PlaceStation(world, station, place);
+                    world.placeNextSet(new PlaceStation(world, station, place));
                 }
                 else {
                     entityOther.collidable().ticksUntilCanCollide = 50; // hack
-                    var encounter = new Encounter(this.planet, station.factionName, entityPlayer, entityOther, place, entityPlayer.locatable().loc.pos);
+                    var playerPos = entityPlayer.locatable().loc.pos;
+                    var encounter = new Encounter(this.planet, station.factionName, entityPlayer, entityOther, place, playerPos);
                     var placeEncounter = new PlaceEncounter(world, encounter);
                     world.placeNext = placeEncounter;
                 }

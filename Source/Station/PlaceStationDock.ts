@@ -386,17 +386,14 @@ class PlaceStationDock extends PlaceBase
 			containerLeftSize,
 			// children
 			[
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelComponentsAvailable",
 					Coords.fromXY
 					(
 						marginSize.x,
 						marginSize.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Available:"),
 					fontShort
 				),
@@ -429,9 +426,8 @@ class PlaceStationDock extends PlaceBase
 					DataBinding.fromContext(null) // ?
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonComponentBuild",
 					Coords.fromXY
 					(
 						marginSize.x,
@@ -440,37 +436,29 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeComponents,
 					"Build",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					() => this.componentBackboneBuild(universe)
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelComponentsInstalled",
 					Coords.fromXY
 					(
 						marginSize.x * 2 + listComponentsSize.x,
 						marginSize.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Installed:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoComponentsInstalled",
 					Coords.fromXY
 					(
 						marginSize.x * 8 + listComponentsSize.x,
 						marginSize.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						player.flagship,
@@ -507,9 +495,8 @@ class PlaceStationDock extends PlaceBase
 					DataBinding.fromContext(null), // ?
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonComponentScrap",
 					Coords.fromXY
 					(
 						marginSize.x * 2 + listComponentsSize.x,
@@ -518,22 +505,17 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeComponents,
 					"Scrap",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					() => this.componentBackboneScrap(universe)
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelWeaponPositions",
 					Coords.fromXY
 					(
 						marginSize.x * 3 + listComponentsSize.x * 2,
 						marginSize.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Weapons:"),
 					fontShort
 				),
@@ -566,9 +548,8 @@ class PlaceStationDock extends PlaceBase
 					DataBinding.fromContext(null) // ?
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonWeaponUp",
 					Coords.fromXY
 					(
 						marginSize.x * 3 + listComponentsSize.x * 2,
@@ -577,40 +558,32 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeComponents,
 					"Up",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					() =>
 					{
 						// todo
 					},
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelThrusters",
 					Coords.fromXY
 					(
 						marginSize.x,
 						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Thrusters:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoThrusters",
 					Coords.fromXY
 					(
 						marginSize.x * 8,
 						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						player.flagship,
@@ -619,9 +592,8 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonThrusterAdd",
 					Coords.fromXY
 					(
 						containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 2,
@@ -630,14 +602,11 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"+",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.componentThrusterBuild.bind(this)
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonThrusterRemove",
 					Coords.fromXY
 					(
 						containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 1,
@@ -646,37 +615,29 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"-",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.componentThrusterScrap.bind(this)
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelTurningJets",
 					Coords.fromXY
 					(
 						containerLeftSize.x / 2 + marginSize.x,
 						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Turning Jets:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoTurningJets",
 					Coords.fromXY
 					(
 						containerLeftSize.x / 2 + marginSize.x * 9,
 						marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						player.flagship,
@@ -685,9 +646,8 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonTurningJetAdd",
 					Coords.fromXY
 					(
 						containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2,
@@ -696,14 +656,11 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"+",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.componentTurningJetsBuild.bind(this)
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonTurningJetRemove",
 					Coords.fromXY
 					(
 						containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1,
@@ -712,8 +669,6 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"-",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.componentTurningJetsScrap.bind(this)
 				),
 
@@ -735,16 +690,13 @@ class PlaceStationDock extends PlaceBase
 			containerLeftSize,
 			// children
 			[
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelShipsAvailable",
 					Coords.fromXY
 					(
 						marginSize.x, marginSize.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Available:"),
 					fontShort
 				),
@@ -777,9 +729,8 @@ class PlaceStationDock extends PlaceBase
 					DataBinding.fromContext(null)
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonShipBuild",
 					Coords.fromXY
 					(
 						marginSize.x,
@@ -788,37 +739,29 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeShips,
 					"Build",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					this.shipBuild.bind(this)
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelFleet",
 					Coords.fromXY
 					(
 						marginSize.x * 2 + listShipsSize.x,
 						marginSize.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fleet:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoFleet",
 					Coords.fromXY
 					(
 						marginSize.x * 6 + listShipsSize.x,
 						marginSize.y
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						player,
@@ -855,9 +798,8 @@ class PlaceStationDock extends PlaceBase
 					DataBinding.fromContext(null) // ?
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonShipScrap",
 					Coords.fromXY
 					(
 						marginSize.x * 2 + listShipsSize.x,
@@ -866,14 +808,11 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeShipsSmall,
 					"Scrap",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					this.shipScrap.bind(this)
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonShipCrewAdd",
 					Coords.fromXY
 					(
 						marginSize.x * 3 + listShipsSize.x + buttonSizeShipsSmall.x,
@@ -882,14 +821,11 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeShipsSmall,
 					"Crew+",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					this.crewAdd.bind(this)
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonShipCrewRemove",
 					Coords.fromXY
 					(
 						marginSize.x * 4 + listShipsSize.x + buttonSizeShipsSmall.x * 2,
@@ -898,8 +834,6 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeShipsSmall,
 					"Crew-",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					this.crewRemove.bind(this)
 				),
 			]
@@ -916,24 +850,18 @@ class PlaceStationDock extends PlaceBase
 			containerRightSize,
 			// children
 			[
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelResources",
 					marginSize,
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Resources:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoResources",
 					Coords.fromXY(marginSize.x * 7, marginSize.y),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						player, (c: Player) => "" + c.resourceCredits
@@ -941,24 +869,18 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelFuel",
 					Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Fuel:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoFuel",
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						player, (c: Player) => c.flagship.fuelCurrentOverMax()
@@ -966,9 +888,8 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonFuelAdd",
 					Coords.fromXY
 					(
 						containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2,
@@ -977,14 +898,11 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"+",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.fuelAdd.bind(this)
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonFuelRemove",
 					Coords.fromXY
 					(
 						containerRightSize.x - marginSize.x - buttonSizeSmall.x,
@@ -993,37 +911,29 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"-",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.fuelRemove.bind(this)
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelLanders",
 					Coords.fromXY
 					(
 						marginSize.x,
 						marginSize.y * 3 + labelSize.y * 2
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Landers:"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"infoLanders",
 					Coords.fromXY
 					(
 						marginSize.x * 6,
 						marginSize.y * 3 + labelSize.y * 2
 					),
 					labelSize,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						player.flagship,
@@ -1032,9 +942,8 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonLanderAdd",
 					Coords.fromXY
 					(
 						containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2,
@@ -1043,14 +952,11 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"+",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.landerAdd.bind(this)
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonLanderRemove",
 					Coords.fromXY
 					(
 						containerRightSize.x - marginSize.x - buttonSizeSmall.x,
@@ -1059,8 +965,6 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"-",
 					fontShort,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					this.landerRemove.bind(this)
 				),
 
@@ -1146,21 +1050,18 @@ class PlaceStationDock extends PlaceBase
 
 				containerResources,
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonBack",
 					marginSize,
 					buttonBackSize,
 					"<",
 					fontShort,
-					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
 					() =>
 					{
 						var world = universe.world;
 						var place = world.placeCurrent as PlaceStationDock;
 						var placeNext = place.placeStation;
-						world.placeNext = placeNext;
+						world.placeNextSet(placeNext);
 					}
 				),
 			]
@@ -1176,6 +1077,6 @@ class PlaceStationDock extends PlaceBase
 		var playerLoc = playerFromPlaceNext.locatable().loc;
 		playerLoc.pos.overwriteWith(this.posToReturnTo);
 		playerLoc.vel.clear();
-		world.placeNext = placeNext;
+		world.placeNextSet(placeNext);
 	}
 }

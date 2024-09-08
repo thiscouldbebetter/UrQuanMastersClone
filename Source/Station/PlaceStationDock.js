@@ -232,130 +232,66 @@ class PlaceStationDock extends PlaceBase {
         var containerComponents = ControlContainer.from4("containerComponents", Coords.fromXY(marginSize.x, marginSize.y + titleSize.y), containerLeftSize, 
         // children
         [
-            new ControlLabel("labelComponentsAvailable", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Available:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Available:"), fontShort),
             ControlList.from8("listComponents", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentDefnsKnownBackbone), DataBinding.fromGet((c) => c.name), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToBuild, (c, v) => c.componentToBuild = v), // bindingForItemSelected
             DataBinding.fromContext(null) // ?
             ),
-            ControlButton.from8("buttonComponentBuild", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Build", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            () => this.componentBackboneBuild(universe)),
-            new ControlLabel("labelComponentsInstalled", Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Installed:"), fontShort),
-            new ControlLabel("infoComponentsInstalled", Coords.fromXY(marginSize.x * 8 + listComponentsSize.x, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player.flagship, (c) => c.componentsBackboneCurrentOverMax()), fontShort),
+            ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Build", fontShort, () => this.componentBackboneBuild(universe)),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Installed:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 8 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.componentsBackboneCurrentOverMax()), fontShort),
             ControlList.from8("listComponentsInstalled", Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentsInstalled), DataBinding.fromGet((c) => c.name), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToScrap, (c, v) => c.componentToScrap = v), // bindingForItemSelected
             DataBinding.fromContext(null)),
-            ControlButton.from8("buttonComponentScrap", Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Scrap", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            () => this.componentBackboneScrap(universe)),
-            new ControlLabel("labelWeaponPositions", Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Weapons:"), fontShort),
+            ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Scrap", fontShort, () => this.componentBackboneScrap(universe)),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y), labelSize, DataBinding.fromContext("Weapons:"), fontShort),
             ControlList.from8("listWeapons", Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipWeaponSlots), DataBinding.fromGet((c) => c.nameAndComponentInstalled() // bindingForItemText
             ), fontShort, new DataBinding(placeStationDock, (c) => c.weaponSlotToMove, (c, v) => c.weaponSlotToMove = v), // bindingForItemSelected
             DataBinding.fromContext(null) // ?
             ),
-            ControlButton.from8("buttonWeaponUp", Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Up", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            () => {
+            ControlButton.from5(Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Up", fontShort, () => {
                 // todo
             }),
-            new ControlLabel("labelThrusters", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Thrusters:"), fontShort),
-            new ControlLabel("infoThrusters", Coords.fromXY(marginSize.x * 8, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player.flagship, (c) => c.thrustersCurrentOverMax()), fontShort),
-            ControlButton.from8("buttonThrusterAdd", Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.componentThrusterBuild.bind(this)),
-            ControlButton.from8("buttonThrusterRemove", Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.componentThrusterScrap.bind(this)),
-            new ControlLabel("labelTurningJets", Coords.fromXY(containerLeftSize.x / 2 + marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Turning Jets:"), fontShort),
-            new ControlLabel("infoTurningJets", Coords.fromXY(containerLeftSize.x / 2 + marginSize.x * 9, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player.flagship, (c) => c.turningJetsCurrentOverMax()), fontShort),
-            ControlButton.from8("buttonTurningJetAdd", Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.componentTurningJetsBuild.bind(this)),
-            ControlButton.from8("buttonTurningJetRemove", Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.componentTurningJetsScrap.bind(this)),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Thrusters:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 8, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.thrustersCurrentOverMax()), fontShort),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentThrusterBuild.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentThrusterScrap.bind(this)),
+            ControlLabel.from4Uncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Turning Jets:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x * 9, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.turningJetsCurrentOverMax()), fontShort),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentTurningJetsBuild.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentTurningJetsScrap.bind(this)),
         ]);
         var shipsInFleet = playerShipGroup.ships;
         var shipPlansAvailable = player.shipDefnsAvailable(universe);
         var containerShips = ControlContainer.from4("containerShips", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y + containerLeftSize.y), containerLeftSize, 
         // children
         [
-            new ControlLabel("labelShipsAvailable", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Available:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Available:"), fontShort),
             ControlList.from8("listShipPlansAvailable", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipPlansAvailable), DataBinding.fromGet((c) => c.fullNameAndValue()), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.shipDefnToBuild, (c, v) => c.shipDefnToBuild = v), DataBinding.fromContext(null)),
-            ControlButton.from8("buttonShipBuild", Coords.fromXY(marginSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShips, "Build", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            this.shipBuild.bind(this)),
-            new ControlLabel("labelFleet", Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Fleet:"), fontShort),
-            new ControlLabel("infoFleet", Coords.fromXY(marginSize.x * 6 + listShipsSize.x, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player, (c) => c.shipsCurrentOverMax()), fontShort),
+            ControlButton.from5(Coords.fromXY(marginSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShips, "Build", fontShort, this.shipBuild.bind(this)),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Fleet:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 6 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.shipsCurrentOverMax()), fontShort),
             ControlList.from8("listShipsInFleet", Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipsInFleet), DataBinding.fromGet((c) => c.fullNameAndCrew(world)), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.shipInFleetSelected, (c, v) => c.shipInFleetSelected = v), DataBinding.fromContext(null) // ?
             ),
-            ControlButton.from8("buttonShipScrap", Coords.fromXY(marginSize.x * 2 + listShipsSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Scrap", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            this.shipScrap.bind(this)),
-            ControlButton.from8("buttonShipCrewAdd", Coords.fromXY(marginSize.x * 3 + listShipsSize.x + buttonSizeShipsSmall.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Crew+", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            this.crewAdd.bind(this)),
-            ControlButton.from8("buttonShipCrewRemove", Coords.fromXY(marginSize.x * 4 + listShipsSize.x + buttonSizeShipsSmall.x * 2, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Crew-", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            this.crewRemove.bind(this)),
+            ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listShipsSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Scrap", fontShort, this.shipScrap.bind(this)),
+            ControlButton.from5(Coords.fromXY(marginSize.x * 3 + listShipsSize.x + buttonSizeShipsSmall.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Crew+", fontShort, this.crewAdd.bind(this)),
+            ControlButton.from5(Coords.fromXY(marginSize.x * 4 + listShipsSize.x + buttonSizeShipsSmall.x * 2, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Crew-", fontShort, this.crewRemove.bind(this)),
         ]);
         var containerResources = ControlContainer.from4("containerResources", Coords.fromXY(marginSize.x * 2 + containerLeftSize.x, marginSize.y + titleSize.y), containerRightSize, 
         // children
         [
-            new ControlLabel("labelResources", marginSize, labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Resources:"), fontShort),
-            new ControlLabel("infoResources", Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player, (c) => "" + c.resourceCredits), fontShort),
-            new ControlLabel("labelFuel", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Fuel:"), fontShort),
-            new ControlLabel("infoFuel", Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player, (c) => c.flagship.fuelCurrentOverMax()), fontShort),
-            ControlButton.from8("buttonFuelAdd", Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "+", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.fuelAdd.bind(this)),
-            ControlButton.from8("buttonFuelRemove", Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "-", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.fuelRemove.bind(this)),
-            new ControlLabel("labelLanders", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y * 2), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Landers:"), fontShort),
-            new ControlLabel("infoLanders", Coords.fromXY(marginSize.x * 6, marginSize.y * 3 + labelSize.y * 2), labelSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(player.flagship, (c) => "" + c.numberOfLanders), fontShort),
-            ControlButton.from8("buttonLanderAdd", Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 3 + labelSize.y * 2), buttonSizeSmall, "+", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.landerAdd.bind(this)),
-            ControlButton.from8("buttonLanderRemove", Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 3 + labelSize.y * 2), buttonSizeSmall, "-", fontShort, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            this.landerRemove.bind(this)),
+            ControlLabel.from4Uncentered(marginSize, labelSize, DataBinding.fromContext("Resources:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => "" + c.resourceCredits), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContext("Fuel:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.flagship.fuelCurrentOverMax()), fontShort),
+            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "+", fontShort, this.fuelAdd.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "-", fontShort, this.fuelRemove.bind(this)),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContext("Landers:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 6, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => "" + c.numberOfLanders), fontShort),
+            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 3 + labelSize.y * 2), buttonSizeSmall, "+", fontShort, this.landerAdd.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 3 + labelSize.y * 2), buttonSizeSmall, "-", fontShort, this.landerRemove.bind(this)),
             new ControlLabel("labelMinerals", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 3), labelSize, false, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Minerals:"), fontShort),
@@ -380,13 +316,11 @@ class PlaceStationDock extends PlaceBase {
             containerComponents,
             containerShips,
             containerResources,
-            ControlButton.from8("buttonBack", marginSize, buttonBackSize, "<", fontShort, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
-            () => {
+            ControlButton.from5(marginSize, buttonBackSize, "<", fontShort, () => {
                 var world = universe.world;
                 var place = world.placeCurrent;
                 var placeNext = place.placeStation;
-                world.placeNext = placeNext;
+                world.placeNextSet(placeNext);
             }),
         ]);
         return controlRoot;
@@ -397,6 +331,6 @@ class PlaceStationDock extends PlaceBase {
         var playerLoc = playerFromPlaceNext.locatable().loc;
         playerLoc.pos.overwriteWith(this.posToReturnTo);
         playerLoc.vel.clear();
-        world.placeNext = placeNext;
+        world.placeNextSet(placeNext);
     }
 }

@@ -13,7 +13,7 @@ class PlaceStation extends PlaceBase {
         var world = universe.world;
         var placeStation = world.placeCurrent;
         var placeNext = new PlaceStationDock(world, placeStation);
-        world.placeNext = placeNext;
+        world.placeNextSet(placeNext);
     }
     leave(universe) {
         var world = universe.world;
@@ -25,7 +25,7 @@ class PlaceStation extends PlaceBase {
         var playerPosNext = station.posAsPolar.toCoords(Coords.create()).add(size.clone().half()).add(Coords.fromXY(3, 0).multiplyScalar(10));
         var playerLocNext = Disposition.fromPos(playerPosNext);
         var placeNext = new PlacePlanetVicinity(world, planet, playerLocNext, placePrev.placeStarsystem);
-        world.placeNext = placeNext;
+        world.placeNextSet(placeNext);
     }
     talk(universe) {
         var world = universe.world;
@@ -80,6 +80,6 @@ class PlaceStation extends PlaceBase {
         var playerLoc = playerFromPlaceNext.locatable().loc;
         playerLoc.pos.overwriteWith(this.posToReturnTo);
         playerLoc.vel.clear();
-        world.placeNext = placeNext;
+        world.placeNextSet(placeNext);
     }
 }

@@ -104,6 +104,7 @@ class Starsystem {
         this.planets = planets;
     }
     stationBuild(planetWithStation) {
+        throw new Error("Not yet implemented!");
         var numberOfPlanets = this.planets.length;
         var distanceBetweenPlanetOrbits = this.sizeInner.clone().half().y / (numberOfPlanets + 1);
         var station = new Station("EarthStation", Color.byName("Gray"), // color

@@ -53,7 +53,7 @@ class PlacePlanetOrbit extends PlaceBase {
             else {
                 flagship.fuel -= fuelRequiredToLand;
                 var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
-                world.placeNext = placeNext;
+                world.placeNextSet(placeNext);
             }
         }
     }
@@ -61,7 +61,7 @@ class PlacePlanetOrbit extends PlaceBase {
         var world = universe.world;
         var placeOrbit = world.placeCurrent;
         var placePlanetVicinity = placeOrbit.placePlanetVicinity;
-        world.placeNext = placePlanetVicinity;
+        world.placeNextSet(placePlanetVicinity);
     }
     scanEnergy(universe) {
         universe.world.gameSecondsSinceStart += 60 * 60;

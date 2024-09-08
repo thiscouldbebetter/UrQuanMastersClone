@@ -195,7 +195,8 @@ class SystemTests extends TestFixture
 
 		// Talk to the station commander.
 
-		station = place().entityByName(stationName);
+		var placeEncounter = place() as PlaceEncounter;
+		station = placeEncounter.entityByName(stationName);
 		talker = station.talker();
 		this.playFromStart_TalkToTalker
 		(
@@ -567,7 +568,11 @@ class SystemTests extends TestFixture
 			}
 			else
 			{
-				conversationRun.optionSelectByName(optionToSelect);
+				var optionFound = conversationRun.optionSelectByName(optionToSelect);
+				if (optionFound == null)
+				{
+					throw new Error("No option found with name: " + optionToSelect);
+				}
 			}
 			conversationRun.nextUntilPrompt(universe);
 		}
