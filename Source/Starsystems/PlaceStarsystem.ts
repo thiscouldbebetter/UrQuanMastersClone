@@ -135,7 +135,7 @@ class PlaceStarsystem extends PlaceBase
 			{
 				var entityForPlanetDeparted =
 					entities.find(x => Planet.fromEntity(x) == planetDeparted);
-				playerCollidable.entitiesAlreadyCollidedWith.push(entityForPlanetDeparted);
+				playerCollidable.entityAlreadyCollidedWithAddIfNotPresent(entityForPlanetDeparted);
 			}
 
 			entities.push(playerEntity);
@@ -318,7 +318,7 @@ class PlaceStarsystem extends PlaceBase
 
 			if (entityOtherPlanet != null)
 			{
-				entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
+				entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
 
 				var planet = entityOtherPlanet;
 				var sizeNext = place.size().clone();

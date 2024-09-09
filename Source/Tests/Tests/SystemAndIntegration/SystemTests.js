@@ -35,6 +35,10 @@ class SystemTests extends TestFixture {
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
         // Make sure the place transitions to a planet vicinity.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        // Verify that a guard drone is present.
+        var guardDroneName = "Enemy";
+        var guardDrone = place().entityByName(guardDroneName);
+        Assert.isNotNull(guardDrone);
         // Wait for the guard drone to approach the player
         // and initiate a conversation.
         this.playFromStart_WaitForTicks(universe, 1000);
@@ -50,6 +54,11 @@ class SystemTests extends TestFixture {
         }
         // Verify that we're back in the world venue.
         this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueWorld.name, universe);
+        // Wait for the guard drone to clear the area,
+        // and verify that it's gone.
+        this.playFromStart_WaitForTicks(universe, 1000);
+        guardDrone = place().entityByName(guardDroneName);
+        Assert.isNull(guardDrone);
         // Move the player to the station.
         var stationName = "EarthStation";
         var station = place().entityByName(stationName);
@@ -144,6 +153,7 @@ class SystemTests extends TestFixture {
             "#(we_will_take_care_of_base)",
             // "Good luck with that!"
         ]);
+        universe.updateForTimerTick();
         // Conversation over, back in vicinity of Earth.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Go to the moon.
@@ -155,12 +165,22 @@ class SystemTests extends TestFixture {
         universe.updateForTimerTick();
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
         // Go to the enemy base.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Base");
-        // It's empty.  The lander should report and return to the ship automatically.
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "AbandonedMoonbase");
+        // It's empty.  The lander should display a report message, which must be acknowledged...
+        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueMessage.name, universe);
+        var venueMessage = universe.venueCurrent();
+        var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
+        venueMessage.acknowledge(uwpe);
+        universe.updateForTimerTick();
+        // ...and then return to the ship automatically.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Leave lunar orbit.
+        this.playFromStart_WaitForTicks(universe, 100);
         this.playFromStart_LeavePlanetOrbitAndWait(universe);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        // Verify that the guard drone doesn't spontaneously reappear.
+        var guardDrone = place().entityByName(guardDroneName);
+        Assert.isNull(guardDrone);
         // Return to the station.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
         this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);

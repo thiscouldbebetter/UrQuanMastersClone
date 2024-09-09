@@ -204,6 +204,9 @@ class WorldExtended extends World {
     draw(universe) {
         this.placeCurrent.draw(universe, universe.world, universe.display);
     }
+    faction(factionName) {
+        return this.factionByName(factionName);
+    }
     factionByName(factionName) {
         return this.factionsByName.get(factionName);
     }

@@ -18,6 +18,19 @@ class Faction {
         var returnValue = world.shipDefnByName(this.shipDefnName);
         return returnValue;
     }
+    shipGroup() {
+        return this.shipGroupGenerate();
+    }
+    shipGroupGenerate() {
+        var shipCount = 1; // todo
+        var ships = new Array();
+        for (var i = 0; i < shipCount; i++) {
+            var ship = Ship.fromDefnName(this.shipDefnName);
+            ships.push(ship);
+        }
+        var shipGroup = ShipGroup.fromFactionNameAndShips(this.name, ships);
+        return shipGroup;
+    }
     starsystems(world) {
         // Tersely-named alias method.
         return this.starsystemsInSphereOfInfluence(world);

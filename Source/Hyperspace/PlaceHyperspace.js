@@ -135,7 +135,7 @@ class PlaceHyperspace extends PlaceBase {
             if (starsystemDeparted != null) {
                 var entities = this.entitiesToSpawn; // hack
                 var entityForStarsystemDeparted = entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
-                playerEntity.collidable().entitiesAlreadyCollidedWith.push(entityForStarsystemDeparted);
+                playerEntity.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityForStarsystemDeparted);
             }
             entities.push(playerEntity);
         }

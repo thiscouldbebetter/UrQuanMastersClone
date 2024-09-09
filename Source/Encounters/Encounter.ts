@@ -7,7 +7,7 @@ class Encounter
 	entityOther: Entity;
 	placeToReturnTo: Place;
 	posToReturnTo: Coords;
-	doesEndInCombat: boolean
+	endsInCombat: boolean
 
 	constructor
 	(
@@ -26,7 +26,13 @@ class Encounter
 		this.placeToReturnTo = placeToReturnTo;
 		this.posToReturnTo = posToReturnTo;
 
-		this.doesEndInCombat = false;
+		this.endsInCombat = false;
+	}
+
+	endsInCombatSet(value: boolean): Encounter
+	{
+		this.endsInCombat = value;
+		return this;
 	}
 
 	faction(world: WorldExtended): Faction
@@ -54,7 +60,7 @@ class Encounter
 
 	goToPlaceNext(universe: Universe): void
 	{
-		if (this.doesEndInCombat)
+		if (this.endsInCombat)
 		{
 			this.fight(universe);
 		}

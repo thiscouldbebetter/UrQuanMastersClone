@@ -9,7 +9,7 @@ class PlaceEncounter extends PlaceBase
 	{
 		super
 		(
-			PlaceEncounter.name,
+			PlaceEncounter.name + encounter.factionName,
 			PlaceEncounter.name,
 			null, // parentName
 			null, // size

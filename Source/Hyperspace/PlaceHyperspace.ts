@@ -243,7 +243,7 @@ class PlaceHyperspace extends PlaceBase
 				var entities = this.entitiesToSpawn; // hack
 				var entityForStarsystemDeparted =
 					entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
-				playerEntity.collidable().entitiesAlreadyCollidedWith.push
+				playerEntity.collidable().entityAlreadyCollidedWithAddIfNotPresent
 				(
 					entityForStarsystemDeparted
 				);

@@ -13,7 +13,7 @@ class ShipGroup implements EntityPropertyBase
 
 	constructor(name: string, factionName: string, pos: Coords, ships: Ship[])
 	{
-		this.name = name;
+		this.name = name || factionName + " Ship Group"
 		this.factionName = factionName;
 		this.pos = pos;
 		this.ships = ships;
@@ -22,6 +22,17 @@ class ShipGroup implements EntityPropertyBase
 		this.shipsLost = [];
 
 		this._posInverted = Coords.create();
+	}
+
+	static fromFactionNameAndShips(factionName: string, ships: Ship[]): ShipGroup
+	{
+		return new ShipGroup
+		(
+			null, // name
+			factionName,
+			Coords.zeroes(), // pos
+			ships
+		);
 	}
 
 	static fromEntity(entity: Entity): ShipGroup
@@ -246,10 +257,38 @@ class ShipGroup implements EntityPropertyBase
 		return this.shipSelected;
 	}
 
-	toEntity
-	(
-		world: WorldExtended, place: Place
-	): Entity
+	toEntity(world: WorldExtended, place: Place): Entity
+	{
+		var placeSize = place.size();
+
+		var returnValue =
+			placeSize == null
+			? this.toEntityEncounter(world, place)
+			: this.toEntitySpace(world, place);
+
+		return returnValue;
+	}
+
+	toEntityEncounter(world: WorldExtended, place: Place): Entity
+	{
+		var talker = new Talker
+		(
+			"todo", // conversationDefnName,
+			null, // quit
+			this.toControl
+		);
+
+		return new Entity
+		(
+			this.name,
+			[
+				this,
+				talker
+			]
+		);
+	}
+
+	toEntitySpace(world: WorldExtended, place: Place): Entity
 	{
 		var shipGroup = this;
 
@@ -312,7 +351,8 @@ class ShipGroup implements EntityPropertyBase
 		}
 		var shipKillable = new Killable(1, null, shipKill);
 
-		var shipPos = Coords.random(null).multiply(place.size() );
+		var placeSize = place.size();
+		var shipPos = Coords.random(null).multiply(placeSize);
 		var shipLoc = Disposition.fromPos(shipPos);
 		var shipLocatable = new Locatable(shipLoc);
 
@@ -340,6 +380,33 @@ class ShipGroup implements EntityPropertyBase
 		);
 
 		return returnEntity;
+	}
+
+	toPlaceEncounter(uwpe: UniverseWorldPlaceEntities): PlaceEncounter
+	{
+		var place = uwpe.place;
+
+		var planet: Planet = null; // todo
+
+		var entityPlayer = uwpe.entity;
+		var world = uwpe.world as WorldExtended;
+		var entityShipGroup = this.toEntity(world, place);
+
+		var pos = entityPlayer.locatable().loc.pos;
+
+		var encounter = new Encounter
+		(
+			planet,
+			this.factionName,
+			entityPlayer,
+			entityShipGroup,
+			place,
+			pos
+		);
+
+		var placeEncounter = new PlaceEncounter(uwpe.world, encounter);
+
+		return placeEncounter;
 	}
 
 	// Controls.

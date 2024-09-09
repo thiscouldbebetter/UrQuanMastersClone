@@ -495,13 +495,10 @@ class PlacePlanetSurface extends PlaceBase
 			containerSidebarSize,
 			// children
 			[
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelMap",
 					Coords.fromXY(marginSize.x, marginSize.y),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Map:"),
 					font
 				),
@@ -528,13 +525,10 @@ class PlacePlanetSurface extends PlaceBase
 					]
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelLander",
 					Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Lander:"),
 					font
 				),
@@ -549,24 +543,18 @@ class PlacePlanetSurface extends PlaceBase
 					), // pos
 					containerLanderSize,
 					[
-						new ControlLabel
+						ControlLabel.from4Uncentered
 						(
-							"labelCrew",
 							Coords.fromXY(marginSize.x, marginSize.y),
 							labelSize,
-							false, // isTextCenteredHorizontally
-							false, // isTextCenteredVertically
 							DataBinding.fromContext("Crew:"),
 							font
 						),
 
-						new ControlLabel
+						ControlLabel.from4Uncentered
 						(
-							"infoCrew",
 							Coords.fromXY(marginSize.x * 5, marginSize.y),
 							labelSize,
-							false, // isTextCenteredHorizontally
-							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
 								lander, (c: Lander) => c.crewCurrentOverMax()
@@ -574,24 +562,18 @@ class PlacePlanetSurface extends PlaceBase
 							font
 						),
 
-						new ControlLabel
+						ControlLabel.from4Uncentered
 						(
-							"labelCargo",
 							Coords.fromXY(marginSize.x, marginSize.y * 2),
 							labelSize,
-							false, // isTextCenteredHorizontally
-							false, // isTextCenteredVertically
 							DataBinding.fromContext("Cargo:"),
 							font
 						),
 
-						new ControlLabel
+						ControlLabel.from4Uncentered
 						(
-							"infoCargo",
 							Coords.fromXY(marginSize.x * 5, marginSize.y * 2),
 							labelSize,
-							false, // isTextCenteredHorizontally
-							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
 								lander, (c: Lander) => c.cargoCurrentOverMax(world)
@@ -599,24 +581,18 @@ class PlacePlanetSurface extends PlaceBase
 							font
 						),
 
-						new ControlLabel
+						ControlLabel.from4Uncentered
 						(
-							"labelData",
 							Coords.fromXY(marginSize.x, marginSize.y * 3),
 							labelSize,
-							false, // isTextCenteredHorizontally
-							false, // isTextCenteredVertically
 							DataBinding.fromContext("Biodata:"),
 							font
 						),
 
-						new ControlLabel
+						ControlLabel.from4Uncentered
 						(
-							"infoData",
 							Coords.fromXY(marginSize.x * 5, marginSize.y * 3),
 							labelSize,
-							false, // isTextCenteredHorizontally
-							false, // isTextCenteredVertically
 							DataBinding.fromContextAndGet
 							(
 								lander, (c: Lander) => c.lifeformsCurrentOverMax(world)
@@ -627,9 +603,8 @@ class PlacePlanetSurface extends PlaceBase
 					]// children
 				),
 
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonLeave",
 					Coords.fromXY
 					(
 						marginSize.x,
@@ -638,9 +613,7 @@ class PlacePlanetSurface extends PlaceBase
 					Coords.fromXY(containerLanderSize.x, labelSize.y * 2),
 					"Launch",
 					font,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => this.exit(new UniverseWorldPlaceEntities(null, world, this, null, null) )
+					() => this.exit(UniverseWorldPlaceEntities.fromWorldAndPlace(world, this) )
 				),
 
 			]

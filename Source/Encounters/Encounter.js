@@ -7,7 +7,11 @@ class Encounter {
         this.entityOther = entityOther;
         this.placeToReturnTo = placeToReturnTo;
         this.posToReturnTo = posToReturnTo;
-        this.doesEndInCombat = false;
+        this.endsInCombat = false;
+    }
+    endsInCombatSet(value) {
+        this.endsInCombat = value;
+        return this;
     }
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
@@ -27,7 +31,7 @@ class Encounter {
         universe.venueNextSet(venueNext);
     }
     goToPlaceNext(universe) {
-        if (this.doesEndInCombat) {
+        if (this.endsInCombat) {
             this.fight(universe);
         }
         else {

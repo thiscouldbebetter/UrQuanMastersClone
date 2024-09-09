@@ -30,14 +30,18 @@ class Starsystem {
         var mediaLibrary = universe.mediaLibrary;
         var textAbandonedMoonbase = "AbandonedMoonbase";
         var abandonedMoonbaseMessage = mediaLibrary.textStringGetByName(EnergySource.name + textAbandonedMoonbase).value;
-        var energySourceAbandonedMoonbase = new EnergySource(textAbandonedMoonbase, Coords.random(universe.randomizer).multiply(moonSizeSurface), new VisualImageFromLibrary(EnergySource.name + textAbandonedMoonbase), (uwpe) => {
+        var visual = new VisualImageFromLibrary(EnergySource.name + textAbandonedMoonbase);
+        var collideWithLander = (uwpe) => {
             var universe = uwpe.universe;
-            var controlMessage = universe.controlBuilder.message(universe, universe.display.sizeInPixels, DataBinding.fromContext(abandonedMoonbaseMessage), () => {
-                // todo
-            }, null, // showMessageOnly
-            FontNameAndHeight.fromHeightInPixels(5));
-            universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
-        });
+            var acknowledgeReport = () => {
+                var place = uwpe.place;
+                place.exit(uwpe);
+            };
+            var venueToReturnTo = universe.venueCurrent();
+            var venueMessage = VenueMessage.fromTextAcknowledgeAndVenuePrev(abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo);
+            universe.venueTransitionTo(venueMessage);
+        };
+        var energySourceAbandonedMoonbase = new EnergySource(textAbandonedMoonbase, Coords.random(universe.randomizer).multiply(moonSizeSurface), visual, collideWithLander);
         var energySources = [energySourceAbandonedMoonbase];
         moon.energySources = energySources;
         // Put a station in orbit around the Earth.

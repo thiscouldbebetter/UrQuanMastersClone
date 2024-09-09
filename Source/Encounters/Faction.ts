@@ -50,6 +50,24 @@ class Faction implements EntityPropertyBase
 		return returnValue;
 	}
 
+	shipGroup(): ShipGroup
+	{
+		return this.shipGroupGenerate();
+	}
+
+	shipGroupGenerate(): ShipGroup
+	{
+		var shipCount = 1; // todo
+		var ships = new Array<Ship>();
+		for (var i = 0; i < shipCount; i++)
+		{
+			var ship = Ship.fromDefnName(this.shipDefnName);
+			ships.push(ship);
+		}
+		var shipGroup = ShipGroup.fromFactionNameAndShips(this.name, ships);
+		return shipGroup;
+	}
+
 	starsystems(world: WorldExtended): Starsystem[]
 	{
 		// Tersely-named alias method.

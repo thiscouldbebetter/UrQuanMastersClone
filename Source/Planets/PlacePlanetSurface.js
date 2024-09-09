@@ -270,42 +270,24 @@ class PlacePlanetSurface extends PlaceBase {
         containerSidebarSize, 
         // children
         [
-            new ControlLabel("labelMap", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Map:"), font),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Map:"), font),
             ControlContainer.from4("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
             minimapSize, [
                 ControlVisual.from4("visualMap", Coords.fromXY(0, 0), minimapSize, DataBinding.fromContext(VisualRectangle.fromSizeAndColorFill(minimapSize, Color.byName("Gray"))))
             ]),
-            new ControlLabel("labelLander", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Lander:"), font),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, DataBinding.fromContext("Lander:"), font),
             ControlContainer.from4("containerLander", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 2 + minimapSize.y), // pos
             containerLanderSize, [
-                new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y), labelSize, false, // isTextCenteredHorizontally
-                false, // isTextCenteredVertically
-                DataBinding.fromContext("Crew:"), font),
-                new ControlLabel("infoCrew", Coords.fromXY(marginSize.x * 5, marginSize.y), labelSize, false, // isTextCenteredHorizontally
-                false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(lander, (c) => c.crewCurrentOverMax()), font),
-                new ControlLabel("labelCargo", Coords.fromXY(marginSize.x, marginSize.y * 2), labelSize, false, // isTextCenteredHorizontally
-                false, // isTextCenteredVertically
-                DataBinding.fromContext("Cargo:"), font),
-                new ControlLabel("infoCargo", Coords.fromXY(marginSize.x * 5, marginSize.y * 2), labelSize, false, // isTextCenteredHorizontally
-                false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(lander, (c) => c.cargoCurrentOverMax(world)), font),
-                new ControlLabel("labelData", Coords.fromXY(marginSize.x, marginSize.y * 3), labelSize, false, // isTextCenteredHorizontally
-                false, // isTextCenteredVertically
-                DataBinding.fromContext("Biodata:"), font),
-                new ControlLabel("infoData", Coords.fromXY(marginSize.x * 5, marginSize.y * 3), labelSize, false, // isTextCenteredHorizontally
-                false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(lander, (c) => c.lifeformsCurrentOverMax(world)), font),
+                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Crew:"), font),
+                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, marginSize.y), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.crewCurrentOverMax()), font),
+                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2), labelSize, DataBinding.fromContext("Cargo:"), font),
+                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, marginSize.y * 2), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.cargoCurrentOverMax(world)), font),
+                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3), labelSize, DataBinding.fromContext("Biodata:"), font),
+                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, marginSize.y * 3), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.lifeformsCurrentOverMax(world)), font),
             ] // children
             ),
-            ControlButton.from8("buttonLeave", Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y), // pos
-            Coords.fromXY(containerLanderSize.x, labelSize.y * 2), "Launch", font, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            () => this.exit(new UniverseWorldPlaceEntities(null, world, this, null, null))),
+            ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y), // pos
+            Coords.fromXY(containerLanderSize.x, labelSize.y * 2), "Launch", font, () => this.exit(UniverseWorldPlaceEntities.fromWorldAndPlace(world, this))),
         ]);
         return containerSidebar;
     }

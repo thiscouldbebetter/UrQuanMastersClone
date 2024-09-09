@@ -73,7 +73,7 @@ class PlaceStarsystem extends PlaceBase {
             ]);
             if (planetDeparted != null) {
                 var entityForPlanetDeparted = entities.find(x => Planet.fromEntity(x) == planetDeparted);
-                playerCollidable.entitiesAlreadyCollidedWith.push(entityForPlanetDeparted);
+                playerCollidable.entityAlreadyCollidedWithAddIfNotPresent(entityForPlanetDeparted);
             }
             entities.push(playerEntity);
         }
@@ -162,7 +162,7 @@ class PlaceStarsystem extends PlaceBase {
             var entityOtherPlanet = Planet.fromEntity(entityOther);
             var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
             if (entityOtherPlanet != null) {
-                entityPlayer.collidable().entitiesAlreadyCollidedWith.push(entityOther);
+                entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
                 var planet = entityOtherPlanet;
                 var sizeNext = place.size().clone();
                 var playerOrientation = entityPlayer.locatable().loc.orientation;

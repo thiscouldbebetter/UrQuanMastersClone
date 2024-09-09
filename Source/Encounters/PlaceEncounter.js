@@ -1,7 +1,7 @@
 "use strict";
 class PlaceEncounter extends PlaceBase {
     constructor(world, encounter) {
-        super(PlaceEncounter.name, PlaceEncounter.name, null, // parentName
+        super(PlaceEncounter.name + encounter.factionName, PlaceEncounter.name, null, // parentName
         null, // size
         [encounter.entityPlayer, encounter.entityOther] // entities
         );

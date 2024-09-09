@@ -1,13 +1,18 @@
 "use strict";
 class ShipGroup {
     constructor(name, factionName, pos, ships) {
-        this.name = name;
+        this.name = name || factionName + " Ship Group";
         this.factionName = factionName;
         this.pos = pos;
         this.ships = ships;
         this.shipSelected = this.ships[0];
         this.shipsLost = [];
         this._posInverted = Coords.create();
+    }
+    static fromFactionNameAndShips(factionName, ships) {
+        return new ShipGroup(null, // name
+        factionName, Coords.zeroes(), // pos
+        ships);
     }
     static fromEntity(entity) {
         return entity.propertyByName(ShipGroup.name);
@@ -141,6 +146,22 @@ class ShipGroup {
         return this.shipSelected;
     }
     toEntity(world, place) {
+        var placeSize = place.size();
+        var returnValue = placeSize == null
+            ? this.toEntityEncounter(world, place)
+            : this.toEntitySpace(world, place);
+        return returnValue;
+    }
+    toEntityEncounter(world, place) {
+        var talker = new Talker("todo", // conversationDefnName,
+        null, // quit
+        this.toControl);
+        return new Entity(this.name, [
+            this,
+            talker
+        ]);
+    }
+    toEntitySpace(world, place) {
         var shipGroup = this;
         var faction = shipGroup.faction(world);
         var shipActor = new Actor(faction.shipGroupActivity);
@@ -178,7 +199,8 @@ class ShipGroup {
             ArrayHelper.remove(shipGroupsInPlace, shipGroup);
         };
         var shipKillable = new Killable(1, null, shipKill);
-        var shipPos = Coords.random(null).multiply(place.size());
+        var placeSize = place.size();
+        var shipPos = Coords.random(null).multiply(placeSize);
         var shipLoc = Disposition.fromPos(shipPos);
         var shipLocatable = new Locatable(shipLoc);
         var shipMovable = Movable.default();
@@ -195,6 +217,17 @@ class ShipGroup {
             shipTalker
         ]);
         return returnEntity;
+    }
+    toPlaceEncounter(uwpe) {
+        var place = uwpe.place;
+        var planet = null; // todo
+        var entityPlayer = uwpe.entity;
+        var world = uwpe.world;
+        var entityShipGroup = this.toEntity(world, place);
+        var pos = entityPlayer.locatable().loc.pos;
+        var encounter = new Encounter(planet, this.factionName, entityPlayer, entityShipGroup, place, pos);
+        var placeEncounter = new PlaceEncounter(uwpe.world, encounter);
+        return placeEncounter;
     }
     // Controls.
     toControl(cr, size, universe) {

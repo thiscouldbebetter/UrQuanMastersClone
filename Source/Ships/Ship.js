@@ -7,6 +7,9 @@ class Ship {
         this.captainName =
             "Captain " + ("" + Math.random()).split(".").join(""); // todo
     }
+    static fromDefnName(defnName) {
+        return new Ship(defnName);
+    }
     static fromEntity(shipEntity) {
         return shipEntity.propertyByName(Ship.name);
     }

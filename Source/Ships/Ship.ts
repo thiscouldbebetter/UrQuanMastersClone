@@ -19,6 +19,11 @@ class Ship implements EntityProperty<Ship>
 			"Captain " + ("" + Math.random()).split(".").join(""); // todo
 	}
 
+	static fromDefnName(defnName: string)
+	{
+		return new Ship(defnName);
+	}
+
 	static fromEntity(shipEntity: Entity): Ship
 	{
 		return shipEntity.propertyByName(Ship.name) as Ship;
