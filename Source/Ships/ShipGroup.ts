@@ -273,7 +273,7 @@ class ShipGroup implements EntityPropertyBase
 	{
 		var talker = new Talker
 		(
-			"todo", // conversationDefnName,
+			"Conversation-" + this.factionName,
 			null, // quit
 			this.toControl
 		);
@@ -382,17 +382,28 @@ class ShipGroup implements EntityPropertyBase
 		return returnEntity;
 	}
 
-	toPlaceEncounter(uwpe: UniverseWorldPlaceEntities): PlaceEncounter
+	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter
 	{
-		var place = uwpe.place;
-
-		var planet: Planet = null; // todo
-
 		var entityPlayer = uwpe.entity;
+		var playerPos = entityPlayer.locatable().loc.pos;
+
+		var place = uwpe.place;
+		var placeTypeName = place.constructor.name;
+		var planet =
+			placeTypeName == PlaceEncounter.name
+			? (place as PlaceEncounter).encounter.planet
+			: placeTypeName == PlacePlanetOrbit.name
+			? (place as PlacePlanetOrbit).planet
+			: placeTypeName == PlacePlanetVicinity.name
+			? (place as PlacePlanetVicinity).planet
+			: placeTypeName == PlaceStarsystem.name
+			? (place as PlaceStarsystem).starsystem.planetClosestTo(playerPos)
+			: placeTypeName == PlaceHyperspace.name
+			? (place as PlaceHyperspace).hyperspace.starsystemClosestTo(playerPos).planetRandom(uwpe.universe)
+			: null
+
 		var world = uwpe.world as WorldExtended;
 		var entityShipGroup = this.toEntity(world, place);
-
-		var pos = entityPlayer.locatable().loc.pos;
 
 		var encounter = new Encounter
 		(
@@ -401,12 +412,10 @@ class ShipGroup implements EntityPropertyBase
 			entityPlayer,
 			entityShipGroup,
 			place,
-			pos
+			playerPos.clone()
 		);
 
-		var placeEncounter = new PlaceEncounter(uwpe.world, encounter);
-
-		return placeEncounter;
+		return encounter
 	}
 
 	// Controls.

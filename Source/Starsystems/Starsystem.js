@@ -9,12 +9,36 @@ class Starsystem {
         this.factionName = factionName;
         this.planets = planets;
         this.shipGroups = shipGroups;
+        this._displacement = Coords.create();
     }
     static fromEntity(entity) {
         return entity.propertyByName(Starsystem.name);
     }
     faction(world) {
         return world.factionByName(this.factionName);
+    }
+    planetClosestTo(posToCheck) {
+        var planetClosestSoFar = this.planets[0];
+        var planetClosestSoFarDistance = this._displacement
+            .overwriteWith(planetClosestSoFar.pos())
+            .subtract(posToCheck)
+            .magnitude();
+        for (var i = 1; i < this.planets.length; i++) {
+            var planet = this.planets[i];
+            var planetPos = planet.pos();
+            var planetDistance = this._displacement
+                .overwriteWith(planetPos)
+                .subtract(posToCheck)
+                .magnitude();
+            if (planetDistance < planetClosestSoFarDistance) {
+                planetClosestSoFarDistance = planetDistance;
+                planetClosestSoFar = planet;
+            }
+        }
+        return planetClosestSoFar;
+    }
+    planetRandom(universe) {
+        return ArrayHelper.random(this.planets, universe.randomizer);
     }
     solarSystem(universe) {
         this.name = "Sol";

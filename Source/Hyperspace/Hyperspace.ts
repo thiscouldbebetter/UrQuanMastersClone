@@ -92,9 +92,11 @@ class Hyperspace
 			starsystems.push(starsystem);
 		}
 
+		/*
 		var starsystemSol = starsystems[starsystems.length - 1];
 		starsystemSol.factionName = "todo"; // Spawns "enemy".
 		starsystemSol.solarSystem(universe);
+		*/
 
 		var returnValue = new Hyperspace
 		(

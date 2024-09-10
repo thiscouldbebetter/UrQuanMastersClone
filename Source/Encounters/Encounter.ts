@@ -26,7 +26,7 @@ class Encounter
 		this.placeToReturnTo = placeToReturnTo;
 		this.posToReturnTo = posToReturnTo;
 
-		this.endsInCombat = false;
+		this.endsInCombatSet(false);
 	}
 
 	endsInCombatSet(value: boolean): Encounter
@@ -42,6 +42,8 @@ class Encounter
 
 	fight(universe: Universe): void
 	{
+		this.endsInCombatSet(true);
+
 		var world = universe.world as WorldExtended;
 		var encounter = this;
 		var displaySize = universe.display.sizeInPixels;
@@ -68,13 +70,22 @@ class Encounter
 		{
 			var placeNext = this.placeToReturnTo;
 			var playerFromPlaceNext = placeNext.entityByName(Player.name);
-			var playerLoc = playerFromPlaceNext.locatable().loc;
-			playerLoc.pos.overwriteWith(this.posToReturnTo);
-			playerLoc.vel.clear();
+			if (playerFromPlaceNext != null)
+			{
+				var playerLoc = playerFromPlaceNext.locatable().loc;
+				playerLoc.pos.overwriteWith(this.posToReturnTo);
+				playerLoc.vel.clear();
+			}
 			var world = universe.world;
 			world.placeNextSet(placeNext);
 			universe.venueNextSet(world.toVenue() );
 		}
+	}
+
+	placeToReturnToSet(value: Place): Encounter
+	{
+		this.placeToReturnTo = value;
+		return this;
 	}
 
 	posInHyperspace(): Coords
@@ -128,5 +139,10 @@ class Encounter
 		talker.quit = conversationQuit;
 		var uwpe = new UniverseWorldPlaceEntities(universe, world, place, entityTalker, entityPlayer);
 		talker.talk(uwpe);
+	}
+
+	toPlace(): PlaceEncounter
+	{
+		return new PlaceEncounter(this);
 	}
 }

@@ -124,6 +124,9 @@ class Planet {
         }
         return this._place;
     }
+    pos() {
+        return this.posAsPolar.toCoords(Coords.create());
+    }
     // Clonable.
     clone() { throw new Error("todo"); }
     overwriteWith(other) { throw new Error("todo"); }

@@ -305,7 +305,8 @@ class PlacePlanetVicinity extends PlaceBase
 			{
 				entityOther.collidable().ticksUntilCanCollide = 100; // hack
 				var shipGroup = entityOtherShipGroup;
-				world.placeNextSet(shipGroup.toPlaceEncounter(uwpe));
+				var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
+				world.placeNextSet(placeEncounter);
 			}
 			else if (entityOtherStation != null)
 			{
@@ -321,14 +322,14 @@ class PlacePlanetVicinity extends PlaceBase
 					var playerPos = entityPlayer.locatable().loc.pos;
 					var encounter = new Encounter
 					(
-						this.planet,
+						place.planet,
 						station.factionName,
 						entityPlayer,
 						entityOther,
 						place,
 						playerPos
 					);
-					var placeEncounter = new PlaceEncounter(world, encounter);
+					var placeEncounter = encounter.toPlace();
 					world.placeNext = placeEncounter;
 				}
 			}

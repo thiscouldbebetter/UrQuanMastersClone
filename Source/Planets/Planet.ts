@@ -269,6 +269,11 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return this._place;
 	}
 
+	pos(): Coords
+	{
+		return this.posAsPolar.toCoords(Coords.create() );
+	}
+
 	// Clonable.
 
 	clone(): Planet { throw new Error("todo"); }

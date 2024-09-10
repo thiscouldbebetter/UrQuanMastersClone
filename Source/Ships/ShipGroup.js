@@ -153,8 +153,7 @@ class ShipGroup {
         return returnValue;
     }
     toEntityEncounter(world, place) {
-        var talker = new Talker("todo", // conversationDefnName,
-        null, // quit
+        var talker = new Talker("Conversation-" + this.factionName, null, // quit
         this.toControl);
         return new Entity(this.name, [
             this,
@@ -218,16 +217,26 @@ class ShipGroup {
         ]);
         return returnEntity;
     }
-    toPlaceEncounter(uwpe) {
-        var place = uwpe.place;
-        var planet = null; // todo
+    toEncounter(uwpe) {
         var entityPlayer = uwpe.entity;
+        var playerPos = entityPlayer.locatable().loc.pos;
+        var place = uwpe.place;
+        var placeTypeName = place.constructor.name;
+        var planet = placeTypeName == PlaceEncounter.name
+            ? place.encounter.planet
+            : placeTypeName == PlacePlanetOrbit.name
+                ? place.planet
+                : placeTypeName == PlacePlanetVicinity.name
+                    ? place.planet
+                    : placeTypeName == PlaceStarsystem.name
+                        ? place.starsystem.planetClosestTo(playerPos)
+                        : placeTypeName == PlaceHyperspace.name
+                            ? place.hyperspace.starsystemClosestTo(playerPos).planetRandom(uwpe.universe)
+                            : null;
         var world = uwpe.world;
         var entityShipGroup = this.toEntity(world, place);
-        var pos = entityPlayer.locatable().loc.pos;
-        var encounter = new Encounter(planet, this.factionName, entityPlayer, entityShipGroup, place, pos);
-        var placeEncounter = new PlaceEncounter(uwpe.world, encounter);
-        return placeEncounter;
+        var encounter = new Encounter(planet, this.factionName, entityPlayer, entityShipGroup, place, playerPos.clone());
+        return encounter;
     }
     // Controls.
     toControl(cr, size, universe) {

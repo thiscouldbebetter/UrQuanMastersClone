@@ -192,10 +192,35 @@ class SystemTests extends TestFixture {
             "#(base_was_abandoned)"
             // "Well, I'll be darn--INCOMING HOSTILE SHIP!  They're jamming our signal!"
         ]);
-        // todo - Now you're talking to the hostile ship.  Somehow
-        // todo - Talk with them.
-        // todo - Battle with them.
         universe.updateForTimerTick();
+        // Now you're talking to the hostile ship.
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        placeEncounter = place();
+        var encounter = placeEncounter.encounter;
+        Assert.areStringsEqual("Araknoid", encounter.factionName);
+        var entityHostile = encounter.entityOther;
+        var talker = entityHostile.talker();
+        talker.talk(uwpe);
+        this.playFromStart_TalkToTalker(universe, talker, [
+            // "A human in an alien vessel!"
+            "#(where_you_come_from)", // "Where did you come from?"
+            // "From fighting in such-and-such star cluster."
+            "#(be_reasonable)"
+            // "We aren't reasonable, though."
+        ]);
+        this.playFromStart_CheatToWinCombat(universe);
+        // Verify that we've returned to the original encounter.
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        // placeEncounter = place as PlaceEncounter;
+        talker = station.talker();
+        this.playFromStart_TalkToTalker(universe, talker, [
+            // "A human in an alien vessel!"
+            "#(where_you_come_from)", // "Where did you come from?"
+            // "From fighting in such-and-such star cluster."
+            "#(be_reasonable)"
+            // "We aren't reasonable, though."
+        ]);
+        // Verify that we've returned to the world.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Leave the Sol system and go to hyperspace.
         this.playFromStart_LeavePlanetVicinityAndWait(universe);
@@ -213,29 +238,11 @@ class SystemTests extends TestFixture {
         talker = entityOther.talker();
         this.playFromStart_TalkToTalker(universe, talker, [null] // Doesn't matter what you say.
         );
-        universe.updateForTimerTick();
         // The probe attacks.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceCombat.name, world);
-        // Destroy the probe (by cheating, in this test).
-        var placeCombat = place();
-        var combat = placeCombat.combat;
-        var shipGroupForPlayer = combat.shipGroups[0];
-        var shipForPlayer = shipGroupForPlayer.ships[0];
-        combat.shipsFighting[0] = shipForPlayer;
-        combat.fight(universe);
-        this.playFromStart_WaitForTicks(universe, 100);
-        var shipEnemy = combat.shipsFighting[1];
-        var shipEnemyAsEntity = placeCombat.entityByName(shipEnemy.name);
-        shipEnemyAsEntity.killable().kill();
-        this.playFromStart_WaitForTicks(universe, 100);
-        // Verify that we're seeing a post-battle debriefing screen.
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        // Make a record of how much money we had before blowing up a ship and salvaging the wreckage.
         var creditBefore = player.resourceCredits;
-        var venueControls = venue();
-        var containerChoice = venueControls.controlRoot;
-        var buttonAcknowledge = containerChoice.childByName("buttonAcknowledge");
-        buttonAcknowledge.click();
-        this.playFromStart_WaitForTicks(universe, 100);
+        // Destroy the probe (by cheating, in this test).
+        this.playFromStart_CheatToWinCombat(universe);
         // Verify that resources were salvaged from destroyed ship.
         var creditAfter = player.resourceCredits;
         Assert.isTrue(creditAfter > creditBefore);
@@ -312,6 +319,30 @@ class SystemTests extends TestFixture {
         var venue = universe.venueCurrent();
         var venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(venueTypeNameExpected, venueTypeName);
+    }
+    playFromStart_CheatToWinCombat(universe) {
+        universe.updateForTimerTick();
+        var world = universe.world;
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceCombat.name, world);
+        var placeCombat = world.placeCurrent;
+        var combat = placeCombat.combat;
+        var shipGroupForPlayer = combat.shipGroups[0];
+        var shipForPlayer = shipGroupForPlayer.ships[0];
+        combat.shipsFighting[0] = shipForPlayer;
+        combat.fight(universe);
+        this.playFromStart_WaitForTicks(universe, 100);
+        var shipEnemy = combat.shipsFighting[1];
+        var shipEnemyAsEntity = placeCombat.entityByName(shipEnemy.name);
+        shipEnemyAsEntity.killable().kill();
+        this.playFromStart_WaitForTicks(universe, 100);
+        // Verify that we're seeing a post-battle debriefing screen.
+        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        var venue = universe.venueCurrent();
+        var venueControls = venue;
+        var containerChoice = venueControls.controlRoot;
+        var buttonAcknowledge = containerChoice.childByName("buttonAcknowledge");
+        buttonAcknowledge.click();
+        this.playFromStart_WaitForTicks(universe, 100);
     }
     playFromStart_FindEntityWithName(universe, targetEntityName) {
         var place = universe.world.placeCurrent;

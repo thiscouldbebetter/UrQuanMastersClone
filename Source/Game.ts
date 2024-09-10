@@ -29,6 +29,7 @@ class Game
 		[
 			// conversation 
 			new Image2("Conversation", imageDirectory + "Conversation.png"),
+			new Image2(conversationPortrait + "Araknoid", importDirectoryPath + "comm/ilwrath/ilwrath-000.png"),
 			new Image2(conversationPortrait + "EarthStation", importDirectoryPath + "comm/commander/commander-000.png"),
 			new Image2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
 			new Image2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
@@ -168,7 +169,8 @@ class Game
 				new TextString("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
 
 				new TextString(conversation + "Amorfus", conversationPlaceholderPath),
-				new TextString(conversation + "Araknoid", conversationPlaceholderPath),
+				new TextString(conversation + "Araknoid", conversationDirectory + "Araknoid.txt"),
+				new TextString(conversation + "Araknoid" + content, contentPathPrefixComms + "ilwrath/ilwrath.txt"),
 				new TextString(conversation + "Daskapital", conversationPlaceholderPath),
 				new TextString(conversation + "Ellfyn", conversationPlaceholderPath),
 				new TextString(conversation + "Hyphae", conversationPlaceholderPath),
@@ -657,7 +659,7 @@ class Game
 		);
 
 		uwpe.entitiesSwap();
-		var placeEncounter = new PlaceEncounter(world, encounter);
+		var placeEncounter = encounter.toPlace();
 		universe.world.placeCurrent = placeEncounter;
 
 		talker.talk(uwpe);

@@ -225,7 +225,7 @@ class WorldExtended extends World {
         var placeTypeName = placeNameParts[0];
         var placeNameActual = placeNameParts[1];
         if (placeTypeName == PlaceHyperspace.name) {
-            throw new Error("todo");
+            throw new Error("Not yet implemented!");
         }
         else if (placeTypeName == PlacePlanetVicinity.name) {
             var planetName = placeNameActual;
@@ -234,7 +234,7 @@ class WorldExtended extends World {
             returnPlace = planet.toPlace(this);
         }
         else if (placeTypeName == PlaceStarsystem.name) {
-            throw new Error("todo");
+            throw new Error("Not yet implemented!");
         }
         else {
             throw new Error("Unrecognized place type: " + placeTypeName);

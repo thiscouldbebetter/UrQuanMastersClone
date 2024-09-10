@@ -10,6 +10,8 @@ class Starsystem implements EntityProperty<Starsystem>
 	planets: Planet[];
 	shipGroups: ShipGroup[];
 
+	private _displacement: Coords;
+
 	constructor
 	(
 		name: string,
@@ -30,6 +32,8 @@ class Starsystem implements EntityProperty<Starsystem>
 		this.factionName = factionName;
 		this.planets = planets;
 		this.shipGroups = shipGroups;
+
+		this._displacement = Coords.create();
 	}
 
 	static StarColors =
@@ -50,6 +54,39 @@ class Starsystem implements EntityProperty<Starsystem>
 	faction(world: WorldExtended): Faction
 	{
 		return world.factionByName(this.factionName);
+	}
+
+	planetClosestTo(posToCheck: Coords): Planet
+	{
+		var planetClosestSoFar = this.planets[0];
+		var planetClosestSoFarDistance =
+			this._displacement
+				.overwriteWith(planetClosestSoFar.pos() )
+				.subtract(posToCheck)
+				.magnitude();
+
+		for (var i = 1; i < this.planets.length; i++)
+		{
+			var planet = this.planets[i];
+			var planetPos = planet.pos();
+			var planetDistance =
+				this._displacement
+					.overwriteWith(planetPos)
+					.subtract(posToCheck)
+					.magnitude();
+			if (planetDistance < planetClosestSoFarDistance)
+			{
+				planetClosestSoFarDistance = planetDistance;
+				planetClosestSoFar = planet;
+			}
+		}
+
+		return planetClosestSoFar;
+	}
+
+	planetRandom(universe: Universe): Planet
+	{
+		return ArrayHelper.random(this.planets, universe.randomizer);
 	}
 
 	solarSystem(universe: Universe): void

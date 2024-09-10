@@ -176,9 +176,8 @@ class PlaceStarsystem extends PlaceBase {
                 entityOther.collidable().ticksUntilCanCollide = 100; // hack
                 var shipGroup = entityOtherShipGroup;
                 var playerPos = entityPlayer.locatable().loc.pos;
-                var encounter = new Encounter(place.starsystem.planets[0], // todo
-                shipGroup.factionName, entityPlayer, entityOther, place, playerPos);
-                var placeEncounter = new PlaceEncounter(world, encounter);
+                var encounter = new Encounter(place.starsystem.planetClosestTo(playerPos), shipGroup.factionName, entityPlayer, entityOther, place, playerPos);
+                var placeEncounter = encounter.toPlace();
                 world.placeNextSet(placeEncounter);
             }
         }

@@ -152,7 +152,8 @@ class PlacePlanetVicinity extends PlaceBase {
             else if (entityOtherShipGroup != null) {
                 entityOther.collidable().ticksUntilCanCollide = 100; // hack
                 var shipGroup = entityOtherShipGroup;
-                world.placeNextSet(shipGroup.toPlaceEncounter(uwpe));
+                var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
+                world.placeNextSet(placeEncounter);
             }
             else if (entityOtherStation != null) {
                 var station = entityOtherStation;
@@ -163,8 +164,8 @@ class PlacePlanetVicinity extends PlaceBase {
                 else {
                     // entityOther.collidable().ticksUntilCanCollide = 50; // hack
                     var playerPos = entityPlayer.locatable().loc.pos;
-                    var encounter = new Encounter(this.planet, station.factionName, entityPlayer, entityOther, place, playerPos);
-                    var placeEncounter = new PlaceEncounter(world, encounter);
+                    var encounter = new Encounter(place.planet, station.factionName, entityPlayer, entityOther, place, playerPos);
+                    var placeEncounter = encounter.toPlace();
                     world.placeNext = placeEncounter;
                 }
             }

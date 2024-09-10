@@ -348,14 +348,14 @@ class PlaceStarsystem extends PlaceBase
 				var playerPos = entityPlayer.locatable().loc.pos;
 				var encounter = new Encounter
 				(
-					place.starsystem.planets[0], // todo
+					place.starsystem.planetClosestTo(playerPos),
 					shipGroup.factionName,
 					entityPlayer,
 					entityOther,
 					place,
 					playerPos
 				);
-				var placeEncounter = new PlaceEncounter(world, encounter);
+				var placeEncounter = encounter.toPlace();
 				world.placeNextSet(placeEncounter);
 			}
 		}

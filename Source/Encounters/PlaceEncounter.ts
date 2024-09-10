@@ -5,7 +5,7 @@ class PlaceEncounter extends PlaceBase
 
 	venueControls: VenueControls;
 
-	constructor(world: World, encounter: Encounter)
+	constructor(encounter: Encounter)
 	{
 		super
 		(

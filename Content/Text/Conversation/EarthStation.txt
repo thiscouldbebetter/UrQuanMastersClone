@@ -5,6 +5,7 @@ soundMusicName=Music_Faction_EarthStation
 
 |VariablesImport|u.world.player.variableLookup
 
+|JumpIfTrue|HostileShipHasAttacked|#(VERY_IMPRESSIVE)
 |JumpIfTrue|PlayerHasAcceptedMissionToDestroyMoonBase|#(DEALT_WITH_BASE_YET)
 |JumpIfTrue|RadioactivesRequested|#(DO_YOU_HAVE_RADIO_THIS_TIME)
 
@@ -128,18 +129,16 @@ RadioactivesNeeded|DoNothing
 
 #(DEALT_WITH_BASE_YET)|Display|#(DEALT_WITH_BASE_YET)
 #(base_was_abandoned)|Option|#(base_was_abandoned)|#(IT_WAS_ABANDONED)
-|Option|#(we_fought_them)|#(VERY_IMPRESSIVE)
-|Option|#(oh_yes_big_fight)|#(YOU_REALLY_FOUGHT_BASE)
+|Option|#(we_fought_them)|#(YOU_REALLY_FOUGHT_BASE)
+|Prompt
 
 #(IT_WAS_ABANDONED)|Display|#(IT_WAS_ABANDONED)
-|Goto||#(HERE_COMES_ILWRATH)
-
-#(VERY_IMPRESSIVE)|Display|#(VERY_IMPRESSIVE)
 |Goto||#(HERE_COMES_ILWRATH)
 
 #(YOU_REALLY_FOUGHT_BASE)|Display|#(YOU_REALLY_FOUGHT_BASE)
 |OptionsClear
 |Option|#(i_lied_it_was_abandoned)|#(IT_WAS_ABANDONED)
+|Option|#(oh_yes_big_fight)|#(IM_GLAD_YOU_WON)
 |Option|#(i_cant_talk_about_it)|#(IM_SURE_IT_WAS_DIFFICULT)
 |Prompt
 
@@ -150,32 +149,74 @@ RadioactivesNeeded|DoNothing
 |Goto||#(HERE_COMES_ILWRATH)
 
 #(HERE_COMES_ILWRATH)|Display|#(HERE_COMES_ILWRATH)
-|Script|u.world.placeNextSet(u.world.faction("Araknoid").shipGroup().toPlaceEncounter(u.toUwpe().entitySet(cr.p) ) )
+|VariableSet|HostileShipHasAttacked|true
+|Script|u.world.place().encounter.placeToReturnToSet(u.world.faction("Araknoid").shipGroup().toEncounter(u.toUwpe().entitySet(cr.p) ).toPlace() )
+|Goto||Done
+
+#(VERY_IMPRESSIVE)|Display|#(VERY_IMPRESSIVE)
+|OptionsClear
+#(overthrow_evil_aliens)|Option|#(overthrow_evil_aliens)|#(OVERTHROW_ALIENS)
+#(annihilate_those_monsters)|Option|#(annihilate_those_monsters)|#(KILL_MONSTERS)
+#(cook_their_butts)|Option|#(cook_their_butts)|#(COOK_BUTTS)
+
+#(OVERTHROW_ALIENS)|Display|#(OVERTHROW_ALIENS)
+|Goto||#(THIS_MAY_SEEM_SILLY)
+
+#(KILL_MONSTERS)|Display|#(KILL_MONSTERS)
+|Goto||#(THIS_MAY_SEEM_SILLY)
+
+#(COOK_BUTTS)|Display|#(COOK_BUTTS)
+|Goto||#(THIS_MAY_SEEM_SILLY)
+
+#(THIS_MAY_SEEM_SILLY)|Display|#(THIS_MAY_SEEM_SILLY)
+|OptionsClear
+#(name_1)|Option|#(name_1)|#(OK_THE_NAFS)
+#(name_2)|Option|#(name_2)|#(OK_THE_CAN)
+#(name_3)|Option|#(name_3)|#(OK_THE_UFW)
+#(name_4)|Option|#(name_4)|#(OK_THE_NAME_IS_EMPIRE)
+
+#(OK_THE_NAFS)|Display|#(OK_THE_NAFS)
+|VariableSet|AllianceName|New Alliance of Free Stars
+|Goto||#(STARBASE_WILL_BE_READY)
+
+#(OK_THE_CAN)|Display|#(OK_THE_CAN)
+|VariableSet|AllianceName|Concordance of Alien Nations
+|Goto||#(STARBASE_WILL_BE_READY)
+
+#(OK_THE_UFW)|Display|#(OK_THE_UFW)
+|VariableSet|AllianceName|United Federation of Worlds
+|Goto||#(STARBASE_WILL_BE_READY)
+
+#(OK_THE_NAME_IS_EMPIRE)|Display|#(OK_THE_NAME_IS_EMPIRE)
+|VariableSet|AllianceName|The Empire
+|Goto||#(STARBASE_WILL_BE_READY)
+
+#(STARBASE_WILL_BE_READY)|Display|#(STARBASE_WILL_BE_READY)
+|Display|[Two weeks later...]
+|OptionsClear
+|Option|[Next]|StarbaseOperational
+|Prompt
+
+StarbaseOperational|DoNothing
+|Script|throw new Error("todo") // todo - Change to another converation file.
+|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+// Not yet implemented.
 
 |Display|#(GIVE_FUEL)
 |Display|#(GIVE_FUEL_AGAIN)
 |Display|#(HERE_IS_ANOTHER_LANDER)
 |Display|#(HERE_IS_A_NEW_LANDER)
-|Display|#(THIS_MAY_SEEM_SILLY)
-|Display|#(OK_THE_NAFS)
-|Display|#(OK_THE_CAN)
-|Display|#(OK_THE_UFW)
-|Display|#(OK_THE_NAME_IS_EMPIRE)
 |Display|#(ABOUT_BASE_AGAIN)
-|Display|#(COOK_BUTTS)
-|Display|#(OVERTHROW_ALIENS)
-|Display|#(KILL_MONSTERS)
 |Display|#(GOOD_LUCK_AGAIN)
 |Display|#(STARBASE_WILL_BE_READY)
-|Display|#(annihilate_those_monsters)
-|Display|#(cook_their_butts)
 |Display|#(we_must_go_now)
 |Display|#(where_can_i_get_radios)
 |Display|#(ok_i_will_get_radios)
-|Display|#(name_1)
-|Display|#(name_2)
-|Display|#(name_3)
-|Display|#(name_4)
 |Display|#(i_lost_my_lander)
 |Display|#(i_lost_another_lander)
 |Display|#(need_fuel_mercury)
@@ -183,7 +224,3 @@ RadioactivesNeeded|DoNothing
 |Display|#(need_fuel_again)
 |Display|#(take_care_of_base_again)
 |Display|#(goodbye_commander)
-
-Done|DoNothing
-|VariablesExport|u.world.player.variableLookup.set($key, $value)
-|Quit

@@ -216,9 +216,9 @@ class PlaceHyperspace extends PlaceBase {
             var shipGroupOther = entityOtherShipGroup;
             var playerPos = entityPlayer.locatable().loc.pos;
             var starsystemClosest = place.hyperspace.starsystemClosestTo(playerPos);
-            var planetClosest = ArrayHelper.random(starsystemClosest.planets, universe.randomizer);
+            var planetClosest = starsystemClosest.planetRandom(universe);
             var encounter = new Encounter(planetClosest, shipGroupOther.factionName, entityPlayer, entityOther, place, playerPos);
-            var placeEncounter = new PlaceEncounter(world, encounter);
+            var placeEncounter = encounter.toPlace();
             world.placeNextSet(placeEncounter);
             place.entityToRemoveAdd(entityOther);
             ArrayHelper.remove(place.hyperspace.shipGroups, shipGroupOther);
