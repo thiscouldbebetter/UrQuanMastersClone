@@ -125,8 +125,9 @@ class PlacePlanetSurface extends PlaceBase {
         var playerConstrainable = new Constrainable([
             constraintFriction, constraintSpeedMax, constraintWrapXTrimY
         ]);
-        var playerColor = Color.byName("Gray");
-        var playerVisual = ShipDefn.visual(entityDimension, playerColor, Color.byName("Black"));
+        var colors = Color.Instances();
+        var playerColor = colors.Gray;
+        var playerVisual = ShipDefn.visual(entityDimension, playerColor, colors.Black);
         playerVisual = new VisualWrapped(this.size(), playerVisual);
         var playerDrawable = Drawable.fromVisual(playerVisual);
         var crewAvailableForLander = 12; // todo
@@ -273,7 +274,7 @@ class PlacePlanetSurface extends PlaceBase {
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Map:"), font),
             ControlContainer.from4("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
             minimapSize, [
-                ControlVisual.from4("visualMap", Coords.fromXY(0, 0), minimapSize, DataBinding.fromContext(VisualRectangle.fromSizeAndColorFill(minimapSize, Color.byName("Gray"))))
+                ControlVisual.from4("visualMap", Coords.fromXY(0, 0), minimapSize, DataBinding.fromContext(VisualRectangle.fromSizeAndColorFill(minimapSize, Color.Instances().Gray)))
             ]),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, DataBinding.fromContext("Lander:"), font),
             ControlContainer.from4("containerLander", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 2 + minimapSize.y), // pos

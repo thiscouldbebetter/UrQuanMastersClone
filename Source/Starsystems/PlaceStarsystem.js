@@ -27,7 +27,7 @@ class PlaceStarsystem extends PlaceBase {
         var planets = starsystem.planets;
         for (var i = 0; i < planets.length; i++) {
             var planet = planets[i];
-            var planetEntity = planet.toEntity(null, sunPos);
+            var planetEntity = planet.toEntity(world, null, sunPos);
             entities.push(planetEntity);
         }
         var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
@@ -48,14 +48,6 @@ class PlaceStarsystem extends PlaceBase {
             var playerPlayable = new Playable();
             var playerShipGroup = world.player.shipGroup;
             var playerShip = playerShipGroup.ships[0];
-            /*
-            var playerColor = Color.byName("Gray");
-            var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-            var playerVisual = new VisualGroup
-            ([
-                playerVisualBody
-            ]);
-            */
             var playerShipDefn = playerShip.defn(world);
             var playerVisual = playerShipDefn.visual;
             var playerDrawable = Drawable.fromVisual(playerVisual);
@@ -185,7 +177,8 @@ class PlaceStarsystem extends PlaceBase {
     // Place overrides
     draw(universe, world) {
         var display = universe.display;
-        display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
+        var colors = Color.Instances();
+        display.drawBackground(colors.Black, colors.Gray);
         var player = this.entityByName(Player.name);
         if (player == null) {
             return; // hack

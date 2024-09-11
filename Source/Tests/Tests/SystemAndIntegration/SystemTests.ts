@@ -345,14 +345,16 @@ class SystemTests extends TestFixture
 		(
 			universe, talker,
 			[
-				// "A human in an alien vessel!"
-				"#(where_you_come_from)", // "Where did you come from?"
-				// "From fighting in such-and-such star cluster."
-				"#(be_reasonable)"
-				// "We aren't reasonable, though."
+				// "You won!  We're in.  What now?"
+				"#(annihilate_those_monsters)", // But actually [sensible plan].
+				// "Sounds like a sensible plan.  What do we call our alliance?"
+				"#(name_1)", // "The New Alliance of Free Stars!"
+				// "Great.  Give us two weeks."
+				null, // "[Wait two weeks...]"
 			]
 		);
 
+		// Verify that we've switched to a different conversation mode.
 
 		// Verify that we've returned to the world.
 

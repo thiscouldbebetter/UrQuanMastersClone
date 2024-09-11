@@ -75,6 +75,7 @@ class ShipDefn {
 class ShipDefn_Instances {
     constructor(universe) {
         var shipDimension = 10;
+        var colors = Color.Instances();
         var attackDefnTodo = new ShipAttackDefn("todo", 4, // energyToUse
         2, // projectileRadius
         0, // angleInTurns
@@ -82,10 +83,10 @@ class ShipDefn_Instances {
         16, // ticksToLive
         true, // diesOnImpact
         20, // damage
-        VisualCircle.fromRadiusAndColorFill(2, Color.byName("Yellow")), // visualProjectile
+        VisualCircle.fromRadiusAndColorFill(2, colors.Yellow), // visualProjectile
         new VisualGroup([
             new VisualSound("Sound", null),
-            VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+            VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         null, // activity
@@ -130,8 +131,8 @@ class ShipDefn_Instances {
             return shipVisual;
         };
         var sv16 = (shipName, shipImageFilePrefix, shipSizesForHeadings) => sv(shipName, shipImageFilePrefix, shipSizesForHeadings, 16);
-        var colorGray = Color.byName("Gray");
-        var colorBlack = Color.byName("Black");
+        var colorGray = colors.Gray;
+        var colorBlack = colors.Black;
         var shipDefnFlagship = new ShipDefn("Flagship", "Player", // factionName
         1, // mass
         .5, // accel
@@ -170,16 +171,7 @@ class ShipDefn_Instances {
         1000, // value
         ShipDefn.visual(shipDimension, colorGray, colorBlack), attackDefnTodo, null // ?
         );
-        var shipDefnLahkemupGuardDroneVisual = 
-        /*
-        ShipDefn.visual
-        (
-            shipDimension,
-            Color.byName("GreenDark"),
-            Color.byName("Red")
-        );
-        */
-        sv("GuardDrone", "drone/drone", shipSizes16x16, 1);
+        var shipDefnLahkemupGuardDroneVisual = sv("GuardDrone", "drone/drone", shipSizes16x16, 1);
         var shipDefnLahkemupGuardDrone = new ShipDefn("GuardDrone", "Lahkemup", // factionName
         1, // mass
         .1, // accel
@@ -302,10 +294,10 @@ class ShipDefn_Instances {
         null, // ticksToLive
         false, // diesOnImpact
         0, // damage
-        new VisualCircle(3, Color.byName("GreenDark"), Color.byName("Green"), null), // visualProjectile
+        new VisualCircle(3, colors.GreenDark, colors.Green, null), // visualProjectile
         new VisualGroup([
             new VisualSound("Sound", null),
-            VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+            VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity
@@ -502,10 +494,10 @@ class ShipDefn_Instances {
         null, // ticksToLive
         false, // diesOnImpact
         0, // damage
-        new VisualCircle(3, Color.byName("Red"), Color.byName("RedDark"), null), // visualProjectile
+        new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
         new VisualGroup([
             new VisualSound("Sound", null),
-            VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+            VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity
@@ -537,10 +529,10 @@ class ShipDefn_Instances {
         null, // ticksToLive
         false, // diesOnImpact
         0, // damage
-        new VisualCircle(3, Color.byName("Red"), Color.byName("RedDark"), null), // visualProjectile
+        new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
         new VisualGroup([
             new VisualSound("Sound", null),
-            VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+            VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity
@@ -589,10 +581,10 @@ class ShipDefn_Instances {
         null, // ticksToLive
         false, // diesOnImpact
         0, // damage
-        new VisualCircle(5, Color.byName("White"), Color.byName("Cyan"), null), // visualProjectile
+        new VisualCircle(5, colors.White, colors.Cyan, null), // visualProjectile
         new VisualGroup([
             new VisualSound("Sound", null),
-            VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+            VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity

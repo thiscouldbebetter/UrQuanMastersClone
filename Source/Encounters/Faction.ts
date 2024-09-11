@@ -44,6 +44,12 @@ class Faction implements EntityPropertyBase
 		return entity.propertyByName(Faction.name) as Faction;
 	}
 
+	conversationDefnNameSet(value: string): Faction
+	{
+		this.conversationDefnName = value;
+		return this;
+	}
+
 	shipDefn(world: WorldExtended): ShipDefn
 	{
 		var returnValue = world.shipDefnByName(this.shipDefnName);
@@ -81,6 +87,21 @@ class Faction implements EntityPropertyBase
 		var starsystemsInSphereOfInfluence =
 			hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
 		return starsystemsInSphereOfInfluence;
+	}
+
+	toTalker(): Talker
+	{
+		var talker = new Talker
+		(
+			this.conversationDefnName, null, this.talkerToControl
+		);
+
+		return talker;
+	}
+
+	talkerToControl(cr: ConversationRun, size: Coords, universe: Universe): ControlBase
+	{
+		return cr.toControl_Layout_2(size, universe);
 	}
 
 	// EntityProperty.

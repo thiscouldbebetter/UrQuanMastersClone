@@ -23,16 +23,17 @@ class PlanetDefn {
 }
 class PlanetDefn_Instances {
     constructor() {
-        var colorBlack = Color.byName("Black");
-        var colorRed = Color.byName("Red");
-        var colorOrange = Color.byName("Orange");
-        var colorYellow = Color.byName("Yellow");
-        var colorGreen = Color.byName("Green");
-        var colorCyan = Color.byName("Cyan");
-        var colorBlue = Color.byName("Blue");
-        var colorViolet = Color.byName("Violet");
-        var colorGray = Color.byName("Gray");
-        var colorWhite = Color.byName("White");
+        var colors = Color.Instances();
+        var colorBlack = colors.Black;
+        var colorRed = colors.Red;
+        var colorOrange = colors.Orange;
+        var colorYellow = colors.Yellow;
+        var colorGreen = colors.Green;
+        var colorCyan = colors.Cyan;
+        var colorBlue = colors.Blue;
+        var colorViolet = colors.Violet;
+        var colorGray = colors.Gray;
+        var colorWhite = colors.White;
         var colorToGlobe = (radius, color, colorBorder) => {
             var colorOuter = color.clone().add(colorBlack).add(colorBlack);
             var returnVisual = new VisualCircleGradient(radius, new ValueBreakGroup([

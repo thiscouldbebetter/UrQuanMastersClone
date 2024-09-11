@@ -33,7 +33,7 @@ class Station implements EntityProperty<Station>, Satellite
 		return world.defnExtended().factionByName(this.factionName);
 	}
 
-	toEntity(primary: Planet, primaryPos: Coords): Entity
+	toEntity(world: WorldExtended, primary: Planet, primaryPos: Coords): Entity
 	{
 		var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
 		var collidable = Collidable.fromCollider(collider);
@@ -61,10 +61,8 @@ class Station implements EntityProperty<Station>, Satellite
 		);
 		var locatable = new Locatable(Disposition.fromPos(pos));
 
-		var talker = new Talker
-		(
-			"Conversation-" + this.name, null, this.toControl
-		);
+		var faction = this.faction(world);
+		var talker = faction.toTalker();
 
 		var returnValue = new Entity
 		(
@@ -91,13 +89,6 @@ class Station implements EntityProperty<Station>, Satellite
 	overwriteWith(other: Station): Station
 	{
 		throw new Error("todo");
-	}
-
-	// Controls.
-
-	toControl(cr: ConversationRun, size: Coords, universe: Universe): ControlBase
-	{
-		return cr.toControl_Layout_2(size, universe)
 	}
 
 	// EntityProperty.

@@ -163,7 +163,7 @@ class PlaceHyperspace extends PlaceBase
 		for (var i = 0; i < shipGroups.length; i++)
 		{
 			var shipGroup = shipGroups[i];
-			var entityShipGroup = this.shipGroupToEntity(world, this, shipGroup);
+			var entityShipGroup = shipGroup.toEntitySpace(world, this);
 			entities.push(entityShipGroup);
 		}
 
@@ -189,7 +189,7 @@ class PlaceHyperspace extends PlaceBase
 			var playerShip = playerShipGroup.ships[0];
 
 			/*
-			var playerColor = Color.byName("Gray");
+			var playerColor = Color.Instances().Gray;
 			var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
 			var playerVisual = new VisualGroup
 			([
@@ -343,7 +343,7 @@ class PlaceHyperspace extends PlaceBase
 				[ new Ship(shipDefnName) ]
 			);
 
-			var entityShipGroup = place.shipGroupToEntity(world, place, shipGroup);
+			var entityShipGroup = shipGroup.toEntitySpace(world as WorldExtended, place);
 			place.hyperspace.shipGroups.push(shipGroup);
 			place.entityToSpawnAdd(entityShipGroup);
 		}
@@ -425,60 +425,6 @@ class PlaceHyperspace extends PlaceBase
 		}
 	}
 
-	shipGroupToEntity
-	(
-		worldAsWorld: World, place: Place, shipGroup: ShipGroup
-	): Entity
-	{
-		var world = worldAsWorld as WorldExtended;
-
-		var actor = new Actor
-		(
-			new Activity
-			(
-				ShipGroup.activityDefnApproachPlayer().name, null
-			)
-		);
-
-		var collidable = Collidable.fromCollider(new Sphere(Coords.create(), 5));
-
-		var boundable = Boundable.fromCollidable(collidable);
-
-		var ship0 = shipGroup.ships[0];
-		var drawable = Drawable.fromVisual(ship0.defn(world).visual);
-
-		var shipGroupPos = shipGroup.pos;
-		var locatable = Locatable.fromPos(shipGroupPos);
-
-		var movable = Movable.default();
-
-		var talker = new Talker
-		(
-			shipGroup.factionName,
-			null, // quit - todo
-			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, u)
-		);
-
-		var entityShipGroup = new Entity
-		(
-			shipGroup.name + Math.random(),
-			[
-				actor,
-				//faction,
-				boundable,
-				collidable,
-				drawable,
-				locatable,
-				movable,
-				shipGroup,
-				ship0,
-				talker
-			]
-		);
-
-		return entityShipGroup;
-	}
-
 	// controls
 
 	toControlSidebar(universe: Universe)
@@ -532,7 +478,8 @@ class PlaceHyperspace extends PlaceBase
 	{
 		var display = universe.display;
 
-		display.drawBackground(Color.byName("Gray"), Color.byName("Black"));
+		var colors = Color.Instances();
+		display.drawBackground(colors.Gray, colors.Black);
 
 		var player = this.entityByName(Player.name);
 		var playerLoc = player.locatable().loc;

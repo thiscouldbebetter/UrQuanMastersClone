@@ -121,6 +121,9 @@ class Game
 
 		images.push(...hazardImages);
 
+		var sffm = (a: string, b: string) => new SoundFromFileMod(a, b);
+		var ts = (a: string, b: string) => new TextString(a, b);
+
 		var mediaLibrary = new MediaLibrary
 		(
 			contentDirectoryPath,
@@ -134,16 +137,16 @@ class Game
 				new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
 				new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
 				//new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
-				new SoundFromFileMod("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
+				sffm("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
 
-				new SoundFromFileMod("Music_Combat", importDirectoryPath + "battle/battle.mod"),
-				new SoundFromFileMod("Music_Encounter", importDirectoryPath + "ui/redalert.mod"),
-				new SoundFromFileMod("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
-				new SoundFromFileMod("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
-				new SoundFromFileMod("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
+				sffm("Music_Combat", importDirectoryPath + "battle/battle.mod"),
+				sffm("Music_Encounter", importDirectoryPath + "ui/redalert.mod"),
+				sffm("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
+				sffm("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
+				sffm("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
 
-				new SoundFromFileMod("Music_Faction_EarthStation", importDirectoryPath + "comm/commander/commander.mod"),
-				new SoundFromFileMod("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
+				sffm("Music_Faction_EarthStation", importDirectoryPath + "comm/commander/commander.mod"),
+				sffm("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
 			],
 
 			// videos
@@ -156,58 +159,60 @@ class Game
 			],
 			// textStrings
 			[
-				//new TextString("Instructions", "../Content/Text/Instructions.txt"),
-				new TextString("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
+				//ts("Instructions", "../Content/Text/Instructions.txt"),
+				ts("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
 
-				//new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
-				new TextString(conversation + "EarthStation", conversationDirectory + "EarthStation.txt"),
-				new TextString(conversation + "EarthStation" + content, contentPathPrefixComms + "commander/commander.txt"),
-				new TextString(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
-				//new TextString(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
-				new TextString(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
+				//ts(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
+				ts(conversation + "EarthStation", conversationDirectory + "EarthStation.txt"),
+				ts(conversation + "EarthStation" + content, contentPathPrefixComms + "commander/commander.txt"),
+				ts(conversation + "EarthStation-Business", conversationDirectory + "EarthStation-Business.txt"),
+				ts(conversation + "EarthStation-Business" + content, contentPathPrefixComms + "commander/commander.txt"),
+				ts(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
+				//ts(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
+				ts(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
 
-				new TextString("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
+				ts("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
 
-				new TextString(conversation + "Amorfus", conversationPlaceholderPath),
-				new TextString(conversation + "Araknoid", conversationDirectory + "Araknoid.txt"),
-				new TextString(conversation + "Araknoid" + content, contentPathPrefixComms + "ilwrath/ilwrath.txt"),
-				new TextString(conversation + "Daskapital", conversationPlaceholderPath),
-				new TextString(conversation + "Ellfyn", conversationPlaceholderPath),
-				new TextString(conversation + "Hyphae", conversationPlaceholderPath),
-				new TextString(conversation + "Kehlemal", conversationPlaceholderPath),
-				new TextString(conversation + "Lahkemup", conversationPlaceholderPath),
+				ts(conversation + "Amorfus", conversationPlaceholderPath),
+				ts(conversation + "Araknoid", conversationDirectory + "Araknoid.txt"),
+				ts(conversation + "Araknoid" + content, contentPathPrefixComms + "ilwrath/ilwrath.txt"),
+				ts(conversation + "Daskapital", conversationPlaceholderPath),
+				ts(conversation + "Ellfyn", conversationPlaceholderPath),
+				ts(conversation + "Hyphae", conversationPlaceholderPath),
+				ts(conversation + "Kehlemal", conversationPlaceholderPath),
+				ts(conversation + "Lahkemup", conversationPlaceholderPath),
 
-				new TextString(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
-				new TextString(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-				new TextString(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
-				new TextString(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
+				ts(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
+				ts(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
+				ts(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
+				ts(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
 
-				new TextString(conversation + "Moroz", conversationPlaceholderPath),
-				new TextString(conversation + "Muuncaf", conversationPlaceholderPath),
-				new TextString(conversation + "Mazonae", conversationPlaceholderPath),
+				ts(conversation + "Moroz", conversationPlaceholderPath),
+				ts(conversation + "Muuncaf", conversationPlaceholderPath),
+				ts(conversation + "Mazonae", conversationPlaceholderPath),
 
-				new TextString(conversation + "Murch", conversationDirectory + "Murch.json"),
-				new TextString(conversation + "Murch" + content, contentPathPrefixComms + "melnorme/melnorme.txt"),
+				ts(conversation + "Murch", conversationDirectory + "Murch.json"),
+				ts(conversation + "Murch" + content, contentPathPrefixComms + "melnorme/melnorme.txt"),
 
-				new TextString(conversation + "Outsider", conversationPlaceholderPath),
-				new TextString(conversation + "Raptor", conversationPlaceholderPath),
-				new TextString(conversation + "Silikonix", conversationPlaceholderPath),
-				new TextString(conversation + "Supial", conversationPlaceholderPath),
+				ts(conversation + "Outsider", conversationPlaceholderPath),
+				ts(conversation + "Raptor", conversationPlaceholderPath),
+				ts(conversation + "Silikonix", conversationPlaceholderPath),
+				ts(conversation + "Supial", conversationPlaceholderPath),
 
-				new TextString(conversation + "Tempestrial", conversationDirectory + "Tempestrial.json"),
-				new TextString(conversation + "Tempestrial" + content, contentPathPrefixComms + "probe/probe.txt"),
+				ts(conversation + "Tempestrial", conversationDirectory + "Tempestrial.json"),
+				ts(conversation + "Tempestrial" + content, contentPathPrefixComms + "probe/probe.txt"),
 
-				new TextString(conversation + "Triunion", conversationDirectory + "Triunion.json"),
-				new TextString(conversation + "Triunion" + content, contentPathPrefixComms + "zoqfotpik/zoqfotpik.txt"),
+				ts(conversation + "Triunion", conversationDirectory + "Triunion.json"),
+				ts(conversation + "Triunion" + content, contentPathPrefixComms + "zoqfotpik/zoqfotpik.txt"),
 
-				new TextString(conversation + "Twyggan", conversationPlaceholderPath),
-				new TextString(conversation + "Ugglegruj", conversationPlaceholderPath),
-				new TextString(conversation + "Warpig", conversationPlaceholderPath),
+				ts(conversation + "Twyggan", conversationPlaceholderPath),
+				ts(conversation + "Ugglegruj", conversationPlaceholderPath),
+				ts(conversation + "Warpig", conversationPlaceholderPath),
 
 				// Energy sources.
 
-				new TextString(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
-				new TextString(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
+				ts(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
+				ts(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
 			]
 		);
 
@@ -301,7 +306,7 @@ class Game
 
 	debug(universe: Universe)
 	{
-		var world = WorldExtended.create(universe);
+		var world = WorldExtended.create(universe) as WorldExtended;
 		universe.world = world;
 		universe.venueNextSet(new VenueWorld(world) );
 
@@ -370,12 +375,8 @@ class Game
 			}
 			*/
 
-			var talker = new Talker
-			(
-				"Conversation-" + factionName,
-				null, // quit
-				(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
-			);
+			var faction = world.faction(factionName);
+			var talker = faction.toTalker();
 			var entityPlayer = new Entity("Player", []);
 			var entityTalker = new Entity(factionName, [ talker] );
 			var uwpe = new UniverseWorldPlaceEntities
@@ -586,16 +587,13 @@ class Game
 		world.placeNextSet(placeStation);
 	}
 
-	debug_Talk_MauluskaOrphan(universe: Universe): void
+	debug_Talk(universe: Universe, factionName: string): void
 	{
-		var talker = new Talker
-		(
-			"Conversation-MauluskaOrphan",
-			null, // quit
-			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
-		);
+		var world = universe.world as WorldExtended;
+		var faction = world.faction(factionName);
+		var talker = faction.toTalker();
 		var entityPlayer = new Entity("Player", []);
-		var entityTalker = new Entity("Mauluska", [ talker] );
+		var entityTalker = new Entity(factionName, [ talker] );
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer
@@ -603,21 +601,14 @@ class Game
 		talker.talk(uwpe);
 	}
 
+	debug_Talk_MauluskaOrphan(universe: Universe): void
+	{
+		this.debug_Talk(universe, "MauluskaOrphan");
+	}
+
 	debug_Talk_Murch(universe: Universe): void
 	{
-		var talker = new Talker
-		(
-			"Conversation-Murch",
-			null, // quit
-			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
-		);
-		var entityPlayer = new Entity("Player", []);
-		var entityTalker = new Entity("Murch", [ talker] );
-		var uwpe = new UniverseWorldPlaceEntities
-		(
-			universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer
-		);
-		talker.talk(uwpe);
+		this.debug_Talk(universe, "Murch");
 	}
 
 	debug_Talk_Tempestrial(universe: Universe): void
@@ -667,19 +658,7 @@ class Game
 
 	debug_Talk_Triunion(universe: Universe): void
 	{
-		var talker = new Talker
-		(
-			"Conversation-Triunion",
-			null, // quit
-			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, universe)
-		);
-		var entityPlayer = new Entity("Player", []);
-		var entityTalker = new Entity("Triunion", [ talker] );
-		var uwpe = new UniverseWorldPlaceEntities
-		(
-			universe, universe.world, universe.world.placeCurrent, entityTalker, entityPlayer
-		);
-		talker.talk(uwpe);
+		this.debug_Talk(universe, "Triunion");
 	}
 
 }

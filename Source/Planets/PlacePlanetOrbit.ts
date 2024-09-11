@@ -439,7 +439,7 @@ class PlacePlanetOrbit extends PlaceBase
 		([
 			VisualRectangle.fromSizeAndColorFill
 			(
-				containerInfoSize, Color.byName("Black")
+				containerInfoSize, Color.Instances().Black
 			),
 			visualPlanetFromOrbit
 		]);

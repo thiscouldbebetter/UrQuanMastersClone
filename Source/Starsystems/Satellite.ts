@@ -2,5 +2,5 @@
 interface Satellite
 {
 	posAsPolar: Polar;
-	toEntity(primary: Planet, pos: Coords): Entity;
+	toEntity(world: WorldExtended, primary: Planet, pos: Coords): Entity;
 }

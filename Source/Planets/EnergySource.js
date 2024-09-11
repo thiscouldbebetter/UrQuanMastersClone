@@ -21,7 +21,7 @@ class EnergySource {
             Coords.fromXY(dimension, 0),
             Coords.fromXY(0, dimension),
             Coords.fromXY(-dimension, 0),
-        ], Color.byName("Cyan"));
+        ], Color.Instances().Cyan);
         visualScanContact = new VisualHidable((uwpe) => {
             var isVisible = false;
             var place = uwpe.place;

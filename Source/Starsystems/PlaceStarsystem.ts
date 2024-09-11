@@ -65,7 +65,7 @@ class PlaceStarsystem extends PlaceBase
 		for (var i = 0; i < planets.length; i++)
 		{
 			var planet = planets[i];
-			var planetEntity = planet.toEntity(null, sunPos);
+			var planetEntity = planet.toEntity(world, null, sunPos);
 			entities.push(planetEntity);
 		}
 
@@ -102,14 +102,6 @@ class PlaceStarsystem extends PlaceBase
 			var playerShipGroup = world.player.shipGroup;
 			var playerShip = playerShipGroup.ships[0];
 
-			/*
-			var playerColor = Color.byName("Gray");
-			var playerVisualBody = ShipDefn.visual(entityDimension, playerColor, null);
-			var playerVisual = new VisualGroup
-			([
-				playerVisualBody
-			]);
-			*/
 			var playerShipDefn = playerShip.defn(world);
 			var playerVisual = playerShipDefn.visual;
 			var playerDrawable = Drawable.fromVisual(playerVisual);
@@ -367,7 +359,8 @@ class PlaceStarsystem extends PlaceBase
 	{
 		var display = universe.display;
 
-		display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
+		var colors = Color.Instances();
+		display.drawBackground(colors.Black, colors.Gray);
 
 		var player = this.entityByName(Player.name);
 		if (player == null)

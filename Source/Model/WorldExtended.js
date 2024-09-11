@@ -83,7 +83,7 @@ class WorldExtended extends World {
         // normal
         var f = (name, nameOriginal, color, sphereOfInfluence, relations, shipDefnName) => {
             var talksImmediately = (sphereOfInfluence == null);
-            return new Faction(name, nameOriginal, color, relations, talksImmediately, name, // conversationDefnName
+            return new Faction(name, nameOriginal, color, relations, talksImmediately, "Conversation-" + name, // conversationDefnName
             sphereOfInfluence, shipDefnName, new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
         };
         var soi = (centerX, centerY, radius) => {
@@ -95,6 +95,7 @@ class WorldExtended extends World {
         var factionAmorfus = f("Amorfus", "Umgah", c("Violet"), soi(197.8, 596.8, .1), hostile, "Pustule");
         var factionAraknoid = f("Araknoid", "Ilwrath", c("Purple"), soi(22.9, 366.6, .15), hostile, "Infernus");
         var factionDaskapital = f("Daskapital", "Druuge", c("Red"), soi(946.9, 280.6, .1), neutral, "Kickback");
+        var factionEarthStation = f("EarthStation", "Earthling", c("Violet"), soi(197.8, 596.8, .1), hostile, "Broadsider");
         var factionEllfyn = f("Ellfyn", "Arilou", c("Blue"), soi(100, 500, .05), neutral, "Discus");
         var factionHyphae = f("Hyphae", "Mycon", c("Purple"), soi(629.1, 220.8, .12), hostile, "Sporsac");
         var factionKehlemal = f("Kehlemal", "Kohrah", c("Gray"), soi(610, 610, .25), hostile, "Silencer");
@@ -119,6 +120,7 @@ class WorldExtended extends World {
             factionAmorfus,
             factionAraknoid,
             factionDaskapital,
+            factionEarthStation,
             factionEllfyn,
             factionHyphae,
             factionKehlemal,

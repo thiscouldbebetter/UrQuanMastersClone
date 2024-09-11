@@ -51,7 +51,7 @@ class PlaceCombat extends PlaceBase {
         /*
         var entityDimension = 10;
         var planetRadius = entityDimension;
-        var planetColor = Color.byName("Cyan");
+        var planetColor = Color.Instances().Cyan;
         var planetVisual = new VisualWrapped
         (
             this.size,
@@ -126,7 +126,7 @@ class PlaceCombat extends PlaceBase {
             // Do nothing.
         }
         else {
-            var colorBlack = Color.byName("Black");
+            var colorBlack = Color.Instances().Black;
             display.drawBackground(colorBlack, colorBlack);
             var midpointBetweenCombatants;
             var camera = this._camera;

@@ -38,13 +38,13 @@ class Starsystem implements EntityProperty<Starsystem>
 
 	static StarColors =
 	[
-		"Red",
-		"Orange",
-		"Yellow",
-		"Green",
-		"Blue",
-		"White",
-	].map(x => Color.byName(x));
+		Color.Instances().Red,
+		Color.Instances().Orange,
+		Color.Instances().Yellow,
+		Color.Instances().Green,
+		Color.Instances().Blue,
+		Color.Instances().White,
+	];
 
 	static fromEntity(entity: Entity): Starsystem
 	{
@@ -147,7 +147,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		var station = new Station
 		(
 			"EarthStation",
-			Color.byName("Gray"), // color
+			Color.Instances().Gray, // color
 			radiusBase,
 			"Terran", // factionName
 			new Polar(Math.random(), moon.posAsPolar.radius / 2, null)
@@ -290,7 +290,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		var station = new Station
 		(
 			"EarthStation",
-			Color.byName("Gray"), // color
+			Color.Instances().Gray, // color
 			10, // radius
 			"Terran", // factionName
 			new Polar(Math.random(), distanceBetweenPlanetOrbits, null),

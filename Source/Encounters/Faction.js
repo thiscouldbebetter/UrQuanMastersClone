@@ -14,6 +14,10 @@ class Faction {
     static fromEntity(entity) {
         return entity.propertyByName(Faction.name);
     }
+    conversationDefnNameSet(value) {
+        this.conversationDefnName = value;
+        return this;
+    }
     shipDefn(world) {
         var returnValue = world.shipDefnByName(this.shipDefnName);
         return returnValue;
@@ -40,6 +44,13 @@ class Faction {
         var sphere = this.sphereOfInfluence;
         var starsystemsInSphereOfInfluence = hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
         return starsystemsInSphereOfInfluence;
+    }
+    toTalker() {
+        var talker = new Talker(this.conversationDefnName, null, this.talkerToControl);
+        return talker;
+    }
+    talkerToControl(cr, size, universe) {
+        return cr.toControl_Layout_2(size, universe);
     }
     // EntityProperty.
     finalize(uwpe) { }

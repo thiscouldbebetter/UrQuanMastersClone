@@ -32,7 +32,8 @@ class PlaceHyperspaceMap extends PlaceBase {
         var hyperspace = this.placeHyperspaceToReturnTo.hyperspace;
         var mapSize = this.displayMap.sizeInPixels;
         var zeroes = Coords.Instances().Zeroes;
-        display.drawRectangle(zeroes, mapSize, Color.byName("Black"), Color.byName("Gray"));
+        var colors = Color.Instances();
+        display.drawRectangle(zeroes, mapSize, colors.Black, colors.Gray);
         var camera = this._camera;
         var magnificationFactor = camera.focalLength / camera.viewSize.x;
         var drawPos = this._drawPos;
@@ -73,7 +74,7 @@ class PlaceHyperspaceMap extends PlaceBase {
         this._camera.coordsTransformWorldToView(drawPos);
         var locatorDimension = starRadius * 8 * magnificationFactor;
         var locatorSize = Coords.fromXY(1, 1).multiplyScalar(locatorDimension);
-        var reticleColor = Color.byName("Gray");
+        var reticleColor = Color.Instances().Gray;
         display.drawRectangleCentered(drawPos, locatorSize, null, reticleColor);
         var reticleRadius = locatorDimension * 2;
         drawPos.overwriteWith(this.reticlePos);

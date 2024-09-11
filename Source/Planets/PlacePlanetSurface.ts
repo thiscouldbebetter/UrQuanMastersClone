@@ -249,10 +249,11 @@ class PlacePlanetSurface extends PlaceBase
 			constraintFriction, constraintSpeedMax, constraintWrapXTrimY
 		]);
 
-		var playerColor = Color.byName("Gray");
+		var colors = Color.Instances();
+		var playerColor = colors.Gray;
 		var playerVisual: VisualBase = ShipDefn.visual
 		(
-			entityDimension, playerColor, Color.byName("Black")
+			entityDimension, playerColor, colors.Black
 		);
 		playerVisual = new VisualWrapped(this.size(), playerVisual);
 		var playerDrawable = Drawable.fromVisual(playerVisual);
@@ -518,7 +519,7 @@ class PlacePlanetSurface extends PlaceBase
 							(
 								VisualRectangle.fromSizeAndColorFill
 								(
-									minimapSize, Color.byName("Gray")
+									minimapSize, Color.Instances().Gray
 								)
 							)
 						)

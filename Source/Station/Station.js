@@ -13,7 +13,7 @@ class Station {
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
     }
-    toEntity(primary, primaryPos) {
+    toEntity(world, primary, primaryPos) {
         var collider = new Sphere(Coords.fromXY(0, 0), this.radiusOuter);
         var collidable = Collidable.fromCollider(collider);
         var orbitColor = primary.orbitColor();
@@ -25,7 +25,8 @@ class Station {
         var drawable = Drawable.fromVisual(visual);
         var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
         var locatable = new Locatable(Disposition.fromPos(pos));
-        var talker = new Talker("Conversation-" + this.name, null, this.toControl);
+        var faction = this.faction(world);
+        var talker = faction.toTalker();
         var returnValue = new Entity(this.name, [
             collidable,
             drawable,
@@ -41,10 +42,6 @@ class Station {
     }
     overwriteWith(other) {
         throw new Error("todo");
-    }
-    // Controls.
-    toControl(cr, size, universe) {
-        return cr.toControl_Layout_2(size, universe);
     }
     // EntityProperty.
     finalize(uwpe) { }

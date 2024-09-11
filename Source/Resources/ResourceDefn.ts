@@ -69,16 +69,18 @@ class ResourceDefn_Instances
 
 	constructor()
 	{
-		this.Commons = new ResourceDefn("Commons", "Common Elements", Color.byName("White"), 1);
-		this.Corrosives = new ResourceDefn("Corrosives", "Corrosives", Color.byName("Red"), 2);
-		this.BaseMetals = new ResourceDefn("BaseMetals", "Base Metals", Color.byName("Gray"), 3);
-		this.NobleGases = new ResourceDefn("NobleGases", "Noble Gases", Color.byName("Blue"), 4);
-		this.RareEarths = new ResourceDefn("RareEarths", "Rare Earths", Color.byName("Green"), 5);
-		this.PreciousMetals = new ResourceDefn("PreciousMetals", "Precious Metals", Color.byName("Yellow"), 6);
-		this.Radioactives = new ResourceDefn("Radioactives", "Radioactives", Color.byName("Orange"), 8);
-		this.Exotics = new ResourceDefn("Exotics", "Exotics", Color.byName("Violet"), 25);
+		var colors = Color.Instances();
 
-		this.Biodata = new ResourceDefn("Biodata", "Biodata", Color.byName("Green"), null);
+		this.Commons = new ResourceDefn("Commons", "Common Elements", colors.White, 1);
+		this.Corrosives = new ResourceDefn("Corrosives", "Corrosives", colors.Red, 2);
+		this.BaseMetals = new ResourceDefn("BaseMetals", "Base Metals", colors.Gray, 3);
+		this.NobleGases = new ResourceDefn("NobleGases", "Noble Gases", colors.Blue, 4);
+		this.RareEarths = new ResourceDefn("RareEarths", "Rare Earths", colors.Green, 5);
+		this.PreciousMetals = new ResourceDefn("PreciousMetals", "Precious Metals", colors.Yellow, 6);
+		this.Radioactives = new ResourceDefn("Radioactives", "Radioactives", colors.Orange, 8);
+		this.Exotics = new ResourceDefn("Exotics", "Exotics", colors.Violet, 25);
+
+		this.Biodata = new ResourceDefn("Biodata", "Biodata", colors.Green, null);
 
 		this._All =
 		[

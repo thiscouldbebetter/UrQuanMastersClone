@@ -136,7 +136,7 @@ class Ship {
         }
         var visualToRecycle = entityShipToDie.drawable().visual;
         visualToRecycle.child =
-            VisualCircle.fromRadiusAndColorFill(32, Color.byName("Red"));
+            VisualCircle.fromRadiusAndColorFill(32, Color.Instances().Red);
         entityShipToDie.locatable().loc.vel.clear();
         var entityExplosion = new Entity("Explosion", [
             new Ephemeral(64, place.roundOver),

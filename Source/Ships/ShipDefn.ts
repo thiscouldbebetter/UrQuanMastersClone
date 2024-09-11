@@ -142,6 +142,8 @@ class ShipDefn_Instances
 	{
 		var shipDimension = 10;
 
+		var colors = Color.Instances();
+
 		var attackDefnTodo = new ShipAttackDefn
 		(
 			"todo",
@@ -152,11 +154,11 @@ class ShipDefn_Instances
 			16, // ticksToLive
 			true, // diesOnImpact
 			20, // damage
-			VisualCircle.fromRadiusAndColorFill(2, Color.byName("Yellow") ), // visualProjectile
+			VisualCircle.fromRadiusAndColorFill(2, colors.Yellow ), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound", null),
-				VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red") )
+				VisualCircle.fromRadiusAndColorFill(6, colors.Red )
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			null, // activity
@@ -235,8 +237,8 @@ class ShipDefn_Instances
 		var sv16 = (shipName: string, shipImageFilePrefix: string, shipSizesForHeadings: Coords[]) =>
 			sv(shipName, shipImageFilePrefix, shipSizesForHeadings, 16);
 
-		var colorGray = Color.byName("Gray");
-		var colorBlack = Color.byName("Black");
+		var colorGray = colors.Gray;
+		var colorBlack = colors.Black;
 
 		var shipDefnFlagship = new ShipDefn
 		(
@@ -294,14 +296,6 @@ class ShipDefn_Instances
 		);
 
 		var shipDefnLahkemupGuardDroneVisual =
-			/*
-			ShipDefn.visual
-			(
-				shipDimension,
-				Color.byName("GreenDark"),
-				Color.byName("Red")
-			);
-			*/
 			sv("GuardDrone", "drone/drone", shipSizes16x16, 1);
 
 
@@ -466,12 +460,12 @@ class ShipDefn_Instances
 			0, // damage
 			new VisualCircle
 			(
-				3, Color.byName("GreenDark"), Color.byName("Green"), null
+				3, colors.GreenDark, colors.Green, null
 			), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound", null),
-				VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity
@@ -744,11 +738,11 @@ class ShipDefn_Instances
 			null, // ticksToLive
 			false, // diesOnImpact
 			0, // damage
-			new VisualCircle(3, Color.byName("Red"), Color.byName("RedDark"), null), // visualProjectile
+			new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound", null),
-				VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity
@@ -789,11 +783,11 @@ class ShipDefn_Instances
 			null, // ticksToLive
 			false, // diesOnImpact
 			0, // damage
-			new VisualCircle(3, Color.byName("Red"), Color.byName("RedDark"), null), // visualProjectile
+			new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound", null),
-				VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity
@@ -860,11 +854,11 @@ class ShipDefn_Instances
 			null, // ticksToLive
 			false, // diesOnImpact
 			0, // damage
-			new VisualCircle(5, Color.byName("White"), Color.byName("Cyan"), null), // visualProjectile
+			new VisualCircle(5, colors.White, colors.Cyan, null), // visualProjectile
 			new VisualGroup
 			([
 				new VisualSound("Sound", null),
-				VisualCircle.fromRadiusAndColorFill(6, Color.byName("Red"))
+				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity

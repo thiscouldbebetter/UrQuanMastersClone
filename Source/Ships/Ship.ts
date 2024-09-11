@@ -246,7 +246,7 @@ class Ship implements EntityProperty<Ship>
 		var visualToRecycle =
 			entityShipToDie.drawable().visual as VisualWrapped;
 		visualToRecycle.child =
-			VisualCircle.fromRadiusAndColorFill(32, Color.byName("Red"));
+			VisualCircle.fromRadiusAndColorFill(32, Color.Instances().Red);
 
 		entityShipToDie.locatable().loc.vel.clear();
 

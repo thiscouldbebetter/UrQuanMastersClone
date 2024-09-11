@@ -47,7 +47,7 @@ class PlacePlanetVicinity extends PlaceBase {
         var satellites = planet.satellites;
         for (var i = 0; i < satellites.length; i++) {
             var satellite = satellites[i];
-            var satelliteEntity = satellite.toEntity(planet, planetPos);
+            var satelliteEntity = satellite.toEntity(world, planet, planetPos);
             entities.push(satelliteEntity);
         }
         var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
@@ -110,7 +110,8 @@ class PlacePlanetVicinity extends PlaceBase {
     }
     draw(universe, world) {
         var display = universe.display;
-        display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
+        var colors = Color.Instances();
+        display.drawBackground(colors.Black, colors.Gray);
         var player = this.entityByName(Player.name);
         var playerLoc = player.locatable().loc;
         var camera = this._camera;

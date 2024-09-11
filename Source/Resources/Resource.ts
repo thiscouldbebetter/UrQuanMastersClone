@@ -37,7 +37,7 @@ class Resource
 		(
 			[
 				new ValueBreak(0, resourceColor),
-				new ValueBreak(1, Color.byName("Black"))
+				new ValueBreak(1, Color.Instances().Black)
 			],
 			null
 		);

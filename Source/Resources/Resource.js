@@ -17,7 +17,7 @@ class Resource {
         var resourceColor = resourceDefn.color;
         var resourceGradient = new ValueBreakGroup([
             new ValueBreak(0, resourceColor),
-            new ValueBreak(1, Color.byName("Black"))
+            new ValueBreak(1, Color.Instances().Black)
         ], null);
         var resourceVisual = new VisualCircleGradient(resourceRadius, resourceGradient, null);
         var camera = place.camera();

@@ -190,6 +190,33 @@ class ShipGroup implements EntityPropertyBase
 		return world.defnExtended().factionByName(this.factionName);
 	}
 
+	static kill(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var place = uwpe.place;
+		var entity = uwpe.entity;
+
+		place.entityRemove(entity);
+
+		var shipGroup = ShipGroup.fromEntity(entity);
+		var shipGroupsInPlace: ShipGroup[] = null;
+
+		var placeTypeName = place.constructor.name;
+		if (placeTypeName == PlacePlanetVicinity.name)
+		{
+			shipGroupsInPlace = (place as PlacePlanetVicinity).planet.shipGroups;
+		}
+		else if (placeTypeName == PlaceStarsystem.name)
+		{
+			shipGroupsInPlace = (place as PlaceStarsystem).starsystem.shipGroups;
+		}
+		else
+		{
+			throw new Error("Unexpected placeTypeName: " + placeTypeName);
+		}
+
+		ArrayHelper.remove(shipGroupsInPlace, shipGroup);
+	}
+
 	posInHyperspace(world: World): Coords
 	{
 		var pos: Coords = null;
@@ -271,12 +298,8 @@ class ShipGroup implements EntityPropertyBase
 
 	toEntityEncounter(world: WorldExtended, place: Place): Entity
 	{
-		var talker = new Talker
-		(
-			"Conversation-" + this.factionName,
-			null, // quit
-			this.toControl
-		);
+		var faction = this.faction(world);
+		var talker = faction.toTalker();
 
 		return new Entity
 		(
@@ -290,97 +313,128 @@ class ShipGroup implements EntityPropertyBase
 
 	toEntitySpace(world: WorldExtended, place: Place): Entity
 	{
-		var shipGroup = this;
+		// See toEntitySpace2() for possible changes.
 
-		var faction = shipGroup.faction(world);
+		var faction = this.faction(world);
 
-		var shipActor = new Actor(faction.shipGroupActivity);
+		var actor = new Actor(faction.shipGroupActivity);
 
 		var entityDimension = 10;
 
-		var shipColliderAsFace = new Face
+		var colliderAsFace = new Face
 		([
 			Coords.fromXY(0, -1).multiplyScalar(entityDimension).half(),
 			Coords.fromXY(1, 1).multiplyScalar(entityDimension).half(),
 			Coords.fromXY(-1, 1).multiplyScalar(entityDimension).half(),
 		]);
-		var shipCollider = Mesh.fromFace
+		var collider = Mesh.fromFace
 		(
 			Coords.zeroes(), // center
-			shipColliderAsFace,
+			colliderAsFace,
 			1 // thickness
 		);
-		var shipCollidable =
-			Collidable.fromCollider(shipCollider);
+		var collidable =
+			Collidable.fromCollider(collider);
 
 		var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
 
-		var shipConstrainable =
+		var constrainable =
 			new Constrainable([constraintSpeedMax]);
 
 		var shipDefn = faction.shipDefn(world);
 		var shipVisual = shipDefn.visual;
 
-		var shipDrawable = Drawable.fromVisual(shipVisual);
+		var drawable = Drawable.fromVisual(shipVisual);
 
-		var shipKill = (uwpe: UniverseWorldPlaceEntities) =>
-		{
-			var place = uwpe.place;
-			var entity = uwpe.entity;
-
-			place.entityRemove(entity);
-
-			var shipGroup = ShipGroup.fromEntity(entity);
-			var shipGroupsInPlace: ShipGroup[] = null;
-
-			var placeTypeName = place.constructor.name;
-			if (placeTypeName == PlacePlanetVicinity.name)
-			{
-				shipGroupsInPlace = (place as PlacePlanetVicinity).planet.shipGroups;
-			}
-			else if (placeTypeName == PlaceStarsystem.name)
-			{
-				shipGroupsInPlace = (place as PlaceStarsystem).starsystem.shipGroups;
-			}
-			else
-			{
-				throw new Error("Unexpected placeTypeName: " + placeTypeName);
-			}
-
-			ArrayHelper.remove(shipGroupsInPlace, shipGroup);
-		}
-		var shipKillable = new Killable(1, null, shipKill);
+		// Note that ships may really only be killable in combat.
+		var killable = new Killable(1, null, ShipGroup.kill);
 
 		var placeSize = place.size();
-		var shipPos = Coords.random(null).multiply(placeSize);
-		var shipLoc = Disposition.fromPos(shipPos);
-		var shipLocatable = new Locatable(shipLoc);
+		var	pos = Coords.random(null).multiply(placeSize);
+		var loc = Disposition.fromPos(pos);
+		var locatable = new Locatable(loc);
 
-		var shipMovable = Movable.default();
+		var movable = Movable.default();
 
-		var shipTalker = new Talker
-		(
-			"todo", null, this.toControl
-		);
+		var faction = this.faction(world);
+		var talker = faction.toTalker();
 
 		var returnEntity = new Entity
 		(
-			shipGroup.name,
+			this.name,
 			[
-				shipActor,
-				shipCollidable,
-				shipConstrainable,
-				shipDrawable,
-				shipKillable,
-				shipLocatable,
-				shipMovable,
-				shipGroup,
-				shipTalker
+				actor,
+				collidable,
+				constrainable,
+				drawable,
+				killable,
+				locatable,
+				movable,
+				this,
+				talker
 			]
 		);
 
 		return returnEntity;
 	}
+
+	/*
+	toEntitySpace2
+	(
+		worldAsWorld: World, place: Place
+	): Entity
+	{
+		// Taken from PlaceHyperspace.shipGroupToEntity().
+
+		var world = worldAsWorld as WorldExtended;
+
+		var actor = new Actor
+		(
+			new Activity
+			(
+				ShipGroup.activityDefnApproachPlayer().name, null
+			)
+		);
+
+		var collidable = Collidable.fromCollider(new Sphere(Coords.create(), 5));
+
+		var boundable = Boundable.fromCollidable(collidable);
+
+		var ship0 = shipGroup.ships[0];
+		var drawable = Drawable.fromVisual(ship0.defn(world).visual);
+
+		var shipGroupPos = shipGroup.pos;
+		var locatable = Locatable.fromPos(shipGroupPos);
+
+		var movable = Movable.default();
+
+		var talker = new Talker
+		(
+			shipGroup.factionName,
+			null, // quit - todo
+			(cr: ConversationRun, size: Coords, u: Universe) => cr.toControl_Layout_2(size, u)
+		);
+
+		var entityShipGroup = new Entity
+		(
+			shipGroup.name + Math.random(),
+			[
+				actor,
+				//faction,
+				boundable,
+				collidable,
+				drawable,
+				locatable,
+				movable,
+				shipGroup,
+				ship0,
+				talker
+			]
+		);
+
+		return entityShipGroup;
+	}
+	*/
 
 	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter
 	{

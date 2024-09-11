@@ -46,7 +46,7 @@ class EnergySource implements EntityProperty<EnergySource>
 					Coords.fromXY(0, dimension),
 					Coords.fromXY(-dimension, 0),
 				],
-				Color.byName("Cyan")
+				Color.Instances().Cyan
 			);
 		visualScanContact = new VisualHidable
 		(

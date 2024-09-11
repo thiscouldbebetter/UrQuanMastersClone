@@ -200,19 +200,19 @@ class Planet implements EntityProperty<Planet>, Satellite
 	orbitColor(): Color
 	{
 		var temperature = this.temperature;
-		var orbitColorName =
+		var colors = Color.Instances();
+		var orbitColor =
 		(
 			temperature > 100
-			? "Brown"
+			? colors.Brown
 			: temperature > 0
-			? "GreenDark"
-			: "BlueDark"
+			? colors.GreenDark
+			: colors.BlueDark
 		);
-		var orbitColor = Color.byName(orbitColorName);
 		return orbitColor;
 	}
 
-	toEntity(primary: Planet, primaryPos: Coords): Entity
+	toEntity(world: WorldExtended, primary: Planet, primaryPos: Coords): Entity
 	{
 		var pos = primaryPos.clone().add
 		(

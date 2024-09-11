@@ -89,15 +89,15 @@ class Planet {
     }
     orbitColor() {
         var temperature = this.temperature;
-        var orbitColorName = (temperature > 100
-            ? "Brown"
+        var colors = Color.Instances();
+        var orbitColor = (temperature > 100
+            ? colors.Brown
             : temperature > 0
-                ? "GreenDark"
-                : "BlueDark");
-        var orbitColor = Color.byName(orbitColorName);
+                ? colors.GreenDark
+                : colors.BlueDark);
         return orbitColor;
     }
-    toEntity(primary, primaryPos) {
+    toEntity(world, primary, primaryPos) {
         var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
         var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
         var planetDefn = this.defn();

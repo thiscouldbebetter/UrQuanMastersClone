@@ -69,7 +69,7 @@ class Starsystem {
         var energySources = [energySourceAbandonedMoonbase];
         moon.energySources = energySources;
         // Put a station in orbit around the Earth.
-        var station = new Station("EarthStation", Color.byName("Gray"), // color
+        var station = new Station("EarthStation", Color.Instances().Gray, // color
         radiusBase, "Terran", // factionName
         new Polar(Math.random(), moon.posAsPolar.radius / 2, null));
         planetEarth.satellites.splice(0, 0, station);
@@ -135,7 +135,7 @@ class Starsystem {
         throw new Error("Not yet implemented!");
         var numberOfPlanets = this.planets.length;
         var distanceBetweenPlanetOrbits = this.sizeInner.clone().half().y / (numberOfPlanets + 1);
-        var station = new Station("EarthStation", Color.byName("Gray"), // color
+        var station = new Station("EarthStation", Color.Instances().Gray, // color
         10, // radius
         "Terran", // factionName
         new Polar(Math.random(), distanceBetweenPlanetOrbits, null));
@@ -164,10 +164,10 @@ class Starsystem {
     equals(other) { return false; }
 }
 Starsystem.StarColors = [
-    "Red",
-    "Orange",
-    "Yellow",
-    "Green",
-    "Blue",
-    "White",
-].map(x => Color.byName(x));
+    Color.Instances().Red,
+    Color.Instances().Orange,
+    Color.Instances().Yellow,
+    Color.Instances().Green,
+    Color.Instances().Blue,
+    Color.Instances().White,
+];

@@ -105,7 +105,7 @@ class PlacePlanetVicinity extends PlaceBase
 		{
 			var satellite = satellites[i];
 
-			var satelliteEntity = satellite.toEntity(planet, planetPos);
+			var satelliteEntity = satellite.toEntity(world, planet, planetPos);
 
 			entities.push(satelliteEntity);
 		}
@@ -227,7 +227,8 @@ class PlacePlanetVicinity extends PlaceBase
 	{
 		var display = universe.display;
 
-		display.drawBackground(Color.byName("Black"), Color.byName("Gray"));
+		var colors = Color.Instances();
+		display.drawBackground(colors.Black, colors.Gray);
 
 		var player = this.entityByName(Player.name);
 		var playerLoc = player.locatable().loc;

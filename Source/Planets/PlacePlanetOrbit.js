@@ -189,7 +189,7 @@ class PlacePlanetOrbit extends PlaceBase {
         ]);
         var visualPlanetFromOrbit = this.planet.defn().visualOrbit;
         var visualGlobe = new VisualGroup([
-            VisualRectangle.fromSizeAndColorFill(containerInfoSize, Color.byName("Black")),
+            VisualRectangle.fromSizeAndColorFill(containerInfoSize, Color.Instances().Black),
             visualPlanetFromOrbit
         ]);
         var containerGlobe = ControlContainer.from4("containerGlobe", Coords.fromXY(marginSize.x * 2 + containerInfoSize.x, marginSize.y * 2 + titleSize.y), containerInfoSize, 

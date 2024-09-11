@@ -158,6 +158,7 @@ RadioactivesNeeded|DoNothing
 #(overthrow_evil_aliens)|Option|#(overthrow_evil_aliens)|#(OVERTHROW_ALIENS)
 #(annihilate_those_monsters)|Option|#(annihilate_those_monsters)|#(KILL_MONSTERS)
 #(cook_their_butts)|Option|#(cook_their_butts)|#(COOK_BUTTS)
+|Prompt
 
 #(OVERTHROW_ALIENS)|Display|#(OVERTHROW_ALIENS)
 |Goto||#(THIS_MAY_SEEM_SILLY)
@@ -174,6 +175,7 @@ RadioactivesNeeded|DoNothing
 #(name_2)|Option|#(name_2)|#(OK_THE_CAN)
 #(name_3)|Option|#(name_3)|#(OK_THE_UFW)
 #(name_4)|Option|#(name_4)|#(OK_THE_NAME_IS_EMPIRE)
+|Prompt
 
 #(OK_THE_NAFS)|Display|#(OK_THE_NAFS)
 |VariableSet|AllianceName|New Alliance of Free Stars
@@ -192,13 +194,13 @@ RadioactivesNeeded|DoNothing
 |Goto||#(STARBASE_WILL_BE_READY)
 
 #(STARBASE_WILL_BE_READY)|Display|#(STARBASE_WILL_BE_READY)
-|Display|[Two weeks later...]
 |OptionsClear
-|Option|[Next]|StarbaseOperational
+|Option|[Wait two weeks...]|StarbaseOperational
 |Prompt
 
 StarbaseOperational|DoNothing
-|Script|throw new Error("todo") // todo - Change to another converation file.
+|Script|u.world.faction("EarthStation").conversationDefnNameSet("Conversation-EarthStation-2")
+|Script|u.world.place().encounter.placeToReturnToSet(u.world.faction("EarthStation").shipGroup().toEncounter(u.toUwpe().entitySet(cr.p) ).toPlace() )
 |Goto||Done
 
 Done|DoNothing
