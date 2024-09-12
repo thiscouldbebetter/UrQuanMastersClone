@@ -33,7 +33,7 @@ class PlaceStation extends PlaceBase {
         var factionName = this.station.factionName;
         var faction = world.defnExtended().factionByName(factionName);
         var conversationDefnName = faction.conversationDefnName;
-        var conversationResourceName = "Conversation-" + conversationDefnName;
+        var conversationResourceName = conversationDefnName;
         var conversationQuit = () => {
             world.placeCurrent = placeStation.placePlanetVicinity;
             universe.venueNextSet(new VenueWorld(world));

@@ -60,7 +60,7 @@ class SystemTests extends TestFixture {
         guardDrone = place().entityByName(guardDroneName);
         Assert.isNull(guardDrone);
         // Move the player to the station.
-        var stationName = "EarthStation";
+        var stationName = "Earth Station";
         var station = place().entityByName(stationName);
         Assert.isNotNull(station);
         this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);

@@ -1,0 +1,433 @@
+name=Terran
+contentTextStringName=Conversation-Terran-Content
+imagePortraitName=Conversation-Portrait-Terran
+soundMusicName=Music_Faction_Terran
+
+|VariablesImport|u.world.player.variableLookup
+
+|JumpIfTrue|HasAlreadySaidStarbaseIsReady|NormalHello
+|VariableSet|HasAlreadySaidStarbaseIsReady|true
+
+|Display|#(STARBASE_IS_READY)
+|Goto||MainMenuOptions
+
+NormalHello|DoNothing
+|Display|#(NORMAL_HELLO_A)
+|Goto||MainMenuOptions
+
+|Display|#(NORMAL_HELLO_B)
+|Display|#(NORMAL_HELLO_C)
+|Display|#(NORMAL_HELLO_D)
+|Display|#(NORMAL_HELLO_E)
+|Display|#(NORMAL_HELLO_F)
+|Display|#(NORMAL_HELLO_G)
+|Display|#(NORMAL_HELLO_H)
+
+MainMenu|DoNothing
+|Display|#(RETURN_HELLO)
+
+MainMenuOptions|DoNothing
+|OptionsClear
+#(have_minerals)|Option|#(have_minerals)|MineralsOffload
+#(need_info)|Display|#(need_info)|#(WHAT_KIND_OF_INFO)
+#(goodbye_commander)|Option|#(goodbye_commander)|Goodbye
+|Prompt
+
+MineralsOffload|DoNothing
+|Display|We will transfer the minerals from your vessel.
+|Display|Your cargo bays contain:
+|Display|[todo]
+|Display|for a total value of [todo]
+|Display|#(LIGHT_LOAD_A)
+|Goto||MainMenuOptions
+
+#(WHAT_KIND_OF_INFO)|Display|#(WHAT_KIND_OF_INFO)
+InfoRequestOptions|DoNothing
+|OptionsClear
+#(repeat_bulletins)|Option|#(repeat_bulletins)
+#(starbase_functions)|Option|#(starbase_functions)|#(WHICH_FUNCTION)
+#(history)|Option|#(history)|#(WHICH_HISTORY)
+#(our_mission)|Option|#(our_mission)|#(WHICH_MISSION)
+#(no_need_info)|Option|#(no_need_info)|#(OK_NO_NEED_INFO)
+|Prompt
+
+	|Display|#(WHICH_FUNCTION)
+	|OptionsClear
+	#(tell_me_about_fuel)|Option|#(tell_me_about_fuel)|#(ABOUT_FUEL)
+	#(tell_me_about_modules)|Option|#(tell_me_about_modules)
+	#(tell_me_about_crew)|Option|#(tell_me_about_crew)
+	#(tell_me_about_ships)|Option|#(tell_me_about_ships)
+	#(tell_me_about_ru)|Option|#(tell_me_about_ru)
+	#(tell_me_about_minerals)|Option|#(tell_me_about_minerals)
+	#(tell_me_about_life)|Option|#(tell_me_about_life)
+	#(enough_starbase)|Option|#(enough_starbase)||#(OK_ENOUGH_STARBASE)
+	|Prompt
+
+		#(ABOUT_FUEL)|Display|#(ABOUT_FUEL)
+		|Prompt
+
+		#(ABOUT_MODULES)|Display|#(ABOUT_MODULES)
+		|Prompt
+
+		#(ABOUT_CREW)|Display|#(ABOUT_CREW)
+		|Prompt
+
+		#(ABOUT_SHIPS)|Display|#(ABOUT_SHIPS)
+		|Prompt
+
+		#(ABOUT_RU)|Display|#(ABOUT_RU)
+		|Prompt
+
+		#(ABOUT_MINERALS)|Display|#(ABOUT_MINERALS)
+		|Prompt
+
+		#(ABOUT_LIFE)|Display|#(ABOUT_LIFE)
+		|Prompt
+
+		#(OK_ENOUGH_STARBASE)|Display|#(OK_ENOUGH_STARBASE)
+		|Goto||InfoRequestOptions
+
+	|Display|#(WHICH_HISTORY)
+	|OptionsClear
+	#(alien_races)|Options|#(alien_races)|#(WHICH_ALIEN)
+	#(the_war)|Options|#(the_war)|#(WHICH_WAR)
+	#(ancient_history)|Options|#(ancient_history)|#(WHICH_ANCIENT)
+	#(enough_history)|Options|#(enough_history)|#(OK_ENOUGH_HISTORY)
+	|Prompt
+
+		|Display|#(WHICH_ALIEN)
+		InfoRequestAliensOptions|DoNothing
+		|OptionsClear
+		#(what_about_alliance)|Option|#(what_about_alliance)|#(WHICH_ALLIANCE)
+		#(what_about_hierarchy)|Option|#(what_about_hierarchy)|#(WHICH_HIERARCHY)
+		#(what_about_other)|Option|#(what_about_other)|#(ABOUT_OTHER)
+		#(enough_aliens)|Option|#(enough_aliens)#(OK_ENOUGH_ALIENS)
+		|Prompt
+
+			#(WHICH_ALLIANCE)|Display|#(WHICH_ALLIANCE)
+			|OptionsClear
+			#(shofixti)|Option|#(shofixti)|#(ABOUT_SHOFIXTI)
+			#(yehat)|Option|#(yehat)|#(ABOUT_YEHAT)
+			#(arilou)|Option|#(arilou)|#(ABOUT_ARILOU)
+			#(chenjesu)|Option|#(chenjesu)|#(ABOUT_CHENJESU)
+			#(mmrnmhrm)|Option|#(mmrnmhrm)|#(ABOUT_MMRNMHRM)
+			#(syreen)|Option|#(syreen)|#(ABOUT_SYREEN)
+			#(enough_alliance)|Option|#(enough_alliance)|#(OK_ENOUGH_ALLIANCE)
+			|Prompt
+
+				#(ABOUT_SHOFIXTI)|Display|#(ABOUT_SHOFIXTI)
+				|OptionRemove||#(shofixti)
+				|Prompt
+
+				#(ABOUT_YEHAT)|Display|#(ABOUT_YEHAT)
+				|OptionRemove||#(yehat)
+				|Prompt
+
+				#(ABOUT_ARILOU)|Display|#(ABOUT_ARILOU)
+				|OptionRemove||#(arilou)
+				|Prompt
+
+				#(ABOUT_CHENJESU)|Display|#(ABOUT_CHENJESU)
+				|OptionRemove||#(chenjesu)
+				|Prompt
+
+				#(ABOUT_MMRNMHRM)|Display|#(ABOUT_MMRNMHRM)
+				|OptionRemove||#(mmrnmhrm)
+				|Prompt
+
+				|Display|#(ABOUT_SYREEN)
+				|OptionRemove||#(syreen)
+				|Prompt
+
+				#(OK_ENOUGH_ALLIANCE)|Display|#(OK_ENOUGH_ALLIANCE)
+				|Goto||InfoRequestAliensOptions
+
+			#(WHICH_HIERARCHY)|Display|#(WHICH_HIERARCHY)
+			|OptionsClear
+			#(urquan)|Option|#(urquan)|#(ABOUT_URQUAN)
+			#(mycon)|Option|#(mycon)|#(ABOUT_MYCON)
+			#(spathi)|Option|#(spathi)|#(ABOUT_SPATHI)
+			#(umgah)|Option|#(umgah)|#(ABOUT_UMGAH)
+			#(androsynth)|Option|#(androsynth)|#(ABOUT_ANDROSYNTH)
+			#(vux)|Option|#(vux)|#(ABOUT_VUX)
+			#(ilwrath)|Option|#(ilwrath)|#(ABOUT_ILWRATH)
+			#(enough_hierarchy)|Option|#(enough_hierarchy)|#(OK_ENOUGH_HIERARCHY)
+			|Prompt
+
+				#(ABOUT_URQUAN)|Display|#(ABOUT_URQUAN)
+				|OptionRemove||#(urquan)
+				|Prompt
+
+				#(ABOUT_MYCON)|Display|#(ABOUT_MYCON)
+				|OptionRemove||#(mycon)
+				|Prompt
+
+				#(ABOUT_SPATHI)|Display|#(ABOUT_SPATHI)
+				|OptionRemove||#(spathi)
+				|Prompt
+
+				#(ABOUT_UMGAH)|Display|#(ABOUT_UMGAH)
+				|OptionRemove||#(umgah)
+				|Prompt
+
+				#(ABOUT_ANDROSYNTH)|Display|#(ABOUT_ANDROSYNTH)
+				|OptionRemove||#(androsynth)
+				|Prompt
+
+				#(ABOUT_VUX)|Display|#(ABOUT_VUX)
+				|OptionRemove||#(vux)
+				|Prompt
+
+				#(ABOUT_ILWRATH)|Display|#(ABOUT_ILWRATH)
+				|OptionRemove||#(ilwrath)
+				|Prompt
+
+				#(OK_ENOUGH_HIERARCHY)|Display|#(OK_ENOUGH_HIERARCHY)
+				|Goto||InfoRequestAliensOptions
+
+			#(ABOUT_OTHER)|Display|#(ABOUT_OTHER)
+
+			#(OK_ENOUGH_ALIENS)|Display|#(OK_ENOUGH_ALIENS)|
+			|Goto||InfoRequestOptions
+
+		#(WHICH_WAR)|Display|#(WHICH_WAR)
+		|OptionsClear
+		#(what_started_war)|Option|#(what_started_war)|#(URQUAN_STARTED_WAR)
+		#(what_was_war_like)|Option|#(what_was_war_like)|#(WAR_WAS_LIKE_SO)
+		#(why_lose_war)|Option|#(why_lose_war)|#(LOST_WAR_BECAUSE)
+		#(what_after_war)|Option|#(what_after_war)|#(AFTER_WAR)
+		#(enough_war)|Option|#(enough_war)|#(OK_ENOUGH_WAR)
+		|Prompt
+
+			#(URQUAN_STARTED_WAR)|Display|#(URQUAN_STARTED_WAR)
+			|OptionRemove||#(what_started_war)
+			|Prompt
+
+			#(WAR_WAS_LIKE_SO)|Display|#(WAR_WAS_LIKE_SO)
+			|OptionRemove||#(what_was_war_like)
+			|Prompt
+
+			#(LOST_WAR_BECAUSE)|Display|#(LOST_WAR_BECAUSE)
+			|OptionRemove||#(why_lose_war)
+			|Prompt
+
+			|Display|#(AFTER_WAR)
+			|OptionRemove||#(what_after_war)
+			|Prompt
+
+			|Display|#(OK_ENOUGH_WAR)
+			|Goto||InfoRequestHistory
+
+		#(OK_ENOUGH_HISTORY)|Display|#(OK_ENOUGH_HISTORY)
+		Goto||InfoRequestOptions
+
+	|Display|#(WHICH_MISSION)
+	|OptionsClear
+	|Option|#(where_get_minerals)|#(GET_MINERALS)
+	|Option|#(what_about_aliens)|#(ABOUT_ALIENS)
+	|Option|#(what_about_urquan)|#(MUST_DEFEAT)
+	|Option|#(how_defeat)|#(DEFEAT_LIKE_SO)
+	|Option|#(enough_mission)|#(OK_ENOUGH_MISSION)
+	|Prompt
+
+		#(GET_MINERALS)|Display|#(GET_MINERALS)
+		|OptionRemove|#(where_get_minerals)
+		|Prompt
+
+		#(ABOUT_ALIENS)|Display|#(ABOUT_ALIENS)
+		|OptionRemove|#(what_about_aliens)
+		|Prompt
+
+		#(MUST_DEFEAT)|Display|#(MUST_DEFEAT)
+		|OptionRemove|#(what_about_urquan)
+		|Prompt
+
+		#(DEFEAT_LIKE_SO)|Display|#(DEFEAT_LIKE_SO)
+		|OptionsClear
+		#(how_find_urquan)|Option|#(how_find_urquan)|#(FIND_URQUAN)
+		#(how_fight_urquan)|Option|#(how_fight_urquan)|#(FIGHT_URQUAN)
+		#(how_ally)|Option|#(how_ally)|#(ALLY_LIKE_SO)
+		#(enough_defeat)|Option|#(enough_defeat)|#(OK_ENOUGH_DEFEAT)
+		|Prompt
+
+			#(FIND_URQUAN)|Display|#(FIND_URQUAN)
+			|OptionRemove||#(how_find_urquan)
+			|Prompt
+
+			#(FIGHT_URQUAN)|Display|#(FIGHT_URQUAN)
+			|OptionRemove||#(how_fight_urquan)
+			|Prompt
+
+			#(ALLY_LIKE_SO)|Display|#(ALLY_LIKE_SO)
+			|OptionRemove||#(how_ally)
+			|Prompt
+
+			#(OK_ENOUGH_DEFEAT)|Display|#(OK_ENOUGH_DEFEAT)
+			|Goto||InfoRequestOptions
+
+		#(OK_ENOUGH_MISSION)|Display|#(OK_ENOUGH_MISSION)
+		|Goto||InfoRequestOptions
+
+	#(OK_NO_NEED_INFO)|Display|#(OK_NO_NEED_INFO)
+	Goto||MainMenuOptions
+
+Bulletin|DoNothing
+|Display|#(BEFORE_WE_GO_ON_1)
+|Display|#(BEFORE_WE_GO_ON_2)
+|Display|#(BEFORE_WE_GO_ON_3)
+|Display|#(BEFORE_WE_GO_ON_4)
+|Display|#(BEFORE_WE_GO_ON_5)
+|Display|#(BEFORE_WE_GO_ON_6)
+|Display|#(BEFORE_WE_GO_ON_7)
+
+|Display|#(STARBASE_BULLETIN_1)
+|Display|#(STARBASE_BULLETIN_2)
+|Display|#(STARBASE_BULLETIN_3)
+|Display|#(STARBASE_BULLETIN_4)
+|Display|#(STARBASE_BULLETIN_5)
+|Display|#(STARBASE_BULLETIN_6)
+|Display|#(STARBASE_BULLETIN_7)
+|Display|#(STARBASE_BULLETIN_8)
+|Display|#(STARBASE_BULLETIN_9)
+|Display|#(STARBASE_BULLETIN_10)
+|Display|#(STARBASE_BULLETIN_11)
+|Display|#(STARBASE_BULLETIN_12)
+|Display|#(STARBASE_BULLETIN_13)
+|Display|#(STARBASE_BULLETIN_14)
+|Display|#(STARBASE_BULLETIN_15)
+|Display|#(STARBASE_BULLETIN_16)
+|Display|#(STARBASE_BULLETIN_18)
+|Display|#(STARBASE_BULLETIN_19)
+|Display|#(STARBASE_BULLETIN_22)
+|Display|#(STARBASE_BULLETIN_27)
+|Display|#(STARBASE_BULLETIN_28)
+|Display|#(STARBASE_BULLETIN_29)
+|Display|#(STARBASE_BULLETIN_30)
+
+|Display|#(BETWEEN_BULLETINS)
+
+|Display|#(STARBASE_BULLETIN_TAIL)
+
+Done|DoNothing
+|Display|#(NORMAL_GOODBYE_A)
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+|Display|#(NORMAL_GOODBYE_B)
+|Display|#(NORMAL_GOODBYE_C)
+|Display|#(NORMAL_GOODBYE_D)
+|Display|#(NORMAL_GOODBYE_E)
+|Display|#(NORMAL_GOODBYE_F)
+|Display|#(NORMAL_GOODBYE_G)
+|Display|#(NORMAL_GOODBYE_H)
+
+|Display|#(LIGHT_LOAD_B)
+|Display|#(LIGHT_LOAD_C0)
+|Display|#(LIGHT_LOAD_C1)
+|Display|#(LIGHT_LOAD_D)
+|Display|#(LIGHT_LOAD_E)
+|Display|#(LIGHT_LOAD_F)
+|Display|#(LIGHT_LOAD_G)
+
+|Display|#(MEDIUM_LOAD_A)
+|Display|#(MEDIUM_LOAD_B)
+|Display|#(MEDIUM_LOAD_C)
+|Display|#(MEDIUM_LOAD_D)
+|Display|#(MEDIUM_LOAD_E)
+|Display|#(MEDIUM_LOAD_F)
+|Display|#(MEDIUM_LOAD_G)
+
+|Display|#(HEAVY_LOAD_A)
+|Display|#(HEAVY_LOAD_B)
+|Display|#(HEAVY_LOAD_C)
+|Display|#(HEAVY_LOAD_D)
+|Display|#(HEAVY_LOAD_E)
+|Display|#(HEAVY_LOAD_F)
+|Display|#(HEAVY_LOAD_G)
+
+
+
+|Display|#(STRONG_LIKE_SO)
+
+|Display|#(WHICH_ANCIENT)
+
+|Display|#(ABOUT_PRECURSORS)
+|Display|#(ABOUT_OLD_RACES)
+|Display|#(ABOUT_ALIENS_ON_EARTH)
+|Display|#(OK_ENOUGH_ANCIENT)
+
+
+|Display|#(DEVICE_HEAD)
+|Display|#(BETWEEN_DEVICES)
+|Display|#(DEVICE_TAIL)
+|Display|#(ABOUT_PORTAL)
+|Display|#(ABOUT_TALKPET)
+|Display|#(ABOUT_BOMB)
+|Display|#(ABOUT_SUN)
+|Display|#(ABOUT_MAIDENS)
+|Display|#(ABOUT_SPHERE)
+|Display|#(ABOUT_HELIX)
+|Display|#(ABOUT_SPINDLE)
+|Display|#(ABOUT_ULTRON_0)
+|Display|#(ABOUT_ULTRON_1)
+|Display|#(ABOUT_ULTRON_2)
+|Display|#(ABOUT_ULTRON_3)
+|Display|#(ABOUT_UCASTER)
+|Display|#(ABOUT_BCASTER)
+|Display|#(ABOUT_SHIELD)
+|Display|#(ABOUT_EGGCASE_0)
+|Display|#(ABOUT_SHUTTLE)
+|Display|#(ABOUT_VUXBEAST0)
+|Display|#(ABOUT_VUXBEAST1)
+|Display|#(ABOUT_DESTRUCT)
+|Display|#(ABOUT_WARPPOD)
+|Display|#(ABOUT_ARTIFACT_2)
+|Display|#(ABOUT_ARTIFACT_3)
+|Display|#(LETS_SEE)
+|Display|#(GO_GET_MINERALS)
+|Display|#(IMPROVE_FLAGSHIP_WITH_RU)
+|Display|#(GOT_OK_FLAGSHIP)
+|Display|#(GO_ALLY_WITH_ALIENS)
+|Display|#(MADE_SOME_ALLIES)
+|Display|#(GET_SHIPS_BY_MINING_OR_ALLIANCE)
+|Display|#(GOT_OK_FLEET)
+|Display|#(BUY_COMBAT_SHIPS)
+|Display|#(GO_LEARN_ABOUT_URQUAN)
+|Display|#(MAKE_FLAGSHIP_AWESOME)
+|Display|#(KNOW_ABOUT_SAMATRA)
+|Display|#(GOT_AWESOME_FLAGSHIP)
+|Display|#(GOT_BOMB)
+|Display|#(FIND_WAY_TO_DESTROY_SAMATRA)
+|Display|#(MUST_INCREASE_BOMB_STRENGTH)
+|Display|#(MUST_ACQUIRE_AWESOME_FLEET)
+|Display|#(MUST_ELIMINATE_URQUAN_GUARDS)
+|Display|#(CHMMR_IMPROVED_BOMB)
+|Display|#(GOT_AWESOME_FLEET)
+|Display|#(GO_DESTROY_SAMATRA)
+|Display|#(GOOD_LUCK_AGAIN)
+|Display|#(IMPROVE_1)
+|Display|#(IMPROVE_2)
+|Display|#(NEED_THRUSTERS_1)
+|Display|#(NEED_THRUSTERS_2)
+|Display|#(NEED_TURN_1)
+|Display|#(NEED_TURN_2)
+|Display|#(NEED_GUNS_1)
+|Display|#(NEED_GUNS_2)
+|Display|#(NEED_CREW_1)
+|Display|#(NEED_CREW_2)
+|Display|#(NEED_FUEL_1)
+|Display|#(NEED_FUEL_2)
+|Display|#(NEED_STORAGE_1)
+|Display|#(NEED_LANDERS_2)
+|Display|#(NEED_LANDERS_1)
+|Display|#(NEED_DYNAMOS_1)
+|Display|#(NEED_DYNAMOS_2)
+|Display|#(NEED_POINT)
+
+|Display|#(precursors)
+|Display|#(old_races)
+|Display|#(aliens_on_earth)
+|Display|#(enough_ancient)
+|Display|#(new_devices)
+|Display|#(how_get_strong)
+|Display|#(what_do_now)

@@ -1,7 +1,7 @@
-name=EarthStation
-contentTextStringName=Conversation-EarthStation-Content
-imagePortraitName=Conversation-Portrait-EarthStation
-soundMusicName=Music_Faction_EarthStation
+name=Terran
+contentTextStringName=Conversation-Terran-Content
+imagePortraitName=Conversation-Portrait-Terran
+soundMusicName=Music_Faction_Terran
 
 |VariablesImport|u.world.player.variableLookup
 
@@ -199,8 +199,8 @@ RadioactivesNeeded|DoNothing
 |Prompt
 
 StarbaseOperational|DoNothing
-|Script|u.world.faction("EarthStation").conversationDefnNameSet("Conversation-EarthStation-2")
-|Script|u.world.place().encounter.placeToReturnToSet(u.world.faction("EarthStation").shipGroup().toEncounter(u.toUwpe().entitySet(cr.p) ).toPlace() )
+|Script|u.world.faction("Terran").conversationDefnNameSet("Conversation-Terran-Business")
+|Script|u.world.place().encounter.placeToReturnToSet(u.world.faction("Terran").shipGroup().toEncounter(u.toUwpe().entitySet(cr.p) ).toPlace() )
 |Goto||Done
 
 Done|DoNothing

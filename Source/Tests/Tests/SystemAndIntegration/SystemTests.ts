@@ -102,7 +102,7 @@ class SystemTests extends TestFixture
 
 		// Move the player to the station.
 
-		var stationName = "EarthStation";
+		var stationName = "Earth Station";
 		var station = place().entityByName(stationName);
 		Assert.isNotNull(station);
 
@@ -355,6 +355,23 @@ class SystemTests extends TestFixture
 		);
 
 		// Verify that we've switched to a different conversation mode.
+
+		this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+
+		// Now we can get down to business.
+
+		placeEncounter = place();
+		faction = place.encounter.faction(world);
+		Assert.areStringsEqual("Terran-Business", faction.conversationDefnName);
+
+		talker = station.talker();
+		this.playFromStart_TalkToTalker
+		(
+			universe, talker,
+			[
+				null,
+			]
+		);
 
 		// Verify that we've returned to the world.
 

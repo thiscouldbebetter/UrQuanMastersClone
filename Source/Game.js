@@ -14,17 +14,17 @@ class Game {
         var content = "-Content";
         var conversationDirectory = textDirectory + "Conversation/";
         var conversationPlaceholderPath = conversationDirectory + "Placeholder.json";
-        var conversationPortrait = "Conversation-Portrait-";
+        var conversationPortrait = conversation + "Portrait-";
         var contentPathPrefixComms = importDirectoryPath + "comm/";
         var images = [
             // conversation 
             new Image2("Conversation", imageDirectory + "Conversation.png"),
             new Image2(conversationPortrait + "Araknoid", importDirectoryPath + "comm/ilwrath/ilwrath-000.png"),
-            new Image2(conversationPortrait + "EarthStation", importDirectoryPath + "comm/commander/commander-000.png"),
             new Image2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
             new Image2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
             new Image2(conversationPortrait + "Murch", importDirectoryPath + "comm/melnorme/melnorme-000.png"),
             new Image2(conversationPortrait + "Tempestrial", importDirectoryPath + "comm/probe/probe-000.png"),
+            new Image2(conversationPortrait + "Terran", importDirectoryPath + "comm/commander/commander-000.png"),
             new Image2(conversationPortrait + "Triunion", importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
             // opening
             new Image2("Titles_Opening", imageDirectory + "Titles/Opening.png"),
@@ -101,7 +101,7 @@ class Game {
             sffm("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
             sffm("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
             sffm("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
-            sffm("Music_Faction_EarthStation", importDirectoryPath + "comm/commander/commander.mod"),
+            sffm("Music_Faction_Terran", importDirectoryPath + "comm/commander/commander.mod"),
             sffm("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
         ], 
         // videos
@@ -114,17 +114,15 @@ class Game {
         ], 
         // textStrings
         [
-            //ts("Instructions", "../Content/Text/Instructions.txt"),
             ts("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
-            //ts(conversation + "EarthStation", conversationDirectory + "EarthStation.json"),
-            ts(conversation + "EarthStation", conversationDirectory + "EarthStation.txt"),
-            ts(conversation + "EarthStation" + content, contentPathPrefixComms + "commander/commander.txt"),
-            ts(conversation + "EarthStation-Business", conversationDirectory + "EarthStation-Business.txt"),
-            ts(conversation + "EarthStation-Business" + content, contentPathPrefixComms + "commander/commander.txt"),
+            ts(conversation + "Terran", conversationDirectory + "Terran.txt"),
+            ts(conversation + "Terran" + content, contentPathPrefixComms + "commander/commander.txt"),
+            ts(conversation + "Terran-Business", conversationDirectory + "Terran-Business.txt"),
+            ts(conversation + "Terran-Business" + content, contentPathPrefixComms + "commander/commander.txt"),
             ts(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
             //ts(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
             ts(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
-            ts("Conversation-Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
+            ts(conversation + "Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
             ts(conversation + "Amorfus", conversationPlaceholderPath),
             ts(conversation + "Araknoid", conversationDirectory + "Araknoid.txt"),
             ts(conversation + "Araknoid" + content, contentPathPrefixComms + "ilwrath/ilwrath.txt"),
@@ -269,7 +267,7 @@ class Game {
         var combatSize = Coords.fromXY(1, 1).multiplyScalar(displaySize.y * 2);
         var starsystem = world.hyperspace.starsystems[0];
         var planet = starsystem.planets[0];
-        var encounter = new Encounter(planet, "EarthStation", // factionName
+        var encounter = new Encounter(planet, "Terran", // factionName
         null, // entityPlayer
         null, // entityOther
         null, // placeToReturnTo

@@ -78,7 +78,7 @@ class Encounter {
         var encounter = this;
         var faction = encounter.faction(world);
         var conversationDefnName = faction.conversationDefnName;
-        var conversationResourceName = "Conversation-" + conversationDefnName;
+        var conversationResourceName = conversationDefnName;
         var conversationQuit = () => {
             encounter.goToPlaceNext(universe);
         };

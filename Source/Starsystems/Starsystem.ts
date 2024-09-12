@@ -146,7 +146,7 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		var station = new Station
 		(
-			"EarthStation",
+			"Earth Station",
 			Color.Instances().Gray, // color
 			radiusBase,
 			"Terran", // factionName
@@ -289,7 +289,7 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		var station = new Station
 		(
-			"EarthStation",
+			"Earth Station",
 			Color.Instances().Gray, // color
 			10, // radius
 			"Terran", // factionName
