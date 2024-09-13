@@ -44,64 +44,72 @@ MineralsOffload|DoNothing
 #(WHAT_KIND_OF_INFO)|Display|#(WHAT_KIND_OF_INFO)
 InfoRequestOptions|DoNothing
 |OptionsClear
-#(repeat_bulletins)|Option|#(repeat_bulletins)
+#(repeat_bulletins)|Option|#(repeat_bulletins)|Bulletin
 #(starbase_functions)|Option|#(starbase_functions)|#(WHICH_FUNCTION)
 #(history)|Option|#(history)|#(WHICH_HISTORY)
 #(our_mission)|Option|#(our_mission)|#(WHICH_MISSION)
 #(no_need_info)|Option|#(no_need_info)|#(OK_NO_NEED_INFO)
 |Prompt
 
-	|Display|#(WHICH_FUNCTION)
+	#(WHICH_FUNCTION)|Display|#(WHICH_FUNCTION)
 	|OptionsClear
 	#(tell_me_about_fuel)|Option|#(tell_me_about_fuel)|#(ABOUT_FUEL)
-	#(tell_me_about_modules)|Option|#(tell_me_about_modules)
-	#(tell_me_about_crew)|Option|#(tell_me_about_crew)
-	#(tell_me_about_ships)|Option|#(tell_me_about_ships)
-	#(tell_me_about_ru)|Option|#(tell_me_about_ru)
-	#(tell_me_about_minerals)|Option|#(tell_me_about_minerals)
-	#(tell_me_about_life)|Option|#(tell_me_about_life)
-	#(enough_starbase)|Option|#(enough_starbase)||#(OK_ENOUGH_STARBASE)
+	#(tell_me_about_modules)|Option|#(tell_me_about_modules)|#(ABOUT_MODULES)
+	#(tell_me_about_crew)|Option|#(tell_me_about_crew)|#(ABOUT_CREW)
+	#(tell_me_about_ships)|Option|#(tell_me_about_ships)|#(ABOUT_SHIPS)
+	#(tell_me_about_ru)|Option|#(tell_me_about_ru)|#(ABOUT_RU)
+	#(tell_me_about_minerals)|Option|#(tell_me_about_minerals)|#(ABOUT_MINERALS)
+	#(tell_me_about_life)|Option|#(tell_me_about_life)|#(ABOUT_LIFE)
+	#(enough_starbase)|Option|#(enough_starbase)|#(OK_ENOUGH_STARBASE)
 	|Prompt
 
 		#(ABOUT_FUEL)|Display|#(ABOUT_FUEL)
+		|OptionRemove||#(tell_me_about_fuel)
 		|Prompt
 
 		#(ABOUT_MODULES)|Display|#(ABOUT_MODULES)
+		|OptionRemove||#(tell_me_about_modules)
 		|Prompt
 
 		#(ABOUT_CREW)|Display|#(ABOUT_CREW)
+		|OptionRemove||#(tell_me_about_crew)
 		|Prompt
 
 		#(ABOUT_SHIPS)|Display|#(ABOUT_SHIPS)
+		|OptionRemove||#(tell_me_about_ships)
 		|Prompt
 
 		#(ABOUT_RU)|Display|#(ABOUT_RU)
+		|OptionRemove||#(tell_me_about_ru)
 		|Prompt
 
 		#(ABOUT_MINERALS)|Display|#(ABOUT_MINERALS)
+		|OptionRemove||#(tell_me_about_minerals)
 		|Prompt
 
 		#(ABOUT_LIFE)|Display|#(ABOUT_LIFE)
+		|OptionRemove||#(tell_me_about_life)
 		|Prompt
 
 		#(OK_ENOUGH_STARBASE)|Display|#(OK_ENOUGH_STARBASE)
 		|Goto||InfoRequestOptions
 
-	|Display|#(WHICH_HISTORY)
+	#(WHICH_HISTORY)|Display|#(WHICH_HISTORY)
+	InfoRequestHistory|DoNothing
 	|OptionsClear
-	#(alien_races)|Options|#(alien_races)|#(WHICH_ALIEN)
-	#(the_war)|Options|#(the_war)|#(WHICH_WAR)
-	#(ancient_history)|Options|#(ancient_history)|#(WHICH_ANCIENT)
-	#(enough_history)|Options|#(enough_history)|#(OK_ENOUGH_HISTORY)
+	#(alien_races)|Option|#(alien_races)|#(WHICH_ALIEN)
+	#(the_war)|Option|#(the_war)|#(WHICH_WAR)
+	#(ancient_history)|Option|#(ancient_history)|#(WHICH_ANCIENT)
+	#(enough_history)|Option|#(enough_history)|#(OK_ENOUGH_HISTORY)
 	|Prompt
 
-		|Display|#(WHICH_ALIEN)
+		#(WHICH_ALIEN)|Display|#(WHICH_ALIEN)
 		InfoRequestAliensOptions|DoNothing
 		|OptionsClear
 		#(what_about_alliance)|Option|#(what_about_alliance)|#(WHICH_ALLIANCE)
 		#(what_about_hierarchy)|Option|#(what_about_hierarchy)|#(WHICH_HIERARCHY)
 		#(what_about_other)|Option|#(what_about_other)|#(ABOUT_OTHER)
-		#(enough_aliens)|Option|#(enough_aliens)#(OK_ENOUGH_ALIENS)
+		#(enough_aliens)|Option|#(enough_aliens)|#(OK_ENOUGH_ALIENS)
 		|Prompt
 
 			#(WHICH_ALLIANCE)|Display|#(WHICH_ALLIANCE)
@@ -135,7 +143,7 @@ InfoRequestOptions|DoNothing
 				|OptionRemove||#(mmrnmhrm)
 				|Prompt
 
-				|Display|#(ABOUT_SYREEN)
+				#(ABOUT_SYREEN)|Display|#(ABOUT_SYREEN)
 				|OptionRemove||#(syreen)
 				|Prompt
 
@@ -211,17 +219,41 @@ InfoRequestOptions|DoNothing
 			|OptionRemove||#(why_lose_war)
 			|Prompt
 
-			|Display|#(AFTER_WAR)
+			#(AFTER_WAR)|Display|#(AFTER_WAR)
 			|OptionRemove||#(what_after_war)
 			|Prompt
 
-			|Display|#(OK_ENOUGH_WAR)
+			#(OK_ENOUGH_WAR)|Display|#(OK_ENOUGH_WAR)
+			|Goto||InfoRequestHistory
+
+		#(WHICH_ANCIENT)|Display|#(WHICH_ANCIENT)
+		|OptionsClear
+
+		#(precursors)|Option|#(precursors)|#(ABOUT_PRECURSORS)
+		#(old_races)|Option|#(old_races)|#(ABOUT_OLD_RACES)
+		#(aliens_on_earth)|Option|#(aliens_on_earth)|#(ABOUT_ALIENS_ON_EARTH)
+		#(enough_ancient)|Option|#(enough_ancient)|#(OK_ENOUGH_ANCIENT)
+		|Prompt
+
+			#(ABOUT_PRECURSORS)|Display|#(ABOUT_PRECURSORS)
+			|OptionRemove||#(precursors)
+			|Prompt
+
+			#(ABOUT_OLD_RACES)|Display|#(ABOUT_OLD_RACES)
+			|OptionRemove||#(old_races)
+			|Prompt
+
+			#(ABOUT_ALIENS_ON_EARTH)|Display|#(ABOUT_ALIENS_ON_EARTH)
+			|OptionRemove||#(aliens_on_earth)
+			|Prompt
+
+			#(OK_ENOUGH_ANCIENT)|Display|#(OK_ENOUGH_ANCIENT)
 			|Goto||InfoRequestHistory
 
 		#(OK_ENOUGH_HISTORY)|Display|#(OK_ENOUGH_HISTORY)
-		Goto||InfoRequestOptions
+		|Goto||InfoRequestOptions
 
-	|Display|#(WHICH_MISSION)
+	#(WHICH_MISSION)|Display|#(WHICH_MISSION)
 	|OptionsClear
 	|Option|#(where_get_minerals)|#(GET_MINERALS)
 	|Option|#(what_about_aliens)|#(ABOUT_ALIENS)
@@ -269,7 +301,7 @@ InfoRequestOptions|DoNothing
 		|Goto||InfoRequestOptions
 
 	#(OK_NO_NEED_INFO)|Display|#(OK_NO_NEED_INFO)
-	Goto||MainMenuOptions
+	|Goto||MainMenuOptions
 
 Bulletin|DoNothing
 |Display|#(BEFORE_WE_GO_ON_1)
@@ -308,7 +340,7 @@ Bulletin|DoNothing
 
 |Display|#(STARBASE_BULLETIN_TAIL)
 
-Done|DoNothing
+Goodbye|DoNothing
 |Display|#(NORMAL_GOODBYE_A)
 |VariablesExport|u.world.player.variableLookup.set($key, $value)
 |Quit
@@ -349,12 +381,7 @@ Done|DoNothing
 
 |Display|#(STRONG_LIKE_SO)
 
-|Display|#(WHICH_ANCIENT)
 
-|Display|#(ABOUT_PRECURSORS)
-|Display|#(ABOUT_OLD_RACES)
-|Display|#(ABOUT_ALIENS_ON_EARTH)
-|Display|#(OK_ENOUGH_ANCIENT)
 
 
 |Display|#(DEVICE_HEAD)
@@ -424,10 +451,6 @@ Done|DoNothing
 |Display|#(NEED_DYNAMOS_2)
 |Display|#(NEED_POINT)
 
-|Display|#(precursors)
-|Display|#(old_races)
-|Display|#(aliens_on_earth)
-|Display|#(enough_ancient)
 |Display|#(new_devices)
 |Display|#(how_get_strong)
 |Display|#(what_do_now)

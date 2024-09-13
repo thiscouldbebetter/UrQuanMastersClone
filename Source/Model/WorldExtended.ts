@@ -255,7 +255,6 @@ class WorldExtended extends World
 		var neutral = Faction.RelationsNeutral;
 
 		var amorfus 		= f("Amorfus", 		"Umgah", 		c.Violet, 	soi(197.8, 596.8, .1), 	hostile, "Pustule");
-		var araknoid 		= f("Araknoid", 	"Ilwrath", 		c.Purple, 	soi(22.9, 366.6, .15), 	hostile, "Infernus");
 		var daskapital 		= f("Daskapital", 	"Druuge", 		c.Red, 	 	soi(946.9, 280.6, .1), 	neutral, "Kickback");
 		var ellfyn			= f("Ellfyn", 		"Arilou", 		c.Blue, 	soi(100, 500, .05), 	neutral, "Discus");
 		var hyphae 			= f("Hyphae", 		"Mycon", 		c.Purple, 	soi(629.1, 220.8, .12), hostile, "Sporsac");
@@ -268,6 +267,7 @@ class WorldExtended extends World
 		var mazonae			= f("Mazonae", 		"Syreen", 		null, 		null, 					neutral, "Elysian");
 		var murch 			= f("Murch", 		"Melnorme", 	null, 		null, 					neutral, "Indemnity");
 		var outsider 		= f("Outsider", 	"Orz", 			c.Purple,	soi(371.3, 253.7, .1), 	neutral, "Wingshadow");
+		var raknoid 		= f("Raknoid", 		"Ilwrath", 		c.Purple, 	soi(22.9, 366.6, .15), 	hostile, "Infernus");
 		var raptor 			= f("Raptor", 		"Yehat", 		c.Violet,	soi(492.3, 29.4, .1), 	neutral, "Aegis");
 		//var raptorRebel 	= f("RaptorRebel", 	"Yehat", 	c("Mauve"), soi(492.3, 29.4, .1), 	neutral, "Aegis");
 		//var raptorRoyalist= f("RaptorRoyalist","Yehat", 	c("Violet"),soi(492.3, 29.4, .1), 	neutral, "Aegis");
@@ -282,7 +282,6 @@ class WorldExtended extends World
 		var factions =
 		[
 			amorfus,
-			araknoid,
 			daskapital,
 			ellfyn,
 			hyphae,
@@ -296,6 +295,7 @@ class WorldExtended extends World
 			mazonae,
 			murch,
 			outsider,
+			raknoid,
 			raptor,
 			supial,
 			tempestrial,

@@ -315,7 +315,7 @@ class SystemTests extends TestFixture
 
 		placeEncounter = place() as PlaceEncounter;
 		var encounter = placeEncounter.encounter;
-		Assert.areStringsEqual("Araknoid", encounter.factionName);
+		Assert.areStringsEqual("Raknoid", encounter.factionName);
 
 		var entityHostile = encounter.entityOther;
 		var talker = entityHostile.talker();
@@ -354,15 +354,17 @@ class SystemTests extends TestFixture
 			]
 		);
 
+		universe.updateForTimerTick();
+
 		// Verify that we've switched to a different conversation mode.
 
 		this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
 		// Now we can get down to business.
 
-		placeEncounter = place();
-		faction = place.encounter.faction(world);
-		Assert.areStringsEqual("Terran-Business", faction.conversationDefnName);
+		placeEncounter = place() as PlaceEncounter;
+		encounter = placeEncounter.encounter;
+		Assert.areStringsEqual("Terran-Business", encounter.factionName);
 
 		talker = station.talker();
 		this.playFromStart_TalkToTalker

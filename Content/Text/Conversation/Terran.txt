@@ -150,7 +150,7 @@ RadioactivesNeeded|DoNothing
 
 #(HERE_COMES_ILWRATH)|Display|#(HERE_COMES_ILWRATH)
 |VariableSet|HostileShipHasAttacked|true
-|Script|u.world.place().encounter.placeToReturnToSet(u.world.faction("Araknoid").shipGroup().toEncounter(u.toUwpe().entitySet(cr.p) ).toPlace() )
+|Script|u.world.place().encounter.placeToReturnToSet(u.world.faction("Raknoid").shipGroup().toEncounter(u.toUwpe().entitySet(cr.p) ).toPlace() )
 |Goto||Done
 
 #(VERY_IMPRESSIVE)|Display|#(VERY_IMPRESSIVE)
@@ -199,7 +199,7 @@ RadioactivesNeeded|DoNothing
 |Prompt
 
 StarbaseOperational|DoNothing
-|Script|u.world.faction("Terran").conversationDefnNameSet("Conversation-Terran-Business")
+StarbaseOperationalScript1|Script|u.world.faction("Terran").conversationDefnNameSet("Conversation-Terran-Business")
 |Script|u.world.place().encounter.placeToReturnToSet(u.world.faction("Terran").shipGroup().toEncounter(u.toUwpe().entitySet(cr.p) ).toPlace() )
 |Goto||Done
 

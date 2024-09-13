@@ -197,7 +197,7 @@ class SystemTests extends TestFixture {
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         placeEncounter = place();
         var encounter = placeEncounter.encounter;
-        Assert.areStringsEqual("Araknoid", encounter.factionName);
+        Assert.areStringsEqual("Raknoid", encounter.factionName);
         var entityHostile = encounter.entityOther;
         var talker = entityHostile.talker();
         talker.talk(uwpe);
@@ -221,7 +221,17 @@ class SystemTests extends TestFixture {
             // "Great.  Give us two weeks."
             null, // "[Wait two weeks...]"
         ]);
+        universe.updateForTimerTick();
         // Verify that we've switched to a different conversation mode.
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        // Now we can get down to business.
+        placeEncounter = place();
+        encounter = placeEncounter.encounter;
+        Assert.areStringsEqual("Terran-Business", encounter.factionName);
+        talker = station.talker();
+        this.playFromStart_TalkToTalker(universe, talker, [
+            null,
+        ]);
         // Verify that we've returned to the world.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Leave the Sol system and go to hyperspace.

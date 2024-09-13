@@ -947,7 +947,7 @@ class ShipDefn_Instances
 
 			//		name, 			factionName, 	mass, 	accel, 	speedMax,turnsPerTick, 		crew, 		e/tick,	eMax, 	value, 	visual,														attack, special
 			new sd("Gravitar", 		"Konstalyxz", 	10, 	1.166, 	35, 	.25 / headings16, 	42, 42,		.5,  	42,		1000, 	sv16("Gravitar", "chmmr/avatar", shipGravitarSizes), 			adTodo, shipGravitarSpecialTractorBeam ),
-			new sd("Infernus", 		"Araknoid", 	17,		5, 		25, 	.33 / headings16, 	22, 22, 	.8,  	16, 	1000, 	shipInfernusVisual, 											adTodo,	shipInfernusSpecialCloak ),
+			new sd("Infernus", 		"Raknoid", 		17,		5, 		25, 	.33 / headings16, 	22, 22, 	.8,  	16, 	1000, 	shipInfernusVisual, 											adTodo,	shipInfernusSpecialCloak ),
 			new sd("Efflorescence", "Twyggan", 		4, 		8, 		40, 	.5 / headings16,  	12, 12, 	.2,  	16, 	1000, 	sv16("Efflorescence", "supox/blade", shipEfflorescenceSizes), 	adTodo,	adTodo ),
 			new sd("Starshard", 	"Xtalix", 		10,		.6, 	27, 	.142 / headings16,	36, 36, 	.2,  	30, 	1000, 	sv16("Starshard", "chenjesu/broodhome", shipSizes16x16),		adTodo,	shipStarshardSpecialLeech ),
 			new sd("Broadsider", 	"Terran", 		6,		.6, 	24, 	.5 / headings16, 	18, 18, 	.111,  	18, 	1000, 	sv16("Broadsider", "human/cruiser", shipBroadsiderSizes),		adTodo,	adTodo ),
