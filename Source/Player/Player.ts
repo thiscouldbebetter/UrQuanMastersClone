@@ -2,8 +2,6 @@
 class Player
 {
 	name: string;
-	resourceCredits: number;
-	infoCredits: number;
 	flagship: Flagship;
 	factionsKnownNames: string[];
 	shipGroup: ShipGroup;
@@ -21,16 +19,12 @@ class Player
 	constructor
 	(
 		name: string,
-		resourceCredits: number,
-		infoCredits: number,
 		flagship: Flagship,
 		factionsKnownNames: string[],
 		shipGroup: ShipGroup
 	)
 	{
 		this.name = name;
-		this.resourceCredits = resourceCredits;
-		this.infoCredits = infoCredits;
 		this.flagship = flagship;
 		this.factionsKnownNames = factionsKnownNames;
 		this.shipGroup = shipGroup;

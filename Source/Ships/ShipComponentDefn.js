@@ -1,9 +1,9 @@
 "use strict";
 class ShipComponentDefn {
-    constructor(name, categoryNames, value, applyToFlagship) {
+    constructor(name, categoryNames, costInResourceCredits, applyToFlagship) {
         this.name = name;
         this.categoryNames = categoryNames;
-        this.value = value;
+        this.costInResourceCredits = costInResourceCredits;
         this.applyToFlagship = applyToFlagship;
     }
     static Instances() {
@@ -17,7 +17,7 @@ class ShipComponentDefn {
     }
     // instance methods
     nameAndValue() {
-        return this.name + "(" + this.value + ")";
+        return this.name + "(" + this.costInResourceCredits + ")";
     }
 }
 class ShipComponentCategory {
@@ -66,28 +66,28 @@ class ShipComponentDefn_Instances {
         var categoryTurningJets = categories.TurningJets;
         var categoryWeapon = categories.Weapon;
         var noEffect = (flagship) => { };
-        this.CargoHold = new ShipComponentDefn("Cargo Hold", [categoryBackbone, categoryCargo], 100, (flagship) => flagship._cargoMax += 100);
+        this.CargoBay = new ShipComponentDefn("Cargo Bay", [categoryBackbone, categoryCargo], 100, // cost
+        (flagship) => flagship._cargoMax += 100);
         this.CrewHabitat = new ShipComponentDefn("Crew Habitat", [categoryBackbone, categoryCrew], 100, (flagship) => flagship._crewMax += 50);
-        this.FuelTank = new ShipComponentDefn("Fuel Tank", [categoryBackbone, categoryFuel], 100, // value
-        (flagship) => flagship._fuelMax += 100);
+        this.FuelTank = new ShipComponentDefn("Fuel Tank", [categoryBackbone, categoryFuel], 100, (flagship) => flagship._fuelMax += 100);
         this.IonCannon = new ShipComponentDefn("Ion Cannon", [categoryBackbone, categoryWeapon], 100, noEffect);
         this.FusionThruster = new ShipComponentDefn("Fusion Thruster", [categoryThruster], 100, (flagship) => flagship._acceleration++);
         this.PowerPlant = new ShipComponentDefn("Power Plant", [categoryBackbone, categoryEnergy], 100, (flagship) => flagship._energyPerTick++);
         this.TurningJets = new ShipComponentDefn("Turning Jets", [categoryTurningJets], 100, (flagship) => flagship._turnsPerTick++);
         this._All =
             [
-                this.TurningJets,
-                this.CargoHold,
+                this.CargoBay,
                 this.CrewHabitat,
+                this.TurningJets,
                 this.FuelTank,
-                this.IonCannon,
                 this.FusionThruster,
+                this.IonCannon,
                 this.PowerPlant,
             ];
         this._AllByName = ArrayHelper.addLookupsByName(this._All);
         this._AllBackbone =
             [
-                this.CargoHold,
+                this.CargoBay,
                 this.CrewHabitat,
                 this.FuelTank,
                 this.IonCannon,

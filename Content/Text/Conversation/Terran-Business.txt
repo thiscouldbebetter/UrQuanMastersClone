@@ -34,6 +34,7 @@ MainMenuOptions|DoNothing
 |Prompt
 
 MineralsOffload|DoNothing
+|Script|u.world.player.flagship.cargoOffload(u.world)
 |Display|We will transfer the minerals from your vessel.
 |Display|Your cargo bays contain:
 |Display|[todo]

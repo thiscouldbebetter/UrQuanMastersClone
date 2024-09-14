@@ -384,7 +384,7 @@ class WorldExtended extends World
 			10, // turningJetsMax
 			[
 				shipComponentDefns.FusionThruster.name,
-				shipComponentDefns.CargoHold.name,
+				shipComponentDefns.CargoBay.name,
 				shipComponentDefns.CrewHabitat.name,
 				shipComponentDefns.FuelTank.name,
 				shipComponentDefns.TurningJets.name,
@@ -392,6 +392,8 @@ class WorldExtended extends World
 			1, // numberOfLanders
 			50, // crew
 			100, // fuel
+			0, // resourceCredits
+			0, // infoCredits
 			[], // items
 			30 // shipsMax
 		);
@@ -401,8 +403,6 @@ class WorldExtended extends World
 		var player = new Player
 		(
 			"Player",
-			0, // resourceCredits
-			0, // infoCredits
 			playerFlagship,
 			[
 				//"Terran"

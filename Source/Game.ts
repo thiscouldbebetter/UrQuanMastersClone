@@ -461,7 +461,7 @@ class Game
 		worldDefn.factionsByName.get("Terran").relationsWithPlayer
 			= Faction.RelationsAllied;
 		var player = world.player;
-		player.resourceCredits = 1000;
+		player.flagship.resourceCredits = 1000;
 		var resourceDefns = ResourceDefn.Instances();
 		var playerItemHolder = player.flagship.itemHolderCargo;
 		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
@@ -563,7 +563,7 @@ class Game
 		var world = universe.world as WorldExtended;
 
 		var player = world.player;
-		player.resourceCredits = 0;
+		player.flagship.resourceCredits = 0;
 		var resourceDefns = ResourceDefn.Instances();
 		var playerItemHolder = player.flagship.itemHolderCargo;
 		playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));

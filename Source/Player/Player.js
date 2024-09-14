@@ -1,9 +1,7 @@
 "use strict";
 class Player {
-    constructor(name, resourceCredits, infoCredits, flagship, factionsKnownNames, shipGroup) {
+    constructor(name, flagship, factionsKnownNames, shipGroup) {
         this.name = name;
-        this.resourceCredits = resourceCredits;
-        this.infoCredits = infoCredits;
         this.flagship = flagship;
         this.factionsKnownNames = factionsKnownNames;
         this.shipGroup = shipGroup;

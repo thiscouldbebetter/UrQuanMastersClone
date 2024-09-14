@@ -104,7 +104,7 @@ class Combat
 			x => creditsForShipsDestroyed += x.defn(world).salvageValue
 		);
 		var player = world.player;
-		player.resourceCredits += creditsForShipsDestroyed;
+		player.flagship.resourceCredits += creditsForShipsDestroyed;
 
 		world.placeNextSet(this.encounter.placeToReturnTo);
 		universe.venueNextSet(new VenueWorld(world) );

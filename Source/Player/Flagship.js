@@ -1,6 +1,6 @@
 "use strict";
 class Flagship {
-    constructor(name, thrustersMax, turningJetsMax, componentsBackboneMax, componentNames, numberOfLanders, crew, fuel, items, shipsMax) {
+    constructor(name, thrustersMax, turningJetsMax, componentsBackboneMax, componentNames, numberOfLanders, crew, fuel, resourceCredits, infoCredits, items, shipsMax) {
         this.name = name;
         this.thrustersMax = thrustersMax;
         this.turningJetsMax = turningJetsMax;
@@ -9,6 +9,8 @@ class Flagship {
         this.numberOfLanders = numberOfLanders;
         this.crew = crew;
         this.fuel = fuel;
+        this.resourceCredits = resourceCredits;
+        this.infoCredits = infoCredits;
         this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(items);
         this.itemHolderOther = ItemHolder.create();
         this.shipsMax = shipsMax;
@@ -28,7 +30,16 @@ class Flagship {
         }
     }
     cargoCurrentOverMax(world) {
-        return this.itemHolderCargo.massOfAllItemsOverMax(world);
+        return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
+    }
+    cargoOffload(world) {
+        var itemHolder = this.itemHolderCargo;
+        var itemsForResources = itemHolder.itemsBelongingToCategoryWithName("Resource", world);
+        var itemValues = itemsForResources.map(x => x.tradeValue(world));
+        var itemValueTotal = 0;
+        itemValues.forEach(x => itemValueTotal += x);
+        this.resourceCredits += itemValueTotal;
+        itemsForResources.forEach(x => itemHolder.itemSubtract(x));
     }
     components() {
         if (this._components == null) {
@@ -123,9 +134,14 @@ class Flagship {
     hasInfoToSell_PrecursorArtifacts(world) {
         return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
     }
-    itemHolderCargoBuildOrUpdate(items) {
+    itemHolderCargoBuildOrUpdate(itemsInitial) {
         if (this.itemHolderCargo == null) {
-            this.itemHolderCargo = ItemHolder.fromItems(items);
+            this.itemHolderCargo =
+                ItemHolder
+                    .create()
+                    .retainsItemsWithZeroQuantitiesSet(true)
+                    .itemsAdd(ResourceDefn.Instances()._All.map(x => Resource.fromDefnName(x.name).toItem()))
+                    .itemsAdd(itemsInitial);
         }
         // todo - Set max.
         return this.itemHolderCargo;

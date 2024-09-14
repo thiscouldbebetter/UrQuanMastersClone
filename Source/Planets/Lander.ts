@@ -12,8 +12,8 @@ class Lander implements EntityPropertyBase
 		killableCrew: Killable
 	)
 	{
-		this.itemHolderCargo = itemHolderCargo || ItemHolder.fromMassMax(50);
-		this.itemHolderLifeforms = itemHolderLifeforms || ItemHolder.fromMassMax(50);
+		this.itemHolderCargo = itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
+		this.itemHolderLifeforms = itemHolderLifeforms || ItemHolder.fromEncumbranceMax(50);
 		this.killableCrew = killableCrew || Killable.fromIntegrityMax(12);
 	}
 
@@ -29,7 +29,7 @@ class Lander implements EntityPropertyBase
 
 	cargoCurrentOverMax(world: World): string
 	{
-		return this.itemHolderCargo.massOfAllItemsOverMax(world);
+		return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
 	}
 
 	crewCurrentOverMax(): string
@@ -39,7 +39,7 @@ class Lander implements EntityPropertyBase
 
 	lifeformsCurrentOverMax(world: World): string
 	{
-		return this.itemHolderLifeforms.massOfAllItemsOverMax(world);
+		return this.itemHolderLifeforms.encumbranceOfAllItemsOverMax(world);
 	}
 
 	// EntityProperty.

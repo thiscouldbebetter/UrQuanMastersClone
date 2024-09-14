@@ -35,7 +35,7 @@ class SystemTests extends TestFixture {
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
         // Make sure the place transitions to a planet vicinity.
         // todo
-        // This sometimes errors out, perhaps because the guard drone,
+        // This sometimes fails the assert, perhaps because the guard drone,
         // which is perhaps randomly placed within the planet vicinity,
         // accosts the player before the player is done waiting.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
@@ -86,6 +86,28 @@ class SystemTests extends TestFixture {
         // Move the player beyond the edge of the screen to exit the planet vicinity.
         this.playFromStart_LeavePlanetVicinityAndWait(universe);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+        // Instead of going to Mercury, go to Venus (an honest mistake).
+        // Then go back to Earth immediately, without the needed radioactives.
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Venus");
+        this.playFromStart_LeavePlanetVicinityAndWait(universe);
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
+        this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
+        // Talk to the station, and verify that the option to transfer radioactives isn't available.
+        var placeEncounter = place();
+        station = placeEncounter.entityByName(stationName);
+        talker = station.talker();
+        var conversationRun = talker.conversationRun;
+        conversationRun.nextUntilPrompt(universe);
+        var optionsAvailable = conversationRun.optionsAvailable();
+        var optionToTransferRadioactivesIsAvailable = optionsAvailable.some(x => x.name == "#(we_will_transfer_now)");
+        Assert.isFalse(optionToTransferRadioactivesIsAvailable);
+        this.playFromStart_TalkToTalker(universe, talker, [
+            "#(well_go_get_them_now2)"
+        ]);
+        universe.updateForTimerTick();
+        // Exit the planet vicinity again.
+        this.playFromStart_LeavePlanetVicinityAndWait(universe);
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
         // Move the player to Mercury.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Mercury");
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
@@ -97,7 +119,7 @@ class SystemTests extends TestFixture {
         var playerItemHolder = player.flagship.itemHolderCargo;
         var itemDefnNameRadioactives = "Radioactives";
         var radioactivesHeld = playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
-        Assert.isNull(radioactivesHeld);
+        Assert.areNumbersEqual(0, radioactivesHeld.quantity);
         // Land on the planet.
         var placeOrbit = place();
         placeOrbit.land(universe);
@@ -115,9 +137,9 @@ class SystemTests extends TestFixture {
         placeSurface.exit(new UniverseWorldPlaceEntities(universe, world, placeSurface, null, null));
         universe.updateForTimerTick();
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
-        // Verify that the cargo holds now contain something.
-        var radioactivesHeld = playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
-        Assert.isNotNull(radioactivesHeld);
+        // Verify that the cargo holds now contains some radioactives.
+        var radioactivesHeld = playerItemHolder.itemByDefnName(itemDefnNameRadioactives);
+        Assert.isTrue(radioactivesHeld.quantity > 0);
         // Exit Mercury orbit.
         this.playFromStart_LeavePlanetOrbitAndWait(universe);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
@@ -132,9 +154,17 @@ class SystemTests extends TestFixture {
         var placeEncounter = place();
         station = placeEncounter.entityByName(stationName);
         talker = station.talker();
+        var radioactivesHeldBefore = playerItemHolder.itemByDefnName(itemDefnNameRadioactives).quantity;
         this.playFromStart_TalkToTalker(universe, talker, [
             // "Do you have the radioactives?"
             "#(we_will_transfer_now)",
+            // "Our sensors are coming online... WHO ARE YOU?!"
+        ]);
+        // Make sure that the correct amount of radioactives was actually transferred.
+        var radioactivesHeldAfter = playerItemHolder.itemByDefnName(itemDefnNameRadioactives).quantity;
+        var radioactivesTransferred = radioactivesHeldBefore - radioactivesHeldAfter;
+        Assert.areNumbersEqual(1, radioactivesTransferred);
+        this.playFromStart_TalkToTalker(universe, talker, [
             // "Our sensors are coming online... WHO ARE YOU?!"
             "#(we_are_vindicator)",
             // "I would have known about any such mission."
@@ -213,12 +243,13 @@ class SystemTests extends TestFixture {
             "#(be_reasonable)"
             // "We aren't reasonable, though."
         ]);
-        Assert.areNumbersEqual(0, player.resourceCredits);
+        var flagship = player.flagship;
+        Assert.areNumbersEqual(0, flagship.resourceCredits);
         this.playFromStart_CheatToWinCombat(universe);
         // Verify that the ship had some salvage value.
         var factionHostile = world.faction(factionHostileName);
         var hostileShipSalvageValue = factionHostile.shipDefn(world).salvageValue;
-        Assert.areNumbersEqual(hostileShipSalvageValue, player.resourceCredits);
+        Assert.areNumbersEqual(hostileShipSalvageValue, flagship.resourceCredits);
         // Verify that we've returned to the original encounter.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // placeEncounter = place as PlaceEncounter;
@@ -240,11 +271,20 @@ class SystemTests extends TestFixture {
         var faction = encounter.faction(world);
         Assert.areStringsEqual("Conversation-Terran-Business", faction.conversationDefnName);
         talker = encounter.entityOther.talker();
+        var resourceCreditsBefore = flagship.resourceCredits;
         this.playFromStart_TalkToTalker(universe, talker, [
             // "Starbase is up and running."
-            "Commander, I have minerals to offload.",
+            "#(have_minerals)", // "Commander, I have minerals to offload.",
             // [breakdown of minerals]
         ]);
+        var resourceCreditsAfter = flagship.resourceCredits;
+        var resourceCreditsPaid = resourceCreditsAfter - resourceCreditsBefore;
+        Assert.isTrue(resourceCreditsPaid > 0);
+        this.playFromStart_TalkToTalker(universe, talker, [
+            // [breakdown of minerals]
+            "#(goodbye_commander)"
+        ]);
+        universe.updateForTimerTick();
         // Verify that we've returned to the world.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Leave the Sol system and go to hyperspace.
@@ -265,11 +305,11 @@ class SystemTests extends TestFixture {
         );
         // The probe attacks.
         // Make a record of how much money we had before blowing up a ship and salvaging the wreckage.
-        var creditBefore = player.resourceCredits;
+        var creditBefore = flagship.resourceCredits;
         // Destroy the probe (by cheating, in this test).
         this.playFromStart_CheatToWinCombat(universe);
         // Verify that resources were salvaged from destroyed ship.
-        var creditAfter = player.resourceCredits;
+        var creditAfter = flagship.resourceCredits;
         Assert.isTrue(creditAfter > creditBefore);
         // Verify that we're back in hyperspace.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);

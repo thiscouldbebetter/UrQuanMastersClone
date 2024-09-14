@@ -1,8 +1,8 @@
 "use strict";
 class Lander {
     constructor(itemHolderCargo, itemHolderLifeforms, killableCrew) {
-        this.itemHolderCargo = itemHolderCargo || ItemHolder.fromMassMax(50);
-        this.itemHolderLifeforms = itemHolderLifeforms || ItemHolder.fromMassMax(50);
+        this.itemHolderCargo = itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
+        this.itemHolderLifeforms = itemHolderLifeforms || ItemHolder.fromEncumbranceMax(50);
         this.killableCrew = killableCrew || Killable.fromIntegrityMax(12);
     }
     static fromKillableCrew(killableCrew) {
@@ -12,13 +12,13 @@ class Lander {
         return entity.propertyByName(Lander.name);
     }
     cargoCurrentOverMax(world) {
-        return this.itemHolderCargo.massOfAllItemsOverMax(world);
+        return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
     }
     crewCurrentOverMax() {
         return this.killableCrew.integrityCurrentOverMax();
     }
     lifeformsCurrentOverMax(world) {
-        return this.itemHolderLifeforms.massOfAllItemsOverMax(world);
+        return this.itemHolderLifeforms.encumbranceOfAllItemsOverMax(world);
     }
     // EntityProperty.
     finalize(uwpe) { }

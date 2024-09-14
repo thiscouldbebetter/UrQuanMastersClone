@@ -57,29 +57,29 @@ class PlaceStationDock extends PlaceBase {
     }
     componentBuild(universe, componentToBuild) {
         if (componentToBuild != null) {
-            var player = universe.world.player;
-            if (player.resourceCredits >= componentToBuild.value) {
-                player.resourceCredits -= componentToBuild.value;
-                player.flagship.componentNames.push(componentToBuild.name);
-                player.cachesCalculate();
+            var flagship = universe.world.player.flagship;
+            if (flagship.resourceCredits >= componentToBuild.costInResourceCredits) {
+                flagship.resourceCredits -= componentToBuild.costInResourceCredits;
+                flagship.componentNames.push(componentToBuild.name);
+                flagship.cachesCalculate();
             }
         }
     }
     componentScrap(universe, componentToScrap) {
         if (componentToScrap != null) {
-            var player = universe.world.player;
-            ArrayHelper.remove(player.flagship.componentNames, componentToScrap.name);
-            player.resourceCredits += componentToScrap.value;
-            player.cachesCalculate();
+            var flagship = universe.world.player.flagship;
+            ArrayHelper.remove(flagship.componentNames, componentToScrap.name);
+            flagship.resourceCredits += componentToScrap.costInResourceCredits;
+            flagship.cachesCalculate();
         }
     }
     crewAdd(universe) {
         var world = universe.world;
         var ship = this.shipInFleetSelected;
         if (ship.crew < ship.defn(world).crewMax) {
-            var player = world.player;
-            if (player.resourceCredits >= this.crewValuePerUnit) {
-                player.resourceCredits -= this.crewValuePerUnit;
+            var flagship = world.player.flagship;
+            if (flagship.resourceCredits >= this.crewValuePerUnit) {
+                flagship.resourceCredits -= this.crewValuePerUnit;
                 ship.crew++;
             }
         }
@@ -87,43 +87,41 @@ class PlaceStationDock extends PlaceBase {
     crewRemove(universe) {
         var ship = this.shipInFleetSelected;
         if (ship.crew > 1) {
-            var player = universe.world.player;
-            player.resourceCredits += this.crewValuePerUnit;
+            var flagship = universe.world.player.flagship;
+            flagship.resourceCredits += this.crewValuePerUnit;
             ship.crew--;
         }
     }
     fuelAdd(universe) {
-        var player = universe.world.player;
-        var flagship = player.flagship;
+        var flagship = universe.world.player.flagship;
         var fuelMax = flagship._fuelMax;
-        if (player.resourceCredits >= this.fuelValuePerUnit && flagship.fuel < fuelMax) {
+        if (flagship.resourceCredits >= this.fuelValuePerUnit && flagship.fuel < fuelMax) {
             var fuelUnitsToBuy = 1;
             if (flagship.fuel + fuelUnitsToBuy > fuelMax) {
                 fuelUnitsToBuy = fuelMax + flagship.fuel;
             }
             var fuelValue = Math.ceil(this.fuelValuePerUnit * fuelUnitsToBuy);
-            player.resourceCredits -= fuelValue;
+            flagship.resourceCredits -= fuelValue;
             flagship.fuel += fuelUnitsToBuy;
         }
     }
     fuelRemove(universe) {
-        var player = universe.world.player;
-        var flagship = player.flagship;
+        var flagship = universe.world.player.flagship;
         if (flagship.fuel > 0) {
             var fuelUnitsToSell = 1;
             if (flagship.fuel < fuelUnitsToSell) {
-                fuelUnitsToSell = player.flagship.fuel;
+                fuelUnitsToSell = flagship.fuel;
             }
             var fuelValue = Math.floor(fuelUnitsToSell * this.fuelValuePerUnit);
-            player.resourceCredits += fuelValue;
+            flagship.resourceCredits += fuelValue;
             flagship.fuel -= fuelUnitsToSell;
         }
     }
     landerAdd(universe) {
-        var player = universe.world.player;
-        if (player.resourceCredits >= this.landerValue) {
-            player.resourceCredits -= this.landerValue;
-            player.flagship.numberOfLanders++;
+        var flagship = universe.world.player.flagship;
+        if (flagship.resourceCredits >= this.landerValue) {
+            flagship.resourceCredits -= this.landerValue;
+            flagship.numberOfLanders++;
         }
     }
     landerRemove(universe) {
@@ -131,37 +129,29 @@ class PlaceStationDock extends PlaceBase {
         var flagship = player.flagship;
         if (flagship.numberOfLanders > 0) {
             flagship.numberOfLanders--;
-            player.resourceCredits += this.landerValue;
+            flagship.resourceCredits += this.landerValue;
         }
     }
     offload(universe) {
         var world = universe.world;
         var player = world.player;
-        var playerItemHolder = player.flagship.itemHolderCargo;
-        var items = playerItemHolder.items;
-        var valueSumSoFar = 0;
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            var itemDefnName = item.defnName;
-            var resourceDefn = ResourceDefn.byName(itemDefnName);
-            var resourceValue = resourceDefn.valuePerUnit * item.quantity;
-            valueSumSoFar += resourceValue;
-        }
-        player.resourceCredits += valueSumSoFar;
-        items.length = 0;
+        var flagship = player.flagship;
+        flagship.cargoOffload(world);
     }
     shipBuild(universe) {
         var shipDefnToBuild = this.shipDefnToBuild;
         if (shipDefnToBuild != null) {
             var world = universe.world;
             var player = world.player;
-            if (player.shipGroup.ships.length < player.flagship.shipsMax) {
+            var flagship = player.flagship;
+            var shipGroup = player.shipGroup;
+            if (shipGroup.ships.length < flagship.shipsMax) {
                 var shipValue = shipDefnToBuild.costToBuild;
-                if (player.resourceCredits >= shipValue) {
-                    player.resourceCredits -= shipValue;
+                if (flagship.resourceCredits >= shipValue) {
+                    flagship.resourceCredits -= shipValue;
                     var ship = new Ship(shipDefnToBuild.name);
                     ship.initialize(new UniverseWorldPlaceEntities(universe, world, this, null, null));
-                    player.shipGroup.ships.push(ship);
+                    shipGroup.ships.push(ship);
                 }
             }
         }
@@ -173,9 +163,9 @@ class PlaceStationDock extends PlaceBase {
             var shipToScrapDefn = shipToScrap.defn(world);
             var shipValue = shipToScrapDefn.costToBuild
                 + shipToScrap.crew * this.crewValuePerUnit;
-            var player = world.player;
-            player.resourceCredits += shipValue;
-            ArrayHelper.remove(player.shipGroup.ships, shipToScrap);
+            var flagship = world.player.flagship;
+            flagship.resourceCredits += shipValue;
+            ArrayHelper.remove(world.player.shipGroup.ships, shipToScrap);
         }
     }
     // Place
@@ -283,7 +273,7 @@ class PlaceStationDock extends PlaceBase {
         // children
         [
             ControlLabel.from4Uncentered(marginSize, labelSize, DataBinding.fromContext("Resources:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => "" + c.resourceCredits), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => "" + c.flagship.resourceCredits), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContext("Fuel:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.flagship.fuelCurrentOverMax()), fontShort),
             ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "+", fontShort, this.fuelAdd.bind(this)),

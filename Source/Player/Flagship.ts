@@ -9,6 +9,8 @@ class Flagship
 	numberOfLanders: number;
 	crew: number;
 	fuel: number;
+	resourceCredits: number;
+	infoCredits: number;
 	items: any[];
 	shipsMax: number;
 
@@ -40,6 +42,8 @@ class Flagship
 		numberOfLanders: number,
 		crew: number,
 		fuel: number,
+		resourceCredits: number,
+		infoCredits: number,
 		items: Item[],
 		shipsMax: number
 	)
@@ -52,6 +56,8 @@ class Flagship
 		this.numberOfLanders = numberOfLanders;
 		this.crew = crew;
 		this.fuel = fuel;
+		this.resourceCredits = resourceCredits;
+		this.infoCredits = infoCredits;
 		this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(items);
 		this.itemHolderOther = ItemHolder.create();
 		this.shipsMax = shipsMax;
@@ -78,7 +84,18 @@ class Flagship
 
 	cargoCurrentOverMax(world: World): string
 	{
-		return this.itemHolderCargo.massOfAllItemsOverMax(world);
+		return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
+	}
+
+	cargoOffload(world: World): void
+	{
+		var itemHolder = this.itemHolderCargo;
+		var itemsForResources = itemHolder.itemsBelongingToCategoryWithName("Resource", world);
+		var itemValues = itemsForResources.map(x => x.tradeValue(world) );
+		var itemValueTotal = 0;
+		itemValues.forEach(x => itemValueTotal += x);
+		this.resourceCredits += itemValueTotal;
+		itemsForResources.forEach(x => itemHolder.itemSubtract(x) );
 	}
 
 	components(): ShipComponentDefn[]
@@ -225,11 +242,16 @@ class Flagship
 		return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
 	}
 
-	itemHolderCargoBuildOrUpdate(items: Item[]): ItemHolder
+	itemHolderCargoBuildOrUpdate(itemsInitial: Item[]): ItemHolder
 	{
 		if (this.itemHolderCargo == null)
 		{
-			this.itemHolderCargo = ItemHolder.fromItems(items);
+			this.itemHolderCargo =
+				ItemHolder
+					.create()
+					.retainsItemsWithZeroQuantitiesSet(true)
+					.itemsAdd(ResourceDefn.Instances()._All.map(x => Resource.fromDefnName(x.name).toItem() ) )
+					.itemsAdd(itemsInitial);
 		}
 
 		// todo - Set max.

@@ -8,8 +8,13 @@ class Resource
 	constructor(defnName: string, quantity: number, pos: Coords)
 	{
 		this.defnName = defnName;
-		this.quantity = quantity;
+		this.quantity = quantity || 0;
 		this.pos = pos;
+	}
+
+	static fromDefnName(defnName: string): Resource
+	{
+		return new Resource(defnName, 0, null);
 	}
 
 	toEntity
@@ -30,7 +35,7 @@ class Resource
 		var resourceCollidable = Collidable.fromCollider(resourceCollider);
 
 		var resourceDefn = ResourceDefn.byName(resourceDefnName);
-		var resourceItem = new Item(resourceDefnName, resourceQuantity);
+		var resourceItem = this.toItem();
 
 		var resourceColor = resourceDefn.color;
 		var resourceGradient = new ValueBreakGroup
@@ -105,5 +110,10 @@ class Resource
 		);
 
 		return resourceEntity;
+	}
+
+	toItem(): Item
+	{
+		return new Item(this.defnName, this.quantity);
 	}
 }

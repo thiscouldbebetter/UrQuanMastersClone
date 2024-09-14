@@ -3,18 +3,20 @@ class ShipComponentDefn
 {
 	name: string;
 	categoryNames: string[];
-	value: number;
+	costInResourceCredits: number;
 	applyToFlagship: (f: Flagship) => void;
 
 	constructor
 	(
-		name: string, categoryNames: string[], value: number,
+		name: string,
+		categoryNames: string[],
+		costInResourceCredits: number,
 		applyToFlagship: (f: Flagship) => void
 	)
 	{
 		this.name = name;
 		this.categoryNames = categoryNames;
-		this.value = value;
+		this.costInResourceCredits = costInResourceCredits;
 		this.applyToFlagship = applyToFlagship;
 	}
 
@@ -38,7 +40,7 @@ class ShipComponentDefn
 
 	nameAndValue()
 	{
-		return this.name + "(" + this.value + ")";
+		return this.name + "(" + this.costInResourceCredits + ")";
 	}
 }
 
@@ -100,7 +102,7 @@ class ShipComponentCategory_Instances
 
 class ShipComponentDefn_Instances
 {
-	CargoHold: ShipComponentDefn;
+	CargoBay: ShipComponentDefn;
 	CrewHabitat: ShipComponentDefn;
 	FuelTank: ShipComponentDefn;
 	FusionThruster: ShipComponentDefn;
@@ -126,11 +128,11 @@ class ShipComponentDefn_Instances
 
 		var noEffect = (flagship: Flagship) => {};
 
-		this.CargoHold = new ShipComponentDefn
+		this.CargoBay = new ShipComponentDefn
 		(
-			"Cargo Hold",
+			"Cargo Bay",
 			[ categoryBackbone, categoryCargo ],
-			100,
+			100, // cost
 			(flagship: Flagship) => flagship._cargoMax += 100
 		);
 		this.CrewHabitat = new ShipComponentDefn
@@ -144,7 +146,7 @@ class ShipComponentDefn_Instances
 		(
 			"Fuel Tank",
 			[ categoryBackbone, categoryFuel ],
-			100, // value
+			100,
 			(flagship: Flagship) => flagship._fuelMax += 100
 		);
 
@@ -182,12 +184,12 @@ class ShipComponentDefn_Instances
 
 		this._All =
 		[
-			this.TurningJets,
-			this.CargoHold,
+			this.CargoBay,
 			this.CrewHabitat,
+			this.TurningJets,
 			this.FuelTank,
-			this.IonCannon,
 			this.FusionThruster,
+			this.IonCannon,
 			this.PowerPlant,
 		];
 
@@ -195,7 +197,7 @@ class ShipComponentDefn_Instances
 
 		this._AllBackbone =
 		[
-			this.CargoHold,
+			this.CargoBay,
 			this.CrewHabitat,
 			this.FuelTank,
 			this.IonCannon,

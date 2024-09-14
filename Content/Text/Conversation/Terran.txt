@@ -46,9 +46,11 @@ RadioactivesNeeded|DoNothing
 |Goto||Done
 
 #(DO_YOU_HAVE_RADIO_THIS_TIME)|Display|#(DO_YOU_HAVE_RADIO_THIS_TIME) 
-#(we_will_transfer_now)|Option|#(we_will_transfer_now)|#(FUEL_UP0)
+#(we_will_transfer_now)|Option|#(we_will_transfer_now)|RadioactivesTransfer|u.world.player.flagship.itemHolderCargo.hasItemWithDefnNameAndQuantity("Radioactives", 1)
+|Option|#(where_get_radios)|#(RADIOS_ON_MERCURY)
 |Option|#(what_will_you_give_us)|#(MESSAGE_GARBLED_1)
 |Option|#(before_radios_we_need_info)|#(MESSAGE_GARBLED_2)
+#(well_go_get_them_now2)|Option|#(well_go_get_them_now)|#(THANKS_FOR_HELPING)
 |Prompt
 
 #(MESSAGE_GARBLED_1)|Display|#(MESSAGE_GARBLED_1)
@@ -56,6 +58,8 @@ RadioactivesNeeded|DoNothing
 #(MESSAGE_GARBLED_2)|Display|#(MESSAGE_GARBLED_2)
 |Prompt
 
+RadioactivesTransfer|DoNothing
+|Script|u.world.player.flagship.itemHolderCargo.itemSubtractDefnNameAndQuantity("Radioactives", 1)
 #(FUEL_UP0)|Display|#(FUEL_UP0)
 #(FUEL_UP1)|Display|#(FUEL_UP1)
 |OptionsClear

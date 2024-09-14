@@ -2,8 +2,11 @@
 class Resource {
     constructor(defnName, quantity, pos) {
         this.defnName = defnName;
-        this.quantity = quantity;
+        this.quantity = quantity || 0;
         this.pos = pos;
+    }
+    static fromDefnName(defnName) {
+        return new Resource(defnName, 0, null);
     }
     toEntity(world, place, resourceRadiusBase) {
         var resource = this;
@@ -13,7 +16,7 @@ class Resource {
         var resourceCollider = new Sphere(Coords.zeroes(), resourceRadius);
         var resourceCollidable = Collidable.fromCollider(resourceCollider);
         var resourceDefn = ResourceDefn.byName(resourceDefnName);
-        var resourceItem = new Item(resourceDefnName, resourceQuantity);
+        var resourceItem = this.toItem();
         var resourceColor = resourceDefn.color;
         var resourceGradient = new ValueBreakGroup([
             new ValueBreak(0, resourceColor),
@@ -55,5 +58,8 @@ class Resource {
             resourceMappable
         ]);
         return resourceEntity;
+    }
+    toItem() {
+        return new Item(this.defnName, this.quantity);
     }
 }

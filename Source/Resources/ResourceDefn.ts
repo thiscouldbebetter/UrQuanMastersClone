@@ -42,9 +42,15 @@ class ResourceDefn
 	{
 		if (this._itemDefn == null)
 		{
-			this._itemDefn = ItemDefn.fromNameMassValueAndVisual
+			this._itemDefn = ItemDefn.fromNameEncumbranceValueAndVisual
 			(
-				this.name, 1, this.valuePerUnit, VisualCircle.fromRadiusAndColorFill(3, this.color)
+				this.name,
+				1,
+				this.valuePerUnit,
+				VisualCircle.fromRadiusAndColorFill(3, this.color)
+			).categoryNameAdd
+			(
+				Resource.name
 			)
 		}
 		return this._itemDefn;
