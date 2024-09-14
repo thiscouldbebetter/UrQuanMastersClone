@@ -101,7 +101,7 @@ class Combat
 		var creditsForShipsDestroyed = 0;
 		shipsDestroyed.forEach
 		(
-			x => creditsForShipsDestroyed += x.defn(world).value
+			x => creditsForShipsDestroyed += x.defn(world).salvageValue
 		);
 		var player = world.player;
 		player.resourceCredits += creditsForShipsDestroyed;
@@ -228,7 +228,7 @@ class Combat
 		var creditsSalvaged = 0;
 		shipsDestroyed.forEach
 		(
-			x => creditsSalvaged += x.defn(world).value
+			x => creditsSalvaged += x.defn(world).salvageValue
 		);
 
 		var message =

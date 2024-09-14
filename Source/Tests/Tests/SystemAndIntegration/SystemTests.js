@@ -34,6 +34,10 @@ class SystemTests extends TestFixture {
         // Move the player's ship to Earth.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
         // Make sure the place transitions to a planet vicinity.
+        // todo
+        // This sometimes errors out, perhaps because the guard drone,
+        // which is perhaps randomly placed within the planet vicinity,
+        // accosts the player before the player is done waiting.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Verify that a guard drone is present.
         var guardDroneName = "Enemy";
@@ -197,7 +201,8 @@ class SystemTests extends TestFixture {
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         placeEncounter = place();
         var encounter = placeEncounter.encounter;
-        Assert.areStringsEqual("Raknoid", encounter.factionName);
+        var factionHostileName = "Raknoid";
+        Assert.areStringsEqual(factionHostileName, encounter.factionName);
         var entityHostile = encounter.entityOther;
         var talker = entityHostile.talker();
         talker.talk(uwpe);
@@ -208,7 +213,12 @@ class SystemTests extends TestFixture {
             "#(be_reasonable)"
             // "We aren't reasonable, though."
         ]);
+        Assert.areNumbersEqual(0, player.resourceCredits);
         this.playFromStart_CheatToWinCombat(universe);
+        // Verify that the ship had some salvage value.
+        var factionHostile = world.faction(factionHostileName);
+        var hostileShipSalvageValue = factionHostile.shipDefn(world).salvageValue;
+        Assert.areNumbersEqual(hostileShipSalvageValue, player.resourceCredits);
         // Verify that we've returned to the original encounter.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // placeEncounter = place as PlaceEncounter;
@@ -227,10 +237,13 @@ class SystemTests extends TestFixture {
         // Now we can get down to business.
         placeEncounter = place();
         encounter = placeEncounter.encounter;
-        Assert.areStringsEqual("Terran-Business", encounter.factionName);
-        talker = station.talker();
+        var faction = encounter.faction(world);
+        Assert.areStringsEqual("Conversation-Terran-Business", faction.conversationDefnName);
+        talker = encounter.entityOther.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
-            null,
+            // "Starbase is up and running."
+            "Commander, I have minerals to offload.",
+            // [breakdown of minerals]
         ]);
         // Verify that we've returned to the world.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
@@ -401,7 +414,11 @@ class SystemTests extends TestFixture {
             playerPos.overwriteWith(targetPos);
         }
         // hack - How long is necessary to wait?
-        this.playFromStart_WaitForTicks(universe, 30);
+        // 30 seems to work most of the time,
+        // but sometimes results in the guard drone accosting the player too soon
+        // at the game's start.
+        // Maybe there is no correct answer in all cases!
+        this.playFromStart_WaitForTicks(universe, 20);
     }
     playFromStart_TalkToTalker(universe, talker, optionsToSelect) {
         var conversationRun = talker.conversationRun;

@@ -230,7 +230,7 @@ class PlaceStationDock extends PlaceBase
 			var player = world.player;
 			if (player.shipGroup.ships.length < player.flagship.shipsMax)
 			{
-				var shipValue = shipDefnToBuild.value;
+				var shipValue = shipDefnToBuild.costToBuild;
 				if (player.resourceCredits >= shipValue)
 				{
 					player.resourceCredits -= shipValue;
@@ -256,7 +256,7 @@ class PlaceStationDock extends PlaceBase
 		{
 			var shipToScrapDefn = shipToScrap.defn(world);
 			var shipValue =
-				shipToScrapDefn.value
+				shipToScrapDefn.costToBuild
 				+ shipToScrap.crew * this.crewValuePerUnit;
 			var player = world.player;
 			player.resourceCredits += shipValue;

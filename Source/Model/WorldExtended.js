@@ -205,7 +205,9 @@ class WorldExtended extends World {
         return this.factionsByName.get(factionName);
     }
     gameTimeAsString() {
-        var timeCurrentInMilliseconds = this.gameTimeInitial.getTime() + this.gameSecondsSinceStart * 1000;
+        var millisecondsPerSecond = 1000;
+        var timeCurrentInMilliseconds = this.gameTimeInitial.getTime()
+            + this.gameSecondsSinceStart * millisecondsPerSecond;
         var timeCurrentAsDate = new Date(timeCurrentInMilliseconds);
         var timeCurrentAsString = timeCurrentAsDate.toISOString();
         return timeCurrentAsString;

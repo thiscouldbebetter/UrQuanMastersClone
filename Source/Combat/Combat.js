@@ -55,7 +55,7 @@ class Combat {
         var world = universe.world;
         var shipsDestroyed = this.shipGroups[1].shipsLost;
         var creditsForShipsDestroyed = 0;
-        shipsDestroyed.forEach(x => creditsForShipsDestroyed += x.defn(world).value);
+        shipsDestroyed.forEach(x => creditsForShipsDestroyed += x.defn(world).salvageValue);
         var player = world.player;
         player.resourceCredits += creditsForShipsDestroyed;
         world.placeNextSet(this.encounter.placeToReturnTo);
@@ -131,7 +131,7 @@ class Combat {
         var numberOfShipsLost = shipsLost.length;
         var numberOfShipsDestroyed = shipsDestroyed.length;
         var creditsSalvaged = 0;
-        shipsDestroyed.forEach(x => creditsSalvaged += x.defn(world).value);
+        shipsDestroyed.forEach(x => creditsSalvaged += x.defn(world).salvageValue);
         var message = "Combat complete.\n"
             + numberOfShipsLost + " ships lost.\n"
             + numberOfShipsDestroyed + " ships destroyed.\n"

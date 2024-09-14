@@ -191,7 +191,7 @@ class Game
 				ts(conversation + "Terran", conversationDirectory + "Terran.txt"),
 				ts(conversation + "Terran" + content, contentPathPrefixComms + "commander/commander.txt"),
 				ts(conversation + "Terran-Business", conversationDirectory + "Terran-Business.txt"),
-				ts(conversation + "Terran-Business" + content, contentPathPrefixComms + "commander/commander.txt"),
+				ts(conversation + "Terran-Business" + content, contentPathPrefixComms + "starbase/starbase.txt"),
 				ts(conversation + "Triunion", conversationDirectory + "Triunion.json"),
 				ts(conversation + "Triunion" + content, contentPathPrefixComms + "zoqfotpik/zoqfotpik.txt"),
 				ts(conversation + "Twyggan", conversationPlaceholderPath),

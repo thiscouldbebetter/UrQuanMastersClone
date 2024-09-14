@@ -178,19 +178,19 @@ RadioactivesNeeded|DoNothing
 |Prompt
 
 #(OK_THE_NAFS)|Display|#(OK_THE_NAFS)
-|VariableSet|AllianceName|New Alliance of Free Stars
+|VariableSet|AllianceName|"New Alliance of Free Stars"
 |Goto||#(STARBASE_WILL_BE_READY)
 
 #(OK_THE_CAN)|Display|#(OK_THE_CAN)
-|VariableSet|AllianceName|Concordance of Alien Nations
+|VariableSet|AllianceName|"Concordance of Alien Nations"
 |Goto||#(STARBASE_WILL_BE_READY)
 
 #(OK_THE_UFW)|Display|#(OK_THE_UFW)
-|VariableSet|AllianceName|United Federation of Worlds
+|VariableSet|AllianceName|"United Federation of Worlds"
 |Goto||#(STARBASE_WILL_BE_READY)
 
 #(OK_THE_NAME_IS_EMPIRE)|Display|#(OK_THE_NAME_IS_EMPIRE)
-|VariableSet|AllianceName|The Empire
+|VariableSet|AllianceName|"The Empire"
 |Goto||#(STARBASE_WILL_BE_READY)
 
 #(STARBASE_WILL_BE_READY)|Display|#(STARBASE_WILL_BE_READY)

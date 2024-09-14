@@ -1,5 +1,5 @@
 name=Terran
-contentTextStringName=Conversation-Terran-Content
+contentTextStringName=Conversation-Terran-Business-Content
 imagePortraitName=Conversation-Portrait-Terran
 soundMusicName=Music_Faction_Terran
 
@@ -29,7 +29,7 @@ MainMenu|DoNothing
 MainMenuOptions|DoNothing
 |OptionsClear
 #(have_minerals)|Option|#(have_minerals)|MineralsOffload
-#(need_info)|Display|#(need_info)|#(WHAT_KIND_OF_INFO)
+#(need_info)|Option|#(need_info)|#(WHAT_KIND_OF_INFO)
 #(goodbye_commander)|Option|#(goodbye_commander)|Goodbye
 |Prompt
 
@@ -44,7 +44,9 @@ MineralsOffload|DoNothing
 #(WHAT_KIND_OF_INFO)|Display|#(WHAT_KIND_OF_INFO)
 InfoRequestOptions|DoNothing
 |OptionsClear
+|JumpIfFalse|ThereAreNewBulletins|SkipBulletins
 #(repeat_bulletins)|Option|#(repeat_bulletins)|Bulletin
+SkipBulletins|DoNothing
 #(starbase_functions)|Option|#(starbase_functions)|#(WHICH_FUNCTION)
 #(history)|Option|#(history)|#(WHICH_HISTORY)
 #(our_mission)|Option|#(our_mission)|#(WHICH_MISSION)
