@@ -68,7 +68,9 @@ class Encounter
 		}
 		else
 		{
-			var placeNext = this.placeToReturnTo;
+			var world = universe.world;
+			var placeNext =
+				world.placeNext || this.placeToReturnTo;
 			var playerFromPlaceNext = placeNext.entityByName(Player.name);
 			if (playerFromPlaceNext != null)
 			{
@@ -76,7 +78,6 @@ class Encounter
 				playerLoc.pos.overwriteWith(this.posToReturnTo);
 				playerLoc.vel.clear();
 			}
-			var world = universe.world;
 			world.placeNextSet(placeNext);
 			universe.venueNextSet(world.toVenue() );
 		}

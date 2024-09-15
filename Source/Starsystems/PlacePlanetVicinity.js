@@ -120,6 +120,7 @@ class PlacePlanetVicinity extends PlaceBase {
         this.venueControls.draw(universe);
     }
     playerCollide(uwpe) {
+        var universe = uwpe.universe;
         var world = uwpe.world;
         var place = uwpe.place;
         if (uwpe.entity2.name == Player.name) {
@@ -147,12 +148,13 @@ class PlacePlanetVicinity extends PlaceBase {
                 playerLoc.pos.overwriteWith(planetPos);
                 playerLoc.vel.clear();
                 entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
-                var placePlanetOrbit = new PlacePlanetOrbit(world, entityOtherPlanet, place);
+                var placePlanetOrbit = new PlacePlanetOrbit(universe, world, entityOtherPlanet, place);
                 world.placeNextSet(placePlanetOrbit);
             }
             else if (entityOtherShipGroup != null) {
                 entityOther.collidable().ticksUntilCanCollide = 100; // hack
                 var shipGroup = entityOtherShipGroup;
+                //uwpe.placeSet(place);
                 var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
                 world.placeNextSet(placeEncounter);
             }

@@ -53,7 +53,8 @@ class WorldExtended extends World {
         ];
         var placeDefns = [
             PlaceDefn.from5(PlaceCombat.name, "Music_Combat", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
-            PlaceDefn.from5(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, [] // propertyNamesToProcess
+            ),
             PlaceDefn.from5(PlaceHyperspace.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
             PlaceDefn.from5(PlaceHyperspaceMap.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess),
             PlaceDefn.from5(PlacePlanetOrbit.name, "Music_Planet", actions, actionToInputsMappings, entityPropertyNamesToProcess),

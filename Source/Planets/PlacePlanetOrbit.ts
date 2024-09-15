@@ -14,6 +14,7 @@ class PlacePlanetOrbit extends PlaceBase
 
 	constructor
 	(
+		universe: Universe,
 		world: WorldExtended,
 		planet: Planet,
 		placePlanetVicinity: PlacePlanetVicinity
@@ -42,7 +43,8 @@ class PlacePlanetOrbit extends PlaceBase
 			// Resources.
 
 			var resourceRadiusBase = 5; // todo
-			var resourceEntities = this.planet.resources.map
+			var resources = this.planet.resources(universe.randomizer);
+			var resourceEntities = resources.map
 			(
 				x => x.toEntity(world, this, resourceRadiusBase)
 			);
@@ -50,7 +52,8 @@ class PlacePlanetOrbit extends PlaceBase
 
 			// Lifeforms.
 
-			var lifeformEntities = this.planet.lifeforms.map
+			var lifeforms = this.planet.lifeforms(universe.randomizer);
+			var lifeformEntities = lifeforms.map
 			(
 				x => x.toEntity(world, this.planet)
 			);
@@ -118,7 +121,7 @@ class PlacePlanetOrbit extends PlaceBase
 			{
 				flagship.fuel -= fuelRequiredToLand;
 
-				var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
+				var placeNext = new PlacePlanetSurface(universe, world, planet, placeOrbit);
 				world.placeNextSet(placeNext);
 			}
 		}

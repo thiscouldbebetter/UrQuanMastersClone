@@ -21,8 +21,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 	lifeformCount: number;
 	energySources: EnergySource[];
 
-	lifeforms: Lifeform[];
-	resources: Resource[];
+	_lifeforms: Lifeform[];
+	_resources: Resource[];
 
 	constructor
 	(
@@ -145,32 +145,47 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return PlanetDefn.byName(this.defnName);
 	}
 
-	lifeformsGenerate(randomizer: Randomizer): Lifeform[]
+	lifeforms(randomizer: Randomizer): Lifeform[]
 	{
-		this.lifeforms = new Array<Lifeform>();
-
-		for (var i = 0; i < this.lifeformCount; i++)
+		if (this._lifeforms == null)
 		{
-			var lifeformDefnName = ArrayHelper.random(this.lifeformDefnNames, randomizer);
-			var lifeformPos =
-				Coords.create().randomize(randomizer).multiply(this.sizeSurface);
-			var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
-			this.lifeforms.push(lifeform);
+			var lifeforms = new Array<Lifeform>();
+
+			for (var i = 0; i < this.lifeformCount; i++)
+			{
+				var lifeformDefnName =
+					ArrayHelper.random(this.lifeformDefnNames, randomizer);
+				var lifeformPos =
+					Coords.create().randomize(randomizer).multiply(this.sizeSurface);
+				var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
+				lifeforms.push(lifeform);
+			}
+
+			this._lifeforms = lifeforms;
 		}
 
-		return this.lifeforms;
+		return this._lifeforms;
+
+	}
+
+	lifeformsGenerate(randomizer: Randomizer): Lifeform[]
+	{
+		return this.lifeforms(randomizer);
 	}
 
 	mineralsGenerate(randomizer: Randomizer)
 	{
-		var planet = this;
-		var resources = planet.resources;
-		if (resources == null)
+		this.resources(randomizer);
+	}
+
+	resources(randomizer: Randomizer): Resource[]
+	{
+		if (this._resources == null)
 		{
 			var resources = new Array<Resource>();
 
-			var planetDefn = planet.defn();
-			var planetSize = planet.sizeSurface;
+			var planetDefn = this.defn();
+			var planetSize = this.sizeSurface;
 			var resourceDistributions = planetDefn.resourceDistributions;
 
 			for (var i = 0; i < resourceDistributions.length; i++)
@@ -193,8 +208,10 @@ class Planet implements EntityProperty<Planet>, Satellite
 				}
 			}
 
-			planet.resources = resources;
+			this._resources = resources;
 		}
+
+		return this._resources;
 	}
 
 	orbitColor(): Color

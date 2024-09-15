@@ -169,7 +169,7 @@ class Game
 				ts(conversation + "Kehlemal", conversationPlaceholderPath),
 				ts(conversation + "Lahkemup", conversationPlaceholderPath),
 				ts(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
-				ts(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.json"),
+				ts(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.txt"),
 				//ts(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
 				ts(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
 				ts(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
@@ -178,7 +178,7 @@ class Game
 				ts(conversation + "Moroz", conversationPlaceholderPath),
 				ts(conversation + "Muuncaf", conversationPlaceholderPath),
 				ts(conversation + "Mazonae", conversationPlaceholderPath),
-				ts(conversation + "Murch", conversationDirectory + "Murch.json"),
+				ts(conversation + "Murch", conversationDirectory + "Murch.txt"),
 				ts(conversation + "Murch" + content, contentPathPrefixComms + "melnorme/melnorme.txt"),
 				ts(conversation + "Outsider", conversationPlaceholderPath),
 				ts(conversation + "Raknoid", conversationDirectory + "Raknoid.txt"),
@@ -186,7 +186,7 @@ class Game
 				ts(conversation + "Raptor", conversationPlaceholderPath),
 				ts(conversation + "Silikonix", conversationPlaceholderPath),
 				ts(conversation + "Supial", conversationPlaceholderPath),
-				ts(conversation + "Tempestrial", conversationDirectory + "Tempestrial.json"),
+				ts(conversation + "Tempestrial", conversationDirectory + "Tempestrial.txt"),
 				ts(conversation + "Tempestrial" + content, contentPathPrefixComms + "probe/probe.txt"),
 				ts(conversation + "Terran", conversationDirectory + "Terran.txt"),
 				ts(conversation + "Terran" + content, contentPathPrefixComms + "commander/commander.txt"),
@@ -514,7 +514,7 @@ class Game
 		);
 		planet.initialize(uwpe);
 		var placePlanetVicinity = null;
-		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
+		var placePlanetOrbit = new PlacePlanetOrbit(universe, world, planet, placePlanetVicinity);
 		world.placeNextSet(placePlanetOrbit);
 	}
 
@@ -529,7 +529,7 @@ class Game
 		);
 		planet.initialize(uwpe);
 		var placePlanetVicinity = null;
-		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
+		var placePlanetOrbit = new PlacePlanetOrbit(universe, world, planet, placePlanetVicinity);
 		world.placeNextSet(placePlanetOrbit);
 	}
 
@@ -539,7 +539,7 @@ class Game
 		var starsystem = world.hyperspace.starsystemByName("Sol");
 		var planet = starsystem.planets[8]; // Pluto
 		var placePlanetVicinity = null;
-		var placePlanetOrbit = new PlacePlanetOrbit(world, planet, placePlanetVicinity);
+		var placePlanetOrbit = new PlacePlanetOrbit(universe, world, planet, placePlanetVicinity);
 		world.placeNextSet(placePlanetOrbit);
 	}
 

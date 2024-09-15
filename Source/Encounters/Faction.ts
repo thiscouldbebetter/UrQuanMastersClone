@@ -89,6 +89,18 @@ class Faction implements EntityPropertyBase
 		return starsystemsInSphereOfInfluence;
 	}
 
+	talkerToControl(cr: ConversationRun, size: Coords, universe: Universe): ControlBase
+	{
+		return cr.toControl_Layout_2(size, universe);
+	}
+
+	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter
+	{
+		var shipGroup = this.shipGroup();
+		var encounter = shipGroup.toEncounter(uwpe);
+		return encounter;
+	}
+
 	toTalker(): Talker
 	{
 		var talker = new Talker
@@ -99,10 +111,6 @@ class Faction implements EntityPropertyBase
 		return talker;
 	}
 
-	talkerToControl(cr: ConversationRun, size: Coords, universe: Universe): ControlBase
-	{
-		return cr.toControl_Layout_2(size, universe);
-	}
 
 	// EntityProperty.
 

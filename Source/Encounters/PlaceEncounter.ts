@@ -9,11 +9,11 @@ class PlaceEncounter extends PlaceBase
 	{
 		super
 		(
-			PlaceEncounter.name + encounter.factionName,
-			PlaceEncounter.name,
+			PlaceEncounter.name + encounter.factionName, // name
+			PlaceEncounter.name, // defnName
 			null, // parentName
 			null, // size
-			[ encounter.entityPlayer, encounter.entityOther] // entities
+			[ encounter.entityPlayer, encounter.entityOther ] // entities
 		);
 
 		this.encounter = encounter;

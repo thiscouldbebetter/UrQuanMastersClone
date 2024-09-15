@@ -14,6 +14,7 @@ class PlacePlanetSurface extends PlaceBase
 
 	constructor
 	(
+		universe: Universe,
 		worldAsWorld: World,
 		planet: Planet,
 		placePlanetOrbit: PlacePlanetOrbit
@@ -110,7 +111,7 @@ class PlacePlanetSurface extends PlaceBase
 
 		// lifeforms
 
-		var lifeforms = planet.lifeforms;
+		var lifeforms = planet.lifeforms(universe.randomizer);
 
 		if (lifeforms.length > 0)
 		{
@@ -124,7 +125,7 @@ class PlacePlanetSurface extends PlaceBase
 		// resources
 
 		var resourceRadiusBase = entityDimension / 2;
-		var resources = this.planet.resources || [];
+		var resources = this.planet.resources(universe.randomizer);
 		var resourceEntities = resources.map
 		(
 			x => x.toEntity(world, placePlanetOrbit, resourceRadiusBase)

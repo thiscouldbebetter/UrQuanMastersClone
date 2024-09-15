@@ -22,7 +22,6 @@ class SystemTests extends TestFixture {
         var world = universe.world;
         var venueWorld = world.toVenue();
         universe.venueNextSet(venueWorld);
-        var venue = () => universe.venueCurrent();
         var place = () => world.placeCurrent;
         var starsystemSol = place().starsystem;
         Assert.areStringsEqual("Sol", starsystemSol.name);
@@ -40,24 +39,24 @@ class SystemTests extends TestFixture {
         // accosts the player before the player is done waiting.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Verify that a guard drone is present.
-        var guardDroneName = "Enemy";
+        var guardDroneName = "LahkemupGuardDrone";
         var guardDrone = place().entityByName(guardDroneName);
         Assert.isNotNull(guardDrone);
         // Wait for the guard drone to approach the player
         // and initiate a conversation.
         this.playFromStart_WaitForTicks(universe, 1000);
         this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Leave the conversation.
-        var venueConversation = venue();
-        var containerConversation = venueConversation.controlRoot;
-        var buttonNext = containerConversation.childByName("buttonNextUnderPortrait");
-        Assert.isNotNull(buttonNext);
-        while (universe.venueCurrent() == venueConversation) {
-            buttonNext.click();
-            universe.updateForTimerTick();
-        }
-        // Verify that we're back in the world venue.
+        var talker = place().encounter.entityOther.talker();
+        this.playFromStart_TalkToTalker(universe, talker, [
+            "SayNothing" // It's a recording.
+        ]);
+        universe.updateForTimerTick();
+        //this.playFromStart_WaitForTicks(universe, 100);
+        // The "conversation" is over; verify that we're back in the world venue.
         this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueWorld.name, universe);
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Wait for the guard drone to clear the area,
         // and verify that it's gone.
         this.playFromStart_WaitForTicks(universe, 1000);
@@ -72,7 +71,7 @@ class SystemTests extends TestFixture {
         this.playFromStart_WaitForTicks(universe, 100);
         // Talk to the station.
         this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
-        var talker = station.talker();
+        talker = station.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
             // "Are you the resupply ship?" 
             "#(no_but_well_help)",
@@ -218,15 +217,24 @@ class SystemTests extends TestFixture {
         // Return to the station.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
         this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        // Make sure that the station encounter's placeToReturnTo is right.
+        var placeEncounterStation = place();
+        var placeToReturnToAfterStation = placeEncounterStation.encounter.placeToReturnTo;
+        Assert.areStringsEqual(PlacePlanetVicinity.name, placeToReturnToAfterStation.constructor.name);
         // Talk to the commander again.
-        station = place().entityByName(stationName);
+        station = placeEncounter.entityByName(stationName);
         talker = station.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
             // "Did you handle the base?",
             "#(base_was_abandoned)"
-            // "Well, I'll be darn--INCOMING HOSTILE SHIP!  They're jamming our signal!"
+            // "Well, I'll be--INCOMING HOSTILE SHIP!  They're jamming our signal!"
         ]);
         universe.updateForTimerTick();
+        // Make sure that the hostile encounter's placeToReturnTo is right.
+        var placeEncounterHostile = place();
+        var placeToReturnToAfterHostileEncounter = placeEncounterHostile.encounter.placeToReturnTo;
+        Assert.areStringsEqual(placeEncounterStation.name, placeToReturnToAfterHostileEncounter.name);
         // Now you're talking to the hostile ship.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         placeEncounter = place();
@@ -241,7 +249,7 @@ class SystemTests extends TestFixture {
             "#(where_you_come_from)", // "Where did you come from?"
             // "From fighting in such-and-such star cluster."
             "#(be_reasonable)"
-            // "We aren't reasonable, though."
+            // "We aren't reasonable, though." [Attacks.]
         ]);
         var flagship = player.flagship;
         Assert.areNumbersEqual(0, flagship.resourceCredits);
@@ -250,9 +258,14 @@ class SystemTests extends TestFixture {
         var factionHostile = world.faction(factionHostileName);
         var hostileShipSalvageValue = factionHostile.shipDefn(world).salvageValue;
         Assert.areNumbersEqual(hostileShipSalvageValue, flagship.resourceCredits);
-        // Verify that we've returned to the original encounter.
+        //universe.updateForTimerTick();
+        // Verify that we've returned to the original encounter,
+        // and that, when it's over, it's set to return to the planet vicinity,
+        // rather than to, say, the hostile encounter.
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
-        // placeEncounter = place as PlaceEncounter;
+        encounter = place().encounter;
+        var placeToReturnToTypeName = encounter.placeToReturnTo.constructor.name;
+        Assert.areStringsEqual(PlacePlanetVicinity.name, placeToReturnToTypeName);
         talker = station.talker();
         this.playFromStart_TalkToTalker(universe, talker, [
             // "You won!  We're in.  What now?"
@@ -260,7 +273,7 @@ class SystemTests extends TestFixture {
             // "Sounds like a sensible plan.  What do we call our alliance?"
             "#(name_1)", // "The New Alliance of Free Stars!"
             // "Great.  Give us two weeks."
-            null, // "[Wait two weeks...]"
+            null // "[Wait two weeks...]"
         ]);
         universe.updateForTimerTick();
         // Verify that we've switched to a different conversation mode.
@@ -291,6 +304,9 @@ class SystemTests extends TestFixture {
         this.playFromStart_LeavePlanetVicinityAndWait(universe);
         this.playFromStart_LeaveStarsystemAndWait(universe);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+        // Verify that a probe is present.
+        var entityProbe = place().entityByName("Tempestrial Ship Group X");
+        Assert.isNotNull(entityProbe);
         // Wait to be accosted by a probe.
         this.playFromStart_WaitForTicks(universe, 1000);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);

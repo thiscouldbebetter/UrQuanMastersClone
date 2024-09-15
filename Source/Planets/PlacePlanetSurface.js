@@ -1,6 +1,6 @@
 "use strict";
 class PlacePlanetSurface extends PlaceBase {
-    constructor(worldAsWorld, planet, placePlanetOrbit) {
+    constructor(universe, worldAsWorld, planet, placePlanetOrbit) {
         super(PlacePlanetSurface.name, PlacePlanetSurface.name, null, // parentName
         Coords.fromXY(300, 300), null // entities
         );
@@ -48,14 +48,14 @@ class PlacePlanetSurface extends PlaceBase {
         ]);
         entities.push(entityBackground);
         // lifeforms
-        var lifeforms = planet.lifeforms;
+        var lifeforms = planet.lifeforms(universe.randomizer);
         if (lifeforms.length > 0) {
             var lifeformEntities = lifeforms.map((x) => x.toEntity(world, planet));
             entities.push(...lifeformEntities);
         }
         // resources
         var resourceRadiusBase = entityDimension / 2;
-        var resources = this.planet.resources || [];
+        var resources = this.planet.resources(universe.randomizer);
         var resourceEntities = resources.map(x => x.toEntity(world, placePlanetOrbit, resourceRadiusBase));
         entities.push(...resourceEntities);
         // energySources

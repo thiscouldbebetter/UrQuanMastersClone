@@ -76,7 +76,7 @@ class Starsystem {
         // Add a guard drone in the Earth system.
         var enemyShipDefnName = "GuardDrone";
         var enemyShip = new Ship(enemyShipDefnName);
-        var enemyShipGroup = new ShipGroup("Enemy", "LahkemupGuardDrone", // factionName
+        var enemyShipGroup = new ShipGroup("LahkemupGuardDrone", "LahkemupGuardDrone", // factionName
         Coords.create(), // todo
         [enemyShip]);
         planetEarth.shipGroups.push(enemyShipGroup);

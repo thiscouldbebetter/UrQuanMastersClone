@@ -1,6 +1,6 @@
 "use strict";
 class PlacePlanetOrbit extends PlaceBase {
-    constructor(world, planet, placePlanetVicinity) {
+    constructor(universe, world, planet, placePlanetVicinity) {
         super(PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, // parentName
         planet.sizeSurface, // size
         null // entities
@@ -13,10 +13,12 @@ class PlacePlanetOrbit extends PlaceBase {
             entities.push(new GameClock(2880).toEntity());
             // Resources.
             var resourceRadiusBase = 5; // todo
-            var resourceEntities = this.planet.resources.map(x => x.toEntity(world, this, resourceRadiusBase));
+            var resources = this.planet.resources(universe.randomizer);
+            var resourceEntities = resources.map(x => x.toEntity(world, this, resourceRadiusBase));
             entities.push(...resourceEntities);
             // Lifeforms.
-            var lifeformEntities = this.planet.lifeforms.map(x => x.toEntity(world, this.planet));
+            var lifeforms = this.planet.lifeforms(universe.randomizer);
+            var lifeformEntities = lifeforms.map(x => x.toEntity(world, this.planet));
             entities.push(...lifeformEntities);
             var energySourceEntities = this.planet.energySources.map(x => x.toEntity(world, this.planet));
             entities.push(...energySourceEntities);
@@ -52,7 +54,7 @@ class PlacePlanetOrbit extends PlaceBase {
             }
             else {
                 flagship.fuel -= fuelRequiredToLand;
-                var placeNext = new PlacePlanetSurface(world, planet, placeOrbit);
+                var placeNext = new PlacePlanetSurface(universe, world, planet, placeOrbit);
                 world.placeNextSet(placeNext);
             }
         }

@@ -45,12 +45,17 @@ class Faction {
         var starsystemsInSphereOfInfluence = hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
         return starsystemsInSphereOfInfluence;
     }
+    talkerToControl(cr, size, universe) {
+        return cr.toControl_Layout_2(size, universe);
+    }
+    toEncounter(uwpe) {
+        var shipGroup = this.shipGroup();
+        var encounter = shipGroup.toEncounter(uwpe);
+        return encounter;
+    }
     toTalker() {
         var talker = new Talker(this.conversationDefnName, null, this.talkerToControl);
         return talker;
-    }
-    talkerToControl(cr, size, universe) {
-        return cr.toControl_Layout_2(size, universe);
     }
     // EntityProperty.
     finalize(uwpe) { }

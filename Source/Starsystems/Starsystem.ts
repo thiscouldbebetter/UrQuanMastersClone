@@ -161,7 +161,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		var enemyShip = new Ship(enemyShipDefnName);
 		var enemyShipGroup = new ShipGroup
 		(
-			"Enemy",
+			"LahkemupGuardDrone",
 			"LahkemupGuardDrone", // factionName
 			Coords.create(), // todo
 			[ enemyShip ]

@@ -250,6 +250,7 @@ class PlacePlanetVicinity extends PlaceBase
 
 	playerCollide(uwpe: UniverseWorldPlaceEntities)
 	{
+		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place as PlacePlanetVicinity;
 
@@ -298,7 +299,7 @@ class PlacePlanetVicinity extends PlaceBase
 				entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
 				var placePlanetOrbit = new PlacePlanetOrbit
 				(
-					world, entityOtherPlanet, place
+					universe, world, entityOtherPlanet, place
 				);
 				world.placeNextSet(placePlanetOrbit);
 			}
@@ -306,6 +307,7 @@ class PlacePlanetVicinity extends PlaceBase
 			{
 				entityOther.collidable().ticksUntilCanCollide = 100; // hack
 				var shipGroup = entityOtherShipGroup;
+				//uwpe.placeSet(place);
 				var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
 				world.placeNextSet(placeEncounter);
 			}

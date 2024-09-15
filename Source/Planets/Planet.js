@@ -55,23 +55,30 @@ class Planet {
     defn() {
         return PlanetDefn.byName(this.defnName);
     }
-    lifeformsGenerate(randomizer) {
-        this.lifeforms = new Array();
-        for (var i = 0; i < this.lifeformCount; i++) {
-            var lifeformDefnName = ArrayHelper.random(this.lifeformDefnNames, randomizer);
-            var lifeformPos = Coords.create().randomize(randomizer).multiply(this.sizeSurface);
-            var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
-            this.lifeforms.push(lifeform);
+    lifeforms(randomizer) {
+        if (this._lifeforms == null) {
+            var lifeforms = new Array();
+            for (var i = 0; i < this.lifeformCount; i++) {
+                var lifeformDefnName = ArrayHelper.random(this.lifeformDefnNames, randomizer);
+                var lifeformPos = Coords.create().randomize(randomizer).multiply(this.sizeSurface);
+                var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
+                lifeforms.push(lifeform);
+            }
+            this._lifeforms = lifeforms;
         }
-        return this.lifeforms;
+        return this._lifeforms;
+    }
+    lifeformsGenerate(randomizer) {
+        return this.lifeforms(randomizer);
     }
     mineralsGenerate(randomizer) {
-        var planet = this;
-        var resources = planet.resources;
-        if (resources == null) {
+        this.resources(randomizer);
+    }
+    resources(randomizer) {
+        if (this._resources == null) {
             var resources = new Array();
-            var planetDefn = planet.defn();
-            var planetSize = planet.sizeSurface;
+            var planetDefn = this.defn();
+            var planetSize = this.sizeSurface;
             var resourceDistributions = planetDefn.resourceDistributions;
             for (var i = 0; i < resourceDistributions.length; i++) {
                 var resourceDistribution = resourceDistributions[i];
@@ -84,8 +91,9 @@ class Planet {
                     resources.push(resource);
                 }
             }
-            planet.resources = resources;
+            this._resources = resources;
         }
+        return this._resources;
     }
     orbitColor() {
         var temperature = this.temperature;

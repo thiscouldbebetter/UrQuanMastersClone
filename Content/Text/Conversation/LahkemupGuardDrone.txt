@@ -4,6 +4,8 @@ imagePortraitName=Conversation-Portrait-Lahkemup
 soundMusicName=Music_Faction_Lahkemup
 
 |Display|#(SEND_MESSAGE)
+SayNothing|Option|[Done]|Done
+|Prompt
+
+Done|Script|cr.talker().actor().activity.defnNameSet('Leave')
 |Quit
-Finalize|DoNothing
-|Script|cr.talker().actor().activity.defnNameSet('Leave')

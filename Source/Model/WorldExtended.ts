@@ -125,7 +125,7 @@ class WorldExtended extends World
 				"Music_Encounter",
 				actions,
 				actionToInputsMappings,
-				entityPropertyNamesToProcess
+				[] // propertyNamesToProcess
 			),
 
 			PlaceDefn.from5
