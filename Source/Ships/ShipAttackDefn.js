@@ -56,9 +56,9 @@ class ShipAttackDefn {
         var entityProjectile = uwpe.entity;
         var entityOther = uwpe.entity2;
         var attackDefn = ShipAttackDefn.fromEntity(entityProjectile);
-        if (attackDefn.diesOnImpact == true) {
+        if (attackDefn.diesOnImpact) {
             var killable = entityProjectile.killable();
-            killable.integrity = 0;
+            killable.kill();
             var drawable = entityProjectile.drawable();
             var visualWrapped = drawable.visual;
             visualWrapped.child = attackDefn.visualImpact;

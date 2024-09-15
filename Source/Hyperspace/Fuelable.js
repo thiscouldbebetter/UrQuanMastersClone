@@ -15,7 +15,7 @@ class Fuelable {
             var flagship = world.player.flagship;
             var fuelToConsume = entitySpeed * fuelConsumedPerSpeed;
             if (flagship.fuel >= fuelToConsume) {
-                flagship.fuel -= fuelToConsume;
+                flagship.fuelSubtract(fuelToConsume);
             }
             else {
                 flagship.fuel = 0;

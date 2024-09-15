@@ -4,7 +4,9 @@ class Lifeform {
         this.defnName = defnName;
         this.pos = pos;
     }
-    // static
+    static fromEntity(entity) {
+        return entity.propertyByName(Lifeform.name);
+    }
     defn(world) {
         return world.defnExtended().lifeformDefnByName(this.defnName);
     }

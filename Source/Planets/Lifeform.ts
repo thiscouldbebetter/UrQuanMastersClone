@@ -10,9 +10,12 @@ class Lifeform implements EntityProperty<Lifeform>
 		this.pos = pos;
 	}
 
-	// static
+	static fromEntity(entity: Entity): Lifeform
+	{
+		return entity.propertyByName(Lifeform.name) as Lifeform;
+	}
 
-	defn(world: WorldExtended)
+	defn(world: WorldExtended): LifeformDefn
 	{
 		return world.defnExtended().lifeformDefnByName(this.defnName);
 	}

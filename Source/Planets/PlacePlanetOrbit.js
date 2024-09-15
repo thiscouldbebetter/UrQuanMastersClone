@@ -53,7 +53,7 @@ class PlacePlanetOrbit extends PlaceBase {
                 // todo - Notify player.
             }
             else {
-                flagship.fuel -= fuelRequiredToLand;
+                flagship.fuelSubtract(fuelRequiredToLand);
                 var placeNext = new PlacePlanetSurface(universe, world, planet, placeOrbit);
                 world.placeNextSet(placeNext);
             }

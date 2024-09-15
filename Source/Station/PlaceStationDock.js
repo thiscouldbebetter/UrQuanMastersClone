@@ -102,7 +102,7 @@ class PlaceStationDock extends PlaceBase {
             }
             var fuelValue = Math.ceil(this.fuelValuePerUnit * fuelUnitsToBuy);
             flagship.resourceCredits -= fuelValue;
-            flagship.fuel += fuelUnitsToBuy;
+            flagship.fuelAdd(fuelUnitsToBuy);
         }
     }
     fuelRemove(universe) {
@@ -114,7 +114,7 @@ class PlaceStationDock extends PlaceBase {
             }
             var fuelValue = Math.floor(fuelUnitsToSell * this.fuelValuePerUnit);
             flagship.resourceCredits += fuelValue;
-            flagship.fuel -= fuelUnitsToSell;
+            flagship.fuelSubtract(fuelUnitsToSell);
         }
     }
     landerAdd(universe) {

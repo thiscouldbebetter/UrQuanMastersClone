@@ -120,8 +120,24 @@ class Flagship {
     crewCurrentOverMax() {
         return this.crew + "/" + this._crewMax;
     }
+    fuelAdd(increment) {
+        var fuelAfterAdd = this.fuel + increment;
+        if (fuelAfterAdd > this._fuelMax) {
+            fuelAfterAdd = this._fuelMax;
+        }
+        this.fuel = fuelAfterAdd;
+        return this;
+    }
     fuelCurrentOverMax() {
         return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
+    }
+    fuelSubtract(decrement) {
+        var fuelAfterSubtract = this.fuel - decrement;
+        if (fuelAfterSubtract < 0) {
+            fuelAfterSubtract = 0;
+        }
+        this.fuel = fuelAfterSubtract;
+        return this;
     }
     hasInfoToSell(world) {
         var returnValue = this.hasInfoToSell_Biodata()

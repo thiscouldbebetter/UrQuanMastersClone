@@ -24,7 +24,7 @@ class Fuelable implements EntityPropertyBase
 			var fuelToConsume = entitySpeed * fuelConsumedPerSpeed;
 			if (flagship.fuel >= fuelToConsume)
 			{
-				flagship.fuel -= fuelToConsume;
+				flagship.fuelSubtract(fuelToConsume);
 			}
 			else
 			{

@@ -139,10 +139,10 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 
 		var attackDefn = ShipAttackDefn.fromEntity(entityProjectile);
 
-		if (attackDefn.diesOnImpact == true)
+		if (attackDefn.diesOnImpact)
 		{
 			var killable = entityProjectile.killable();
-			killable.integrity = 0;
+			killable.kill();
 
 			var drawable = entityProjectile.drawable();
 			var visualWrapped = drawable.visual as VisualWrapped;

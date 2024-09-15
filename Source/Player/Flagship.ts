@@ -218,9 +218,31 @@ class Flagship
 		return this.crew + "/" + this._crewMax;
 	}
 
+	fuelAdd(increment: number): Flagship
+	{
+		var fuelAfterAdd = this.fuel + increment;
+		if (fuelAfterAdd > this._fuelMax)
+		{
+			fuelAfterAdd = this._fuelMax;
+		}
+		this.fuel = fuelAfterAdd;
+		return this;
+	}
+
 	fuelCurrentOverMax(): string
 	{
 		return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
+	}
+
+	fuelSubtract(decrement: number): Flagship
+	{
+		var fuelAfterSubtract = this.fuel - decrement;
+		if (fuelAfterSubtract < 0)
+		{
+			fuelAfterSubtract = 0;
+		}
+		this.fuel = fuelAfterSubtract;
+		return this;
 	}
 
 	hasInfoToSell(world: World): boolean

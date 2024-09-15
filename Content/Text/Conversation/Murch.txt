@@ -4,25 +4,25 @@ imagePortraitName=Conversation-Portrait-Murch
 
 |VariablesImport|u.world.player.variableLookup
 
-|Display|#(HELLO_NOW_DOWN_TO_BUSINESS_1)||cr.varGet('Murch_TimesGreeted') == 0
+|Display|#(HELLO_NOW_DOWN_TO_BUSINESS_1)||cr.varGetWithDefault('Murch_TimesGreeted', 0) == 0
 |Display|#(HELLO_NOW_DOWN_TO_BUSINESS_2)||cr.varGet('Murch_TimesGreeted') == 1
 |Display|#(HELLO_NOW_DOWN_TO_BUSINESS_3)||cr.varGet('Murch_TimesGreeted') >= 2
 |Display|#(KNOW_OF_YOU)||cr.varGet('Murch_TimesGreeted') == 0
+
 Questions|DoNothing
 |OptionsClear
 #(how_know)|Option|#(how_know)|#(KNOW_BECAUSE)|cr.varGet('Murch_TimesGreeted') == 0
 #(what_about_yourselves)|Option|#(what_about_yourselves)|#(NO_TALK_ABOUT_OURSELVES)|cr.varGet('Murch_TimesGreeted') == 0
 #(what_about_universe)|Option|#(what_about_universe)|#(NO_FREE_LUNCH)|cr.varGet('Murch_TimesGreeted') == 0
-|Option|#(get_on_with_business)|#(HELLO_AND_DOWN_TO_BUSINESS_1)|cr.varGet('Murch_TimesGreeted') == 0
+#(get_on_with_business)|Option|#(get_on_with_business)|#(HELLO_AND_DOWN_TO_BUSINESS_1)|cr.varGet('Murch_TimesGreeted') == 0
 #(trade_is_for_the_weak)|Option|#(trade_is_for_the_weak)|#(WERE_NOT_AFRAID)|cr.varGet('Murch_TimesGreeted') == 0
-|Option|#(no_trade_now)|#(OK_NO_TRADE_NOW_BYE)|cr.varGet('Murch_TimesGreeted') == 0
-|VariableSet|Murch_TimesGreeted|cr.varGet('Murch_TimesGreeted') + 1
-|VariableStore|Murch_TimesGreeted|u.world.player.varSet('Murch_TimesGreeted', $value)
+|Option|#(no_trade_now)|#(OK_NO_TRADE_NOW_BYE)
+|VariableAdd|Murch_TimesGreeted|1
 |Prompt
 
 #(KNOW_BECAUSE)|Display|#(KNOW_BECAUSE)
 |Disable||#(how_know)
-|Goto||Questions
+|Prompt
 
 #(NO_TALK_ABOUT_OURSELVES)|Display|#(NO_TALK_ABOUT_OURSELVES)
 |Disable||#(what_about_yourselves)
@@ -32,6 +32,7 @@ Questions|DoNothing
 
 #(FACTORS_ARE)|Display|#(FACTORS_ARE)
 |Goto||Questions
+
 #(NO_FREE_LUNCH)|Display|#(NO_FREE_LUNCH)
 |Disable||#(what_about_universe)
 |OptionsClear
@@ -45,6 +46,7 @@ Questions|DoNothing
 
 #(GIVING_IS_BAD_2)|Display|#(GIVING_IS_BAD_2)
 |Goto||Questions
+
 #(WERE_NOT_AFRAID)|Display|#(WERE_NOT_AFRAID)
 |Disable||#(trade_is_for_the_weak)
 |OptionsClear
@@ -88,8 +90,8 @@ Prompt8|Prompt
 
 #(HELLO_AND_DOWN_TO_BUSINESS_1)|Display|#(HELLO_AND_DOWN_TO_BUSINESS_1)
 |OptionsClear
-|Option|#(why_turned_purple)|#(TURNED_PURPLE_BECAUSE)
-Prompt9|Prompt
+#(why_turned_purple)|Option|#(why_turned_purple)|#(TURNED_PURPLE_BECAUSE)
+|Prompt
 
 #(TURNED_PURPLE_BECAUSE)|Display|#(TURNED_PURPLE_BECAUSE)
 |OptionsClear
@@ -98,15 +100,15 @@ Prompt9|Prompt
 
 #(HELLO_AND_DOWN_TO_BUSINESS)|DoNothing
 |VariableLoad|DownToBusinessIndex|u.randomizer.integerLessThan(9)
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_2)||(u, cr) => cr.varGet('DownToBusinessIndex') == 0
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_3)||(u, cr) => cr.varGet('DownToBusinessIndex') == 1
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_4)||(u, cr) => cr.varGet('DownToBusinessIndex') == 2
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_5)||(u, cr) => cr.varGet('DownToBusinessIndex') == 3
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_6)||(u, cr) => cr.varGet('DownToBusinessIndex') == 4
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_7)||(u, cr) => cr.varGet('DownToBusinessIndex') == 5
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_8)||(u, cr) => cr.varGet('DownToBusinessIndex') == 6
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_9)||(u, cr) => cr.varGet('DownToBusinessIndex') == 7
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_10)||(u, cr) => cr.varGet('DownToBusinessIndex') == 8
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_2)||cr.varGet('DownToBusinessIndex') == 0
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_3)||cr.varGet('DownToBusinessIndex') == 1
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_4)||cr.varGet('DownToBusinessIndex') == 2
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_5)||cr.varGet('DownToBusinessIndex') == 3
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_6)||cr.varGet('DownToBusinessIndex') == 4
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_7)||cr.varGet('DownToBusinessIndex') == 5
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_8)||cr.varGet('DownToBusinessIndex') == 6
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_9)||cr.varGet('DownToBusinessIndex') == 7
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_10)||cr.varGet('DownToBusinessIndex') == 8
 |Goto||#(BUY_OR_SELL)
 
 |OptionsClear
@@ -151,26 +153,28 @@ Prompt9|Prompt
 |Display|#(HELLO_SLIGHTLY_ANGRY_3)
 
 |VariableLoad|Murch_GreetedHostileIndex|u.randomizer.integerLessThan(3)
-|Display|#(HELLO_HATE_YOU_1)||(u, cr) => cr.varGet('Murch_GreetedHostileIndex') == 0
-|Display|#(HELLO_HATE_YOU_2)||(u, cr) => cr.varGet('Murch_GreetedHostileIndex') == 1
-|Display|#(HELLO_HATE_YOU_3)||(u, cr) => cr.varGet('Murch_GreetedHostileIndex') == 2
+|Display|#(HELLO_HATE_YOU_1)||cr.varGet('Murch_GreetedHostileIndex') == 0
+|Display|#(HELLO_HATE_YOU_2)||cr.varGet('Murch_GreetedHostileIndex') == 1
+|Display|#(HELLO_HATE_YOU_3)||cr.varGet('Murch_GreetedHostileIndex') == 2
 |Option|#(well_if_thats_the_way_you_feel)|Combat
 |Option|#(you_hate_us_so_we_go_away)|#(HATE_YOU_GOODBYE)
 |Prompt
 
 #(HATE_YOU_GOODBYE)|Display|#(HATE_YOU_GOODBYE)
-Goto||Done
+|Goto||Done
 
 |VariableLoad|Murch_RescuedIndex|u.randomizer.integerLessThan(5)
 |Display|#(RESCUE_EXPLANATION)
-|Display|#(RESCUE_AGAIN_1)||(u, cr) => cr.varGet('Murch_RescuedIndex') == 0
-|Display|#(RESCUE_AGAIN_2)||(u, cr) => cr.varGet('Murch_RescuedIndex') == 1
-|Display|#(RESCUE_AGAIN_3)||(u, cr) => cr.varGet('Murch_RescuedIndex') == 2
-|Display|#(RESCUE_AGAIN_4)||(u, cr) => cr.varGet('Murch_RescuedIndex') == 3
-|Display|#(RESCUE_AGAIN_5)||(u, cr) => cr.varGet('Murch_RescuedIndex') == 4
+|Display|#(RESCUE_AGAIN_1)||cr.varGet('Murch_RescuedIndex') == 0
+|Display|#(RESCUE_AGAIN_2)||cr.varGet('Murch_RescuedIndex') == 1
+|Display|#(RESCUE_AGAIN_3)||cr.varGet('Murch_RescuedIndex') == 2
+|Display|#(RESCUE_AGAIN_4)||cr.varGet('Murch_RescuedIndex') == 3
+|Display|#(RESCUE_AGAIN_5)||cr.varGet('Murch_RescuedIndex') == 4
+
 |Display|#(CHANGED_MIND)
 |Display|#(no_changed_mind)
 |Display|#(yes_changed_mind)
+
 |Display|#(SHOULD_WE_HELP_YOU)
 |Display|#(yes_help)
 |Display|#(no_help)
@@ -201,24 +205,24 @@ Goto||Done
 |Display|#(goodbye)
 
 #(BUY_OR_SELL)|Display|#(BUY_OR_SELL)
-|Option|#(whats_my_credit)|#(CREDIT_IS0)
-|Option|#(buy)|#(buy)
-|Option|#(sell)|#(sell)
-|Option|#(be_leaving_now)|#(FRIENDLY_GOODBYE)
+#(whats_my_credit)|Option|#(whats_my_credit)|#(CREDIT_IS0)
+#(buy)|Option|#(buy)|Buy
+#(sell)|Option|#(sell)|Sell
+#(be_leaving_now)|Option|#(be_leaving_now)|#(FRIENDLY_GOODBYE)
 |Prompt
 
 #(CREDIT_IS0)|Display|#(CREDIT_IS0)
 |Display|#(CREDIT_IS1)
-|Goto||#(BUY_OR_SELL)
+|Prompt
 
-#(buy)|DoNothing
+Buy|DoNothing
 |VariableLoad|PlayerHasCredit|u.world.player.infoCredits > 0
 |JumpIfTrue|PlayerHasCredit|#(WHAT_TO_BUY)
 |Display|#(NEED_CREDIT)
 |Goto||#(BUY_OR_SELL)
 
 #(WHAT_TO_BUY)|Display|#(WHAT_TO_BUY)
-#(WHAT_MORE_TO_BUY)|Display|#(WHAT_MORE_TO_BUY)||(u, cr) => true
+#(WHAT_MORE_TO_BUY)|Display|#(WHAT_MORE_TO_BUY)||false
 |Disable||#(WHAT_TO_BUY)
 |Enable||#(WHAT_MORE_TO_BUY)
 |OptionsClear
@@ -231,7 +235,7 @@ Goto||Done
 #(OK_DONE_BUYING)|Display|#(OK_DONE_BUYING)
 |Goto||#(BUY_OR_SELL)
 
-#(sell)|DoNothing
+Sell|DoNothing
 |VariableLoad|PlayerHasSellables|u.world.player.hasInfoToSell(u.world)
 |JumpIfTrue|PlayerHasSellables|#(WHAT_TO_SELL)
 |Display|#(NOTHING_TO_SELL)
@@ -251,16 +255,16 @@ Goto||Done
 
 #(SOLD_LIFE_DATA)|DoNothing
 |VariableLoad|Murch_LifeDataSoldIndex|u.randomizer.integerLessThan(3)
-|Display|#(SOLD_LIFE_DATA1)||(u, cr) => cr.varGet('Murch_LifeDataSoldIndex') == 0
-|Display|#(SOLD_LIFE_DATA2)||(u, cr) => cr.varGet('Murch_LifeDataSoldIndex') == 1
-|Display|#(SOLD_LIFE_DATA3)||(u, cr) => cr.varGet('Murch_LifeDataSoldIndex') == 2
+|Display|#(SOLD_LIFE_DATA1)||cr.varGet('Murch_LifeDataSoldIndex') == 0
+|Display|#(SOLD_LIFE_DATA2)||cr.varGet('Murch_LifeDataSoldIndex') == 1
+|Display|#(SOLD_LIFE_DATA3)||cr.varGet('Murch_LifeDataSoldIndex') == 2
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_RAINBOW_LOCATIONS)|DoNothing
 |VariableLoad|Murch_LocationsSoldIndex|u.randomizer.integerLessThan(3)
-|Display|#(SOLD_RAINBOW_LOCATIONS1)||(u, cr) => cr.varGet('Murch_LocationsSoldIndex') == 0
-|Display|#(SOLD_RAINBOW_LOCATIONS2)||(u, cr) => cr.varGet('Murch_LocationsSoldIndex') == 1
-|Display|#(SOLD_RAINBOW_LOCATIONS3)||(u, cr) => cr.varGet('Murch_LocationsSoldIndex') == 2
+|Display|#(SOLD_RAINBOW_LOCATIONS1)||cr.varGet('Murch_LocationsSoldIndex') == 0
+|Display|#(SOLD_RAINBOW_LOCATIONS2)||cr.varGet('Murch_LocationsSoldIndex') == 1
+|Display|#(SOLD_RAINBOW_LOCATIONS3)||cr.varGet('Murch_LocationsSoldIndex') == 2
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_PRECURSOR_FIND)|Display|#(SOLD_PRECURSOR_FIND)
@@ -298,12 +302,12 @@ Goto||Done
 |Disable||#(BUY_INFO_INTRO)
 |Display|#(OK_BUY_INFO)
 |OptionsClear
-|Option|#(buy_alien_races)
+|Option|#(buy_alien_races)|#(OK_BUY_ALIEN_RACE)
 |Option|#(buy_current_events)|#(OK_BUY_EVENT)
-|Option|#(buy_history)
-#(no_buy_info)|Option|#(no_buy_info)
+|Option|#(buy_history)|#(OK_BUY_HISTORY)
+#(no_buy_info)|Option|#(no_buy_info)|#(OK_NO_BUY_INFO)
 |Disable||#(no_buy_info)
-|Option|#(done_buying_info)||(u, cr) => true
+|Option|#(done_buying_info)|#(OK_DONE_BUYING_INFO)|false
 |Enable|#(done_buying_info)
 |Prompt
 
@@ -314,54 +318,51 @@ Goto||Done
 |Goto||#(buy)
 
 #(OK_BUY_EVENT)|DoNothing
-|VariableLoad|Murch_CurrentEventsBought|u.world.player.varGetWithDefault('Murch_Info_CurrentEventsBought', 0)
-|Display|#(OK_BUY_EVENT_1)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 0
-|Display|#(OK_BUY_EVENT_2)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 1
-|Display|#(OK_BUY_EVENT_3)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 2
-|Display|#(OK_BUY_EVENT_4)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 3
-|Display|#(OK_BUY_EVENT_5)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 4
-|Display|#(OK_BUY_EVENT_6)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 5
-|Display|#(OK_BUY_EVENT_7)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 6
-|Display|#(OK_BUY_EVENT_8)||(u, cr) => u.world.player.varGet('Murch_Info_CurrentEventsBought') == 7
-|VariableSet|Murch_CurrentEventsBought|cr.varGet('Murch_Info_CurrentEventsBought') + 1
-|VariableStore|Murch_CurrentEventsBought|u.world.player.varSet('Murch_Info_CurrentEventsBought', $value)
+|VariableLoad|Murch_CurrentEventsBought|u.world.player.varGetWithDefault('Murch_InfoBought_CurrentEvents', 0)
+|Display|#(OK_BUY_EVENT_1)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 0
+|Display|#(OK_BUY_EVENT_2)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 1
+|Display|#(OK_BUY_EVENT_3)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 2
+|Display|#(OK_BUY_EVENT_4)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 3
+|Display|#(OK_BUY_EVENT_5)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 4
+|Display|#(OK_BUY_EVENT_6)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 5
+|Display|#(OK_BUY_EVENT_7)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 6
+|Display|#(OK_BUY_EVENT_8)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 7
+|VariableAdd|Murch_InfoBought_CurrentEvents|1
 |Goto||#(BUY_INFO_INTRO)
 
 #(OK_BUY_ALIEN_RACE)|DoNothing
-|VariableLoad|Murch_Info_AliensBought|u.world.player.varGetWithDefault('Murch_Info_AliensBought', 0)
-|Display|#(OK_BUY_ALIEN_RACE_1)
-|Display|#(OK_BUY_ALIEN_RACE_2)
-|Display|#(OK_BUY_ALIEN_RACE_3)
-|Display|#(OK_BUY_ALIEN_RACE_4)
-|Display|#(OK_BUY_ALIEN_RACE_5)
-|Display|#(OK_BUY_ALIEN_RACE_6)
-|Display|#(OK_BUY_ALIEN_RACE_7)
-|Display|#(OK_BUY_ALIEN_RACE_8)
-|Display|#(OK_BUY_ALIEN_RACE_9)
-|Display|#(OK_BUY_ALIEN_RACE_10)
-|Display|#(OK_BUY_ALIEN_RACE_11)
-|Display|#(OK_BUY_ALIEN_RACE_12)
-|Display|#(OK_BUY_ALIEN_RACE_13)
-|Display|#(OK_BUY_ALIEN_RACE_14)
-|Display|#(OK_BUY_ALIEN_RACE_15)
-|Display|#(OK_BUY_ALIEN_RACE_16)
-|VariableSet|Murch_CurrentEventsBought|cr.varGet('Murch_Info_CurrentEventsBought') + 1
-|VariableStore|Murch_CurrentEventsBought|u.world.player.varSet('Murch_Info_CurrentEventsBought', $value)
+|VariableLoad|Murch_InfoBought_Aliens|u.world.player.varGetWithDefault('Murch_InfoBought_Aliens', 0)
+|Display|#(OK_BUY_ALIEN_RACE_1)||u.world.player.varGet('Murch_InfoBought_Aliens') == 0
+|Display|#(OK_BUY_ALIEN_RACE_2)||u.world.player.varGet('Murch_InfoBought_Aliens') == 1
+|Display|#(OK_BUY_ALIEN_RACE_3)||u.world.player.varGet('Murch_InfoBought_Aliens') == 2
+|Display|#(OK_BUY_ALIEN_RACE_4)||u.world.player.varGet('Murch_InfoBought_Aliens') == 3
+|Display|#(OK_BUY_ALIEN_RACE_5)||u.world.player.varGet('Murch_InfoBought_Aliens') == 4
+|Display|#(OK_BUY_ALIEN_RACE_6)||u.world.player.varGet('Murch_InfoBought_Aliens') == 5
+|Display|#(OK_BUY_ALIEN_RACE_7)||u.world.player.varGet('Murch_InfoBought_Aliens') == 6
+|Display|#(OK_BUY_ALIEN_RACE_8)||u.world.player.varGet('Murch_InfoBought_Aliens') == 7
+|Display|#(OK_BUY_ALIEN_RACE_9)||u.world.player.varGet('Murch_InfoBought_Aliens') == 8
+|Display|#(OK_BUY_ALIEN_RACE_10)||u.world.player.varGet('Murch_InfoBought_Aliens') == 9
+|Display|#(OK_BUY_ALIEN_RACE_11)||u.world.player.varGet('Murch_InfoBought_Aliens') == 10
+|Display|#(OK_BUY_ALIEN_RACE_12)||u.world.player.varGet('Murch_InfoBought_Aliens') == 11
+|Display|#(OK_BUY_ALIEN_RACE_13)||u.world.player.varGet('Murch_InfoBought_Aliens') == 12
+|Display|#(OK_BUY_ALIEN_RACE_14)||u.world.player.varGet('Murch_InfoBought_Aliens') == 13
+|Display|#(OK_BUY_ALIEN_RACE_15)||u.world.player.varGet('Murch_InfoBought_Aliens') == 14
+|Display|#(OK_BUY_ALIEN_RACE_16)||u.world.player.varGet('Murch_InfoBought_Aliens') == 15
+|VariableAdd|Murch_InfoBought_Aliens|1
 |Goto||#(BUY_INFO_INTRO)
 
-(OK_BUY_HISTORY_1)|DoNothing
-|VariableLoad|Murch_Info_AliensBought|u.world.player.varGetWithDefault('Murch_Info_HistoryBought', 0)
-|Display|#(OK_BUY_HISTORY_1)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 0
-|Display|#(OK_BUY_HISTORY_2)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 1
-|Display|#(OK_BUY_HISTORY_3)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 2
-|Display|#(OK_BUY_HISTORY_4)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 3
-|Display|#(OK_BUY_HISTORY_5)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 4
-|Display|#(OK_BUY_HISTORY_6)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 5
-|Display|#(OK_BUY_HISTORY_7)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 6
-|Display|#(OK_BUY_HISTORY_8)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 7
-|Display|#(OK_BUY_HISTORY_9)||(u, cr) => u.world.player.varGet('Murch_Info_HistoryBought') == 8
-|VariableSet|Murch_CurrentEventsBought|cr.varGet('Murch_Info_CurrentEventsBought') + 1
-|VariableStore|Murch_CurrentEventsBought|u.world.player.varSet('Murch_Info_CurrentEventsBought', $value)
+#(OK_BUY_HISTORY)|DoNothing
+|VariableLoad|Murch_Info_AliensBought|u.world.player.varGetWithDefault('Murch_InfoBought_History', 0)
+|Display|#(OK_BUY_HISTORY_1)||u.world.player.varGet('Murch_InfoBought_History') == 0
+|Display|#(OK_BUY_HISTORY_2)||u.world.player.varGet('Murch_InfoBought_History') == 1
+|Display|#(OK_BUY_HISTORY_3)||u.world.player.varGet('Murch_InfoBought_History') == 2
+|Display|#(OK_BUY_HISTORY_4)||u.world.player.varGet('Murch_InfoBought_History') == 3
+|Display|#(OK_BUY_HISTORY_5)||u.world.player.varGet('Murch_InfoBought_History') == 4
+|Display|#(OK_BUY_HISTORY_6)||u.world.player.varGet('Murch_InfoBought_History') == 5
+|Display|#(OK_BUY_HISTORY_7)||u.world.player.varGet('Murch_InfoBought_History') == 6
+|Display|#(OK_BUY_HISTORY_8)||u.world.player.varGet('Murch_InfoBought_History') == 7
+|Display|#(OK_BUY_HISTORY_9)||u.world.player.varGet('Murch_InfoBought_History') == 8
+|VariableAdd|Murch_InfoBought_History|1
 |Goto||#(BUY_INFO_INTRO)
 
 #(INFO_ALL_GONE)|Display|#(INFO_ALL_GONE)
@@ -369,45 +370,45 @@ Goto||Done
 
 #(BUY_NEW_TECH_INTRO)|DoNothing
 |Disable||#(no_buy_new_tech)
-|Option|#(done_buying_new_tech)|#(OK_DONE_BUYING_NEW_TECH)|(u, cr) => true
+|Option|#(done_buying_new_tech)|#(OK_DONE_BUYING_NEW_TECH)|true
 |Enable|#(done_buying_new_tech)
 
 |Display|#(BUY_NEW_TECH_INTRO)
 |Disable||#(BUY_NEW_TECH_INTRO)
 |VariableLoad|Murch_TechsBought|u.world.player.varGetWithDefault('Murch_TechsBought', 0)
-|Display|#(NEW_TECH_1)||(u, cr) => cr.varGet('Murch_TechsBought') == 0
-|Display|#(NEW_TECH_2)||(u, cr) => cr.varGet('Murch_TechsBought') == 1
-|Display|#(NEW_TECH_3)||(u, cr) => cr.varGet('Murch_TechsBought') == 2
-|Display|#(NEW_TECH_4)||(u, cr) => cr.varGet('Murch_TechsBought') == 3
-|Display|#(NEW_TECH_5)||(u, cr) => cr.varGet('Murch_TechsBought') == 4
-|Display|#(NEW_TECH_6)||(u, cr) => cr.varGet('Murch_TechsBought') == 5
-|Display|#(NEW_TECH_7)||(u, cr) => cr.varGet('Murch_TechsBought') == 6
-|Display|#(NEW_TECH_8)||(u, cr) => cr.varGet('Murch_TechsBought') == 7
-|Display|#(NEW_TECH_9)||(u, cr) => cr.varGet('Murch_TechsBought') == 8
-|Display|#(NEW_TECH_10)||(u, cr) => cr.varGet('Murch_TechsBought') == 9
-|Display|#(NEW_TECH_11)||(u, cr) => cr.varGet('Murch_TechsBought') == 10
-|Display|#(NEW_TECH_12)||(u, cr) => cr.varGet('Murch_TechsBought') == 11
-|Display|#(NEW_TECH_13)||(u, cr) => cr.varGet('Murch_TechsBought') == 12
+|Display|#(NEW_TECH_1)||cr.varGet('Murch_TechsBought') == 0
+|Display|#(NEW_TECH_2)||cr.varGet('Murch_TechsBought') == 1
+|Display|#(NEW_TECH_3)||cr.varGet('Murch_TechsBought') == 2
+|Display|#(NEW_TECH_4)||cr.varGet('Murch_TechsBought') == 3
+|Display|#(NEW_TECH_5)||cr.varGet('Murch_TechsBought') == 4
+|Display|#(NEW_TECH_6)||cr.varGet('Murch_TechsBought') == 5
+|Display|#(NEW_TECH_7)||cr.varGet('Murch_TechsBought') == 6
+|Display|#(NEW_TECH_8)||cr.varGet('Murch_TechsBought') == 7
+|Display|#(NEW_TECH_9)||cr.varGet('Murch_TechsBought') == 8
+|Display|#(NEW_TECH_10)||cr.varGet('Murch_TechsBought') == 9
+|Display|#(NEW_TECH_11)||cr.varGet('Murch_TechsBought') == 10
+|Display|#(NEW_TECH_12)||cr.varGet('Murch_TechsBought') == 11
+|Display|#(NEW_TECH_13)||cr.varGet('Murch_TechsBought') == 12
 |Option|#(buy_new_tech)|#(OK_BUY_NEW_TECH)
 #(no_buy_new_tech)|Option|#(no_buy_new_tech)|#(OK_NO_BUY_NEW_TECH)
 |Prompt
 
 #(OK_BUY_NEW_TECH)|Display|#(OK_BUY_NEW_TECH)
-|Display|#(OK_BUY_NEW_TECH_1)||(u, cr) => cr.varGet('Murch_TechsBought') == 0
-|Display|#(OK_BUY_NEW_TECH_2)||(u, cr) => cr.varGet('Murch_TechsBought') == 1
-|Display|#(OK_BUY_NEW_TECH_3)||(u, cr) => cr.varGet('Murch_TechsBought') == 2
-|Display|#(OK_BUY_NEW_TECH_4)||(u, cr) => cr.varGet('Murch_TechsBought') == 3
-|Display|#(OK_BUY_NEW_TECH_5)||(u, cr) => cr.varGet('Murch_TechsBought') == 4
-|Display|#(OK_BUY_NEW_TECH_6)||(u, cr) => cr.varGet('Murch_TechsBought') == 5
-|Display|#(OK_BUY_NEW_TECH_7)||(u, cr) => cr.varGet('Murch_TechsBought') == 6
-|Display|#(OK_BUY_NEW_TECH_8)||(u, cr) => cr.varGet('Murch_TechsBought') == 7
-|Display|#(OK_BUY_NEW_TECH_9)||(u, cr) => cr.varGet('Murch_TechsBought') == 8
-|Display|#(OK_BUY_NEW_TECH_10||(u, cr) => cr.varGet('Murch_TechsBought') == 9
-|Display|#(OK_BUY_NEW_TECH_11||(u, cr) => cr.varGet('Murch_TechsBought') == 10
-|Display|#(OK_BUY_NEW_TECH_12||(u, cr) => cr.varGet('Murch_TechsBought') == 11
-|Display|#(OK_BUY_NEW_TECH_13||(u, cr) => cr.varGet('Murch_TechsBought') == 12
-|VariableSet|Murch_TechsBought|u.world.player.varGet('Murch_TechsBought') + 1
-|VariableStore|Murch_TechsBought|u.world.player.varSet('Murch_TechsBought', $value)
+|Display|#(OK_BUY_NEW_TECH_1)||cr.varGet('Murch_TechsBought') == 0
+|Display|#(OK_BUY_NEW_TECH_2)||cr.varGet('Murch_TechsBought') == 1
+|Display|#(OK_BUY_NEW_TECH_3)||cr.varGet('Murch_TechsBought') == 2
+|Display|#(OK_BUY_NEW_TECH_4)||cr.varGet('Murch_TechsBought') == 3
+|Display|#(OK_BUY_NEW_TECH_5)||cr.varGet('Murch_TechsBought') == 4
+|Display|#(OK_BUY_NEW_TECH_6)||cr.varGet('Murch_TechsBought') == 5
+|Display|#(OK_BUY_NEW_TECH_7)||cr.varGet('Murch_TechsBought') == 6
+|Display|#(OK_BUY_NEW_TECH_8)||cr.varGet('Murch_TechsBought') == 7
+|Display|#(OK_BUY_NEW_TECH_9)||cr.varGet('Murch_TechsBought') == 8
+|Display|#(OK_BUY_NEW_TECH_10||cr.varGet('Murch_TechsBought') == 9
+|Display|#(OK_BUY_NEW_TECH_11||cr.varGet('Murch_TechsBought') == 10
+|Display|#(OK_BUY_NEW_TECH_12||cr.varGet('Murch_TechsBought') == 11
+|Display|#(OK_BUY_NEW_TECH_13||cr.varGet('Murch_TechsBought') == 12
+|VariableAdd|Murch_TechsBought|1
+
 #(OK_NO_BUY_NEW_TECH)|Display|#(OK_NO_BUY_NEW_TECH)
 |Goto||#(buy)
 
