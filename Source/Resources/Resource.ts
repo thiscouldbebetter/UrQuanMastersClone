@@ -1,5 +1,5 @@
 
-class Resource
+class Resource implements EntityProperty<Resource>
 {
 	defnName: string;
 	quantity: number;
@@ -15,6 +15,11 @@ class Resource
 	static fromDefnName(defnName: string): Resource
 	{
 		return new Resource(defnName, 0, null);
+	}
+
+	static fromEntity(entity: Entity): Resource
+	{
+		return entity.propertyByName(Resource.name) as Resource;
 	}
 
 	toEntity
@@ -101,6 +106,7 @@ class Resource
 		(
 			Resource.name + Math.random(),
 			[
+				resource,
 				resourceCollidable,
 				resourceDrawable,
 				resourceItem,
@@ -116,4 +122,18 @@ class Resource
 	{
 		return new Item(this.defnName, this.quantity);
 	}
+
+	// Clonable.
+	clone(): Resource { throw new Error("todo"); }
+	overwriteWith(other: Resource): Resource { throw new Error("todo"); }
+
+	// EntityProperty.
+
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return Resource.name; }
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	equals(other: Resource): boolean { return false; }
+
 }

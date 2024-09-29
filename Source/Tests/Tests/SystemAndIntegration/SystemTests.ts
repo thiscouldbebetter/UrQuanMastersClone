@@ -617,13 +617,18 @@ class SystemTests extends TestFixture
 
 		// Move to a conscious, dangerous lifeform.
 
-		var entityLifeformDangerous = entitiesLifeforms.find(x => Lifeform.fromEntity(x).defn(world).damagePerAttack > 0);
+		var entityLifeformDangerous =
+			entitiesLifeforms.find
+			(
+				x => Lifeform.fromEntity(x).defn(world).damagePerAttack > 0
+			);
 		Assert.isNotNull(entityLifeformDangerous);
 		this.playFromStart_MoveToEntityWithNameAndWait(universe, entityLifeformDangerous.name);
 
 		// Verify that the lifeform was not picked up, and that some crew was killed.
 
-		var landerCargoAfterMovingOntoConsciousLifeform = landerItemHolder.encumbranceOfAllItems(world);
+		var landerCargoAfterMovingOntoConsciousLifeform =
+			landerItemHolder.encumbranceOfAllItems(world);
 		Assert.areNumbersEqual(landerCargoBeforeGatheringLifeforms, landerCargoAfterMovingOntoConsciousLifeform);
 
 		var landerCrewCountAfterTouchingDangerousLifeform = entityLanderKillable.integrity;
@@ -633,6 +638,19 @@ class SystemTests extends TestFixture
 		console.log("crewLost = " + crewLost);
 		//Assert.isTrue(crewLost > 0);// todo - This isn't dependable.
 
+		// Make sure that, before any creatures are stunned,
+		// that there are no "biodata" resources on the planet.
+
+		var resourceDefns = ResourceDefn.Instances();
+		var resourceDefnBiodata = resourceDefns.Biodata;
+
+		var entitiesResourcesBiodata =
+			entitiesOnPlanet
+				.filter(x => Resource.fromEntity(x) != null)
+				.filter(x => Resource.fromEntity(x).defnName == resourceDefnBiodata.name);
+
+		Assert.isEmpty(entitiesResourcesBiodata);
+
 		// Gather up all the lifeforms.
 
 		for (var i = 0; i < entitiesLifeforms.length; i++)
@@ -640,6 +658,27 @@ class SystemTests extends TestFixture
 			var entity = entitiesLifeforms[i];
 			// Cheat: kill (well, stun) them all!
 			entity.killable().kill();
+			// this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
+		}
+
+		this.playFromStart_WaitForTicks(universe, 10);
+
+		// Verify that the conscious lifeforms have been replaced with biodata resources
+		// (Or are they just datapods?  It's never been very clear.)
+
+		var entitiesResourcesBiodata =
+			entitiesOnPlanet
+				.filter(x => Resource.fromEntity(x) != null)
+				.filter(x => Resource.fromEntity(x).defnName == resourceDefnBiodata.name);
+
+		Assert.isNotEmpty(entitiesResourcesBiodata);
+
+		// Pick up all the biodata.
+		// todo - Check for maximum capacity.
+
+		for (var i = 0; i < entitiesResourcesBiodata.length; i++)
+		{
+			var entity = entitiesResourcesBiodata[i];
 			this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
 		}
 

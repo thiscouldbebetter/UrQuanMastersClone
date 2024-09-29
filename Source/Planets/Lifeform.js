@@ -7,6 +7,20 @@ class Lifeform {
     static fromEntity(entity) {
         return entity.propertyByName(Lifeform.name);
     }
+    die(uwpe) {
+        var world = uwpe.world;
+        var place = uwpe.place;
+        var entity = uwpe.entity;
+        var resourceDefns = ResourceDefn.Instances();
+        var lifeform = Lifeform.fromEntity(entity);
+        var lifeformDefn = lifeform.defn(world);
+        var lifeformValue = lifeformDefn.value;
+        var entityPos = entity.locatable().loc.pos;
+        var resource = new Resource(resourceDefns.Biodata.name, lifeformValue, entityPos);
+        var radius = entity.collidable().collider.radius;
+        var entityResource = resource.toEntity(world, place, radius);
+        place.entityToSpawnAdd(entityResource);
+    }
     defn(world) {
         return world.defnExtended().lifeformDefnByName(this.defnName);
     }
@@ -23,16 +37,7 @@ class Lifeform {
         lifeformVisual = new VisualWrapped(planet.sizeSurface, lifeformVisual);
         var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
         var lifeformKillable = new Killable(lifeformDefn.durability, null, // ?
-        (uwpe) => // die
-         {
-            var world = uwpe.world;
-            var place = uwpe.place;
-            var entity = uwpe.entity;
-            var resource = new Resource("Biodata", 1, entity.locatable().loc.pos);
-            var radius = entity.collidable().collider.radius;
-            var entityResource = resource.toEntity(world, place, radius);
-            place.entityToSpawnAdd(entityResource);
-        });
+        this.die);
         var lifeformLocatable = Locatable.fromPos(this.pos);
         var colorGreen = Color.Instances().Green;
         var visualScanContact = new VisualRectangle(Coords.ones().multiplyScalar(lifeformRadius), colorGreen, null, null);

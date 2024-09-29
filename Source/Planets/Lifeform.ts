@@ -15,6 +15,32 @@ class Lifeform implements EntityProperty<Lifeform>
 		return entity.propertyByName(Lifeform.name) as Lifeform;
 	}
 
+	die(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place as PlacePlanetOrbit;
+		var entity = uwpe.entity;
+		var resourceDefns = ResourceDefn.Instances();
+
+		var lifeform = Lifeform.fromEntity(entity);
+		var lifeformDefn = lifeform.defn(world);
+		var lifeformValue = lifeformDefn.value;
+
+		var entityPos = entity.locatable().loc.pos;
+
+		var resource = new Resource
+		(
+			resourceDefns.Biodata.name,
+			lifeformValue,
+			entityPos
+		);
+
+		var radius = (entity.collidable().collider as Sphere).radius;
+		var entityResource =
+			resource.toEntity(world, place, radius);
+		place.entityToSpawnAdd(entityResource);
+	}
+
 	defn(world: WorldExtended): LifeformDefn
 	{
 		return world.defnExtended().lifeformDefnByName(this.defnName);
@@ -47,19 +73,7 @@ class Lifeform implements EntityProperty<Lifeform>
 		(
 			lifeformDefn.durability,
 			null, // ?
-			(uwpe: UniverseWorldPlaceEntities) => // die
-			{
-				var world = uwpe.world as WorldExtended;
-				var place = uwpe.place as PlacePlanetOrbit;
-				var entity = uwpe.entity;
-
-				var resource =
-					new Resource("Biodata", 1, entity.locatable().loc.pos);
-				var radius = (entity.collidable().collider as Sphere).radius;
-				var entityResource =
-					resource.toEntity(world, place, radius);
-				place.entityToSpawnAdd(entityResource);
-			}
+			this.die
 		);
 
 		var lifeformLocatable = Locatable.fromPos(this.pos);

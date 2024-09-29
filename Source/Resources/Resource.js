@@ -8,6 +8,9 @@ class Resource {
     static fromDefnName(defnName) {
         return new Resource(defnName, 0, null);
     }
+    static fromEntity(entity) {
+        return entity.propertyByName(Resource.name);
+    }
     toEntity(world, place, resourceRadiusBase) {
         var resource = this;
         var resourceQuantity = resource.quantity;
@@ -51,6 +54,7 @@ class Resource {
         }, visualScanContact);
         var resourceMappable = new Mappable(visualScanContact);
         var resourceEntity = new Entity(Resource.name + Math.random(), [
+            resource,
             resourceCollidable,
             resourceDrawable,
             resourceItem,
@@ -62,4 +66,13 @@ class Resource {
     toItem() {
         return new Item(this.defnName, this.quantity);
     }
+    // Clonable.
+    clone() { throw new Error("todo"); }
+    overwriteWith(other) { throw new Error("todo"); }
+    // EntityProperty.
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    propertyName() { return Resource.name; }
+    updateForTimerTick(uwpe) { }
+    equals(other) { return false; }
 }

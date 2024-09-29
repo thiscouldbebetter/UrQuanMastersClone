@@ -394,11 +394,32 @@ class SystemTests extends TestFixture {
             - landerCrewCountAfterTouchingDangerousLifeform;
         console.log("crewLost = " + crewLost);
         //Assert.isTrue(crewLost > 0);// todo - This isn't dependable.
+        // Make sure that, before any creatures are stunned,
+        // that there are no "biodata" resources on the planet.
+        var resourceDefns = ResourceDefn.Instances();
+        var resourceDefnBiodata = resourceDefns.Biodata;
+        var entitiesResourcesBiodata = entitiesOnPlanet
+            .filter(x => Resource.fromEntity(x) != null)
+            .filter(x => Resource.fromEntity(x).defnName == resourceDefnBiodata.name);
+        Assert.isEmpty(entitiesResourcesBiodata);
         // Gather up all the lifeforms.
         for (var i = 0; i < entitiesLifeforms.length; i++) {
             var entity = entitiesLifeforms[i];
             // Cheat: kill (well, stun) them all!
             entity.killable().kill();
+            // this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
+        }
+        this.playFromStart_WaitForTicks(universe, 10);
+        // Verify that the conscious lifeforms have been replaced with biodata resources
+        // (Or are they just datapods?  It's never been very clear.)
+        var entitiesResourcesBiodata = entitiesOnPlanet
+            .filter(x => Resource.fromEntity(x) != null)
+            .filter(x => Resource.fromEntity(x).defnName == resourceDefnBiodata.name);
+        Assert.isNotEmpty(entitiesResourcesBiodata);
+        // Pick up all the biodata.
+        // todo - Check for maximum capacity.
+        for (var i = 0; i < entitiesResourcesBiodata.length; i++) {
+            var entity = entitiesResourcesBiodata[i];
             this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
         }
         var landerCargoAfterMovingOntoStunnedLifeforms = landerItemHolder.encumbranceOfAllItems(world);
