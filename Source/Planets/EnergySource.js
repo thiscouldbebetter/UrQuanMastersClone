@@ -4,10 +4,19 @@ class EnergySource {
         this.name = name;
         this.pos = pos;
         this.visual = visual;
-        this.collideWithLander = collideWithLander;
+        this._collideWithLander = collideWithLander;
+    }
+    static Instances() {
+        if (this._instances == null) {
+            this._instances = new EnergySource_Instances();
+        }
+        return this._instances;
     }
     static fromEntity(entity) {
         return entity.propertyByName(EnergySource.name);
+    }
+    collideWithLander(uwpe) {
+        this._collideWithLander(uwpe);
     }
     toEntity(world, planet) {
         var dimension = 5;
@@ -60,4 +69,36 @@ class EnergySource {
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }
+}
+class EnergySource_Instances {
+    constructor() {
+        var es = EnergySource;
+        var pos = null;
+        var visual = new VisualNone(); // todo
+        var collideWithLander = (uwpe) => { throw new Error("todo"); };
+        var vifl = VisualImageFromLibrary;
+        this.AbandonedMoonbase = new es("AbandonedMoonbase", pos, new vifl(EnergySource.name + "AbandonedMoonbase"), this.abandonedMoonbase_CollideWithLander);
+        this.CrashedShackler = new es("CrashedShackler", pos, visual, collideWithLander);
+        this.MauluskaOrphan = new es("MauluskaOrphan", pos, visual, collideWithLander);
+        this.TtorstingCaster = new es("TtorstingCaster", pos, visual, collideWithLander);
+        this._All =
+            [
+                this.AbandonedMoonbase,
+                this.CrashedShackler,
+                this.MauluskaOrphan,
+                this.TtorstingCaster
+            ];
+    }
+    abandonedMoonbase_CollideWithLander(uwpe) {
+        var universe = uwpe.universe;
+        var acknowledgeReport = () => {
+            var place = uwpe.place;
+            place.exit(uwpe);
+        };
+        var venueToReturnTo = universe.venueCurrent();
+        var mediaLibrary = universe.mediaLibrary;
+        var abandonedMoonbaseMessage = mediaLibrary.textStringGetByName(EnergySource.name + "AbandonedMoonbase").value;
+        var venueMessage = VenueMessage.fromTextAcknowledgeAndVenuePrev(abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo);
+        universe.venueTransitionTo(venueMessage);
+    }
 }

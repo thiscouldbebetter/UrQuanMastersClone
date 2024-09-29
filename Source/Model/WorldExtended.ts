@@ -308,6 +308,8 @@ class WorldExtended extends World
 
 		var shipDefns = ShipDefn.Instances(universe)._All;
 
+		var energySources = EnergySource.Instances()._All;
+
 		var lifeformDefns = LifeformDefn.Instances()._All;
 
 		var resourceDefns = ResourceDefn.Instances()._All;
@@ -319,7 +321,8 @@ class WorldExtended extends World
 			lifeformDefns,
 			placeDefns,
 			resourceDefns,
-			shipDefns
+			shipDefns,
+			energySources
 		);
 
 		var mediaLibrary = universe.mediaLibrary;
@@ -331,8 +334,9 @@ class WorldExtended extends World
 		(
 			hyperspaceSize,
 			10, // starsystemRadiusOuter
-			Coords.fromXY(300, 300),
+			Coords.fromXY(1, 1).multiplyScalar(300),
 			factions,
+			energySources,
 			starsAndPlanetsAsStringCSVCompressed
 		);
 

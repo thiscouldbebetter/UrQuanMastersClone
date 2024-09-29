@@ -47,7 +47,7 @@ class Hyperspace {
         );
         return returnValue;
     }
-    static fromFileContentsAsString(size, starsystemRadiusOuter, starsystemSizeInner, factions, fileContentsAsString) {
+    static fromFileContentsAsString(size, starsystemRadiusOuter, starsystemSizeInner, factions, energySources, fileContentsAsString) {
         var starsAndPlanetsAsStringCSV = new CsvCompressor().decompress(fileContentsAsString);
         var starsAndPlanetsAsStringsCSV = starsAndPlanetsAsStringCSV.split("\n");
         var iOffset = 0;
@@ -147,10 +147,15 @@ class Hyperspace {
                 //throw new Error(message);
                 console.log(message);
             }
+            var energySourceAsString = planetAsValues[29];
+            var energySourcesOnPlanet = new Array();
+            if (energySourceAsString != "-") {
+                var energySource = energySources.find(x => x.name == energySourceAsString);
+                energySourcesOnPlanet.push(energySource);
+            }
             var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetSize, null, // satellites
             null, // shipGroups,
-            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, null // energySources
-            );
+            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet);
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;
             var bodyListToAddTo;

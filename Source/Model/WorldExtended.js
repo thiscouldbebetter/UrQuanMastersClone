@@ -136,13 +136,14 @@ class WorldExtended extends World {
             warpig
         ];
         var shipDefns = ShipDefn.Instances(universe)._All;
+        var energySources = EnergySource.Instances()._All;
         var lifeformDefns = LifeformDefn.Instances()._All;
         var resourceDefns = ResourceDefn.Instances()._All;
-        var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, resourceDefns, shipDefns);
+        var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, resourceDefns, shipDefns, energySources);
         var mediaLibrary = universe.mediaLibrary;
         var starsAndPlanetsAsStringCSVCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
         var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, 10, // starsystemRadiusOuter
-        Coords.fromXY(300, 300), factions, starsAndPlanetsAsStringCSVCompressed);
+        Coords.fromXY(1, 1).multiplyScalar(300), factions, energySources, starsAndPlanetsAsStringCSVCompressed);
         var starsystemStart = hyperspace.starsystemByName("Sol");
         starsystemStart.solarSystem(universe);
         var starsystems = hyperspace.starsystems;

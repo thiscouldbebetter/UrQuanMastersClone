@@ -224,6 +224,11 @@ class Flagship
 		return this.crew + "/" + this._crewMax;
 	}
 
+	deviceWithNameUse(deviceName: string): void
+	{
+		throw new Error("todo");
+	}
+
 	fuelAdd(increment: number): Flagship
 	{
 		var fuelAfterAdd = this.fuel + increment;

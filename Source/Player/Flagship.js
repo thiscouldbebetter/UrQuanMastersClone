@@ -119,6 +119,9 @@ class Flagship {
     crewCurrentOverMax() {
         return this.crew + "/" + this._crewMax;
     }
+    deviceWithNameUse(deviceName) {
+        throw new Error("todo");
+    }
     fuelAdd(increment) {
         var fuelAfterAdd = this.fuel + increment;
         if (fuelAfterAdd > this._fuelMax) {

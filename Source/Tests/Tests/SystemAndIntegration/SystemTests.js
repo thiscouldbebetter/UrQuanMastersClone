@@ -26,12 +26,13 @@ class SystemTests extends TestFixture {
         var starsystemSol = place().starsystem;
         Assert.areStringsEqual("Sol", starsystemSol.name);
         this.waitForTicks(universe, 5);
-        var planetEarth = place().entityByName("Earth");
+        var planetEarthName = "Earth";
+        var planetEarth = place().entityByName(planetEarthName);
         Assert.isNotNull(planetEarth);
         var playerEntity = place().entityByName(Player.name);
         Assert.isNotNull(playerEntity);
         // Move the player's ship to Earth.
-        this.moveToEntityWithNameAndWait(universe, "Earth");
+        this.moveToEntityWithNameAndWait(universe, planetEarthName);
         // Make sure the place transitions to a planet vicinity.
         // todo
         // This sometimes fails the assert, perhaps because the guard drone,
@@ -87,7 +88,7 @@ class SystemTests extends TestFixture {
         // Then go back to Earth immediately, without the needed radioactives.
         this.moveToEntityWithNameAndWait(universe, "Venus");
         this.leavePlanetVicinityAndWait(universe);
-        this.moveToEntityWithNameAndWait(universe, "Earth");
+        this.moveToEntityWithNameAndWait(universe, planetEarthName);
         this.moveToEntityWithNameAndWait(universe, stationName);
         // Talk to the station, and verify that the option to transfer radioactives isn't available.
         var placeEncounter = place();
@@ -135,7 +136,7 @@ class SystemTests extends TestFixture {
         // Leave the Mercury vicinity and return to the Earth Station.
         this.leavePlanetVicinityAndWait(universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
-        this.moveToEntityWithNameAndWait(universe, "Earth");
+        this.moveToEntityWithNameAndWait(universe, planetEarthName);
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         this.moveToEntityWithNameAndWait(universe, stationName);
         this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
@@ -406,9 +407,10 @@ class SystemTests extends TestFixture {
         this.returnToOrbit(universe, world, place());
         var biodataAfterGatheringLifeforms = flagshipItemHolderOther.encumbranceOfAllItems(world);
         Assert.isTrue(biodataAfterGatheringLifeforms > biodataBeforeGatheringLifeforms);
-        // Go back to the starsystem containing the merchants,
+        // Go to another supergiant starsystem containing the merchants,
         // then find the merchants and engage with them.
-        this.goToStarsystemWithName(universe, starsystemWithMerchantsName);
+        var starsystemToGoToName = "Zeeman";
+        this.goToStarsystemWithName(universe, starsystemToGoToName);
         this.moveToShipGroupBelongingToFactionIfAny(universe, world, starsystem, factionMerchantsName);
         this.talkToTalker2(universe, [
             // "Hello.  Shall we get down to business?"
@@ -421,14 +423,14 @@ class SystemTests extends TestFixture {
             "#(buy)", // "I'd like to buy something."
             // "What would you like to buy?"
             "#(buy_fuel)", // "Fuel."
-            // "How much fuel."
+            // "How much fuel?"
             "#(fill_me_up)", // Fill me up.
-            // "Fuel transferred.  Want any more?"
-            "#(done_buying_fuel)",
-            // "Okay.  What else would you like to buy?"
+            // "Fuel transferred." 
+            // (And it's assumed you don't want any more fuel.)
+            // "What else would you like to buy?"
             "#(done_buying)",
             // "Anything else?"
-            "#(no_trade_now)"
+            "#(be_leaving_now)"
             // "Goodbye."
         ]);
         // Go to a system containing a rainbow world,
@@ -440,15 +442,25 @@ class SystemTests extends TestFixture {
         Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
         this.moveToEntityWithNameAndWait(universe, starsystemWithRainbowWorldName + " I");
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
-        this.moveToEntityWithNameAndWait(universe, "Planet");
+        this.moveToEntityWithNameAndWait(universe, Planet.name);
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         var placeOrbit = place();
         var planet = placeOrbit.planet;
         Assert.areStringsEqual("Rainbow", planet.defnName);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
         Assert.areNumbersEqual(1, rainbowWorldLocationsKnownButUnsoldCount);
-        // Now sell the location.
-        this.goToStarsystemWithName(universe, starsystemWithMerchantsName);
+        // It won't be possible to sell the location at a supergiant without going backwards,
+        // so instead go forward to pick up a hyperwave caster.
+        var deviceTtorstingCasterName = "TtorstingCaster";
+        var planetWithTtorstingCaster = "Arcturus I";
+        this.goToSurfaceOfPlanetWithName(universe, planetWithTtorstingCaster);
+        this.assertPlaceCurrentIsOfTypeForWorld(placePlanetSurface.name, world);
+        this.moveToEntityWithNameAndWait(universe, deviceTtorstingCasterName);
+        this.returnToOrbit(universe, world, place());
+        // Call the merchants with the caster.
+        this.goToHyperspace(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+        flagship.deviceWithNameUse(deviceTtorstingCasterName);
         var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
         // Sell it.
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
