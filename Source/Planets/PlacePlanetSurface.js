@@ -166,10 +166,14 @@ class PlacePlanetSurface extends PlaceBase {
         var entityLander = place.entityByName(Player.name);
         var lander = Lander.fromEntity(entityLander);
         var itemHoldersForLander = [lander.itemHolderCargo, lander.itemHolderLifeforms];
-        var itemHolderPlayer = world.player.flagship.itemHolderCargo;
+        var flagship = world.player.flagship;
+        var itemHoldersForFlagship = [
+            flagship.itemHolderCargo, flagship.itemHolderOther
+        ];
         for (var i = 0; i < itemHoldersForLander.length; i++) {
             var itemHolderLander = itemHoldersForLander[i];
-            itemHolderLander.itemsAllTransferTo(itemHolderPlayer);
+            var itemHolderFlagship = itemHoldersForFlagship[i];
+            itemHolderLander.itemsAllTransferTo(itemHolderFlagship);
         }
         var placePlanetOrbit = place.placePlanetOrbit;
         world.placeNextSet(placePlanetOrbit);
@@ -189,7 +193,15 @@ class PlacePlanetSurface extends PlaceBase {
         if (entityOtherItem != null) {
             var itemHolder = null;
             if (entityOtherName.startsWith(Resource.name)) {
-                itemHolder = lander.itemHolderCargo;
+                var resource = Resource.fromEntity(entityOther);
+                var resourceDefnName = resource.defnName;
+                var resourceDefns = ResourceDefn.Instances();
+                if (resourceDefnName == resourceDefns.Biodata.name) {
+                    itemHolder = lander.itemHolderLifeforms;
+                }
+                else {
+                    itemHolder = lander.itemHolderCargo;
+                }
             }
             else {
                 throw new Error("todo");

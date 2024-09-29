@@ -111,27 +111,22 @@ class SystemTests extends TestFixture {
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Verify that the cargo hold contains no radioactives.
         var player = world.player;
-        var playerItemHolder = player.flagship.itemHolderCargo;
+        var flagship = player.flagship;
+        var flagshipItemHolderCargo = flagship.itemHolderCargo;
         var itemDefnNameRadioactives = "Radioactives";
-        var radioactivesHeld = playerItemHolder.itemsByDefnName(itemDefnNameRadioactives)[0];
+        var radioactivesHeld = flagshipItemHolderCargo.itemsByDefnName(itemDefnNameRadioactives)[0];
         Assert.areNumbersEqual(0, radioactivesHeld.quantity);
         // Land on the planet.
-        var placeOrbit = place();
-        placeOrbit.land(universe);
-        universe.updateForTimerTick();
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
+        this.playFromStart_LandOnPlanetSurface(universe, world, place());
         // Pick up enough resources to be sure to get the radioactives.
         var resourcesToGatherCount = 6;
         for (var i = 0; i < resourcesToGatherCount; i++) {
             this.playFromStart_MoveToEntityWithNameAndWait_CheckPartial(universe, Resource.name, true);
         }
         // Launch and return to the ship in orbit.
-        var placeSurface = place();
-        placeSurface.exit(new UniverseWorldPlaceEntities(universe, world, placeSurface, null, null));
-        universe.updateForTimerTick();
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+        this.playFromStart_ReturnToOrbit(universe, world, place());
         // Verify that the cargo holds now contains some radioactives.
-        var radioactivesHeld = playerItemHolder.itemByDefnName(itemDefnNameRadioactives);
+        var radioactivesHeld = flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives);
         Assert.isTrue(radioactivesHeld.quantity > 0);
         // Exit Mercury orbit.
         this.playFromStart_LeavePlanetOrbitAndWait(universe);
@@ -147,14 +142,14 @@ class SystemTests extends TestFixture {
         var placeEncounter = place();
         station = placeEncounter.entityByName(stationName);
         talker = station.talker();
-        var radioactivesHeldBefore = playerItemHolder.itemByDefnName(itemDefnNameRadioactives).quantity;
+        var radioactivesHeldBefore = flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
         this.playFromStart_TalkToTalker(universe, talker, [
             // "Do you have the radioactives?"
             "#(we_will_transfer_now)",
             // "Our sensors are coming online... WHO ARE YOU?!"
         ]);
         // Make sure that the correct amount of radioactives was actually transferred.
-        var radioactivesHeldAfter = playerItemHolder.itemByDefnName(itemDefnNameRadioactives).quantity;
+        var radioactivesHeldAfter = flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
         var radioactivesTransferred = radioactivesHeldBefore - radioactivesHeldAfter;
         Assert.areNumbersEqual(1, radioactivesTransferred);
         this.playFromStart_TalkToTalker(universe, talker, [
@@ -186,10 +181,7 @@ class SystemTests extends TestFixture {
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Moon");
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Land on the moon.
-        var placeOrbit = place();
-        placeOrbit.land(universe);
-        universe.updateForTimerTick();
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
+        this.playFromStart_LandOnPlanetSurface(universe, world, place());
         // Go to the enemy base.
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "AbandonedMoonbase");
         // It's empty.  The lander should display a report message, which must be acknowledged...
@@ -243,7 +235,6 @@ class SystemTests extends TestFixture {
             "#(be_reasonable)"
             // "We aren't reasonable, though." [Attacks.]
         ]);
-        var flagship = player.flagship;
         Assert.areNumbersEqual(0, flagship.resourceCredits);
         this.playFromStart_CheatToWinCombat(universe);
         // Verify that the ship had some salvage value.
@@ -370,8 +361,11 @@ class SystemTests extends TestFixture {
         var entitiesOnPlanet = placePlanetSurface.entitiesAll();
         var entitiesLifeforms = entitiesOnPlanet.filter(x => x.name.startsWith(Lifeform.name));
         Assert.isTrue(entitiesLifeforms.length > 0);
-        var infoCreditsBeforeGatheringLifeforms = flagship.infoCredits;
-        Assert.areNumbersEqual(0, infoCreditsBeforeGatheringLifeforms);
+        var flagshipItemHolderOther = flagship.itemHolderOther;
+        var biodataBeforeGatheringLifeforms = flagshipItemHolderOther.encumbranceOfAllItems(world);
+        Assert.areNumbersEqual(0, biodataBeforeGatheringLifeforms);
+        var infoCreditsBeforeSellingLifeforms = flagship.infoCredits;
+        Assert.areNumbersEqual(0, infoCreditsBeforeSellingLifeforms);
         // Make the lander unkillable (though the crew can still be killed),
         // and then record the crew count
         // and contents of the cargo hold before touching any lifeforms.
@@ -379,16 +373,16 @@ class SystemTests extends TestFixture {
         var entityLanderKillable = entityLander.killable();
         entityLanderKillable.deathIsIgnoredSet(true); // Cheat!
         var lander = Lander.fromEntity(entityLander);
-        var landerItemHolder = lander.itemHolderLifeforms;
-        var landerCargoBeforeGatheringLifeforms = landerItemHolder.encumbranceOfAllItems(world);
+        var landerItemHolderLifeforms = lander.itemHolderLifeforms;
+        var landerEncumbranceBeforeGatheringLifeforms = landerItemHolderLifeforms.encumbranceOfAllItems(world);
         var landerCrewCountBeforeTouchingLifeforms = entityLanderKillable.integrity;
         // Move to a conscious, dangerous lifeform.
         var entityLifeformDangerous = entitiesLifeforms.find(x => Lifeform.fromEntity(x).defn(world).damagePerAttack > 0);
         Assert.isNotNull(entityLifeformDangerous);
         this.playFromStart_MoveToEntityWithNameAndWait(universe, entityLifeformDangerous.name);
         // Verify that the lifeform was not picked up, and that some crew was killed.
-        var landerCargoAfterMovingOntoConsciousLifeform = landerItemHolder.encumbranceOfAllItems(world);
-        Assert.areNumbersEqual(landerCargoBeforeGatheringLifeforms, landerCargoAfterMovingOntoConsciousLifeform);
+        var landerEncumbranceAfterMovingOntoConsciousLifeform = landerItemHolderLifeforms.encumbranceOfAllItems(world);
+        Assert.areNumbersEqual(landerEncumbranceBeforeGatheringLifeforms, landerEncumbranceAfterMovingOntoConsciousLifeform);
         var landerCrewCountAfterTouchingDangerousLifeform = entityLanderKillable.integrity;
         var crewLost = landerCrewCountBeforeTouchingLifeforms
             - landerCrewCountAfterTouchingDangerousLifeform;
@@ -410,29 +404,30 @@ class SystemTests extends TestFixture {
             // this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
         }
         this.playFromStart_WaitForTicks(universe, 10);
-        // Verify that the conscious lifeforms have been replaced with biodata resources
-        // (Or are they just datapods?  It's never been very clear.)
+        // Verify that the conscious lifeforms have been replaced with biodata resources.
         var entitiesResourcesBiodata = entitiesOnPlanet
             .filter(x => Resource.fromEntity(x) != null)
             .filter(x => Resource.fromEntity(x).defnName == resourceDefnBiodata.name);
         Assert.isNotEmpty(entitiesResourcesBiodata);
+        Assert.areNumbersEqual(entitiesLifeforms.length, entitiesResourcesBiodata.length);
         // Pick up all the biodata.
         // todo - Check for maximum capacity.
         for (var i = 0; i < entitiesResourcesBiodata.length; i++) {
             var entity = entitiesResourcesBiodata[i];
             this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
         }
-        var landerCargoAfterMovingOntoStunnedLifeforms = landerItemHolder.encumbranceOfAllItems(world);
-        var lifeformsGathered = landerCargoAfterMovingOntoStunnedLifeforms
-            - landerCargoBeforeGatheringLifeforms;
-        Assert.isTrue(lifeformsGathered > 0);
+        var landerEncumbranceAfterMovingOntoStunnedLifeforms = landerItemHolderLifeforms.encumbranceOfAllItems(world);
+        var biodataGathered = landerEncumbranceAfterMovingOntoStunnedLifeforms
+            - landerEncumbranceBeforeGatheringLifeforms;
+        Assert.isTrue(biodataGathered > 0);
         // Return to orbit, and verify that the biodata was offloaded from the lander.
-        var infoCreditsAfterGatheringLifeforms = flagship.infoCredits;
-        Assert.isTrue(infoCreditsAfterGatheringLifeforms > infoCreditsBeforeGatheringLifeforms);
+        this.playFromStart_ReturnToOrbit(universe, world, place());
+        var biodataAfterGatheringLifeforms = flagshipItemHolderOther.encumbranceOfAllItems(world);
+        Assert.isTrue(biodataAfterGatheringLifeforms > biodataBeforeGatheringLifeforms);
         // Cheat and jump to a system containing a rainbow world,
         // in order to have some more info to sell to the traders.
         var starsystemWithRainbowWorldName = "Gamma Kepler"; // Or Groombridge.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, starsystemWithRainbowWorldName);
+        this.playFromStart_GoToStarsystemWithName(universe, starsystemWithRainbowWorldName);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
         Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
@@ -440,7 +435,7 @@ class SystemTests extends TestFixture {
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         this.playFromStart_MoveToEntityWithNameAndWait(universe, "Planet");
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
-        placeOrbit = place();
+        var placeOrbit = place();
         var planet = placeOrbit.planet;
         Assert.areStringsEqual("Rainbow", planet.defnName);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
@@ -537,10 +532,7 @@ class SystemTests extends TestFixture {
     }
     playFromStart_GoToSurfaceOfPlanetWithName(universe, planetName) {
         this.playFromStart_GoToOrbitOfPlanetWithName(universe, planetName);
-        var placeOrbit = universe.world.place();
-        placeOrbit.land(universe);
-        universe.updateForTimerTick();
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, universe.world);
+        this.playFromStart_LandOnPlanetSurface(universe, universe.world, universe.world.placeCurrent);
     }
     playFromStart_GoToVicinityOfPlanetWithName(universe, planetName) {
         if (planetName.indexOf("-") >= 0) {
@@ -551,6 +543,12 @@ class SystemTests extends TestFixture {
         this.playFromStart_GoToStarsystemWithName(universe, starsystemName);
         this.playFromStart_MoveToEntityWithNameAndWait(universe, planetName);
         this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, universe.world);
+    }
+    playFromStart_LandOnPlanetSurface(universe, world, place) {
+        var placeOrbit = place;
+        placeOrbit.land(universe);
+        universe.updateForTimerTick();
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
     }
     playFromStart_LeavePlanetOrbitAndWait(universe) {
         var world = universe.world;
@@ -626,6 +624,12 @@ class SystemTests extends TestFixture {
         // at the game's start.
         // Maybe there is no correct answer in all cases!
         this.playFromStart_WaitForTicks(universe, 20);
+    }
+    playFromStart_ReturnToOrbit(universe, world, place) {
+        var placeSurface = place;
+        placeSurface.exit(new UniverseWorldPlaceEntities(universe, world, placeSurface, null, null));
+        universe.updateForTimerTick();
+        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
     }
     playFromStart_TalkToTalker(universe, talker, optionsToSelect) {
         var conversationRun = talker.conversationRun;
