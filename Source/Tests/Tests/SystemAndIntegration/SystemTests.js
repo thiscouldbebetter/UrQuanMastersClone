@@ -25,52 +25,53 @@ class SystemTests extends TestFixture {
         var place = () => world.placeCurrent;
         var starsystemSol = place().starsystem;
         Assert.areStringsEqual("Sol", starsystemSol.name);
-        this.playFromStart_WaitForTicks(universe, 5);
+        this.waitForTicks(universe, 5);
         var planetEarth = place().entityByName("Earth");
         Assert.isNotNull(planetEarth);
         var playerEntity = place().entityByName(Player.name);
         Assert.isNotNull(playerEntity);
         // Move the player's ship to Earth.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
+        this.moveToEntityWithNameAndWait(universe, "Earth");
         // Make sure the place transitions to a planet vicinity.
         // todo
         // This sometimes fails the assert, perhaps because the guard drone,
         // which is perhaps randomly placed within the planet vicinity,
         // accosts the player before the player is done waiting.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Verify that a guard drone is present.
         var guardDroneName = "LahkemupGuardDrone";
         var guardDrone = place().entityByName(guardDroneName);
         Assert.isNotNull(guardDrone);
         // Wait for the guard drone to approach the player
         // and initiate a conversation.
-        this.playFromStart_WaitForTicks(universe, 1000);
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        // Note that sometimes this fails, for currently unknown reasons.
+        this.waitForTicks(universe, 1000);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Leave the conversation.
         var talker = place().encounter.entityOther.talker();
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             "SayNothing" // It's a recording.
         ]);
         // The "conversation" is over; verify that we're back in the world venue.
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueWorld.name, universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueWorld.name, universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Wait for the guard drone to clear the area,
         // and verify that it's gone.
-        this.playFromStart_WaitForTicks(universe, 1000);
+        this.waitForTicks(universe, 1000);
         guardDrone = place().entityByName(guardDroneName);
         Assert.isNull(guardDrone);
         // Move the player to the station.
         var stationName = "Earth Station";
         var station = place().entityByName(stationName);
         Assert.isNotNull(station);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
+        this.moveToEntityWithNameAndWait(universe, stationName);
         // hack - Should this be necessary?
-        this.playFromStart_WaitForTicks(universe, 100);
+        this.waitForTicks(universe, 100);
         // Talk to the station.
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
         talker = station.talker();
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // "Are you the resupply ship?" 
             "#(no_but_well_help)",
             // "We need radioactives."
@@ -78,16 +79,16 @@ class SystemTests extends TestFixture {
             // "Thanks."
         ]);
         // The converation is over; verify that we're back in the world.
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueWorld.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueWorld.name, universe);
         // Move the player beyond the edge of the screen to exit the planet vicinity.
-        this.playFromStart_LeavePlanetVicinityAndWait(universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+        this.leavePlanetVicinityAndWait(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
         // Instead of going to Mercury, go to Venus (an honest mistake).
         // Then go back to Earth immediately, without the needed radioactives.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Venus");
-        this.playFromStart_LeavePlanetVicinityAndWait(universe);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
+        this.moveToEntityWithNameAndWait(universe, "Venus");
+        this.leavePlanetVicinityAndWait(universe);
+        this.moveToEntityWithNameAndWait(universe, "Earth");
+        this.moveToEntityWithNameAndWait(universe, stationName);
         // Talk to the station, and verify that the option to transfer radioactives isn't available.
         var placeEncounter = place();
         station = placeEncounter.entityByName(stationName);
@@ -97,18 +98,18 @@ class SystemTests extends TestFixture {
         var optionsAvailable = conversationRun.optionsAvailable();
         var optionToTransferRadioactivesIsAvailable = optionsAvailable.some(x => x.name == "#(we_will_transfer_now)");
         Assert.isFalse(optionToTransferRadioactivesIsAvailable);
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             "#(well_go_get_them_now2)"
         ]);
         // Exit the planet vicinity again.
-        this.playFromStart_LeavePlanetVicinityAndWait(universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+        this.leavePlanetVicinityAndWait(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
         // Move the player to Mercury.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Mercury");
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.moveToEntityWithNameAndWait(universe, "Mercury");
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Orbit the planet.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, Planet.name);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+        this.moveToEntityWithNameAndWait(universe, Planet.name);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Verify that the cargo hold contains no radioactives.
         var player = world.player;
         var flagship = player.flagship;
@@ -117,33 +118,33 @@ class SystemTests extends TestFixture {
         var radioactivesHeld = flagshipItemHolderCargo.itemsByDefnName(itemDefnNameRadioactives)[0];
         Assert.areNumbersEqual(0, radioactivesHeld.quantity);
         // Land on the planet.
-        this.playFromStart_LandOnPlanetSurface(universe, world, place());
+        this.landOnPlanetSurface(universe, world, place());
         // Pick up enough resources to be sure to get the radioactives.
         var resourcesToGatherCount = 6;
         for (var i = 0; i < resourcesToGatherCount; i++) {
-            this.playFromStart_MoveToEntityWithNameAndWait_CheckPartial(universe, Resource.name, true);
+            this.moveToEntityWithNameAndWait_CheckPartial(universe, Resource.name, true);
         }
         // Launch and return to the ship in orbit.
-        this.playFromStart_ReturnToOrbit(universe, world, place());
+        this.returnToOrbit(universe, world, place());
         // Verify that the cargo holds now contains some radioactives.
         var radioactivesHeld = flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives);
         Assert.isTrue(radioactivesHeld.quantity > 0);
         // Exit Mercury orbit.
-        this.playFromStart_LeavePlanetOrbitAndWait(universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.leavePlanetOrbitAndWait(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Leave the Mercury vicinity and return to the Earth Station.
-        this.playFromStart_LeavePlanetVicinityAndWait(universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Earth");
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.leavePlanetVicinityAndWait(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+        this.moveToEntityWithNameAndWait(universe, "Earth");
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.moveToEntityWithNameAndWait(universe, stationName);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
         // Talk to the station commander.
         var placeEncounter = place();
         station = placeEncounter.entityByName(stationName);
         talker = station.talker();
         var radioactivesHeldBefore = flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // "Do you have the radioactives?"
             "#(we_will_transfer_now)",
             // "Our sensors are coming online... WHO ARE YOU?!"
@@ -152,7 +153,7 @@ class SystemTests extends TestFixture {
         var radioactivesHeldAfter = flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
         var radioactivesTransferred = radioactivesHeldBefore - radioactivesHeldAfter;
         Assert.areNumbersEqual(1, radioactivesTransferred);
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // "Our sensors are coming online... WHO ARE YOU?!"
             "#(we_are_vindicator)",
             // "I would have known about any such mission."
@@ -176,33 +177,33 @@ class SystemTests extends TestFixture {
             // "Good luck with that!"
         ]);
         // Conversation over, back in vicinity of Earth.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Go to the moon.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Moon");
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+        this.moveToEntityWithNameAndWait(universe, "Moon");
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Land on the moon.
-        this.playFromStart_LandOnPlanetSurface(universe, world, place());
+        this.landOnPlanetSurface(universe, world, place());
         // Go to the enemy base.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "AbandonedMoonbase");
+        this.moveToEntityWithNameAndWait(universe, "AbandonedMoonbase");
         // It's empty.  The lander should display a report message, which must be acknowledged...
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueMessage.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueMessage.name, universe);
         var venueMessage = universe.venueCurrent();
         var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
         venueMessage.acknowledge(uwpe);
         universe.updateForTimerTick();
         // ...and then return to the ship automatically.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Leave lunar orbit.
-        this.playFromStart_WaitForTicks(universe, 100);
-        this.playFromStart_LeavePlanetOrbitAndWait(universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.waitForTicks(universe, 100);
+        this.leavePlanetOrbitAndWait(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Verify that the guard drone doesn't spontaneously reappear.
         var guardDrone = place().entityByName(guardDroneName);
         Assert.isNull(guardDrone);
         // Return to the station.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, stationName);
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        this.moveToEntityWithNameAndWait(universe, stationName);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Make sure that the station encounter's placeToReturnTo is right.
         var placeEncounterStation = place();
         var placeToReturnToAfterStation = placeEncounterStation.encounter.placeToReturnTo;
@@ -210,7 +211,7 @@ class SystemTests extends TestFixture {
         // Talk to the commander again.
         station = placeEncounter.entityByName(stationName);
         talker = station.talker();
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // "Did you handle the base?",
             "#(base_was_abandoned)"
             // "Well, I'll be--INCOMING HOSTILE SHIP!  They're jamming our signal!"
@@ -220,7 +221,7 @@ class SystemTests extends TestFixture {
         var placeToReturnToAfterHostileEncounter = placeEncounterHostile.encounter.placeToReturnTo;
         Assert.areStringsEqual(placeEncounterStation.name, placeToReturnToAfterHostileEncounter.name);
         // Now you're talking to the hostile ship.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         placeEncounter = place();
         var encounter = placeEncounter.encounter;
         var factionHostileName = "Raknoid";
@@ -228,7 +229,7 @@ class SystemTests extends TestFixture {
         var entityHostile = encounter.entityOther;
         var talker = entityHostile.talker();
         talker.talk(uwpe);
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // "A human in an alien vessel!"
             "#(where_you_come_from)", // "Where did you come from?"
             // "From fighting in such-and-such star cluster."
@@ -236,7 +237,7 @@ class SystemTests extends TestFixture {
             // "We aren't reasonable, though." [Attacks.]
         ]);
         Assert.areNumbersEqual(0, flagship.resourceCredits);
-        this.playFromStart_CheatToWinCombat(universe);
+        this.cheatToWinCombat(universe);
         // Verify that the ship had some salvage value.
         var factionHostile = world.faction(factionHostileName);
         var hostileShipSalvageValue = factionHostile.shipDefn(world).salvageValue;
@@ -245,12 +246,12 @@ class SystemTests extends TestFixture {
         // Verify that we've returned to the original encounter,
         // and that, when it's over, it's set to return to the planet vicinity,
         // rather than to, say, the hostile encounter.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         encounter = place().encounter;
         var placeToReturnToTypeName = encounter.placeToReturnTo.constructor.name;
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeToReturnToTypeName);
         talker = station.talker();
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // "You won!  We're in.  What now?"
             "#(annihilate_those_monsters)", // But actually [sensible plan].
             // "Sounds like a sensible plan.  What do we call our alliance?"
@@ -259,7 +260,7 @@ class SystemTests extends TestFixture {
             null // "[Wait two weeks...]"
         ]);
         // Verify that we've switched to a different conversation mode.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Now we can get down to business.
         placeEncounter = place();
         encounter = placeEncounter.encounter;
@@ -267,7 +268,7 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual("Conversation-Terran-Business", faction.conversationDefnName);
         talker = encounter.entityOther.talker();
         var resourceCreditsBefore = flagship.resourceCredits;
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // "Starbase is up and running."
             "#(have_minerals)", // "Commander, I have minerals to offload.",
             // [breakdown of minerals]
@@ -275,22 +276,22 @@ class SystemTests extends TestFixture {
         var resourceCreditsAfter = flagship.resourceCredits;
         var resourceCreditsPaid = resourceCreditsAfter - resourceCreditsBefore;
         Assert.isTrue(resourceCreditsPaid > 0);
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker(universe, talker, [
             // [breakdown of minerals]
             "#(goodbye_commander)"
         ]);
         // Verify that we've returned to the world.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Leave the Sol system and go to hyperspace.
-        this.playFromStart_LeavePlanetVicinityAndWait(universe);
-        this.playFromStart_LeaveStarsystemAndWait(universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+        this.leavePlanetVicinityAndWait(universe);
+        this.leaveStarsystemAndWait(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
         // Verify that a probe is present.
         var entityProbe = place().entityByName("Tempestrial Ship Group X");
         Assert.isNotNull(entityProbe);
         // Wait to be accosted by a probe.
-        this.playFromStart_WaitForTicks(universe, 1000);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        this.waitForTicks(universe, 1000);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         var placeEncounter = place();
         placeEncounter.encounter.talk(universe);
         universe.updateForTimerTick();
@@ -298,49 +299,30 @@ class SystemTests extends TestFixture {
         var encounter = placeEncounter.encounter;
         var entityOther = encounter.entityOther;
         talker = entityOther.talker();
-        this.playFromStart_TalkToTalker(universe, talker, [null] // Doesn't matter what you say.
+        this.talkToTalker(universe, talker, [null] // Doesn't matter what you say.
         );
         // The probe attacks.
         // Make a record of how much money we had before blowing up a ship and salvaging the wreckage.
         var creditBefore = flagship.resourceCredits;
         // Destroy the probe (by cheating, in this test).
-        this.playFromStart_CheatToWinCombat(universe);
+        this.cheatToWinCombat(universe);
         // Verify that resources were salvaged from destroyed ship.
         var creditAfter = flagship.resourceCredits;
         Assert.isTrue(creditAfter > creditBefore);
         // Verify that we're back in hyperspace.
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
         // Go to the Alpha Centauri starsystem, the nearest supergiant to Sol.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Alpha Centauri");
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+        var starsystemWithMerchantsName = "Alpha Centauri";
+        this.moveToEntityWithNameAndWait(universe, starsystemWithMerchantsName);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
         // Look for a trader ship, in the main starsystem and in each planet vicinity.
         var placeStarsystem = place();
         var starsystem = placeStarsystem.starsystem;
-        var factionNameMurch = world.factionByName("Murch").name;
-        var shipGroupMurch = starsystem.shipGroups.find(x => x.factionName == factionNameMurch);
-        if (shipGroupMurch == null) {
-            var planets = starsystem.planets;
-            for (var i = 0; i < planets.length; i++) {
-                var planet = planets[i];
-                shipGroupMurch = planet.shipGroups.find(x => x.factionName == factionNameMurch);
-                if (shipGroupMurch != null) {
-                    this.playFromStart_MoveToEntityWithNameAndWait(universe, planet.name);
-                    break;
-                }
-            }
-        }
-        Assert.isNotNull(shipGroupMurch);
-        // Move to the trader's ship and start an encouter.
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, shipGroupMurch.name);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        var factionMerchantsName = world.factionByName("Murch").name;
+        this.moveToShipGroupBelongingToFactionIfAny(universe, world, starsystem, factionMerchantsName);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Talk to the traders.
-        placeEncounter = place();
-        placeEncounter.encounter.talk(universe);
-        universe.updateForTimerTick();
-        var encounter = placeEncounter.encounter;
-        var entityOther = encounter.entityOther;
-        talker = entityOther.talker();
-        this.playFromStart_TalkToTalker(universe, talker, [
+        this.talkToTalker2(universe, [
             // "Hello!  We knew of you before your arrival."
             "#(how_know)", // "How did you know about us before meeting us?"
             // "We have mysterious sources."
@@ -356,7 +338,7 @@ class SystemTests extends TestFixture {
             // "Goodbye."
         ]);
         // Go gather some lifeforms to sell.
-        this.playFromStart_GoToSurfaceOfPlanetWithName(universe, "Delta Centauri II-a"); // 186 biodata units, hazard level 5/8.
+        this.goToSurfaceOfPlanetWithName(universe, "Delta Centauri II-a"); // 186 biodata units, hazard level 5/8.
         var placePlanetSurface = place();
         var entitiesOnPlanet = placePlanetSurface.entitiesAll();
         var entitiesLifeforms = entitiesOnPlanet.filter(x => x.name.startsWith(Lifeform.name));
@@ -379,7 +361,7 @@ class SystemTests extends TestFixture {
         // Move to a conscious, dangerous lifeform.
         var entityLifeformDangerous = entitiesLifeforms.find(x => Lifeform.fromEntity(x).defn(world).damagePerAttack > 0);
         Assert.isNotNull(entityLifeformDangerous);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, entityLifeformDangerous.name);
+        this.moveToEntityWithNameAndWait(universe, entityLifeformDangerous.name);
         // Verify that the lifeform was not picked up, and that some crew was killed.
         var landerEncumbranceAfterMovingOntoConsciousLifeform = landerItemHolderLifeforms.encumbranceOfAllItems(world);
         Assert.areNumbersEqual(landerEncumbranceBeforeGatheringLifeforms, landerEncumbranceAfterMovingOntoConsciousLifeform);
@@ -401,9 +383,9 @@ class SystemTests extends TestFixture {
             var entity = entitiesLifeforms[i];
             // Cheat: kill (well, stun) them all!
             entity.killable().kill();
-            // this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
+            // this.moveToEntityWithNameAndWait(universe, entity.name);
         }
-        this.playFromStart_WaitForTicks(universe, 10);
+        this.waitForTicks(universe, 10);
         // Verify that the conscious lifeforms have been replaced with biodata resources.
         var entitiesResourcesBiodata = entitiesOnPlanet
             .filter(x => Resource.fromEntity(x) != null)
@@ -414,81 +396,113 @@ class SystemTests extends TestFixture {
         // todo - Check for maximum capacity.
         for (var i = 0; i < entitiesResourcesBiodata.length; i++) {
             var entity = entitiesResourcesBiodata[i];
-            this.playFromStart_MoveToEntityWithNameAndWait(universe, entity.name);
+            this.moveToEntityWithNameAndWait(universe, entity.name);
         }
         var landerEncumbranceAfterMovingOntoStunnedLifeforms = landerItemHolderLifeforms.encumbranceOfAllItems(world);
         var biodataGathered = landerEncumbranceAfterMovingOntoStunnedLifeforms
             - landerEncumbranceBeforeGatheringLifeforms;
         Assert.isTrue(biodataGathered > 0);
         // Return to orbit, and verify that the biodata was offloaded from the lander.
-        this.playFromStart_ReturnToOrbit(universe, world, place());
+        this.returnToOrbit(universe, world, place());
         var biodataAfterGatheringLifeforms = flagshipItemHolderOther.encumbranceOfAllItems(world);
         Assert.isTrue(biodataAfterGatheringLifeforms > biodataBeforeGatheringLifeforms);
-        // Cheat and jump to a system containing a rainbow world,
+        // Go back to the starsystem containing the merchants,
+        // then find the merchants and engage with them.
+        this.goToStarsystemWithName(universe, starsystemWithMerchantsName);
+        this.moveToShipGroupBelongingToFactionIfAny(universe, world, starsystem, factionMerchantsName);
+        this.talkToTalker2(universe, [
+            // "Hello.  Shall we get down to business?"
+            "#(sell)", // I have some items I'd like to sell.
+            // "What would you like to sell?"
+            "#(sell_life_data)", // "Biodata."
+            // "We'll buy your biodata for this amount."
+            "#(whats_my_credit)",
+            // "Your credit is this."
+            "#(buy)", // "I'd like to buy something."
+            // "What would you like to buy?"
+            "#(buy_fuel)", // "Fuel."
+            // "How much fuel."
+            "#(fill_me_up)", // Fill me up.
+            // "Fuel transferred.  Want any more?"
+            "#(done_buying_fuel)",
+            // "Okay.  What else would you like to buy?"
+            "#(done_buying)",
+            // "Anything else?"
+            "#(no_trade_now)"
+            // "Goodbye."
+        ]);
+        // Go to a system containing a rainbow world,
         // in order to have some more info to sell to the traders.
         var starsystemWithRainbowWorldName = "Gamma Kepler"; // Or Groombridge.
-        this.playFromStart_GoToStarsystemWithName(universe, starsystemWithRainbowWorldName);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+        this.goToStarsystemWithName(universe, starsystemWithRainbowWorldName);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
         Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, starsystemWithRainbowWorldName + " I");
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, "Planet");
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+        this.moveToEntityWithNameAndWait(universe, starsystemWithRainbowWorldName + " I");
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        this.moveToEntityWithNameAndWait(universe, "Planet");
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         var placeOrbit = place();
         var planet = placeOrbit.planet;
         Assert.areStringsEqual("Rainbow", planet.defnName);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
         Assert.areNumbersEqual(1, rainbowWorldLocationsKnownButUnsoldCount);
-        this.playFromStart_LeavePlanetOrbitAndWait(universe);
-        this.playFromStart_LeavePlanetVicinityAndWait(universe);
-        this.playFromStart_LeaveStarsystemAndWait(universe);
+        // Now sell the location.
+        this.goToStarsystemWithName(universe, starsystemWithMerchantsName);
+        var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
+        // Sell it.
+        var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
+        Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
+        var infoCreditsAfterSaleOfRainbowWorldLocation = flagship.infoCredits;
+        var infoCreditsFromSaleOfRainbowWorldLocation = infoCreditsAfterSaleOfRainbowWorldLocation
+            - infoCreditsBeforeSaleOfRainbowWorldLocation;
+        Assert.areNumbersEqual(500, infoCreditsFromSaleOfRainbowWorldLocation);
         // Gather resources.
         // Gather lifeforms.
         // Return to Earth station.
         callback();
     }
-    playFromStart_AssertPlaceCurrentIsOfTypeForWorld(placeTypeNameExpected, world) {
+    assertPlaceCurrentIsOfTypeForWorld(placeTypeNameExpected, world) {
         var place = world.placeCurrent;
         var placeTypeName = place.constructor.name;
         Assert.areStringsEqual(placeTypeNameExpected, placeTypeName);
     }
-    playFromStart_AssertVenueCurrentIsOfTypeForUniverse(venueTypeNameExpected, universe) {
+    assertVenueCurrentIsOfTypeForUniverse(venueTypeNameExpected, universe) {
         var venue = universe.venueCurrent();
         var venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(venueTypeNameExpected, venueTypeName);
     }
-    playFromStart_CheatToWinCombat(universe) {
+    cheatToWinCombat(universe) {
         universe.updateForTimerTick();
         var world = universe.world;
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceCombat.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceCombat.name, world);
         var placeCombat = world.placeCurrent;
         var combat = placeCombat.combat;
         var shipGroupForPlayer = combat.shipGroups[0];
         var shipForPlayer = shipGroupForPlayer.ships[0];
         combat.shipsFighting[0] = shipForPlayer;
         combat.fight(universe);
-        this.playFromStart_WaitForTicks(universe, 100);
+        this.waitForTicks(universe, 100);
         var shipEnemy = combat.shipsFighting[1];
         var shipEnemyAsEntity = placeCombat.entityByName(shipEnemy.name);
         shipEnemyAsEntity.killable().kill();
-        this.playFromStart_WaitForTicks(universe, 100);
+        this.waitForTicks(universe, 100);
         // Verify that we're seeing a post-battle debriefing screen.
-        this.playFromStart_AssertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
         var venue = universe.venueCurrent();
         var venueControls = venue;
         var containerChoice = venueControls.controlRoot;
         var buttonAcknowledge = containerChoice.childByName("buttonAcknowledge");
         buttonAcknowledge.click();
-        this.playFromStart_WaitForTicks(universe, 100);
+        this.waitForTicks(universe, 100);
     }
-    playFromStart_FindEntityWithName(universe, targetEntityName, partialMatchAllowed) {
+    findEntityWithName(universe, targetEntityName, partialMatchAllowed) {
         var entityFound = partialMatchAllowed
-            ? this.playFromStart_FindEntityWithNamePartial(universe, targetEntityName)
-            : this.playFromStart_FindEntityWithNameExact(universe, targetEntityName);
+            ? this.findEntityWithNamePartial(universe, targetEntityName)
+            : this.findEntityWithNameExact(universe, targetEntityName);
         return entityFound;
     }
-    playFromStart_FindEntityWithNameExact(universe, targetEntityName) {
+    findEntityWithNameExact(universe, targetEntityName) {
         var place = universe.world.placeCurrent;
         var targetFound = place.entityByName(targetEntityName);
         if (targetFound == null) {
@@ -498,7 +512,7 @@ class SystemTests extends TestFixture {
         }
         return targetFound;
     }
-    playFromStart_FindEntityWithNamePartial(universe, targetEntityName) {
+    findEntityWithNamePartial(universe, targetEntityName) {
         var place = universe.world.placeCurrent;
         var targetFound = place.entityByName(targetEntityName);
         if (targetFound == null) {
@@ -508,49 +522,49 @@ class SystemTests extends TestFixture {
         }
         return targetFound;
     }
-    playFromStart_GoToHyperspace(universe) {
+    goToHyperspace(universe) {
         // todo - Leave the planet surface?
-        this.playFromStart_LeavePlanetOrbitAndWait(universe);
-        this.playFromStart_LeavePlanetVicinityAndWait(universe);
-        this.playFromStart_LeaveStarsystemAndWait(universe);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, universe.world);
+        this.leavePlanetOrbitAndWait(universe);
+        this.leavePlanetVicinityAndWait(universe);
+        this.leaveStarsystemAndWait(universe);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, universe.world);
     }
-    playFromStart_GoToOrbitOfPlanetWithName(universe, planetName) {
-        this.playFromStart_GoToVicinityOfPlanetWithName(universe, planetName);
+    goToOrbitOfPlanetWithName(universe, planetName) {
+        this.goToVicinityOfPlanetWithName(universe, planetName);
         if (planetName.split(" ").length == 1) {
             planetName = Planet.name;
         }
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, planetName);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, universe.world);
+        this.moveToEntityWithNameAndWait(universe, planetName);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, universe.world);
     }
-    playFromStart_GoToStarsystemWithName(universe, starsystemName) {
-        this.playFromStart_GoToHyperspace(universe);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, starsystemName);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, universe.world);
+    goToStarsystemWithName(universe, starsystemName) {
+        this.goToHyperspace(universe);
+        this.moveToEntityWithNameAndWait(universe, starsystemName);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, universe.world);
         var starsystemActual = universe.world.place().starsystem;
         Assert.areStringsEqual(starsystemName, starsystemActual.name);
     }
-    playFromStart_GoToSurfaceOfPlanetWithName(universe, planetName) {
-        this.playFromStart_GoToOrbitOfPlanetWithName(universe, planetName);
-        this.playFromStart_LandOnPlanetSurface(universe, universe.world, universe.world.placeCurrent);
+    goToSurfaceOfPlanetWithName(universe, planetName) {
+        this.goToOrbitOfPlanetWithName(universe, planetName);
+        this.landOnPlanetSurface(universe, universe.world, universe.world.placeCurrent);
     }
-    playFromStart_GoToVicinityOfPlanetWithName(universe, planetName) {
+    goToVicinityOfPlanetWithName(universe, planetName) {
         if (planetName.indexOf("-") >= 0) {
             // It's a moon.
             planetName = planetName.split("-")[0];
         }
         var starsystemName = planetName.substr(0, planetName.lastIndexOf(" "));
-        this.playFromStart_GoToStarsystemWithName(universe, starsystemName);
-        this.playFromStart_MoveToEntityWithNameAndWait(universe, planetName);
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, universe.world);
+        this.goToStarsystemWithName(universe, starsystemName);
+        this.moveToEntityWithNameAndWait(universe, planetName);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, universe.world);
     }
-    playFromStart_LandOnPlanetSurface(universe, world, place) {
+    landOnPlanetSurface(universe, world, place) {
         var placeOrbit = place;
         placeOrbit.land(universe);
         universe.updateForTimerTick();
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
     }
-    playFromStart_LeavePlanetOrbitAndWait(universe) {
+    leavePlanetOrbitAndWait(universe) {
         var world = universe.world;
         var place = world.placeCurrent;
         if (place.constructor.name == PlacePlanetOrbit.name) {
@@ -559,40 +573,40 @@ class SystemTests extends TestFixture {
             universe.updateForTimerTick();
         }
     }
-    playFromStart_LeavePlanetVicinityAndWait(universe) {
+    leavePlanetVicinityAndWait(universe) {
         var placeCurrent = universe.world.place();
         if (placeCurrent.constructor.name == PlacePlanetVicinity.name) {
-            this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
+            this.leavePlanetVicinityOrStarsystem(universe);
             // hack - Is this necessary?
             // Some delay may be needed to wait for the fader to finish fading.
             // The way the test is set up, this wait requires some fine-tuning.
-            this.playFromStart_WaitForTicks(universe, 250);
+            this.waitForTicks(universe, 10); // 250); 
         }
     }
-    playFromStart_LeavePlanetVicinityOrStarsystem(universe) {
+    leavePlanetVicinityOrStarsystem(universe) {
         var place = universe.world.placeCurrent;
         var player = place.entityByName(Player.name);
         var playerPos = player.locatable().loc.pos;
         var placeSize = place.size();
         playerPos.overwriteWith(placeSize).double();
     }
-    playFromStart_LeaveStarsystemAndWait(universe) {
+    leaveStarsystemAndWait(universe) {
         var placeCurrent = universe.world.place();
         if (placeCurrent.constructor.name == PlaceStarsystem.name) {
-            this.playFromStart_LeavePlanetVicinityOrStarsystem(universe);
-            this.playFromStart_WaitForTicks(universe, 10); // hack - Exactly how long is necessary?
+            this.leavePlanetVicinityOrStarsystem(universe);
+            this.waitForTicks(universe, 10); // hack - Exactly how long is necessary?
         }
     }
-    playFromStart_MoveToEntityWithNameAndWait(universe, targetEntityName) {
-        return this.playFromStart_MoveToEntityWithNameAndWait_CheckPartial(universe, targetEntityName, false);
+    moveToEntityWithNameAndWait(universe, targetEntityName) {
+        return this.moveToEntityWithNameAndWait_CheckPartial(universe, targetEntityName, false);
     }
-    playFromStart_MoveToEntityWithNameAndWait_CheckPartial(universe, targetEntityName, partialMatchAllowed) {
+    moveToEntityWithNameAndWait_CheckPartial(universe, targetEntityName, partialMatchAllowed) {
         // This is pretty cheaty right now.  The player just teleports directly to the desired position.
         var place = universe.world.placeCurrent;
         var placeTypeName = place.constructor.name;
         var entityPlayer = place.entityByName(Player.name);
         var playerPos = entityPlayer.locatable().loc.pos;
-        var target = this.playFromStart_FindEntityWithName(universe, targetEntityName, partialMatchAllowed);
+        var target = this.findEntityWithName(universe, targetEntityName, partialMatchAllowed);
         if (target != null) {
             var targetPos = target.locatable().loc.pos;
             if (placeTypeName == PlaceHyperspace.name) {
@@ -623,15 +637,34 @@ class SystemTests extends TestFixture {
         // but sometimes results in the guard drone accosting the player too soon
         // at the game's start.
         // Maybe there is no correct answer in all cases!
-        this.playFromStart_WaitForTicks(universe, 20);
+        this.waitForTicks(universe, 20);
     }
-    playFromStart_ReturnToOrbit(universe, world, place) {
+    moveToShipGroupBelongingToFactionIfAny(universe, world, starsystem, factionName) {
+        var shipGroupsInStarsystemAtLarge = starsystem.shipGroups(world);
+        var shipGroupBelongingToFaction = shipGroupsInStarsystemAtLarge.find(x => x.factionName == factionName);
+        if (shipGroupBelongingToFaction == null) {
+            var planets = starsystem.planets;
+            for (var i = 0; i < planets.length; i++) {
+                var planet = planets[i];
+                var planetShipGroups = planet.shipGroups();
+                shipGroupBelongingToFaction = planetShipGroups.find(x => x.factionName == factionName);
+                if (shipGroupBelongingToFaction != null) {
+                    this.moveToEntityWithNameAndWait(universe, planet.name);
+                    break;
+                }
+            }
+        }
+        Assert.isNotNull(shipGroupBelongingToFaction);
+        // Move to the ship and start an encounter (or, if friendly, just a talk).
+        this.moveToEntityWithNameAndWait(universe, shipGroupBelongingToFaction.name);
+    }
+    returnToOrbit(universe, world, place) {
         var placeSurface = place;
         placeSurface.exit(new UniverseWorldPlaceEntities(universe, world, placeSurface, null, null));
         universe.updateForTimerTick();
-        this.playFromStart_AssertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
     }
-    playFromStart_TalkToTalker(universe, talker, optionsToSelect) {
+    talkToTalker(universe, talker, optionsToSelect) {
         var conversationRun = talker.conversationRun;
         conversationRun.nextUntilPrompt(universe);
         for (var i = 0; i < optionsToSelect.length; i++) {
@@ -649,7 +682,16 @@ class SystemTests extends TestFixture {
         }
         universe.updateForTimerTick();
     }
-    playFromStart_WaitForTicks(universe, ticksToWait) {
+    talkToTalker2(universe, optionsToSelect) {
+        var placeEncounter = universe.world.place();
+        placeEncounter.encounter.talk(universe);
+        universe.updateForTimerTick();
+        var encounter = placeEncounter.encounter;
+        var entityOther = encounter.entityOther;
+        var talker = entityOther.talker();
+        this.talkToTalker(universe, talker, optionsToSelect);
+    }
+    waitForTicks(universe, ticksToWait) {
         for (var i = 0; i < ticksToWait; i++) {
             universe.updateForTimerTick();
             universe.timerHelper.ticksSoFar++; // hack

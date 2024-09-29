@@ -65,6 +65,14 @@ class Flagship
 		this.cachesCalculate();
 	}
 
+	biodataOffload(world: World): void
+	{
+		var value = this.resourcesBelongingToCategoryOffload(
+			world, this.itemHolderOther, ResourceDefn.CategoryBiodataName
+		);
+		this.infoCredits += value;
+	}
+
 	cachesCalculate(): void
 	{
 		this._cargoMax = 0;
@@ -89,13 +97,11 @@ class Flagship
 
 	cargoOffload(world: World): void
 	{
-		var itemHolder = this.itemHolderCargo;
-		var itemsForResources = itemHolder.itemsBelongingToCategoryWithName("Resource", world);
-		var itemValues = itemsForResources.map(x => x.tradeValue(world) );
-		var itemValueTotal = 0;
-		itemValues.forEach(x => itemValueTotal += x);
-		this.resourceCredits += itemValueTotal;
-		itemsForResources.forEach(x => itemHolder.itemSubtract(x) );
+		var value = this.resourcesBelongingToCategoryOffload
+		(
+			world, this.itemHolderCargo, ResourceDefn.CategoryMineralName
+		);
+		this.resourceCredits += value;
 	}
 
 	components(): ShipComponentDefn[]
@@ -231,7 +237,20 @@ class Flagship
 
 	fuelCurrentOverMax(): string
 	{
-		return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
+		var fuelMax = this.fuelMax();
+		return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + fuelMax;
+	}
+
+	fuelMax(): number
+	{
+		return this._fuelMax;
+	}
+
+	fuelNeededToFillToCapacity(): number
+	{
+		var fuelMax = this.fuelMax();
+		var fuelNeeded = Math.floor(fuelMax - this.fuel);
+		return fuelNeeded;
 	}
 
 	fuelSubtract(decrement: number): Flagship
@@ -243,6 +262,16 @@ class Flagship
 		}
 		this.fuel = fuelAfterSubtract;
 		return this;
+	}
+
+	hasInfoCredits(): boolean
+	{
+		return this.hasInfoCreditsAtLeast(1);
+	}
+
+	hasInfoCreditsAtLeast(minimumAmount: number): boolean
+	{
+		return (this.infoCredits > minimumAmount);
 	}
 
 	hasInfoToSell(world: World): boolean
@@ -264,6 +293,14 @@ class Flagship
 		return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
 	}
 
+	infoCreditsTradeForFuel(fuelToBuy: number): void
+	{
+		var infoCreditsPerFuelUnit = 1;
+		var infoCreditsToSpend = fuelToBuy * infoCreditsPerFuelUnit;
+		this.infoCredits -= infoCreditsToSpend;
+		this.fuel += fuelToBuy;
+	}
+
 	itemHolderCargoBuildOrUpdate(itemsInitial: Item[]): ItemHolder
 	{
 		if (this.itemHolderCargo == null)
@@ -279,6 +316,20 @@ class Flagship
 		// todo - Set max.
 
 		return this.itemHolderCargo;
+	}
+
+	resourcesBelongingToCategoryOffload
+	(
+		world: World, itemHolder: ItemHolder, resourceCategoryName: string
+	): number
+	{
+		var itemsForResources =
+			itemHolder.itemsBelongingToCategoryWithName(resourceCategoryName, world);
+		var itemValues = itemsForResources.map(x => x.tradeValue(world) );
+		var itemValueTotal = 0;
+		itemValues.forEach(x => itemValueTotal += x);
+		itemsForResources.forEach(x => itemHolder.itemSubtract(x) );
+		return itemValueTotal;
 	}
 
 	thrustersCurrent(): number

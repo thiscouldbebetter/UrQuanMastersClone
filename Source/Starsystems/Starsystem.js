@@ -8,7 +8,7 @@ class Starsystem {
         this.sizeInner = sizeInner;
         this.factionName = factionName;
         this.planets = planets;
-        this.shipGroups = shipGroups;
+        this._shipGroups = shipGroups;
         this._displacement = Coords.create();
     }
     static fromEntity(entity) {
@@ -39,6 +39,22 @@ class Starsystem {
     }
     planetRandom(universe) {
         return ArrayHelper.random(this.planets, universe.randomizer);
+    }
+    shipGroupAdd(shipGroup) {
+        this._shipGroups.push(shipGroup);
+    }
+    shipGroups(world) {
+        if (this._shipGroups == null) {
+            var faction = this.faction(world);
+            if (faction != null) {
+                var shipDefnName = faction.shipDefnName;
+                var ship = new Ship(shipDefnName);
+                var shipGroup = new ShipGroup(faction.name + " " + ShipGroup.name, faction.name, // factionName
+                Coords.create(), [ship]);
+                this._shipGroups.push(shipGroup);
+            }
+        }
+        return this._shipGroups;
     }
     solarSystem(universe) {
         this.name = "Sol";
@@ -77,7 +93,7 @@ class Starsystem {
         var enemyShipGroup = new ShipGroup("LahkemupGuardDrone", "LahkemupGuardDrone", // factionName
         Coords.create(), // todo
         [enemyShip]);
-        planetEarth.shipGroups.push(enemyShipGroup);
+        planetEarth.shipGroupAdd(enemyShipGroup);
         // Put an orphaned ship on Pluto.
         var pluto = this.planets[8];
         var textMauluskaOrphan = "MauluskaOrphan";

@@ -170,7 +170,7 @@ class PlacePlanetVicinity extends PlaceBase
 		}
 
 		var entitiesForShipGroups =
-			this.planet.shipGroups.map(x => x.toEntity(world, this) );
+			this.planet.shipGroups().map(x => x.toEntity(world, this) );
 
 		entities.push(...entitiesForShipGroups);
 

@@ -16,6 +16,10 @@ class Flagship {
         this.shipsMax = shipsMax;
         this.cachesCalculate();
     }
+    biodataOffload(world) {
+        var value = this.resourcesBelongingToCategoryOffload(world, this.itemHolderOther, ResourceDefn.CategoryBiodataName);
+        this.infoCredits += value;
+    }
     cachesCalculate() {
         this._cargoMax = 0;
         this._crewMax = 0;
@@ -33,13 +37,8 @@ class Flagship {
         return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
     }
     cargoOffload(world) {
-        var itemHolder = this.itemHolderCargo;
-        var itemsForResources = itemHolder.itemsBelongingToCategoryWithName("Resource", world);
-        var itemValues = itemsForResources.map(x => x.tradeValue(world));
-        var itemValueTotal = 0;
-        itemValues.forEach(x => itemValueTotal += x);
-        this.resourceCredits += itemValueTotal;
-        itemsForResources.forEach(x => itemHolder.itemSubtract(x));
+        var value = this.resourcesBelongingToCategoryOffload(world, this.itemHolderCargo, ResourceDefn.CategoryMineralName);
+        this.resourceCredits += value;
     }
     components() {
         if (this._components == null) {
@@ -129,7 +128,16 @@ class Flagship {
         return this;
     }
     fuelCurrentOverMax() {
-        return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + this._fuelMax;
+        var fuelMax = this.fuelMax();
+        return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + fuelMax;
+    }
+    fuelMax() {
+        return this._fuelMax;
+    }
+    fuelNeededToFillToCapacity() {
+        var fuelMax = this.fuelMax();
+        var fuelNeeded = Math.floor(fuelMax - this.fuel);
+        return fuelNeeded;
     }
     fuelSubtract(decrement) {
         var fuelAfterSubtract = this.fuel - decrement;
@@ -138,6 +146,12 @@ class Flagship {
         }
         this.fuel = fuelAfterSubtract;
         return this;
+    }
+    hasInfoCredits() {
+        return this.hasInfoCreditsAtLeast(1);
+    }
+    hasInfoCreditsAtLeast(minimumAmount) {
+        return (this.infoCredits > minimumAmount);
     }
     hasInfoToSell(world) {
         var returnValue = this.hasInfoToSell_Biodata()
@@ -150,6 +164,12 @@ class Flagship {
     hasInfoToSell_PrecursorArtifacts(world) {
         return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
     }
+    infoCreditsTradeForFuel(fuelToBuy) {
+        var infoCreditsPerFuelUnit = 1;
+        var infoCreditsToSpend = fuelToBuy * infoCreditsPerFuelUnit;
+        this.infoCredits -= infoCreditsToSpend;
+        this.fuel += fuelToBuy;
+    }
     itemHolderCargoBuildOrUpdate(itemsInitial) {
         if (this.itemHolderCargo == null) {
             this.itemHolderCargo =
@@ -161,6 +181,14 @@ class Flagship {
         }
         // todo - Set max.
         return this.itemHolderCargo;
+    }
+    resourcesBelongingToCategoryOffload(world, itemHolder, resourceCategoryName) {
+        var itemsForResources = itemHolder.itemsBelongingToCategoryWithName(resourceCategoryName, world);
+        var itemValues = itemsForResources.map(x => x.tradeValue(world));
+        var itemValueTotal = 0;
+        itemValues.forEach(x => itemValueTotal += x);
+        itemsForResources.forEach(x => itemHolder.itemSubtract(x));
+        return itemValueTotal;
     }
     thrustersCurrent() {
         return this.componentsThruster().length;

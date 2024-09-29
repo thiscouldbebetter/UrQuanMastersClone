@@ -4,6 +4,8 @@ imagePortraitName=Conversation-Portrait-Murch
 
 |VariablesImport|u.world.player.variableLookup
 
+|JumpIfTrue|TradeRelationshipHasBeenEstablished|#(HELLO_AND_DOWN_TO_BUSINESS)
+
 |Display|#(HELLO_NOW_DOWN_TO_BUSINESS_1)||cr.varGetWithDefault('Murch_TimesGreeted', 0) == 0
 |Display|#(HELLO_NOW_DOWN_TO_BUSINESS_2)||cr.varGet('Murch_TimesGreeted') == 1
 |Display|#(HELLO_NOW_DOWN_TO_BUSINESS_3)||cr.varGet('Murch_TimesGreeted') >= 2
@@ -89,6 +91,7 @@ Prompt8|Prompt
 |Goto||#(FRIENDLY_GOODBYE)
 
 #(HELLO_AND_DOWN_TO_BUSINESS_1)|Display|#(HELLO_AND_DOWN_TO_BUSINESS_1)
+|VariableSet|TradeRelationshipHasBeenEstablished|true
 |OptionsClear
 #(why_turned_purple)|Option|#(why_turned_purple)|#(TURNED_PURPLE_BECAUSE)
 |Prompt
@@ -99,16 +102,16 @@ Prompt8|Prompt
 |Goto||#(BUY_OR_SELL)
 
 #(HELLO_AND_DOWN_TO_BUSINESS)|DoNothing
-|VariableLoad|DownToBusinessIndex|u.randomizer.integerLessThan(9)
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_2)||cr.varGet('DownToBusinessIndex') == 0
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_3)||cr.varGet('DownToBusinessIndex') == 1
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_4)||cr.varGet('DownToBusinessIndex') == 2
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_5)||cr.varGet('DownToBusinessIndex') == 3
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_6)||cr.varGet('DownToBusinessIndex') == 4
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_7)||cr.varGet('DownToBusinessIndex') == 5
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_8)||cr.varGet('DownToBusinessIndex') == 6
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_9)||cr.varGet('DownToBusinessIndex') == 7
-|Display|#(HELLO_AND_DOWN_TO_BUSINESS_10)||cr.varGet('DownToBusinessIndex') == 8
+|VariableAdd|TimesDownToBusiness
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_2)||cr.varGet('TimesDownToBusiness') == 1
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_3)||cr.varGet('TimesDownToBusiness') == 2
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_4)||cr.varGet('TimesDownToBusiness') == 3
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_5)||cr.varGet('TimesDownToBusiness') == 4
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_6)||cr.varGet('TimesDownToBusiness') == 5
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_7)||cr.varGet('TimesDownToBusiness') == 6
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_8)||cr.varGet('TimesDownToBusiness') == 7
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_9)||cr.varGet('TimesDownToBusiness') == 8
+|Display|#(HELLO_AND_DOWN_TO_BUSINESS_10)||cr.varGet('TimesDownToBusiness') >= 9
 |Goto||#(BUY_OR_SELL)
 
 |OptionsClear
@@ -205,6 +208,7 @@ Prompt8|Prompt
 |Display|#(goodbye)
 
 #(BUY_OR_SELL)|Display|#(BUY_OR_SELL)
+|OptionsClear
 #(whats_my_credit)|Option|#(whats_my_credit)|#(CREDIT_IS0)
 #(buy)|Option|#(buy)|Buy
 #(sell)|Option|#(sell)|Sell
@@ -216,7 +220,8 @@ Prompt8|Prompt
 |Prompt
 
 Buy|DoNothing
-|VariableLoad|PlayerHasCredit|u.world.player.infoCredits > 0
+|OptionsClear
+|VariableLoad|PlayerHasCredit|u.world.player.hasInfoCredits()
 |JumpIfTrue|PlayerHasCredit|#(WHAT_TO_BUY)
 |Display|#(NEED_CREDIT)
 |Goto||#(BUY_OR_SELL)
@@ -241,11 +246,14 @@ Sell|DoNothing
 |Display|#(NOTHING_TO_SELL)
 |Goto||#(BUY_OR_SELL)
 
-#(WHAT_TO_SELL)|Display|#(WHAT_TO_SELL)
+#(WHAT_TO_SELL)|DoNothing
+|VariableLoad|PlayerHasSellables|u.world.player.hasInfoToSell(u.world)
+|JumpIfFalse|PlayerHasSellables|#(BUY_OR_SELL)
+|Display|#(WHAT_TO_SELL)
 |OptionsClear
-|Option|#(sell_life_data)|#(SOLD_LIFE_DATA)
-|Option|#(sell_rainbow_locations)|#(SOLD_RAINBOW_LOCATIONS)
-|Option|#(sell_precursor_find)|#(SOLD_PRECURSOR_FIND)
+|Option|#(sell_life_data)|#(SOLD_LIFE_DATA)|u.world.player.flagship.hasInfoToSell_Biodata()
+|Option|#(sell_rainbow_locations)|#(SOLD_RAINBOW_LOCATIONS)|u.world.player.hasInfoToSell_RainbowWorldLocations()
+|Option|#(sell_precursor_find)|#(SOLD_PRECURSOR_FIND)|u.world.player.flagship.hasInfoToSell_PrecursorArtifacts(u.world)
 |Option|#(changed_mind_no_sell)|#(OK_DONE_SELLING)
 |Option|#(done_selling)|#(OK_DONE_SELLING)
 |Prompt
@@ -254,10 +262,10 @@ Sell|DoNothing
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_LIFE_DATA)|DoNothing
-|VariableLoad|Murch_LifeDataSoldIndex|u.randomizer.integerLessThan(3)
-|Display|#(SOLD_LIFE_DATA1)||cr.varGet('Murch_LifeDataSoldIndex') == 0
-|Display|#(SOLD_LIFE_DATA2)||cr.varGet('Murch_LifeDataSoldIndex') == 1
-|Display|#(SOLD_LIFE_DATA3)||cr.varGet('Murch_LifeDataSoldIndex') == 2
+|Display|#(SOLD_LIFE_DATA1)
+|Display|#(SOLD_LIFE_DATA2)
+|Display|#(SOLD_LIFE_DATA3)
+|Script|u.world.player.flagship.biodataOffload(u.world)
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_RAINBOW_LOCATIONS)|DoNothing
@@ -273,20 +281,64 @@ Sell|DoNothing
 #(BUY_FUEL_INTRO)|Display|#(BUY_FUEL_INTRO)
 |Disable||#(BUY_FUEL_INTRO)
 |Display|#(HOW_MUCH_FUEL)
+BuyMoreFuel|DoNothing
 |OptionsClear
-|Option|#(buy_1_fuel)|#(GOT_FUEL)
-|Option|#(buy_5_fuel)|#(GOT_FUEL)
-|Option|#(buy_10_fuel)|#(GOT_FUEL)
-|Option|#(buy_25_fuel)|#(GOT_FUEL)
-|Display|#(fill_me_up)|#(GOT_FUEL)
-|Option|#(done_buying_fuel)|#(buy)
+|Option|#(buy_1_fuel)|#(GOT_1_FUEL)
+|Option|#(buy_5_fuel)|#(GOT_5_FUEL)
+|Option|#(buy_10_fuel)|#(GOT_10_FUEL)
+|Option|#(buy_25_fuel)|#(GOT_25_FUEL)
+|Option|#(fill_me_up)|#(GOT_MAX_FUEL)
+|Option|#(done_buying_fuel)|Buy
 |Prompt
 
-#(GOT_FUEL)|Display|#(GOT_FUEL)
-|Goto||#(buy)
+#(GOT_1_FUEL)|DoNothing
+|VariableLoad|HasEnoughCredit|u.world.player.flagship.hasInfoCreditsAtLeast(1)
+|JumpIfFalse|HasEnoughCredit|CannotAffordFuel
+|VariableLoad|HasEnoughFuelCapacity|u.world.player.flagship.fuelTankCanAcceptAtLeast(1)
+|JumpIfFalse|HasEnoughFuelCapacity|CannotHoldFuel
+|Display|#(GOT_FUEL)
+CanAffordFuel1|Script|u.world.player.flagship.infoCreditsTradeForFuel(1)
+|Goto||BuyMoreFuel
 
-|Display|#(NO_ROOM_FOR_FUEL)
-|Goto||#(buy)
+#(GOT_5_FUEL)|DoNothing
+|VariableLoad|HasEnoughCredit|u.world.player.flagship.hasInfoCreditsAtLeast(5)
+|JumpIfFalse|HasEnoughCredit|CannotAffordFuel
+|VariableLoad|HasEnoughFuelCapacity|u.world.player.flagship.fuelTankCanAcceptAtLeast(5)
+|JumpIfFalse|HasEnoughFuelCapacity|CannotHoldFuel
+|Display|#(GOT_FUEL)
+|Script|u.world.player.flagship.infoCreditsTradeForFuel(5)
+|Goto||BuyMoreFuel
+
+#(GOT_10_FUEL)|DoNothing
+|VariableLoad|HasEnoughCredit|u.world.player.flagship.hasInfoCreditsAtLeast(10)
+|JumpIfFalse|HasEnoughCredit|CannotAffordFuel
+|VariableLoad|HasEnoughFuelCapacity|u.world.player.flagship.fuelTankCanAcceptAtLeast(10)
+|JumpIfFalse|HasEnoughFuelCapacity|CannotHoldFuel
+|Display|#(GOT_FUEL)
+|Script|u.world.player.flagship.infoCreditsTradeForFuel(10)
+|Goto||BuyMoreFuel
+
+#(GOT_25_FUEL)|DoNothing
+|VariableLoad|HasEnoughCredit|u.world.player.flagship.hasInfoCreditsAtLeast(25)
+|JumpIfFalse|HasEnoughCredit|CannotAffordFuel
+|VariableLoad|HasEnoughFuelCapacity|u.world.player.flagship.fuelTankCanAcceptAtLeast(25)
+|JumpIfFalse|HasEnoughFuelCapacity|CannotHoldFuel
+|Display|#(GOT_FUEL)
+|Script|u.world.player.flagship.infoCreditsTradeForFuel(25)
+|Goto||BuyMoreFuel
+
+#(GOT_MAX_FUEL)|DoNothing
+|VariableLoad|HasEnoughCredit|u.world.player.flagship.hasInfoCreditsAtLeast(u.world.player.flagship.fuelNeededToFillToCapacity() )
+|JumpIfFalse|HasEnoughCredit|CannotAffordFuel
+|Display|#(GOT_FUEL)
+|Script|u.world.player.flagship.infoCreditsTradeForFuel(u.world.player.flagship.fuelNeededToFillToCapacity() )
+|Goto||Buy
+
+CannotAffordFuel|Display|#(NEED_CREDIT)
+|Goto|BuyMoreFuel
+
+CannotHoldFuel|Display|#(NO_ROOM_FOR_FUEL)
+|Goto||BuyMoreFuel
 
 |Display|#(OK_FILL_YOU_UP)
 |Goto||#(buy)

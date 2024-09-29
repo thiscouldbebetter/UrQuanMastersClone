@@ -86,7 +86,7 @@ class PlacePlanetVicinity extends PlaceBase {
             //playerEntity.collidable.ticksUntilCanCollide = 100; // hack
             entities.push(playerEntity);
         }
-        var entitiesForShipGroups = this.planet.shipGroups.map(x => x.toEntity(world, this));
+        var entitiesForShipGroups = this.planet.shipGroups().map(x => x.toEntity(world, this));
         entities.push(...entitiesForShipGroups);
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
         null, // focalLength

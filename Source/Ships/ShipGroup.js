@@ -87,7 +87,7 @@ class ShipGroup {
                 var placePlanetVicinity = actorPlace;
                 var planet = placePlanetVicinity.planet;
                 var shipGroup = ShipGroup.fromEntity(entityActor);
-                ArrayHelper.remove(planet.shipGroups, shipGroup);
+                planet.shipGroupRemove(shipGroup);
             }
         }
         else {
@@ -98,6 +98,7 @@ class ShipGroup {
         return world.defnExtended().factionByName(this.factionName);
     }
     static kill(uwpe) {
+        var world = uwpe.world;
         var place = uwpe.place;
         var entity = uwpe.entity;
         place.entityRemove(entity);
@@ -105,10 +106,10 @@ class ShipGroup {
         var shipGroupsInPlace = null;
         var placeTypeName = place.constructor.name;
         if (placeTypeName == PlacePlanetVicinity.name) {
-            shipGroupsInPlace = place.planet.shipGroups;
+            shipGroupsInPlace = place.planet.shipGroups();
         }
         else if (placeTypeName == PlaceStarsystem.name) {
-            shipGroupsInPlace = place.starsystem.shipGroups;
+            shipGroupsInPlace = place.starsystem.shipGroups(world);
         }
         else {
             throw new Error("Unexpected placeTypeName: " + placeTypeName);

@@ -133,25 +133,8 @@ class PlaceStarsystem extends PlaceBase
 			entities.push(playerEntity);
 		}
 
-		var faction = starsystem.faction(world);
-		if (faction != null)
-		{
-			var shipDefnName = faction.shipDefnName;
-			var ship = new Ship(shipDefnName);
-
-			var shipGroup = new ShipGroup
-			(
-				faction.name + " " + ShipGroup.name,
-				faction.name, // factionName
-				Coords.create(),
-				[ ship ]
-			);
-
-			this.starsystem.shipGroups.push(shipGroup);
-		}
-
 		var entitiesForShipGroups =
-			this.starsystem.shipGroups.map(x => x.toEntity(world, this) );
+			this.starsystem.shipGroups(world).map(x => x.toEntity(world, this) );
 
 		entities.push(...entitiesForShipGroups);
 

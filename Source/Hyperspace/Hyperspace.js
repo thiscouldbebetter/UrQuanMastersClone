@@ -172,6 +172,13 @@ class Hyperspace {
         return hyperspace;
     }
     // instance methods
+    distanceBetweenStarsystemsWithNames(starsystemFromName, starsystemToName) {
+        var starsystemFrom = this.starsystemByName(starsystemFromName);
+        var starsystemTo = this.starsystemByName(starsystemToName);
+        var displacement = starsystemTo.posInHyperspace.clone().subtract(starsystemFrom.posInHyperspace);
+        var distance = displacement.magnitude();
+        return distance;
+    }
     starsystemByName(starsystemName) {
         return this.starsystemsByName.get(starsystemName);
     }

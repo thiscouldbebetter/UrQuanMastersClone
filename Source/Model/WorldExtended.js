@@ -151,7 +151,7 @@ class WorldExtended extends World {
             var shipGroup = new ShipGroup(murch.name + " " + ShipGroup.name, murch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), [
                 new Ship(murch.shipDefnName)
             ]);
-            starsystem.shipGroups.push(shipGroup);
+            starsystem.shipGroupAdd(shipGroup);
         });
         var playerShipDefnName = "Flagship";
         var playerShip = new Ship(playerShipDefnName);

@@ -355,7 +355,7 @@ class WorldExtended extends World
 					]
 				);
 
-				starsystem.shipGroups.push(shipGroup);
+				starsystem.shipGroupAdd(shipGroup);
 			}
 		);
 

@@ -116,6 +116,11 @@ class Player
 		return this._factionsKnown;
 	}
 
+	hasInfoCredits(): boolean
+	{
+		return this.flagship.hasInfoCredits();
+	}
+
 	hasInfoToSell(world: World): boolean
 	{
 		var returnValue =

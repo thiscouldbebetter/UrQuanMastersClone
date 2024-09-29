@@ -8,7 +8,7 @@ class Starsystem implements EntityProperty<Starsystem>
 	sizeInner: Coords;
 	factionName: string;
 	planets: Planet[];
-	shipGroups: ShipGroup[];
+	_shipGroups: ShipGroup[];
 
 	private _displacement: Coords;
 
@@ -31,7 +31,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		this.sizeInner = sizeInner;
 		this.factionName = factionName;
 		this.planets = planets;
-		this.shipGroups = shipGroups;
+		this._shipGroups = shipGroups;
 
 		this._displacement = Coords.create();
 	}
@@ -88,6 +88,37 @@ class Starsystem implements EntityProperty<Starsystem>
 	{
 		return ArrayHelper.random(this.planets, universe.randomizer);
 	}
+
+	shipGroupAdd(shipGroup: ShipGroup): void
+	{
+		this._shipGroups.push(shipGroup);
+	}
+
+	shipGroups(world: WorldExtended): ShipGroup[]
+	{
+		if (this._shipGroups == null)
+		{
+			var faction = this.faction(world);
+			if (faction != null)
+			{
+				var shipDefnName = faction.shipDefnName;
+				var ship = new Ship(shipDefnName);
+
+				var shipGroup = new ShipGroup
+				(
+					faction.name + " " + ShipGroup.name,
+					faction.name, // factionName
+					Coords.create(),
+					[ ship ]
+				);
+
+				this._shipGroups.push(shipGroup);
+			}
+		}
+
+		return this._shipGroups;
+	}
+
 
 	solarSystem(universe: Universe): void
 	{
@@ -164,7 +195,7 @@ class Starsystem implements EntityProperty<Starsystem>
 			[ enemyShip ]
 		);
 
-		planetEarth.shipGroups.push(enemyShipGroup);
+		planetEarth.shipGroupAdd(enemyShipGroup);
 
 		// Put an orphaned ship on Pluto.
 

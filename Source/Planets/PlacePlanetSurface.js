@@ -73,6 +73,8 @@ class PlacePlanetSurface extends PlaceBase {
         var hazardTypeNames = ["Weather", "Tectonics", "Temperature"];
         var hazardVisualNames = ["Lightning", "Earthquake", "Hotspot"];
         var imagesPerVisual = 12;
+        // hack
+        var collider = Box.fromSize(Coords.ones().multiplyScalar(10));
         for (var i = 0; i < hazardTypeNames.length; i++) {
             var hazardLevel = hazardLevels[i];
             if (hazardLevel > 1) {
@@ -91,9 +93,10 @@ class PlacePlanetSurface extends PlaceBase {
                 ]);
                 var drawable = Drawable.fromVisual(visual);
                 var ephemeral = Ephemeral.fromTicksToLive(20);
+                var collidable = Collidable.fromColliderAndCollideEntities(collider, this.hazardCollide);
                 var entityHazard = new Entity(hazardTypeName, [
                     Animatable2.create(),
-                    Collidable.default(),
+                    collidable,
                     drawable,
                     ephemeral,
                     Locatable.create()
@@ -177,6 +180,9 @@ class PlacePlanetSurface extends PlaceBase {
         }
         var placePlanetOrbit = place.placePlanetOrbit;
         world.placeNextSet(placePlanetOrbit);
+    }
+    hazardCollide(uwpe, collision) {
+        Collidable.collideEntitiesForUniverseWorldPlaceEntitiesAndCollisionLog(uwpe, collision);
     }
     playerCollide(uwpe) {
         var universe = uwpe.universe;

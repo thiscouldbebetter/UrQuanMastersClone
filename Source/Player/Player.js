@@ -59,6 +59,9 @@ class Player {
         }
         return this._factionsKnown;
     }
+    hasInfoCredits() {
+        return this.flagship.hasInfoCredits();
+    }
     hasInfoToSell(world) {
         var returnValue = this.hasInfoToSell_RainbowWorldLocations()
             || this.flagship.hasInfoToSell(world);

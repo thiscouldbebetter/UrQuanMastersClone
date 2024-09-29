@@ -3,6 +3,7 @@ class ResourceDefn
 {
 	name: string;
 	nameFriendly: string;
+	categoryName: string;
 	color: Color;
 	valuePerUnit: number;
 
@@ -12,12 +13,14 @@ class ResourceDefn
 	(
 		name: string,
 		nameFriendly: string,
+		categoryName: string,
 		color: Color,
 		valuePerUnit: number
 	)
 	{
 		this.name = name;
 		this.nameFriendly = nameFriendly;
+		this.categoryName = categoryName;
 		this.color = color;
 		this.valuePerUnit = valuePerUnit;
 	}
@@ -38,6 +41,9 @@ class ResourceDefn
 		return ResourceDefn.Instances()._AllByName.get(name);
 	}
 
+	static CategoryBiodataName = "Biodata";
+	static CategoryMineralName = "Mineral";
+
 	toItemDefn(): ItemDefn
 	{
 		if (this._itemDefn == null)
@@ -50,7 +56,7 @@ class ResourceDefn
 				VisualCircle.fromRadiusAndColorFill(3, this.color)
 			).categoryNameAdd
 			(
-				Resource.name
+				this.categoryName
 			)
 		}
 		return this._itemDefn;
@@ -77,16 +83,20 @@ class ResourceDefn_Instances
 	{
 		var colors = Color.Instances();
 
-		this.Commons = new ResourceDefn("Commons", "Common Elements", colors.White, 1);
-		this.Corrosives = new ResourceDefn("Corrosives", "Corrosives", colors.Red, 2);
-		this.BaseMetals = new ResourceDefn("BaseMetals", "Base Metals", colors.Gray, 3);
-		this.NobleGases = new ResourceDefn("NobleGases", "Noble Gases", colors.Blue, 4);
-		this.RareEarths = new ResourceDefn("RareEarths", "Rare Earths", colors.Green, 5);
-		this.PreciousMetals = new ResourceDefn("PreciousMetals", "Precious Metals", colors.Yellow, 6);
-		this.Radioactives = new ResourceDefn("Radioactives", "Radioactives", colors.Orange, 8);
-		this.Exotics = new ResourceDefn("Exotics", "Exotics", colors.Violet, 25);
+		var rd = ResourceDefn;
+		var categoryMinerals = ResourceDefn.CategoryMineralName;
+		var categoryBiodata = ResourceDefn.CategoryBiodataName;
 
-		this.Biodata = new ResourceDefn("Biodata", "Biodata", colors.Green, null);
+		this.Commons 		= new rd("Commons", 		"Common Elements", 	categoryMinerals, colors.White, 1);
+		this.Corrosives 	= new rd("Corrosives", 		"Corrosives", 		categoryMinerals, colors.Red, 2);
+		this.BaseMetals 	= new rd("BaseMetals", 		"Base Metals", 		categoryMinerals, colors.Gray, 3);
+		this.NobleGases 	= new rd("NobleGases", 		"Noble Gases", 		categoryMinerals, colors.Blue, 4);
+		this.RareEarths 	= new rd("RareEarths", 		"Rare Earths", 		categoryMinerals, colors.Green, 5);
+		this.PreciousMetals = new rd("PreciousMetals", 	"Precious Metals", 	categoryMinerals, colors.Yellow, 6);
+		this.Radioactives 	= new rd("Radioactives", 	"Radioactives", 	categoryMinerals, colors.Orange, 8);
+		this.Exotics 		= new rd("Exotics", 		"Exotics", 			categoryMinerals, colors.Violet, 25);
+
+		this.Biodata 		= new rd("Biodata", 		"Biodata", 			categoryBiodata, colors.Green, 2);
 
 		this._All =
 		[
@@ -99,8 +109,7 @@ class ResourceDefn_Instances
 			this.Radioactives,
 			this.Exotics,
 
-			this.Biodata,
-
+			this.Biodata
 		];
 		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}

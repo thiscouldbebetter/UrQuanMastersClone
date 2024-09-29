@@ -7,7 +7,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	posAsPolar: Polar;
 	sizeSurface: Coords;
 	satellites: Satellite[];
-	shipGroups: ShipGroup[];
+	_shipGroups: ShipGroup[];
 	mass: number;
 	radius: number;
 	gravity: number;
@@ -51,7 +51,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		this.posAsPolar = posAsPolar;
 		this.sizeSurface = sizeSurface;
 		this.satellites = satellites || [];
-		this.shipGroups = shipGroups || [];
+		this._shipGroups = shipGroups || [];
 
 		this.mass = Math.round(mass);
 		this.radius = Math.round(radius);
@@ -212,6 +212,21 @@ class Planet implements EntityProperty<Planet>, Satellite
 			: colors.BlueDark
 		);
 		return orbitColor;
+	}
+
+	shipGroupAdd(shipGroup: ShipGroup): void
+	{
+		this._shipGroups.push(shipGroup);
+	}
+
+	shipGroupRemove(shipGroup: ShipGroup): void
+	{
+		this._shipGroups.splice(this._shipGroups.indexOf(shipGroup), 1);
+	}
+
+	shipGroups(): ShipGroup[]
+	{
+		return this._shipGroups;
 	}
 
 	toEntity(world: WorldExtended, primary: Planet, primaryPos: Coords): Entity

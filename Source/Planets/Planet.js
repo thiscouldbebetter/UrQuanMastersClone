@@ -7,7 +7,7 @@ class Planet {
         this.posAsPolar = posAsPolar;
         this.sizeSurface = sizeSurface;
         this.satellites = satellites || [];
-        this.shipGroups = shipGroups || [];
+        this._shipGroups = shipGroups || [];
         this.mass = Math.round(mass);
         this.radius = Math.round(radius);
         this.gravity = parseFloat(gravity.toFixed(2));
@@ -96,6 +96,15 @@ class Planet {
                 ? colors.GreenDark
                 : colors.BlueDark);
         return orbitColor;
+    }
+    shipGroupAdd(shipGroup) {
+        this._shipGroups.push(shipGroup);
+    }
+    shipGroupRemove(shipGroup) {
+        this._shipGroups.splice(this._shipGroups.indexOf(shipGroup), 1);
+    }
+    shipGroups() {
+        return this._shipGroups;
     }
     toEntity(world, primary, primaryPos) {
         var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));

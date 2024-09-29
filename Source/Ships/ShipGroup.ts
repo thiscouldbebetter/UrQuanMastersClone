@@ -176,7 +176,7 @@ class ShipGroup implements EntityPropertyBase
 				var placePlanetVicinity = actorPlace as PlacePlanetVicinity;
 				var planet = placePlanetVicinity.planet;
 				var shipGroup = ShipGroup.fromEntity(entityActor);
-				ArrayHelper.remove(planet.shipGroups, shipGroup);
+				planet.shipGroupRemove(shipGroup);
 			}
 		}
 		else
@@ -192,6 +192,7 @@ class ShipGroup implements EntityPropertyBase
 
 	static kill(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place;
 		var entity = uwpe.entity;
 
@@ -203,11 +204,11 @@ class ShipGroup implements EntityPropertyBase
 		var placeTypeName = place.constructor.name;
 		if (placeTypeName == PlacePlanetVicinity.name)
 		{
-			shipGroupsInPlace = (place as PlacePlanetVicinity).planet.shipGroups;
+			shipGroupsInPlace = (place as PlacePlanetVicinity).planet.shipGroups();
 		}
 		else if (placeTypeName == PlaceStarsystem.name)
 		{
-			shipGroupsInPlace = (place as PlaceStarsystem).starsystem.shipGroups;
+			shipGroupsInPlace = (place as PlaceStarsystem).starsystem.shipGroups(world);
 		}
 		else
 		{
