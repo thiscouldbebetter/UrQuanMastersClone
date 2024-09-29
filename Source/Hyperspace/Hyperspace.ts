@@ -248,14 +248,19 @@ class Hyperspace
 			var weather = parseInt(planetAsValues[12]);
 			var temperature = parseInt(planetAsValues[23]);
 
-			var lifeformBiodataQuantity = parseInt(planetAsValues[15]);
-			var lifeformCount = lifeformBiodataQuantity; // todo
-			var lifeformDefnNames =
-			(
-				lifeformCount > 0
-				? [ "BiteyMouse" ] // todo
-				: null
-			);
+			var biosphereAsString = planetAsValues[28];
+			var biosphere = PlanetBiosphere.fromString(biosphereAsString);
+			var biosphereValueCalculated = biosphere.value();
+			var biosphereValueExpected = parseInt(planetAsValues[15]);
+			if (biosphereValueCalculated != biosphereValueExpected)
+			{
+				var message =
+					"In the biosphere for planet '" + planetName
+					+ "', the calculated value of lifeforms, " + biosphereValueCalculated
+					+ ", did not match the expected value, " + biosphereValueExpected + "."
+				//throw new Error(message);
+				console.log(message);
+			}
 
 			var planet = new Planet
 			(
@@ -275,8 +280,7 @@ class Hyperspace
 				tectonics,
 				weather,
 				temperature,
-				lifeformCount,
-				lifeformDefnNames,
+				biosphere,
 				null // energySources
 			);
 

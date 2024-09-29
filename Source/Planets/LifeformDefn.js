@@ -1,8 +1,11 @@
 "use strict";
 class LifeformDefn {
-    constructor(name, durability, speed, damagePerAttack, value, visual, activityDefnName) {
+    constructor(name, nameOriginal, code, durability, awareness, speed, damagePerAttack, value, visual, activityDefnName) {
         this.name = name;
+        this.nameOriginal = nameOriginal;
+        this.code = code;
         this.durability = durability;
+        this.awareness = awareness;
         this.speed = speed;
         this.damagePerAttack = damagePerAttack;
         this.value = value;
@@ -15,44 +18,55 @@ class LifeformDefn {
         }
         return LifeformDefn._instances;
     }
+    static byCode(code) {
+        return LifeformDefn.Instances().byCode(code);
+    }
 }
 class LifeformDefn_Instances {
     constructor() {
         var ld = LifeformDefn;
-        var activityDefnAvoid = Lifeform.activityDefnAvoidPlayer().name;
-        var activityDefnNone = Lifeform.activityDefnDoNothing().name;
-        var activityDefnPursue = Lifeform.activityDefnApproachPlayer().name;
-        var activityDefnWander = Lifeform.activityDefnMoveToRandomPosition().name;
-        var visual = (imageName) => new VisualImageFromLibrary(imageName);
+        var adAvoid = Lifeform.activityDefnAvoidPlayer().name;
+        var adNone = Lifeform.activityDefnDoNothing().name;
+        var adPursue = Lifeform.activityDefnApproachPlayer().name;
+        var adWander = Lifeform.activityDefnMoveToRandomPosition().name;
+        var v = (imageName) => new VisualImageFromLibrary(imageName);
+        // Adapted from, among other sources,
+        // https://wiki.starcontrol.com/index.php?title=Table_of_bio_types
         this._All =
             [
-                // name				hp,sp,dm,val
-                new ld("RadarBlossom", 1, 0, 0, 1, visual("RadarBlossom"), activityDefnNone),
-                new ld("LavaPool", 1, 0, 0, 6, visual("LavaPool"), activityDefnNone),
-                new ld("SquirtPod", 1, 0, 1, 3, visual("SquirtPod"), activityDefnNone),
-                new ld("ClapperBush", 3, 0, 2, 5, visual("ClapperBush"), activityDefnNone),
-                new ld("CarouselTree", 10, 0, 0, 1, visual("CarouselTree"), activityDefnNone),
-                new ld("BlueTube", 2, 1, 0, 1, visual("BlueTube"), activityDefnWander),
-                new ld("BrassNeedler", 5, 1, 0, 8, visual("BrassNeedler"), activityDefnPursue),
-                new ld("CreepingBean", 2, 1, 1, 2, visual("CreepingBean"), activityDefnPursue),
-                new ld("LightningAnemone", 8, 1, 2, 3, visual("LightningAnemone"), activityDefnWander),
-                new ld("Radiooculopod", 15, 1, 3, 10, visual("Radiooculopod"), activityDefnWander),
-                new ld("SwarmsOfThings", 3, 2, 1, 3, visual("SwarmsOfThings"), activityDefnPursue),
-                new ld("ElasticSphere", 1, 2, 0, 2, visual("ElasticSphere"), activityDefnAvoid),
-                new ld("TriopticSquid", 2, 2, 1, 2, visual("TriopticSquid"), activityDefnWander),
-                new ld("LeapingLizard", 6, 2, 2, 4, visual("LeapingLizard"), activityDefnWander),
-                new ld("BloodyBathmat", 12, 2, 3, 9, visual("BloodyBathmat"), activityDefnWander),
-                new ld("BiteyMouse", 1, 3, 1, 3, visual("BiteyMouse"), activityDefnPursue),
-                new ld("SmushedDuckling", 1, 3, 0, 1, visual("SmushedDuckling"), activityDefnAvoid),
-                new ld("FungusAmungus", 8, 3, 2, 7, visual("FungusAmungus"), activityDefnPursue),
-                new ld("WaddleEye", 2, 3, 1, 15, visual("WaddleEye"), activityDefnAvoid),
-                new ld("SpuriousEaglet", 1, 3, 1, 1, visual("SpuriousEaglet"), activityDefnAvoid),
-                new ld("CottonCandycane", 2, 1, 1, 6, visual("CottonCandycane"), activityDefnWander),
-                new ld("BulgingEyeworm", 2, 1, 1, 4, visual("BulgingEyeworm"), activityDefnAvoid),
-                new ld("PopperUpper", 5, 0, 1, 8, visual("PopperUpper"), activityDefnNone),
-                new ld("BioDecoy", 1, 0, 0, 0, visual("BioDecoy"), activityDefnWander),
-                new ld("MauluskaGourmand", 1, 0, 3, 1, visual("MauluskaGourmand"), activityDefnNone),
-                new ld("FreakyBeast", 15, 3, 3, 15, visual("FreakyBeast"), activityDefnPursue),
+                // name,				nameOriginal,			code, hp,aw,sp,dm,val
+                new ld("[none]", "[none]", "__", 0, 0, 0, 0, 0, new VisualNone(), adNone),
+                new ld("[error]", "[error]", "XX", 0, 0, 0, 0, 1, new VisualNone(), adNone),
+                new ld("RadarBlossom", "Roto-Dendron", "RD", 1, 0, 0, 0, 1, v("RadarBlossom"), adNone),
+                new ld("LavaPool", "Macrocilia", "MC", 1, 0, 0, 0, 6, v("LavaPool"), adNone),
+                new ld("SquirtPod", "Splort Wort", "SW", 1, 0, 0, 1, 3, v("SquirtPod"), adNone),
+                new ld("ClapperBush", "Whackin' Bush", "WB", 3, 0, 0, 2, 5, v("ClapperBush"), adNone),
+                new ld("CarouselTree", "Slot Machine Tree", "SM", 10, 0, 0, 0, 2, v("CarouselTree"), adNone),
+                new ld("BlueTube", "Neon Worm", "NW", 2, 0, 1, 0, 1, v("BlueTube"), adWander),
+                new ld("BrassNeedler", "Stiletto Urchin", "SU", 5, 2, 1, 0, 8, v("BrassNeedler"), adPursue),
+                new ld("CreepingBean", "Deluxe Blob", "DB", 2, 1, 1, 1, 2, v("CreepingBean"), adPursue),
+                new ld("LightningAnemone", "Glowing Medusa", "GM", 8, 0, 1, 2, 3, v("LightningAnemone"), adWander),
+                new ld("Radiooculopod", "Carousel Beast", "CB", 15, 2, 1, 3, 10, v("Radiooculopod"), adWander),
+                new ld("SwarmsOfThings", "Mysterious Bees", "MB", 3, 2, 2, 1, 3, v("SwarmsOfThings"), adPursue),
+                new ld("ElasticSphere", "Hopping Blobby", "HB", 1, 2, 2, 0, 2, v("ElasticSphere"), adAvoid),
+                new ld("TriopticSquid", "Blood Monkey", "BM", 2, 0, 2, 1, 2, v("TriopticSquid"), adWander),
+                new ld("LeapingLizard", "Yompin Yiminy", "YY", 6, 3, 2, 2, 4, v("LeapingLizard"), adWander),
+                new ld("BloodyBathmat", "Amorphous Trandicula", "AT", 12, 0, 2, 3, 9, v("BloodyBathmat"), adWander),
+                new ld("BiteyMouse", "Crazy Weasel", "CW", 1, 3, 3, 1, 3, v("BiteyMouse"), adPursue),
+                new ld("SmushedDuckling", "Merry Whumpet", "MW", 1, 3, 3, 0, 1, v("SmushedDuckling"), adAvoid),
+                new ld("FungusAmungus", "Fungal Squid", "FS", 8, 1, 3, 2, 7, v("FungusAmungus"), adPursue),
+                new ld("WaddleEye", "Penguin Cyclops", "PC", 2, 3, 3, 1, 15, v("WaddleEye"), adAvoid),
+                new ld("SpuriousEaglet", "Chicken", "CH", 1, 1, 3, 1, 1, v("SpuriousEaglet"), adAvoid),
+                new ld("CottonCandycane", "Bubble Vine", "BV", 2, 0, 1, 1, 6, v("CottonCandycane"), adWander),
+                new ld("BulgingEyeworm", "Bug-Eyed Bait", "BB", 2, 3, 1, 1, 4, v("BulgingEyeworm"), adAvoid),
+                new ld("PopperUpper", "Goo Burger", "GB", 5, 0, 0, 1, 8, v("PopperUpper"), adNone),
+                new ld("BioDecoy", "Brainbox Bulldozer", "BD", 1, 0, 0, 0, 0, v("BioDecoy"), adWander),
+                new ld("MauluskaGourmand", "Evil One", "EO", 1, 0, 0, 3, 1, v("MauluskaGourmand"), adNone),
+                new ld("FreakyBeast", "ZEX's Beauty", "ZB", 15, 3, 3, 3, 15, v("FreakyBeast"), adPursue),
             ];
+        this._AllByCode = new Map(this._All.map(x => [x.code, x]));
+    }
+    byCode(code) {
+        return this._AllByCode.get(code);
     }
 }

@@ -95,16 +95,13 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		var radiusBase = 5;
 
-		var planetEarth = this.planets[2];
+		var planetEarth = this.planets.find(x => x.name == "Earth");
 		planetEarth.defnName = PlanetDefn.Instances().Shielded.name;
 
-		// Put some lifeforms and a base on the moon.
+		// Put a base on the moon.
 
 		var moon = planetEarth.satellites[0] as Planet;
 		moon.name = "Moon";
-		moon.lifeformCount  = 16;
-		moon.lifeformDefnNames = [ "BioDecoy" ];
-
 		var moonSizeSurface = moon.sizeSurface;
 
 		var mediaLibrary = universe.mediaLibrary;

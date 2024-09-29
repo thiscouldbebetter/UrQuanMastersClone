@@ -136,14 +136,20 @@ class Hyperspace {
             var tectonics = parseInt(planetAsValues[11]);
             var weather = parseInt(planetAsValues[12]);
             var temperature = parseInt(planetAsValues[23]);
-            var lifeformBiodataQuantity = parseInt(planetAsValues[15]);
-            var lifeformCount = lifeformBiodataQuantity; // todo
-            var lifeformDefnNames = (lifeformCount > 0
-                ? ["BiteyMouse"] // todo
-                : null);
+            var biosphereAsString = planetAsValues[28];
+            var biosphere = PlanetBiosphere.fromString(biosphereAsString);
+            var biosphereValueCalculated = biosphere.value();
+            var biosphereValueExpected = parseInt(planetAsValues[15]);
+            if (biosphereValueCalculated != biosphereValueExpected) {
+                var message = "In the biosphere for planet '" + planetName
+                    + "', the calculated value of lifeforms, " + biosphereValueCalculated
+                    + ", did not match the expected value, " + biosphereValueExpected + ".";
+                //throw new Error(message);
+                console.log(message);
+            }
             var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetSize, null, // satellites
             null, // shipGroups,
-            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, null // energySources
+            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, null // energySources
             );
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;

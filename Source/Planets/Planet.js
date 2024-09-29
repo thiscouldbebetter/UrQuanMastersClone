@@ -1,6 +1,6 @@
 "use strict";
 class Planet {
-    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, dayInHours, yearInEarthDays, tectonics, weather, temperature, lifeformCount, lifeformDefnNames, energySources) {
+    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySources) {
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
@@ -17,12 +17,11 @@ class Planet {
         this.tectonics = tectonics;
         this.weather = weather;
         this.temperature = temperature;
-        this.lifeformCount = lifeformCount || 0;
-        this.lifeformDefnNames = lifeformDefnNames || [];
+        this.biosphere = biosphere;
         this.energySources = energySources || [];
     }
     static from6(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites) {
-        return new Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        return new Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null);
     }
     static activityDefnGravitate() {
         return new ActivityDefn("Gravitate", Planet.activityGravitatePerform);
@@ -57,14 +56,7 @@ class Planet {
     }
     lifeforms(randomizer) {
         if (this._lifeforms == null) {
-            var lifeforms = new Array();
-            for (var i = 0; i < this.lifeformCount; i++) {
-                var lifeformDefnName = ArrayHelper.random(this.lifeformDefnNames, randomizer);
-                var lifeformPos = Coords.create().randomize(randomizer).multiply(this.sizeSurface);
-                var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
-                lifeforms.push(lifeform);
-            }
-            this._lifeforms = lifeforms;
+            this._lifeforms = this.biosphere.lifeformsGenerateForPlanet(this, randomizer);
         }
         return this._lifeforms;
     }

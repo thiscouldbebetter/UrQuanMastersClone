@@ -17,8 +17,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	tectonics: number;
 	weather: number;
 	temperature: number;
-	lifeformDefnNames: string[];
-	lifeformCount: number;
+	biosphere: PlanetBiosphere;
 	energySources: EnergySource[];
 
 	_lifeforms: Lifeform[];
@@ -42,8 +41,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		tectonics: number,
 		weather: number,
 		temperature: number,
-		lifeformCount: number,
-		lifeformDefnNames: string[],
+		biosphere: PlanetBiosphere,
 		energySources: EnergySource[]
 	)
 	{
@@ -65,8 +63,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		this.weather = weather;
 		this.temperature = temperature;
 
-		this.lifeformCount = lifeformCount || 0;
-		this.lifeformDefnNames = lifeformDefnNames || [];
+		this.biosphere = biosphere;
 		this.energySources = energySources || [];
 	}
 
@@ -91,7 +88,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			null, null, null,
 			null, null, null,
 			null, null, null,
-			null, null, null, null
+			null, null, null
 		);
 	}
 
@@ -149,19 +146,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	{
 		if (this._lifeforms == null)
 		{
-			var lifeforms = new Array<Lifeform>();
-
-			for (var i = 0; i < this.lifeformCount; i++)
-			{
-				var lifeformDefnName =
-					ArrayHelper.random(this.lifeformDefnNames, randomizer);
-				var lifeformPos =
-					Coords.create().randomize(randomizer).multiply(this.sizeSurface);
-				var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
-				lifeforms.push(lifeform);
-			}
-
-			this._lifeforms = lifeforms;
+			this._lifeforms = this.biosphere.lifeformsGenerateForPlanet(this, randomizer);
 		}
 
 		return this._lifeforms;
