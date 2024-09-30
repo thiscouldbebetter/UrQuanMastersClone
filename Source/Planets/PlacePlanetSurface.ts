@@ -77,7 +77,7 @@ class PlacePlanetSurface extends PlaceBase
 
 		this._camera = new Camera
 		(
-			Coords.fromXY(300, 300), // hack
+			Coords.fromXY(1, 1).multiplyScalar(300), // hack
 			null, // focalLength
 			Disposition.fromOrientation
 			(

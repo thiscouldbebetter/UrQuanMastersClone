@@ -133,6 +133,8 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		var moon = planetEarth.satellites[0] as Planet;
 		moon.name = "Moon";
+
+		/*
 		var moonSizeSurface = moon.sizeSurface;
 
 		var mediaLibrary = universe.mediaLibrary;
@@ -169,6 +171,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		);
 		var energySources = [ energySourceAbandonedMoonbase ];
 		moon.energySources = energySources;
+		*/
 
 		// Put a station in orbit around the Earth.
 

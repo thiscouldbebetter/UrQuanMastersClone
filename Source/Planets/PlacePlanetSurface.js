@@ -30,7 +30,7 @@ class PlacePlanetSurface extends PlaceBase {
         entities.push(new GameClock(2880).toEntity());
         var entityDimension = 10;
         // camera
-        this._camera = new Camera(Coords.fromXY(300, 300), // hack
+        this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(300), // hack
         null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );

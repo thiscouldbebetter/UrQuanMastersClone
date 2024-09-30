@@ -150,7 +150,13 @@ class EnergySource_Instances
 		);
 		this.CrashedShackler 	= new es("CrashedShackler", pos, visual, collideWithLander);
 		this.MauluskaOrphan 	= new es("MauluskaOrphan", pos, visual, collideWithLander);
-		this.TtorstingCaster 	= new es("TtorstingCaster", pos, visual, collideWithLander);
+		this.TtorstingCaster 	= new es
+		(
+			"TtorstingCaster",
+			pos,
+			new vifl(EnergySource.name + "TtorstingCaster"),
+			this.ttorstingCaster_CollideWithLander
+		);
 
 		this._All =
 		[
@@ -182,4 +188,31 @@ class EnergySource_Instances
 
 		universe.venueTransitionTo(venueMessage);
 	}
+
+	ttorstingCaster_CollideWithLander(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var universe = uwpe.universe;
+
+		var acknowledgeReport = (uwpe: UniverseWorldPlaceEntities) =>
+		{
+			var place = uwpe.place as PlacePlanetSurface;
+			var entityPlayer = place.entityByName(Player.name);
+			var lander = Lander.fromEntity(entityPlayer);
+			var entityEnergySource = uwpe.universe.world.place().entityByName("TtorstingCaster");
+			lander.itemHolderCargo.itemEntityPickUpFromPlace(entityEnergySource, place);
+			place.exit(uwpe);
+		};
+
+		var venueToReturnTo = universe.venueCurrent();
+
+		var mediaLibrary = universe.mediaLibrary;
+		var message =
+			mediaLibrary.textStringGetByName(EnergySource.name + "TtorstingCaster").value;
+
+		var venueMessage =
+			VenueMessage.fromTextAcknowledgeAndVenuePrev(message, acknowledgeReport, venueToReturnTo);
+
+		universe.venueTransitionTo(venueMessage);
+	}
+
 }

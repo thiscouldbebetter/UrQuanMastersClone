@@ -64,24 +64,44 @@ class Starsystem {
         // Put a base on the moon.
         var moon = planetEarth.satellites[0];
         moon.name = "Moon";
+        /*
         var moonSizeSurface = moon.sizeSurface;
+
         var mediaLibrary = universe.mediaLibrary;
         var textAbandonedMoonbase = "AbandonedMoonbase";
-        var abandonedMoonbaseMessage = mediaLibrary.textStringGetByName(EnergySource.name + textAbandonedMoonbase).value;
-        var visual = new VisualImageFromLibrary(EnergySource.name + textAbandonedMoonbase);
-        var collideWithLander = (uwpe) => {
+        var abandonedMoonbaseMessage =
+            mediaLibrary.textStringGetByName(EnergySource.name + textAbandonedMoonbase).value;
+        var visual =
+            new VisualImageFromLibrary(EnergySource.name + textAbandonedMoonbase);
+
+        var collideWithLander = (uwpe: UniverseWorldPlaceEntities) =>
+        {
             var universe = uwpe.universe;
-            var acknowledgeReport = () => {
-                var place = uwpe.place;
+
+            var acknowledgeReport = () =>
+            {
+                var place = uwpe.place as PlacePlanetSurface;
                 place.exit(uwpe);
             };
+
             var venueToReturnTo = universe.venueCurrent();
-            var venueMessage = VenueMessage.fromTextAcknowledgeAndVenuePrev(abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo);
+
+            var venueMessage =
+                VenueMessage.fromTextAcknowledgeAndVenuePrev(abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo);
+
             universe.venueTransitionTo(venueMessage);
         };
-        var energySourceAbandonedMoonbase = new EnergySource(textAbandonedMoonbase, Coords.random(universe.randomizer).multiply(moonSizeSurface), visual, collideWithLander);
-        var energySources = [energySourceAbandonedMoonbase];
+
+        var energySourceAbandonedMoonbase = new EnergySource
+        (
+            textAbandonedMoonbase,
+            Coords.random(universe.randomizer).multiply(moonSizeSurface),
+            visual,
+            collideWithLander
+        );
+        var energySources = [ energySourceAbandonedMoonbase ];
         moon.energySources = energySources;
+        */
         // Put a station in orbit around the Earth.
         var station = new Station("Earth Station", Color.Instances().Gray, // color
         radiusBase, "Terran", // factionName
