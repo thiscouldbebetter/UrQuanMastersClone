@@ -56,12 +56,7 @@ class Faction implements EntityPropertyBase
 		return returnValue;
 	}
 
-	shipGroup(): ShipGroup
-	{
-		return this.shipGroupGenerate();
-	}
-
-	shipGroupGenerate(): ShipGroup
+	shipGroupGenerateAtPos(pos: Coords): ShipGroup
 	{
 		var shipCount = 1; // todo
 		var ships = new Array<Ship>();
@@ -70,7 +65,7 @@ class Faction implements EntityPropertyBase
 			var ship = Ship.fromDefnName(this.shipDefnName);
 			ships.push(ship);
 		}
-		var shipGroup = ShipGroup.fromFactionNameAndShips(this.name, ships);
+		var shipGroup = ShipGroup.fromFactionNameAndShips(this.name, ships).posSet(pos);
 		return shipGroup;
 	}
 
@@ -96,7 +91,7 @@ class Faction implements EntityPropertyBase
 
 	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter
 	{
-		var shipGroup = this.shipGroup();
+		var shipGroup = this.shipGroupGenerateAtPos(Coords.zeroes() );
 		var encounter = shipGroup.toEncounter(uwpe);
 		return encounter;
 	}

@@ -328,12 +328,18 @@ class PlacePlanetSurface extends PlaceBase
 		var entityLander = place.entityByName(Player.name);
 		var lander = Lander.fromEntity(entityLander);
 		var itemHoldersForLander =
-			[ lander.itemHolderCargo, lander.itemHolderLifeforms ];
+		[
+			lander.itemHolderCargo,
+			lander.itemHolderDevices,
+			lander.itemHolderLifeforms
+		];
 
 		var flagship = world.player.flagship;
 		var itemHoldersForFlagship =
 		[
-			flagship.itemHolderCargo, flagship.itemHolderOther
+			flagship.itemHolderCargo,
+			flagship.itemHolderDevices,
+			flagship.itemHolderLifeforms
 		];
 
 		for (var i = 0; i < itemHoldersForLander.length; i++)
@@ -369,8 +375,6 @@ class PlacePlanetSurface extends PlaceBase
 
 		var entityOtherName = entityOther.name;
 		var entityOtherItem = entityOther.item();
-		var entityOtherEnergySource =
-			EnergySource.fromEntity(entityOther);
 
 		if (entityOtherItem != null)
 		{
@@ -390,13 +394,21 @@ class PlacePlanetSurface extends PlaceBase
 					itemHolder = lander.itemHolderCargo;
 				}
 			}
+			else if (entityOtherEnergySource != null)
+			{
+				itemHolder = lander.itemHolderDevices;
+			}
 			else
 			{
-				throw new Error("todo");
+				// Do nothing.
 			}
 
-			itemHolder.itemAdd(entityOther.item());
-			place.entityToRemoveAdd(entityOther);
+			if (itemHolder != null)
+			{
+				var item = Item.fromEntity(entityOther);
+				itemHolder.itemAdd(item);
+				place.entityToRemoveAdd(entityOther);
+			}
 		}
 		else if (entityOtherName.startsWith(Lifeform.name) )
 		{
@@ -406,7 +418,11 @@ class PlacePlanetSurface extends PlaceBase
 			playerKillable.damageApply(uwpe.entitiesSwap(), damage);
 			uwpe.entitiesSwap();
 		}
-		else if (entityOtherEnergySource != null)
+
+		var entityOtherEnergySource =
+			EnergySource.fromEntity(entityOther);
+
+		if (entityOtherEnergySource != null)
 		{
 			var energySource = entityOtherEnergySource;
 			energySource.collideWithLander(uwpe);

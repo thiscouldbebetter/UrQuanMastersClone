@@ -157,6 +157,10 @@ class ShipGroup {
         var posInverted = this._posInverted.overwriteWithDimensions(pos.x, hyperspaceSize.y - pos.y, 0).round();
         return posInverted;
     }
+    posSet(value) {
+        this.pos = value;
+        return this;
+    }
     shipSelectOptimum() {
         if (this.shipSelected == null) {
             var ship = this.ships[0]; // todo

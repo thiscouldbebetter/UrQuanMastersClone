@@ -15,7 +15,8 @@ class Flagship
 	shipsMax: number;
 
 	itemHolderCargo: ItemHolder;
-	itemHolderOther: ItemHolder;
+	itemHolderDevices: ItemHolder;
+	itemHolderLifeforms: ItemHolder;
 
 	_acceleration: number;
 	_cargoMax: number;
@@ -44,7 +45,7 @@ class Flagship
 		fuel: number,
 		resourceCredits: number,
 		infoCredits: number,
-		items: Item[],
+		itemsCargo: Item[],
 		shipsMax: number
 	)
 	{
@@ -58,17 +59,19 @@ class Flagship
 		this.fuel = fuel;
 		this.resourceCredits = resourceCredits;
 		this.infoCredits = infoCredits;
-		this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(items);
-		this.itemHolderOther = ItemHolder.create();
+		this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(itemsCargo);
+		this.itemHolderDevices = ItemHolder.default();
+		this.itemHolderLifeforms = ItemHolder.default();
 		this.shipsMax = shipsMax;
 
 		this.cachesCalculate();
 	}
 
-	biodataOffload(world: World): void
+	biodataSell(world: World): void
 	{
-		var value = this.resourcesBelongingToCategoryOffload(
-			world, this.itemHolderOther, ResourceDefn.CategoryBiodataName
+		var value = this.resourcesBelongingToCategorySell
+		(
+			world, this.itemHolderLifeforms, ResourceDefn.CategoryBiodataName
 		);
 		this.infoCredits += value;
 	}
@@ -95,9 +98,9 @@ class Flagship
 		return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
 	}
 
-	cargoOffload(world: World): void
+	cargoSell(world: World): void
 	{
-		var value = this.resourcesBelongingToCategoryOffload
+		var value = this.resourcesBelongingToCategorySell
 		(
 			world, this.itemHolderCargo, ResourceDefn.CategoryMineralName
 		);
@@ -224,9 +227,17 @@ class Flagship
 		return this.crew + "/" + this._crewMax;
 	}
 
-	deviceWithNameUse(deviceName: string): void
+	deviceWithNameUse(deviceName: string, uwpe: UniverseWorldPlaceEntities): void
 	{
-		throw new Error("todo");
+		var itemToUse = this.itemHolderDevices.itemByDefnName(deviceName);
+		if (itemToUse == null)
+		{
+			throw new Error("No device found with name: '" + deviceName + "'.");
+		}
+		else
+		{
+			itemToUse.use(uwpe);
+		}
 	}
 
 	fuelAdd(increment: number): Flagship
@@ -290,12 +301,12 @@ class Flagship
 
 	hasInfoToSell_Biodata(): boolean
 	{
-		return this.itemHolderOther.hasItemWithDefnName("Biodata");
+		return this.itemHolderLifeforms.hasItemWithDefnName("Biodata");
 	}
 
 	hasInfoToSell_PrecursorArtifacts(world: World): boolean
 	{
-		return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
+		return this.itemHolderDevices.hasItemWithCategoryName("PrecursorArtifact", world);
 	}
 
 	infoCreditsTradeForFuel(fuelToBuy: number): void
@@ -323,7 +334,7 @@ class Flagship
 		return this.itemHolderCargo;
 	}
 
-	resourcesBelongingToCategoryOffload
+	resourcesBelongingToCategorySell
 	(
 		world: World, itemHolder: ItemHolder, resourceCategoryName: string
 	): number

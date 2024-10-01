@@ -1,12 +1,17 @@
 "use strict";
 class Lander {
-    constructor(itemHolderCargo, itemHolderLifeforms, killableCrew) {
-        this.itemHolderCargo = itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
-        this.itemHolderLifeforms = itemHolderLifeforms || ItemHolder.fromEncumbranceMax(50);
-        this.killableCrew = killableCrew || Killable.fromIntegrityMax(12);
+    constructor(itemHolderCargo, itemHolderDevices, itemHolderLifeforms, killableCrew) {
+        this.itemHolderCargo =
+            itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
+        this.itemHolderDevices =
+            itemHolderDevices || ItemHolder.default();
+        this.itemHolderLifeforms =
+            itemHolderLifeforms || ItemHolder.fromEncumbranceMax(50);
+        this.killableCrew =
+            killableCrew || Killable.fromIntegrityMax(12);
     }
     static fromKillableCrew(killableCrew) {
-        return new Lander(null, null, killableCrew);
+        return new Lander(null, null, null, killableCrew);
     }
     static fromEntity(entity) {
         return entity.propertyByName(Lander.name);

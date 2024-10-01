@@ -199,50 +199,6 @@ class Starsystem implements EntityProperty<Starsystem>
 		);
 
 		planetEarth.shipGroupAdd(enemyShipGroup);
-
-		// Put an orphaned ship on Pluto.
-
-		var pluto = this.planets[8];
-		var textMauluskaOrphan = "MauluskaOrphan";
-		var mediaLibrary = universe.mediaLibrary;
-		var energySourceMauluskaOrphanMessage =
-			mediaLibrary.textStringGetByName(EnergySource.name + textMauluskaOrphan).value;
-		var energySourceMauluskaOrphan = new EnergySource
-		(
-			textMauluskaOrphan,
-			pluto.sizeSurface.clone().half().addDimensions(30, 20, 0),
-			new VisualImageFromLibrary
-			(
-				EnergySource.name + textMauluskaOrphan
-			),
-			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var universe = uwpe.universe;
-				var controlMessage = universe.controlBuilder.message
-				(
-					universe,
-					universe.display.sizeInPixels,
-					DataBinding.fromContext(energySourceMauluskaOrphanMessage),
-					() =>
-					{
-						var conversationDefnSerialized =
-							mediaLibrary.textStringGetByName("Conversation-" + textMauluskaOrphan).value;
-						var conversationDefn =
-							ConversationDefn.deserialize(conversationDefnSerialized);
-						var conversationRun = new ConversationRun(conversationDefn, null, null, null, null);
-						var conversationVenue = conversationRun.toVenue(universe);
-						universe.venueTransitionTo(conversationVenue);
-					},
-					null, // showMessageOnly
-					FontNameAndHeight.fromHeightInPixels(5)
-				);
-
-				universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
-			}
-		);
-		var energySources = [ energySourceMauluskaOrphan ];
-		pluto.energySources = energySources;
-
 	}
 
 	contentsRandomize(randomizer: Randomizer): void

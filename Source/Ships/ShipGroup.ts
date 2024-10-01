@@ -274,6 +274,12 @@ class ShipGroup implements EntityPropertyBase
 		return posInverted;
 	}
 
+	posSet(value: Coords): ShipGroup
+	{
+		this.pos = value;
+		return this;
+	}
+
 	shipSelectOptimum(): Ship
 	{
 		if (this.shipSelected == null)

@@ -136,7 +136,7 @@ class PlaceStationDock extends PlaceBase {
         var world = universe.world;
         var player = world.player;
         var flagship = player.flagship;
-        flagship.cargoOffload(world);
+        flagship.cargoSell(world);
     }
     shipBuild(universe) {
         var shipDefnToBuild = this.shipDefnToBuild;

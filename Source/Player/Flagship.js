@@ -1,6 +1,6 @@
 "use strict";
 class Flagship {
-    constructor(name, thrustersMax, turningJetsMax, componentsBackboneMax, componentNames, numberOfLanders, crew, fuel, resourceCredits, infoCredits, items, shipsMax) {
+    constructor(name, thrustersMax, turningJetsMax, componentsBackboneMax, componentNames, numberOfLanders, crew, fuel, resourceCredits, infoCredits, itemsCargo, shipsMax) {
         this.name = name;
         this.thrustersMax = thrustersMax;
         this.turningJetsMax = turningJetsMax;
@@ -11,13 +11,14 @@ class Flagship {
         this.fuel = fuel;
         this.resourceCredits = resourceCredits;
         this.infoCredits = infoCredits;
-        this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(items);
-        this.itemHolderOther = ItemHolder.create();
+        this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(itemsCargo);
+        this.itemHolderDevices = ItemHolder.default();
+        this.itemHolderLifeforms = ItemHolder.default();
         this.shipsMax = shipsMax;
         this.cachesCalculate();
     }
-    biodataOffload(world) {
-        var value = this.resourcesBelongingToCategoryOffload(world, this.itemHolderOther, ResourceDefn.CategoryBiodataName);
+    biodataSell(world) {
+        var value = this.resourcesBelongingToCategorySell(world, this.itemHolderLifeforms, ResourceDefn.CategoryBiodataName);
         this.infoCredits += value;
     }
     cachesCalculate() {
@@ -36,8 +37,8 @@ class Flagship {
     cargoCurrentOverMax(world) {
         return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
     }
-    cargoOffload(world) {
-        var value = this.resourcesBelongingToCategoryOffload(world, this.itemHolderCargo, ResourceDefn.CategoryMineralName);
+    cargoSell(world) {
+        var value = this.resourcesBelongingToCategorySell(world, this.itemHolderCargo, ResourceDefn.CategoryMineralName);
         this.resourceCredits += value;
     }
     components() {
@@ -119,8 +120,14 @@ class Flagship {
     crewCurrentOverMax() {
         return this.crew + "/" + this._crewMax;
     }
-    deviceWithNameUse(deviceName) {
-        throw new Error("todo");
+    deviceWithNameUse(deviceName, uwpe) {
+        var itemToUse = this.itemHolderDevices.itemByDefnName(deviceName);
+        if (itemToUse == null) {
+            throw new Error("No device found with name: '" + deviceName + "'.");
+        }
+        else {
+            itemToUse.use(uwpe);
+        }
     }
     fuelAdd(increment) {
         var fuelAfterAdd = this.fuel + increment;
@@ -162,10 +169,10 @@ class Flagship {
         return returnValue;
     }
     hasInfoToSell_Biodata() {
-        return this.itemHolderOther.hasItemWithDefnName("Biodata");
+        return this.itemHolderLifeforms.hasItemWithDefnName("Biodata");
     }
     hasInfoToSell_PrecursorArtifacts(world) {
-        return this.itemHolderOther.hasItemWithCategoryName("PrecursorArtifact", world);
+        return this.itemHolderDevices.hasItemWithCategoryName("PrecursorArtifact", world);
     }
     infoCreditsTradeForFuel(fuelToBuy) {
         var infoCreditsPerFuelUnit = 1;
@@ -185,7 +192,7 @@ class Flagship {
         // todo - Set max.
         return this.itemHolderCargo;
     }
-    resourcesBelongingToCategoryOffload(world, itemHolder, resourceCategoryName) {
+    resourcesBelongingToCategorySell(world, itemHolder, resourceCategoryName) {
         var itemsForResources = itemHolder.itemsBelongingToCategoryWithName(resourceCategoryName, world);
         var itemValues = itemsForResources.map(x => x.tradeValue(world));
         var itemValueTotal = 0;

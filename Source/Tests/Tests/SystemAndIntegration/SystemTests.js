@@ -11,7 +11,6 @@ class SystemTests extends TestFixture {
     }
     // Tests.
     playFromStart(callback) {
-        // todo
         var environment = new EnvironmentMock();
         environment.universeBuild((u) => {
             u.initialize(() => this.playFromStart_UniverseInitialized(callback, u));
@@ -342,8 +341,8 @@ class SystemTests extends TestFixture {
         var entitiesOnPlanet = placePlanetSurface.entitiesAll();
         var entitiesLifeforms = entitiesOnPlanet.filter(x => x.name.startsWith(Lifeform.name));
         Assert.isTrue(entitiesLifeforms.length > 0);
-        var flagshipItemHolderOther = flagship.itemHolderOther;
-        var biodataBeforeGatheringLifeforms = flagshipItemHolderOther.encumbranceOfAllItems(world);
+        var flagshipItemHolderLifeforms = flagship.itemHolderLifeforms;
+        var biodataBeforeGatheringLifeforms = flagshipItemHolderLifeforms.encumbranceOfAllItems(world);
         Assert.areNumbersEqual(0, biodataBeforeGatheringLifeforms);
         var infoCreditsBeforeSellingLifeforms = flagship.infoCredits;
         Assert.areNumbersEqual(0, infoCreditsBeforeSellingLifeforms);
@@ -409,7 +408,7 @@ class SystemTests extends TestFixture {
         Assert.isTrue(biodataGathered > 0);
         // Return to orbit, and verify that the biodata was offloaded from the lander.
         this.returnToOrbit(universe, world, place());
-        var biodataAfterGatheringLifeforms = flagshipItemHolderOther.encumbranceOfAllItems(world);
+        var biodataAfterGatheringLifeforms = flagshipItemHolderLifeforms.encumbranceOfAllItems(world);
         Assert.isTrue(biodataAfterGatheringLifeforms > biodataBeforeGatheringLifeforms);
         // Go to another supergiant starsystem containing the merchants,
         // then find the merchants and engage with them.
@@ -464,11 +463,12 @@ class SystemTests extends TestFixture {
         // Acknowledging the message returns the lander to orbit automatically.
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Check to see that the caster is now on board the flagship.
-        throw new Error("todo");
+        var itemHolderDevices = flagship.itemHolderDevices;
+        Assert.isNotEmpty(itemHolderDevices.items);
         // Call the merchants with the caster.
         this.goToHyperspace(universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-        flagship.deviceWithNameUse(deviceTtorstingCasterName);
+        flagship.deviceWithNameUse(deviceTtorstingCasterName, uwpe);
         var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
         // Sell it.
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
@@ -489,6 +489,7 @@ class SystemTests extends TestFixture {
         var place = world.place();
         var uwpe = new UniverseWorldPlaceEntities(universe, world, place, null, null);
         venueMessage.acknowledge(uwpe);
+        this.waitForTicks(universe, 5);
     }
     assertPlaceCurrentIsOfTypeForWorld(placeTypeNameExpected, world) {
         var place = world.placeCurrent;

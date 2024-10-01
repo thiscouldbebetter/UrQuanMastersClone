@@ -22,17 +22,14 @@ class Faction {
         var returnValue = world.shipDefnByName(this.shipDefnName);
         return returnValue;
     }
-    shipGroup() {
-        return this.shipGroupGenerate();
-    }
-    shipGroupGenerate() {
+    shipGroupGenerateAtPos(pos) {
         var shipCount = 1; // todo
         var ships = new Array();
         for (var i = 0; i < shipCount; i++) {
             var ship = Ship.fromDefnName(this.shipDefnName);
             ships.push(ship);
         }
-        var shipGroup = ShipGroup.fromFactionNameAndShips(this.name, ships);
+        var shipGroup = ShipGroup.fromFactionNameAndShips(this.name, ships).posSet(pos);
         return shipGroup;
     }
     starsystems(world) {
@@ -49,7 +46,7 @@ class Faction {
         return cr.toControl_Layout_2(size, universe);
     }
     toEncounter(uwpe) {
-        var shipGroup = this.shipGroup();
+        var shipGroup = this.shipGroupGenerateAtPos(Coords.zeroes());
         var encounter = shipGroup.toEncounter(uwpe);
         return encounter;
     }

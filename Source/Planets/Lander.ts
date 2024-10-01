@@ -2,24 +2,31 @@
 class Lander implements EntityPropertyBase
 {
 	itemHolderCargo: ItemHolder;
+	itemHolderDevices: ItemHolder;
 	itemHolderLifeforms: ItemHolder;
 	killableCrew: Killable;
 
 	constructor
 	(
 		itemHolderCargo: ItemHolder,
+		itemHolderDevices: ItemHolder,
 		itemHolderLifeforms: ItemHolder,
 		killableCrew: Killable
 	)
 	{
-		this.itemHolderCargo = itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
-		this.itemHolderLifeforms = itemHolderLifeforms || ItemHolder.fromEncumbranceMax(50);
-		this.killableCrew = killableCrew || Killable.fromIntegrityMax(12);
+		this.itemHolderCargo =
+			itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
+		this.itemHolderDevices =
+			itemHolderDevices || ItemHolder.default();
+		this.itemHolderLifeforms =
+			itemHolderLifeforms || ItemHolder.fromEncumbranceMax(50);
+		this.killableCrew =
+			killableCrew || Killable.fromIntegrityMax(12);
 	}
 
 	static fromKillableCrew(killableCrew: Killable): Lander
 	{
-		return new Lander(null, null, killableCrew);
+		return new Lander(null, null, null, killableCrew);
 	}
 
 	static fromEntity(entity: Entity): Lander

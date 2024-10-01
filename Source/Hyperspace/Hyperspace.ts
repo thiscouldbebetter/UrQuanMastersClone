@@ -348,6 +348,12 @@ class Hyperspace
 		return distance;
 	}
 
+	shipGroupAdd(shipGroup: ShipGroup): Hyperspace
+	{
+		this.shipGroups.push(shipGroup);
+		return this;
+	}
+
 	starsystemByName(starsystemName: string)
 	{
 		return this.starsystemsByName.get(starsystemName);

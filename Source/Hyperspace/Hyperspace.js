@@ -184,6 +184,10 @@ class Hyperspace {
         var distance = displacement.magnitude();
         return distance;
     }
+    shipGroupAdd(shipGroup) {
+        this.shipGroups.push(shipGroup);
+        return this;
+    }
     starsystemByName(starsystemName) {
         return this.starsystemsByName.get(starsystemName);
     }

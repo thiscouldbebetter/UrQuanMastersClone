@@ -20,7 +20,6 @@ class SystemTests extends TestFixture
 
 	playFromStart(callback: () => void ): void
 	{
-		// todo
 		var environment = new EnvironmentMock();
 		environment.universeBuild
 		(
@@ -556,9 +555,9 @@ class SystemTests extends TestFixture
 		var entitiesLifeforms = entitiesOnPlanet.filter(x => x.name.startsWith(Lifeform.name) );
 		Assert.isTrue(entitiesLifeforms.length > 0);
 
-		var flagshipItemHolderOther = flagship.itemHolderOther;
+		var flagshipItemHolderLifeforms = flagship.itemHolderLifeforms;
 		var biodataBeforeGatheringLifeforms =
-			flagshipItemHolderOther.encumbranceOfAllItems(world);
+			flagshipItemHolderLifeforms.encumbranceOfAllItems(world);
 		Assert.areNumbersEqual(0, biodataBeforeGatheringLifeforms);
 
 		var infoCreditsBeforeSellingLifeforms = flagship.infoCredits;
@@ -667,7 +666,7 @@ class SystemTests extends TestFixture
 		this.returnToOrbit(universe, world, place() );
 
 		var biodataAfterGatheringLifeforms =
-			flagshipItemHolderOther.encumbranceOfAllItems(world);
+			flagshipItemHolderLifeforms.encumbranceOfAllItems(world);
 		Assert.isTrue(biodataAfterGatheringLifeforms > biodataBeforeGatheringLifeforms);
 
 		// Go to another supergiant starsystem containing the merchants,
@@ -740,12 +739,13 @@ class SystemTests extends TestFixture
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
 
 		// Check to see that the caster is now on board the flagship.
-		throw new Error("todo");
+		var itemHolderDevices = flagship.itemHolderDevices;
+		Assert.isNotEmpty(itemHolderDevices.items);
 
 		// Call the merchants with the caster.
 		this.goToHyperspace(universe);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-		flagship.deviceWithNameUse(deviceTtorstingCasterName);
+		flagship.deviceWithNameUse(deviceTtorstingCasterName, uwpe);
 
 		var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
 
@@ -777,6 +777,7 @@ class SystemTests extends TestFixture
 		var place = world.place();
 		var uwpe = new UniverseWorldPlaceEntities(universe, world, place, null, null);
 		venueMessage.acknowledge(uwpe);
+		this.waitForTicks(universe, 5);
 	}
 
 	assertPlaceCurrentIsOfTypeForWorld

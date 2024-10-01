@@ -265,7 +265,7 @@ Sell|DoNothing
 |Display|#(SOLD_LIFE_DATA1)
 |Display|#(SOLD_LIFE_DATA2)
 |Display|#(SOLD_LIFE_DATA3)
-|Script|u.world.player.flagship.biodataOffload(u.world)
+|Script|u.world.player.flagship.biodataSell(u.world)
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_RAINBOW_LOCATIONS)|DoNothing
