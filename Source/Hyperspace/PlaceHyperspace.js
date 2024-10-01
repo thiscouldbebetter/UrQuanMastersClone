@@ -3,6 +3,7 @@ class PlaceHyperspace extends PlaceBase {
     constructor(universe, hyperspace, starsystemDeparted, playerLoc) {
         super(PlaceHyperspace.name, PlaceHyperspace.name, null, // parentName
         hyperspace.size, null);
+        var world = universe.world;
         this.hyperspace = hyperspace;
         // entities
         var entities = this.entitiesToSpawn;
@@ -15,7 +16,101 @@ class PlaceHyperspace extends PlaceBase {
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
-        // stars
+        // Stars.
+        this.constructor_starsBuild(entityDimension, entities);
+        // factions
+        this.constructor_factionsBuild(universe, entities);
+        // shipGroups
+        var shipGroups = this.hyperspace.shipGroups;
+        for (var i = 0; i < shipGroups.length; i++) {
+            var shipGroup = shipGroups[i];
+            var entityShipGroup = shipGroup.toEntitySpace(world, this);
+            entities.push(entityShipGroup);
+        }
+        // Player.
+        if (playerLoc != null) {
+            var playerEntity = this.constructor_playerEntityBuild(world, entityDimension, playerLoc);
+            if (starsystemDeparted != null) {
+                var entities = this.entitiesToSpawn; // hack
+                var entityForStarsystemDeparted = entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
+                playerEntity.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityForStarsystemDeparted);
+            }
+            entities.push(playerEntity);
+        }
+        // CollisionTracker.
+        var collisionTracker = new CollisionTrackerMapped(this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64));
+        var entityForCollisionTracker = collisionTracker.toEntity();
+        entities.splice(0, 0, entityForCollisionTracker); // hack - Must come before stationary entities.
+        var containerSidebar = this.toControlSidebar(universe);
+        this.venueControls = VenueControls.fromControl(containerSidebar);
+        // Helper variables.
+        this._drawLoc = Disposition.create();
+        this._polar = Polar.create();
+    }
+    constructor_factionsBuild(universe, entities) {
+        var world = universe.world;
+        var worldDefn = world.defnExtended();
+        var factions = worldDefn.factions;
+        for (var i = 0; i < factions.length; i++) {
+            var faction = factions[i];
+            var factionCollider = faction.sphereOfInfluence;
+            if (factionCollider != null) {
+                var factionCollidable = Collidable.fromCollider(factionCollider);
+                var factionBoundable = Boundable.fromCollidable(factionCollidable);
+                if (factionCollider != null) {
+                    var factionEntity = new Entity("Faction" + faction.name, [
+                        factionBoundable,
+                        factionCollidable,
+                        faction,
+                        Locatable.create()
+                    ]);
+                    entities.push(factionEntity);
+                }
+            }
+        }
+    }
+    constructor_playerEntityBuild(world, entityDimension, loc) {
+        // player
+        var actor = new Actor(new Activity(Player.activityDefn().name, null));
+        var collider = new Sphere(Coords.create(), entityDimension / 2);
+        var collidable = new Collidable(false, // canCollideAgainWithoutSeparating
+        null, // ticks
+        collider, [Collidable.name], // entityPropertyNamesToCollideWith
+        this.playerCollide);
+        var boundable = Boundable.fromCollidable(collidable);
+        var shipGroup = world.player.shipGroup;
+        var ship = shipGroup.ships[0];
+        var shipDefn = ship.defn(world);
+        var visual = shipDefn.visual;
+        var drawable = Drawable.fromVisual(visual);
+        var constraintFriction = new Constraint_FrictionDry(0.01);
+        var constraintTrimToRange = new Constraint_TrimToPlaceSize();
+        var constrainable = new Constrainable([
+            constraintFriction,
+            constraintTrimToRange
+        ]);
+        var fuelable = new Fuelable();
+        var itemHolder = ItemHolder.create();
+        var locatable = new Locatable(loc);
+        var movable = Movable.default();
+        var playable = new Playable();
+        var playerEntity = new Entity(Player.name, [
+            actor,
+            boundable,
+            collidable,
+            constrainable,
+            drawable,
+            fuelable,
+            itemHolder,
+            locatable,
+            movable,
+            playable,
+            shipGroup,
+            ship
+        ]);
+        return playerEntity;
+    }
+    constructor_starsBuild(entityDimension, entities) {
         var starsystems = this.hyperspace.starsystems;
         var numberOfStars = starsystems.length;
         var starRadius = entityDimension / 2;
@@ -57,93 +152,6 @@ class PlaceHyperspace extends PlaceBase {
             ]);
             entities.push(starEntity);
         }
-        // factions
-        var world = universe.world;
-        var worldDefn = world.defnExtended();
-        var factions = worldDefn.factions;
-        for (var i = 0; i < factions.length; i++) {
-            var faction = factions[i];
-            var factionCollider = faction.sphereOfInfluence;
-            if (factionCollider != null) {
-                var factionCollidable = Collidable.fromCollider(factionCollider);
-                var factionBoundable = Boundable.fromCollidable(factionCollidable);
-                if (factionCollider != null) {
-                    var factionEntity = new Entity("Faction" + faction.name, [
-                        factionBoundable,
-                        factionCollidable,
-                        faction,
-                        Locatable.create()
-                    ]);
-                    entities.push(factionEntity);
-                }
-            }
-        }
-        // shipGroups
-        var shipGroups = this.hyperspace.shipGroups;
-        for (var i = 0; i < shipGroups.length; i++) {
-            var shipGroup = shipGroups[i];
-            var entityShipGroup = shipGroup.toEntitySpace(world, this);
-            entities.push(entityShipGroup);
-        }
-        if (playerLoc != null) {
-            var playerEntity = this.playerEntityBuild(world, entityDimension, playerLoc);
-            if (starsystemDeparted != null) {
-                var entities = this.entitiesToSpawn; // hack
-                var entityForStarsystemDeparted = entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
-                playerEntity.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityForStarsystemDeparted);
-            }
-            entities.push(playerEntity);
-        }
-        // CollisionTracker.
-        var collisionTracker = new CollisionTrackerMapped(this.hyperspace.size, Coords.fromXY(1, 1).multiplyScalar(64));
-        var entityForCollisionTracker = collisionTracker.toEntity();
-        entities.splice(0, 0, entityForCollisionTracker); // hack - Must come before stationary entities.
-        var containerSidebar = this.toControlSidebar(universe);
-        this.venueControls = VenueControls.fromControl(containerSidebar);
-        // Helper variables.
-        this._drawLoc = Disposition.create();
-        this._polar = Polar.create();
-    }
-    playerEntityBuild(world, entityDimension, loc) {
-        // player
-        var actor = new Actor(new Activity(Player.activityDefn().name, null));
-        var collider = new Sphere(Coords.create(), entityDimension / 2);
-        var collidable = new Collidable(false, // canCollideAgainWithoutSeparating
-        null, // ticks
-        collider, [Collidable.name], // entityPropertyNamesToCollideWith
-        this.playerCollide);
-        var boundable = Boundable.fromCollidable(collidable);
-        var shipGroup = world.player.shipGroup;
-        var ship = shipGroup.ships[0];
-        var shipDefn = ship.defn(world);
-        var visual = shipDefn.visual;
-        var drawable = Drawable.fromVisual(visual);
-        var constraintFriction = new Constraint_FrictionDry(0.01);
-        var constraintTrimToRange = new Constraint_TrimToPlaceSize();
-        var constrainable = new Constrainable([
-            constraintFriction,
-            constraintTrimToRange
-        ]);
-        var fuelable = new Fuelable();
-        var itemHolder = ItemHolder.create();
-        var locatable = new Locatable(loc);
-        var movable = Movable.default();
-        var playable = new Playable();
-        var playerEntity = new Entity(Player.name, [
-            actor,
-            boundable,
-            collidable,
-            constrainable,
-            drawable,
-            fuelable,
-            itemHolder,
-            locatable,
-            movable,
-            playable,
-            shipGroup,
-            ship
-        ]);
-        return playerEntity;
     }
     static actionMapView() {
         return new Action("MapView", (uwpe) => {

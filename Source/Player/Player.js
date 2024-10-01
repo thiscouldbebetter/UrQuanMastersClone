@@ -81,6 +81,13 @@ class Player {
         var returnValue = this._rainbowWorldLocations.filter(x => x.sold == false).length;
         return returnValue;
     }
+    rainbowWorldLocationsSell() {
+        var locationsToSell = this.rainbowWorldLocationsKnownButUnsoldCount();
+        const infoCreditsPerLocation = 500;
+        var locationsValue = locationsToSell * infoCreditsPerLocation;
+        this.flagship.infoCredits += locationsValue;
+        this._rainbowWorldLocations.forEach(x => x.sold = true);
+    }
     rainbowWorldKnownStarsystemAdd(starsystemContainingRainbowWorld) {
         var starsystemName = starsystemContainingRainbowWorld.name;
         var rainbowWorldIsAlreadyKnown = this._rainbowWorldLocations.some(x => x.starsystemName == starsystemName);

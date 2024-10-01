@@ -285,8 +285,11 @@ class SystemTests extends TestFixture {
         this.leaveStarsystemAndWait(universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
         // Verify that a probe is present.
-        var entityProbe = place().entityByName("Tempestrial Ship Group X");
+        const shipGroupNameProbe = "Tempestrial Ship Group X";
+        var entityProbe = place().entityByName(shipGroupNameProbe);
         Assert.isNotNull(entityProbe);
+        var hyperspace = world.hyperspace;
+        Assert.isNotEmpty(hyperspace.shipGroups);
         // Wait to be accosted by a probe.
         this.waitForTicks(universe, 1000);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
@@ -307,8 +310,11 @@ class SystemTests extends TestFixture {
         // Verify that resources were salvaged from destroyed ship.
         var creditAfter = flagship.resourceCredits;
         Assert.isTrue(creditAfter > creditBefore);
-        // Verify that we're back in hyperspace.
+        // Verify that we're back in hyperspace, and the probe is no longer present.
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+        var entityProbe = place().entityByName(shipGroupNameProbe);
+        Assert.isNull(entityProbe);
+        Assert.isEmpty(hyperspace.shipGroups);
         // Go to the Alpha Centauri starsystem, the nearest supergiant to Sol.
         var starsystemWithMerchantsName = "Alpha Centauri";
         this.moveToEntityWithNameAndWait(universe, starsystemWithMerchantsName);
@@ -465,12 +471,23 @@ class SystemTests extends TestFixture {
         // Check to see that the caster is now on board the flagship.
         var itemHolderDevices = flagship.itemHolderDevices;
         Assert.isNotEmpty(itemHolderDevices.items);
-        // Call the merchants with the caster.
+        // Go to hyperspace and call the merchants with the caster.
         this.goToHyperspace(universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
         flagship.deviceWithNameUse(deviceTtorstingCasterName, uwpe);
+        // Wait for the merchants to approach and start an encounter.
+        this.waitForTicks(universe, 100);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        // Record how many infoCredits the player had before the sale.
         var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
         // Sell it.
+        this.talkToTalker(universe, talker, [
+            // "Hello.  Buying or selling."
+            "#(sell)", // "Selling."
+            // "Selling what?"
+            "#(sell_rainbow_locations)", // "Rainbow world locations."
+            // "You know where 1 is, worth 500."
+        ]);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
         Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
         var infoCreditsAfterSaleOfRainbowWorldLocation = flagship.infoCredits;

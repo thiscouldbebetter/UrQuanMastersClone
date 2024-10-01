@@ -304,7 +304,8 @@ class EnergySource_Instances
 			var placeHyperspace = place as PlaceHyperspace;
 			var factionMurch = world.factionByName("Murch");
 			var shipGroupDistance = 20; // hack
-			var shipGroupDisplacement = Polar.random2D().radiusSet(shipGroupDistance).toCoords(Coords.create());
+			var shipGroupDisplacement =
+				Polar.random2D().radiusSet(shipGroupDistance).toCoords(Coords.create());
 			var player = placeHyperspace.player();
 			var playerPos = player.locatable().pos();
 			var shipGroupPos = shipGroupDisplacement.add(playerPos);

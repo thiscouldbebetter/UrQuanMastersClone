@@ -269,10 +269,10 @@ Sell|DoNothing
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_RAINBOW_LOCATIONS)|DoNothing
-|VariableLoad|Murch_LocationsSoldIndex|u.randomizer.integerLessThan(3)
-|Display|#(SOLD_RAINBOW_LOCATIONS1)||cr.varGet('Murch_LocationsSoldIndex') == 0
-|Display|#(SOLD_RAINBOW_LOCATIONS2)||cr.varGet('Murch_LocationsSoldIndex') == 1
-|Display|#(SOLD_RAINBOW_LOCATIONS3)||cr.varGet('Murch_LocationsSoldIndex') == 2
+|Display|#(SOLD_RAINBOW_LOCATIONS1)
+|Display|#(SOLD_RAINBOW_LOCATIONS2)
+|Display|#(SOLD_RAINBOW_LOCATIONS3)
+|Script|u.world.player.flagship.rainbowWorldLocationsSell(u.world)
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_PRECURSOR_FIND)|Display|#(SOLD_PRECURSOR_FIND)

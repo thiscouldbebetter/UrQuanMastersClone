@@ -147,8 +147,23 @@ class Player
 
 	rainbowWorldLocationsKnownButUnsoldCount(): number
 	{
-		var returnValue = this._rainbowWorldLocations.filter(x => x.sold == false).length;
+		var returnValue =
+			this._rainbowWorldLocations.filter(x => x.sold == false).length;
 		return returnValue;
+	}
+
+	rainbowWorldLocationsSell(): void
+	{
+		var locationsToSell =
+			this.rainbowWorldLocationsKnownButUnsoldCount();
+
+		const infoCreditsPerLocation = 500;
+
+		var locationsValue = locationsToSell * infoCreditsPerLocation;
+
+		this.flagship.infoCredits += locationsValue;
+
+		this._rainbowWorldLocations.forEach(x => x.sold = true);
 	}
 
 	rainbowWorldKnownStarsystemAdd(starsystemContainingRainbowWorld: Starsystem): void
