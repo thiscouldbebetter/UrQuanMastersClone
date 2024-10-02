@@ -71,17 +71,19 @@ class WorldExtended extends World {
         null, // color
         Faction.RelationsHostile, true, // talksImmediately
         textConversation + textLahkemupGuardDrone, // conversationDefnName
-        null, // sphereOfInfluence
+        null, // territory
         "GuardDrone", // shipDefnName
         new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
         // normal
-        var f = (name, nameOriginal, color, sphereOfInfluence, relations, shipDefnName) => {
-            var talksImmediately = (sphereOfInfluence == null);
+        var f = (name, nameOriginal, color, territory, relations, shipDefnName) => {
+            var talksImmediately = (territory == null); // hack
             return new Faction(name, nameOriginal, color, relations, talksImmediately, textConversation + name, // conversationDefnName
-            sphereOfInfluence, shipDefnName, new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
+            territory, shipDefnName, new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
         };
         var soi = (centerX, centerY, radius) => {
-            return new Sphere(Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10), radius * hyperspaceSize.x);
+            var sphere = new Sphere(Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10), radius * hyperspaceSize.x);
+            var territory = new FactionTerritory(sphere);
+            return territory;
         };
         var c = Color.Instances();
         var hostile = Faction.RelationsHostile;

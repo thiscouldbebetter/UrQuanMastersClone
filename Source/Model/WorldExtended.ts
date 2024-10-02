@@ -207,7 +207,7 @@ class WorldExtended extends World
 			Faction.RelationsHostile,
 			true, // talksImmediately
 			textConversation + textLahkemupGuardDrone, // conversationDefnName
-			null, // sphereOfInfluence
+			null, // territory
 			"GuardDrone", // shipDefnName
 			new Activity(ShipGroup.activityDefnApproachPlayer().name, null)
 		);
@@ -219,12 +219,12 @@ class WorldExtended extends World
 			name: string,
 			nameOriginal: string,
 			color: Color,
-			sphereOfInfluence: Sphere,
+			territory: FactionTerritory,
 			relations: any,
 			shipDefnName: string
 		) =>
 		{
-			var talksImmediately = (sphereOfInfluence == null);
+			var talksImmediately = (territory == null); // hack
 
 			return new Faction
 			(
@@ -234,7 +234,7 @@ class WorldExtended extends World
 				relations,
 				talksImmediately,
 				textConversation + name, // conversationDefnName
-				sphereOfInfluence,
+				territory,
 				shipDefnName,
 				new Activity(ShipGroup.activityDefnApproachPlayer().name, null)
 			);
@@ -242,11 +242,13 @@ class WorldExtended extends World
 
 		var soi = (centerX: number, centerY: number, radius: number) =>
 		{
-			return new Sphere
+			var sphere = new Sphere
 			(
 				Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10),
 				radius * hyperspaceSize.x
 			);
+			var territory = new FactionTerritory(sphere);
+			return territory;
 		}
 
 		var c = Color.Instances();

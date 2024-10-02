@@ -111,15 +111,16 @@ class PlaceHyperspaceMap extends PlaceBase
 		{
 			var factionName = factionsKnownNames[i];
 			var faction = worldDefn.factionByName(factionName);
-			var factionZone = faction.sphereOfInfluence;
+			var factionZone = faction.territory.shape;
 
-			if (factionZone != null)
+			if (factionZone != null && factionZone.constructor.name == Sphere.name)
 			{
-				drawPos.overwriteWith(factionZone.center);
+				var factionZoneAsSphere = factionZone as Sphere;
+				drawPos.overwriteWith(factionZoneAsSphere.center);
 				this._camera.coordsTransformWorldToView(drawPos);
 
 				var factionZoneRadiusScaled =
-					factionZone.radius * magnificationFactor;
+					factionZoneAsSphere.radius * magnificationFactor;
 
 				var factionColor = faction.color;
 				display.drawCircle

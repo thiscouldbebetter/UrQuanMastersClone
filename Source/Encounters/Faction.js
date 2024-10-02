@@ -1,13 +1,13 @@
 "use strict";
 class Faction {
-    constructor(name, nameOriginal, color, relationsWithPlayer, talksImmediately, conversationDefnName, sphereOfInfluence, shipDefnName, shipGroupActivity) {
+    constructor(name, nameOriginal, color, relationsWithPlayer, talksImmediately, conversationDefnName, territory, shipDefnName, shipGroupActivity) {
         this.name = name;
         this.nameOriginal = nameOriginal;
         this.color = color;
         this.relationsWithPlayer = relationsWithPlayer;
         this.talksImmediately = talksImmediately;
         this.conversationDefnName = conversationDefnName;
-        this.sphereOfInfluence = sphereOfInfluence;
+        this.territory = territory;
         this.shipDefnName = shipDefnName;
         this.shipGroupActivity = shipGroupActivity;
     }
@@ -34,13 +34,14 @@ class Faction {
     }
     starsystems(world) {
         // Tersely-named alias method.
-        return this.starsystemsInSphereOfInfluence(world);
+        return this.starsystemsInTerritory(world);
     }
-    starsystemsInSphereOfInfluence(world) {
+    starsystemsInTerritory(world) {
         var hyperspace = world.hyperspace;
-        var sphere = this.sphereOfInfluence;
-        var starsystemsInSphereOfInfluence = hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
-        return starsystemsInSphereOfInfluence;
+        var territory = this.territory;
+        var territoryShape = territory.shape;
+        var starsystemsInTerritory = hyperspace.starsystems.filter(x => territoryShape.containsPoint(x.posInHyperspace));
+        return starsystemsInTerritory;
     }
     talkerToControl(cr, size, universe) {
         return cr.toControl_Layout_2(size, universe);

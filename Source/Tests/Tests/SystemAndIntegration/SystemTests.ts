@@ -457,6 +457,13 @@ class SystemTests extends TestFixture
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
 
+		// For now, before entering hyperspace,
+		// cheat and turn off the generation of probe encounters.
+		// (One has already been generated.)
+
+		var factionForProbes = world.factionByName("Tempestrial");
+		factionForProbes.territory.disable();
+
 		// Leave the Sol system and go to hyperspace.
 
 		this.leavePlanetVicinityAndWait(universe);
@@ -757,6 +764,9 @@ class SystemTests extends TestFixture
 		// Wait for the merchants to approach and start an encounter.
 		this.waitForTicks(universe, 100);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+		placeEncounter = place() as PlaceEncounter;
+		encounter = placeEncounter.encounter;
+		talker = encounter.entityOther.talker();
 
 		// Record how many infoCredits the player had before the sale.
 		var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
@@ -772,7 +782,6 @@ class SystemTests extends TestFixture
 				// "Selling what?"
 				"#(sell_rainbow_locations)", // "Rainbow world locations."
 				// "You know where 1 is, worth 500."
-				
 			]
 		);
 

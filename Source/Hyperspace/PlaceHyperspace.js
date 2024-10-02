@@ -53,8 +53,9 @@ class PlaceHyperspace extends PlaceBase {
         var factions = worldDefn.factions;
         for (var i = 0; i < factions.length; i++) {
             var faction = factions[i];
-            var factionCollider = faction.sphereOfInfluence;
-            if (factionCollider != null) {
+            var factionTerritory = faction.territory;
+            if (factionTerritory != null) {
+                var factionCollider = factionTerritory.shape;
                 var factionCollidable = Collidable.fromCollider(factionCollider);
                 var factionBoundable = Boundable.fromCollidable(factionCollidable);
                 if (factionCollider != null) {
@@ -169,9 +170,14 @@ class PlaceHyperspace extends PlaceBase {
         return this.entitiesByPropertyName(ShipGroup.name);
     }
     factionShipGroupSpawnIfNeeded(universe, world, placeAsPlace, entityPlayer, entityOther) {
-        var place = placeAsPlace;
         var faction = Faction.fromEntity(entityOther);
+        var factionTerritory = faction.territory;
+        var factionTerritoryIsDisabled = factionTerritory.disabled();
+        if (factionTerritoryIsDisabled) {
+            return;
+        }
         var factionName = faction.name;
+        var place = placeAsPlace;
         var numberOfShipGroupsExistingForFaction = 0;
         var entitiesShipGroupsAll = place.entitiesShipGroups();
         for (var i = 0; i < entitiesShipGroupsAll.length; i++) {
@@ -183,8 +189,8 @@ class PlaceHyperspace extends PlaceBase {
         }
         var shipGroupsPerFaction = 1; // todo
         if (numberOfShipGroupsExistingForFaction < shipGroupsPerFaction) {
-            var factionSphereOfInfluence = faction.sphereOfInfluence;
-            var shipGroupPos = factionSphereOfInfluence.pointRandom(universe.randomizer).clearZ();
+            var factionTerritoryShape = faction.territory.shape;
+            var shipGroupPos = factionTerritoryShape.pointRandom(universe.randomizer).clearZ();
             var shipDefnName = faction.shipDefnName; // todo
             var factionName = faction.name;
             var shipGroup = new ShipGroup(factionName + " Ship Group", factionName, shipGroupPos, [new Ship(shipDefnName)]);

@@ -272,7 +272,7 @@ Sell|DoNothing
 |Display|#(SOLD_RAINBOW_LOCATIONS1)
 |Display|#(SOLD_RAINBOW_LOCATIONS2)
 |Display|#(SOLD_RAINBOW_LOCATIONS3)
-|Script|u.world.player.flagship.rainbowWorldLocationsSell(u.world)
+|Script|u.world.player.rainbowWorldLocationsSell(u.world)
 |Goto||#(BUY_OR_SELL)
 
 #(SOLD_PRECURSOR_FIND)|Display|#(SOLD_PRECURSOR_FIND)

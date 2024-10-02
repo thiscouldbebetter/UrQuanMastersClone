@@ -7,7 +7,7 @@ class Faction implements EntityPropertyBase
 	relationsWithPlayer: string;
 	talksImmediately: boolean;
 	conversationDefnName: string;
-	sphereOfInfluence: Sphere;
+	territory: FactionTerritory;
 	shipDefnName: string;
 	shipGroupActivity: Activity;
 
@@ -19,7 +19,7 @@ class Faction implements EntityPropertyBase
 		relationsWithPlayer: string,
 		talksImmediately: boolean,
 		conversationDefnName: string,
-		sphereOfInfluence: Sphere,
+		territory: FactionTerritory,
 		shipDefnName: string,
 		shipGroupActivity: Activity
 	)
@@ -30,7 +30,7 @@ class Faction implements EntityPropertyBase
 		this.relationsWithPlayer = relationsWithPlayer;
 		this.talksImmediately = talksImmediately;
 		this.conversationDefnName = conversationDefnName;
-		this.sphereOfInfluence = sphereOfInfluence;
+		this.territory = territory;
 		this.shipDefnName = shipDefnName;
 		this.shipGroupActivity = shipGroupActivity;
 	}
@@ -72,16 +72,20 @@ class Faction implements EntityPropertyBase
 	starsystems(world: WorldExtended): Starsystem[]
 	{
 		// Tersely-named alias method.
-		return this.starsystemsInSphereOfInfluence(world);
+		return this.starsystemsInTerritory(world);
 	}
 
-	starsystemsInSphereOfInfluence(world: WorldExtended): Starsystem[]
+	starsystemsInTerritory(world: WorldExtended): Starsystem[]
 	{
 		var hyperspace = world.hyperspace;
-		var sphere = this.sphereOfInfluence;
-		var starsystemsInSphereOfInfluence =
-			hyperspace.starsystems.filter(x => sphere.containsPoint(x.posInHyperspace));
-		return starsystemsInSphereOfInfluence;
+		var territory = this.territory;
+		var territoryShape = territory.shape;
+		var starsystemsInTerritory =
+			hyperspace.starsystems.filter
+			(
+				x => territoryShape.containsPoint(x.posInHyperspace)
+			);
+		return starsystemsInTerritory;
 	}
 
 	talkerToControl(cr: ConversationRun, size: Coords, universe: Universe): ControlBase

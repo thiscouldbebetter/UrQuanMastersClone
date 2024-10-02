@@ -56,11 +56,12 @@ class PlaceHyperspaceMap extends PlaceBase {
         for (var i = 0; i < factionsKnownNames.length; i++) {
             var factionName = factionsKnownNames[i];
             var faction = worldDefn.factionByName(factionName);
-            var factionZone = faction.sphereOfInfluence;
-            if (factionZone != null) {
-                drawPos.overwriteWith(factionZone.center);
+            var factionZone = faction.territory.shape;
+            if (factionZone != null && factionZone.constructor.name == Sphere.name) {
+                var factionZoneAsSphere = factionZone;
+                drawPos.overwriteWith(factionZoneAsSphere.center);
                 this._camera.coordsTransformWorldToView(drawPos);
-                var factionZoneRadiusScaled = factionZone.radius * magnificationFactor;
+                var factionZoneRadiusScaled = factionZoneAsSphere.radius * magnificationFactor;
                 var factionColor = faction.color;
                 display.drawCircle(drawPos, factionZoneRadiusScaled, null, factionColor, null);
                 display.drawText(faction.name, FontNameAndHeight.fromHeightInPixels(10), drawPos, factionColor, Color.Instances().Gray, false, // areColorsReversed,

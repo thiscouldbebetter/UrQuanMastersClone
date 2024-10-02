@@ -120,9 +120,11 @@ class PlaceHyperspace extends PlaceBase
 		for (var i = 0; i < factions.length; i++)
 		{
 			var faction = factions[i];
-			var factionCollider = faction.sphereOfInfluence;
-			if (factionCollider != null)
+			var factionTerritory = faction.territory
+			if (factionTerritory != null)
 			{
+				var factionCollider = factionTerritory.shape;
+
 				var factionCollidable = Collidable.fromCollider(factionCollider);
 				var factionBoundable = Boundable.fromCollidable(factionCollidable);
 
@@ -320,10 +322,17 @@ class PlaceHyperspace extends PlaceBase
 		entityOther: Entity
 	): void
 	{
-		var place = placeAsPlace as PlaceHyperspace;
-
 		var faction = Faction.fromEntity(entityOther);
+		var factionTerritory = faction.territory;
+		var factionTerritoryIsDisabled = factionTerritory.disabled();
+		if (factionTerritoryIsDisabled)
+		{
+			return;
+		}
+
 		var factionName = faction.name;
+
+		var place = placeAsPlace as PlaceHyperspace;
 
 		var numberOfShipGroupsExistingForFaction = 0;
 		var entitiesShipGroupsAll = place.entitiesShipGroups();
@@ -340,9 +349,9 @@ class PlaceHyperspace extends PlaceBase
 		var shipGroupsPerFaction = 1; // todo
 		if (numberOfShipGroupsExistingForFaction < shipGroupsPerFaction)
 		{
-			var factionSphereOfInfluence = faction.sphereOfInfluence;
+			var factionTerritoryShape = faction.territory.shape;
 			var shipGroupPos =
-				factionSphereOfInfluence.pointRandom(universe.randomizer).clearZ();
+				factionTerritoryShape.pointRandom(universe.randomizer).clearZ();
 
 			var shipDefnName = faction.shipDefnName; // todo
 			var factionName = faction.name;
