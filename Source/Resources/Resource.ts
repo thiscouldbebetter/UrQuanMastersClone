@@ -60,7 +60,7 @@ class Resource implements EntityProperty<Resource>
 		{
 			resourceVisual = new VisualWrapped
 			(
-				place.planet.sizeSurface, resourceVisual
+				place.planet.sizeSurface(), resourceVisual
 			);
 		}
 		var resourceDrawable = Drawable.fromVisual(resourceVisual);

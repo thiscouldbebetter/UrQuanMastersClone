@@ -100,7 +100,7 @@ class PlacePlanetVicinity extends PlaceBase
 
 		// satellites
 
-		var satellites = planet.satellites;
+		var satellites = planet.satellitesGet();
 		for (var i = 0; i < satellites.length; i++)
 		{
 			var satellite = satellites[i];

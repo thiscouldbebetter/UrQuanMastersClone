@@ -32,7 +32,7 @@ class PlacePlanetSurface extends PlaceBase
 		var world = worldAsWorld as WorldExtended;
 
 		this.planet = planet;
-		this.size = () => this.planet.sizeSurface;
+		this.size = () => this.planet.sizeSurface();
 		this.placePlanetOrbit = placePlanetOrbit;
 
 		var actionExit = new Action
@@ -92,7 +92,7 @@ class PlacePlanetSurface extends PlaceBase
 
 		var visualBackgroundImage: VisualImage =
 			new VisualImageFromLibrary("PlanetSurface");
-		var planetSizeSurface = this.planet.sizeSurface;
+		var planetSizeSurface = this.planet.sizeSurface();
 		visualBackgroundImage =
 			new VisualImageScaled(planetSizeSurface, visualBackgroundImage);
 		var visualBackground =
@@ -102,7 +102,7 @@ class PlacePlanetSurface extends PlaceBase
 		(
 			"Background",
 			[
-				Locatable.fromPos(this.planet.sizeSurface.clone().half() ),
+				Locatable.fromPos(planetSizeSurface.clone().half() ),
 				Drawable.fromVisual(visualBackground)
 			]
 		);
@@ -134,7 +134,7 @@ class PlacePlanetSurface extends PlaceBase
 
 		// energySources
 
-		var energySources = this.planet.energySources || [];
+		var energySources = this.planet.energySources() || [];
 		var energySourceEntities = energySources.map
 		(
 			x => x.toEntity(world, this.planet)
@@ -153,7 +153,8 @@ class PlacePlanetSurface extends PlaceBase
 
 		// Environmental hazards.
 
-		var hazardLevels = [ planet.weather, planet.tectonics, planet.temperature ];
+		var characteristics = planet.characteristics;
+		var hazardLevels = [ characteristics.weather, characteristics.tectonics, characteristics.temperature ];
 		var hazardTypeNames = [ "Weather", "Tectonics", "Temperature" ];
 		var hazardVisualNames = [ "Lightning", "Earthquake", "Hotspot" ];
 		var imagesPerVisual = 12;
@@ -449,7 +450,7 @@ class PlacePlanetSurface extends PlaceBase
 		var playerLoc = player.locatable().loc;
 
 		var camera = this._camera;
-		var planetSize = this.planet.sizeSurface;
+		var planetSize = this.planet.sizeSurface();
 		camera.loc.pos.overwriteWith
 		(
 			playerLoc.pos
@@ -478,7 +479,7 @@ class PlacePlanetSurface extends PlaceBase
 		var controlMap = containerSidebar.childByName("containerMap");
 		var mapPos = containerSidebar.pos.clone().add(controlMap.pos);
 		var mapSize = controlMap.size;
-		var surfaceSize = this.planet.sizeSurface;
+		var surfaceSize = this.planet.sizeSurface();
 		var display = universe.display;
 
 		var scanContacts = this.entitiesAll();
@@ -495,19 +496,12 @@ class PlacePlanetSurface extends PlaceBase
 				var contactPos = contact.locatable().loc.pos;
 				contactPosSaved.overwriteWith(contactPos);
 
-				var drawPos = this._drawPos.overwriteWith
-				(
-					contactPos
-				).divide
-				(
-					surfaceSize
-				).multiply
-				(
-					mapSize
-				).add
-				(
-					mapPos
-				);
+				var drawPos =
+					this._drawPos
+						.overwriteWith(contactPos)
+						.divide(surfaceSize)
+						.multiply(mapSize)
+						.add(mapPos);
 
 				contactPos.overwriteWith(drawPos);
 				var contactVisual = contactMappable.visual;

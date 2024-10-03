@@ -2,7 +2,7 @@
 class PlacePlanetOrbit extends PlaceBase {
     constructor(universe, world, planet, placePlanetVicinity) {
         super(PlacePlanetOrbit.name, PlacePlanetOrbit.name, null, // parentName
-        planet.sizeSurface, // size
+        planet.sizeSurface(), // size
         null // entities
         );
         this.planet = planet;
@@ -20,10 +20,10 @@ class PlacePlanetOrbit extends PlaceBase {
             var lifeforms = this.planet.lifeforms(universe.randomizer);
             var lifeformEntities = lifeforms.map(x => x.toEntity(world, this.planet));
             entities.push(...lifeformEntities);
-            var energySourceEntities = this.planet.energySources.map(x => x.toEntity(world, this.planet));
+            var energySourceEntities = this.planet.energySources().map(x => x.toEntity(world, this.planet));
             entities.push(...energySourceEntities);
         }
-        this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y), null, // focalLength
+        this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface().y), null, // focalLength
         Disposition.fromOrientation(Orientation.Instances().ForwardZDownY.clone()), null // entitiesInViewSort
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
@@ -42,7 +42,7 @@ class PlacePlanetOrbit extends PlaceBase {
             var placeOrbit = world.placeCurrent;
             var planet = placeOrbit.planet;
             var fuelRequiredToLandPerG = 2;
-            var fuelRequiredToLand = planet.gravity * fuelRequiredToLandPerG;
+            var fuelRequiredToLand = planet.characteristics.gravity * fuelRequiredToLandPerG;
             var fuelRequiredToLandMax = 3;
             if (fuelRequiredToLand > fuelRequiredToLandMax) {
                 fuelRequiredToLand = fuelRequiredToLandMax;
@@ -90,7 +90,7 @@ class PlacePlanetOrbit extends PlaceBase {
         var controlMap = controlContainer.childByName("containerMap");
         var mapPos = controlMap.pos;
         var mapSize = controlMap.size;
-        var surfaceSize = this.planet.sizeSurface;
+        var surfaceSize = this.planet.sizeSurface();
         var scanContacts = this.entitiesAll();
         var contactPosSaved = Coords.create();
         for (var i = 0; i < scanContacts.length; i++) {
@@ -135,6 +135,7 @@ class PlacePlanetOrbit extends PlaceBase {
         var world = worldAsWorld;
         var placePlanetOrbit = this;
         var planet = this.planet;
+        var characteristics = planet.characteristics;
         var containerMainSize = universe.display.sizeInPixels.clone();
         var fontHeight = 20;
         var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
@@ -154,40 +155,20 @@ class PlacePlanetOrbit extends PlaceBase {
         var containerInfo = ControlContainer.from4("containerInfo", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerInfoSize, 
         // children
         [
-            new ControlLabel("labelName", Coords.fromXY(marginSize.x, labelSize.y), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Name: " + planet.name), fontShort),
-            new ControlLabel("labelMass", Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Mass: "
-                + planet.mass.toExponential(3).replace("e", " x 10^").replace("+", "")
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y), labelSize, DataBinding.fromContext("Name: " + planet.name), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, DataBinding.fromContext("Mass: "
+                + characteristics.mass.toExponential(3).replace("e", " x 10^").replace("+", "")
                 + " kg"), fontShort),
-            new ControlLabel("labelRadius", Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Radius: " + planet.radius + " km"), fontShort),
-            new ControlLabel("labelGravity", Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Surface Gravity: " + planet.gravity + "g"), fontShort),
-            new ControlLabel("labelOrbitDistance", Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Orbit: "
-                + planet.orbit.toExponential(3).replace("e", " x 10^").replace("+", "")
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, DataBinding.fromContext("Radius: " + characteristics.radius + " km"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, DataBinding.fromContext("Surface Gravity: " + characteristics.gravity + "g"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, DataBinding.fromContext("Orbit: "
+                + characteristics.orbit.toExponential(3).replace("e", " x 10^").replace("+", "")
                 + " km"), fontShort),
-            new ControlLabel("labelRotationPeriod", Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Day: " + planet.dayInHours + " hours"), fontShort),
-            new ControlLabel("labelOrbitPeriod", Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Year: " + planet.yearInEarthDays + " Earth days"), fontShort),
-            new ControlLabel("labelTemperature", Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Temperature: " + planet.temperature + " C"), fontShort),
-            new ControlLabel("labelWeather", Coords.fromXY(marginSize.x, labelSize.y * 9), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Weather: Class " + planet.weather), fontShort),
-            new ControlLabel("labelTectonics", Coords.fromXY(marginSize.x, labelSize.y * 10), labelSize, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Tectonics: Class " + planet.tectonics), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, DataBinding.fromContext("Day: " + characteristics.dayInHours + " hours"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, DataBinding.fromContext("Year: " + characteristics.yearInEarthDays + " Earth days"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, DataBinding.fromContext("Temperature: " + characteristics.temperature + " C"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 9), labelSize, DataBinding.fromContext("Weather: Class " + characteristics.weather), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 10), labelSize, DataBinding.fromContext("Tectonics: Class " + planet.characteristics.tectonics), fontShort),
         ]);
         var visualPlanetFromOrbit = this.planet.defn().visualOrbit;
         var visualGlobe = new VisualGroup([

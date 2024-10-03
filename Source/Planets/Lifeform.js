@@ -34,7 +34,7 @@ class Lifeform {
         lifeformCollidable.canCollideAgainWithoutSeparating = true;
         var lifeformDamager = Damager.default();
         var lifeformVisual = lifeformDefn.visual;
-        lifeformVisual = new VisualWrapped(planet.sizeSurface, lifeformVisual);
+        lifeformVisual = new VisualWrapped(planet.sizeSurface(), lifeformVisual);
         var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
         var lifeformKillable = new Killable(lifeformDefn.durability, null, // ?
         this.die);

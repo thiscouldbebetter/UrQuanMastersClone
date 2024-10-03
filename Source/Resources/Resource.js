@@ -28,7 +28,7 @@ class Resource {
         var resourceVisual = new VisualCircleGradient(resourceRadius, resourceGradient, null);
         var camera = place.camera();
         if (camera != null) {
-            resourceVisual = new VisualWrapped(place.planet.sizeSurface, resourceVisual);
+            resourceVisual = new VisualWrapped(place.planet.sizeSurface(), resourceVisual);
         }
         var resourceDrawable = Drawable.fromVisual(resourceVisual);
         var resourcePos = resource.pos;

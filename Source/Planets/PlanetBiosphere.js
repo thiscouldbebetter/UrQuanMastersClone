@@ -33,7 +33,7 @@ class PlanetBiosphere {
             var count = codeCountPair[1];
             var lifeformDefnName = LifeformDefn.byCode(code).name;
             for (var i = 0; i < count; i++) {
-                var lifeformPos = Coords.create().randomize(randomizer).multiply(planet.sizeSurface);
+                var lifeformPos = Coords.create().randomize(randomizer).multiply(planet.sizeSurface());
                 var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
                 lifeforms.push(lifeform);
             }

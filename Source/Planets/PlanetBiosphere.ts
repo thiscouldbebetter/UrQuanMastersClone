@@ -63,7 +63,7 @@ class PlanetBiosphere
 			for (var i = 0; i < count; i++)
 			{
 				var lifeformPos =
-					Coords.create().randomize(randomizer).multiply(planet.sizeSurface);
+					Coords.create().randomize(randomizer).multiply(planet.sizeSurface() );
 
 				var lifeform = new Lifeform(lifeformDefnName, lifeformPos);
 

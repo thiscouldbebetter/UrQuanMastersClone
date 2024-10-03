@@ -26,7 +26,7 @@ class EnergySource {
         var dimension = 5;
         var collider = new Sphere(Coords.create(), dimension);
         var collidable = Collidable.fromCollider(collider);
-        var visualDetailed = new VisualWrapped(planet.sizeSurface, this.visual);
+        var visualDetailed = new VisualWrapped(planet.sizeSurface(), this.visual);
         var drawable = Drawable.fromVisual(visualDetailed);
         var item = Item.fromDefnName(this.name);
         var locatable = Locatable.fromPos(this.pos);

@@ -322,7 +322,7 @@ class Game {
         playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
         playerItemHolder.itemAdd(new Item(resourceDefns.Exotics.name, 100));
         var starsystemSol = world.hyperspace.starsystemByName("Sol");
-        var station = starsystemSol.planets[2].satellites[0];
+        var station = starsystemSol.planets[2].satelliteGetAtIndex(0);
         var placePlanetVicinity = null;
         var placeStation = new PlaceStation(world, station, placePlanetVicinity);
         var placeStationDocks = new PlaceStationDock(world, placeStation);
@@ -395,7 +395,7 @@ class Game {
         playerItemHolder.itemAdd(new Item(resourceDefns.Radioactives.name, 1));
         var starsystemSol = world.hyperspace.starsystemByName("Sol");
         var planetEarth = starsystemSol.planets[2];
-        var station = planetEarth.satellites[0];
+        var station = planetEarth.satelliteGetAtIndex(0);
         var placePlanetVicinity = planetEarth.toPlace(world);
         var placeStation = new PlaceStation(world, station, placePlanetVicinity);
         world.placeNextSet(placeStation);

@@ -749,11 +749,12 @@ class SystemTests extends TestFixture
 		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
 		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
 
-		// And now Gamma Aquarii, where there's yet another rainbow world.
+		// And now Gamma Aquarii, where there's still another rainbow world.
 		starsystemWithRainbowWorldName = "Gamma Aquarii";
 		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
 		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
 
+		// Go to Beta Librae I and talk to the Twyggan.
 		this.goToOrbitOfPlanetWithName(universe, "Beta Librae I");
 
 		callback();

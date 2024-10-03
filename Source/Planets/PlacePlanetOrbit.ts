@@ -25,7 +25,7 @@ class PlacePlanetOrbit extends PlaceBase
 			PlacePlanetOrbit.name,
 			PlacePlanetOrbit.name,
 			null, // parentName
-			planet.sizeSurface, // size
+			planet.sizeSurface(), // size
 			null // entities
 		);
 
@@ -59,7 +59,7 @@ class PlacePlanetOrbit extends PlaceBase
 			);
 			entities.push(...lifeformEntities);
 
-			var energySourceEntities = this.planet.energySources.map
+			var energySourceEntities = this.planet.energySources().map
 			(
 				x => x.toEntity(world, this.planet)
 			);
@@ -68,7 +68,7 @@ class PlacePlanetOrbit extends PlaceBase
 
 		this._camera = new Camera
 		(
-			Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface.y),
+			Coords.fromXY(1, 1).multiplyScalar(this.planet.sizeSurface().y),
 			null, // focalLength
 			Disposition.fromOrientation
 			(
@@ -101,7 +101,7 @@ class PlacePlanetOrbit extends PlaceBase
 
 			var fuelRequiredToLandPerG = 2;
 			var fuelRequiredToLand =
-				planet.gravity * fuelRequiredToLandPerG;
+				planet.characteristics.gravity * fuelRequiredToLandPerG;
 
 			var fuelRequiredToLandMax = 3;
 			if (fuelRequiredToLand > fuelRequiredToLandMax)
@@ -179,7 +179,7 @@ class PlacePlanetOrbit extends PlaceBase
 		var controlMap = controlContainer.childByName("containerMap");
 		var mapPos = controlMap.pos;
 		var mapSize = controlMap.size;
-		var surfaceSize = this.planet.sizeSurface;
+		var surfaceSize = this.planet.sizeSurface();
 
 		var scanContacts = this.entitiesAll();
 		var contactPosSaved = Coords.create();
@@ -255,6 +255,7 @@ class PlacePlanetOrbit extends PlaceBase
 
 		var placePlanetOrbit = this;
 		var planet = this.planet;
+		var characteristics = planet.characteristics;
 
 		var containerMainSize = universe.display.sizeInPixels.clone();
 		var fontHeight = 20;
@@ -315,123 +316,93 @@ class PlacePlanetOrbit extends PlaceBase
 			containerInfoSize,
 			// children
 			[
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelName",
 					Coords.fromXY(marginSize.x, labelSize.y),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext("Name: " + planet.name),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelMass",
 					Coords.fromXY(marginSize.x, labelSize.y * 2),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext
 					(
 						"Mass: "
-						+ planet.mass.toExponential(3).replace("e", " x 10^").replace("+", "")
+						+ characteristics.mass.toExponential(3).replace("e", " x 10^").replace("+", "")
 						+ " kg"
 					),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelRadius",
 					Coords.fromXY(marginSize.x, labelSize.y * 3),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Radius: " + planet.radius + " km"),
+					DataBinding.fromContext("Radius: " + characteristics.radius + " km"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelGravity",
 					Coords.fromXY(marginSize.x, labelSize.y * 4),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Surface Gravity: " + planet.gravity + "g"),
+					DataBinding.fromContext("Surface Gravity: " + characteristics.gravity + "g"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelOrbitDistance",
 					Coords.fromXY(marginSize.x, labelSize.y * 5),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext
 					(
 						"Orbit: "
-						+ planet.orbit.toExponential(3).replace("e", " x 10^").replace("+", "")
+						+ characteristics.orbit.toExponential(3).replace("e", " x 10^").replace("+", "")
 						+ " km"
 					),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelRotationPeriod",
 					Coords.fromXY(marginSize.x, labelSize.y * 6),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Day: " + planet.dayInHours + " hours"),
+					DataBinding.fromContext("Day: " + characteristics.dayInHours + " hours"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelOrbitPeriod",
 					Coords.fromXY(marginSize.x, labelSize.y * 7),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Year: " + planet.yearInEarthDays + " Earth days"),
+					DataBinding.fromContext("Year: " + characteristics.yearInEarthDays + " Earth days"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelTemperature",
 					Coords.fromXY(marginSize.x, labelSize.y * 8),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Temperature: " + planet.temperature + " C"),
+					DataBinding.fromContext("Temperature: " + characteristics.temperature + " C"),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelWeather",
 					Coords.fromXY(marginSize.x, labelSize.y * 9),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Weather: Class " + planet.weather),
+					DataBinding.fromContext("Weather: Class " + characteristics.weather),
 					fontShort
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelTectonics",
 					Coords.fromXY(marginSize.x, labelSize.y * 10),
 					labelSize,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Tectonics: Class " + planet.tectonics),
+					DataBinding.fromContext("Tectonics: Class " + planet.characteristics.tectonics),
 					fontShort
 				),
 			]

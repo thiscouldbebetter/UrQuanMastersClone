@@ -157,20 +157,19 @@ class Hyperspace {
             if (encounterOrbitName == "-") {
                 encounterOrbitName = null;
             }
-            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetSize, null, // satellites
+            var planetCharacteristics = new PlanetCharacteristics(planetSize, null, // satellites
             null, // shipGroups,
             massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet, encounterOrbitName);
+            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetCharacteristics);
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;
-            var bodyListToAddTo;
             if (isMoon == true) {
-                bodyListToAddTo = planetCurrent.satellites;
+                planetCurrent.satelliteAdd(planet);
             }
             else {
-                bodyListToAddTo = starsystem.planets;
+                starsystem.planetAdd(planet);
                 planetCurrent = planet;
             }
-            bodyListToAddTo.push(planet);
         }
         var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
         var starsystemSol = starsystemsByName.get("Sol");

@@ -6,7 +6,7 @@ class PlacePlanetSurface extends PlaceBase {
         );
         var world = worldAsWorld;
         this.planet = planet;
-        this.size = () => this.planet.sizeSurface;
+        this.size = () => this.planet.sizeSurface();
         this.placePlanetOrbit = placePlanetOrbit;
         var actionExit = new Action("Exit", this.exit);
         var actionFire = Ship.actionFire();
@@ -38,12 +38,12 @@ class PlacePlanetSurface extends PlaceBase {
         entities.push(cameraAsEntity);
         // background
         var visualBackgroundImage = new VisualImageFromLibrary("PlanetSurface");
-        var planetSizeSurface = this.planet.sizeSurface;
+        var planetSizeSurface = this.planet.sizeSurface();
         visualBackgroundImage =
             new VisualImageScaled(planetSizeSurface, visualBackgroundImage);
         var visualBackground = new VisualWrapped(planetSizeSurface, visualBackgroundImage);
         var entityBackground = new Entity("Background", [
-            Locatable.fromPos(this.planet.sizeSurface.clone().half()),
+            Locatable.fromPos(planetSizeSurface.clone().half()),
             Drawable.fromVisual(visualBackground)
         ]);
         entities.push(entityBackground);
@@ -59,7 +59,7 @@ class PlacePlanetSurface extends PlaceBase {
         var resourceEntities = resources.map(x => x.toEntity(world, placePlanetOrbit, resourceRadiusBase));
         entities.push(...resourceEntities);
         // energySources
-        var energySources = this.planet.energySources || [];
+        var energySources = this.planet.energySources() || [];
         var energySourceEntities = energySources.map(x => x.toEntity(world, this.planet));
         entities.push(...energySourceEntities);
         // player
@@ -69,7 +69,8 @@ class PlacePlanetSurface extends PlaceBase {
         this.venueControls = VenueControls.fromControl(containerSidebar);
         //this.propertyNamesToProcess.push("ship");
         // Environmental hazards.
-        var hazardLevels = [planet.weather, planet.tectonics, planet.temperature];
+        var characteristics = planet.characteristics;
+        var hazardLevels = [characteristics.weather, characteristics.tectonics, characteristics.temperature];
         var hazardTypeNames = ["Weather", "Tectonics", "Temperature"];
         var hazardVisualNames = ["Lightning", "Earthquake", "Hotspot"];
         var imagesPerVisual = 12;
@@ -251,7 +252,7 @@ class PlacePlanetSurface extends PlaceBase {
         var player = this.entityByName(Player.name);
         var playerLoc = player.locatable().loc;
         var camera = this._camera;
-        var planetSize = this.planet.sizeSurface;
+        var planetSize = this.planet.sizeSurface();
         camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(Coords.fromXY(0, camera.viewSizeHalf.y), Coords.fromXY(planetSize.x, planetSize.y - camera.viewSizeHalf.y));
         super.draw(universe, world, display);
         this.venueControls.draw(universe);
@@ -263,7 +264,7 @@ class PlacePlanetSurface extends PlaceBase {
         var controlMap = containerSidebar.childByName("containerMap");
         var mapPos = containerSidebar.pos.clone().add(controlMap.pos);
         var mapSize = controlMap.size;
-        var surfaceSize = this.planet.sizeSurface;
+        var surfaceSize = this.planet.sizeSurface();
         var display = universe.display;
         var scanContacts = this.entitiesAll();
         var contactPosSaved = Coords.create();
@@ -273,7 +274,11 @@ class PlacePlanetSurface extends PlaceBase {
             if (contactMappable != null) {
                 var contactPos = contact.locatable().loc.pos;
                 contactPosSaved.overwriteWith(contactPos);
-                var drawPos = this._drawPos.overwriteWith(contactPos).divide(surfaceSize).multiply(mapSize).add(mapPos);
+                var drawPos = this._drawPos
+                    .overwriteWith(contactPos)
+                    .divide(surfaceSize)
+                    .multiply(mapSize)
+                    .add(mapPos);
                 contactPos.overwriteWith(drawPos);
                 var contactVisual = contactMappable.visual;
                 contactVisual.draw(uwpe.entitySet(contact), display);

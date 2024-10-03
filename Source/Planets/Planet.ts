@@ -5,24 +5,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	defnName: string;
 	radiusOuter: number;
 	posAsPolar: Polar;
-	sizeSurface: Coords;
-	satellites: Satellite[];
-	_shipGroups: ShipGroup[];
-	mass: number;
-	radius: number;
-	gravity: number;
-	orbit: number;
-	dayInHours: number;
-	yearInEarthDays: number;
-	tectonics: number;
-	weather: number;
-	temperature: number;
-	biosphere: PlanetBiosphere;
-	energySources: EnergySource[];
-	encounterOrbitName: string;
-
-	_lifeforms: Lifeform[];
-	_resources: Resource[];
+	characteristics: PlanetCharacteristics;
 
 	constructor
 	(
@@ -30,44 +13,14 @@ class Planet implements EntityProperty<Planet>, Satellite
 		defnName: string,
 		radiusOuter: number,
 		posAsPolar: Polar,
-		sizeSurface: Coords,
-		satellites: Planet[],
-		shipGroups: ShipGroup[],
-		mass: number,
-		radius: number,
-		gravity: number,
-		orbit: number,
-		dayInHours: number,
-		yearInEarthDays: number,
-		tectonics: number,
-		weather: number,
-		temperature: number,
-		biosphere: PlanetBiosphere,
-		energySources: EnergySource[],
-		encounterOrbitName: string
+		characteristics: PlanetCharacteristics
 	)
 	{
 		this.name = name;
 		this.defnName = defnName;
 		this.radiusOuter = radiusOuter;
 		this.posAsPolar = posAsPolar;
-		this.sizeSurface = sizeSurface;
-		this.satellites = satellites || [];
-		this._shipGroups = shipGroups || [];
-
-		this.mass = Math.round(mass);
-		this.radius = Math.round(radius);
-		this.gravity = parseFloat(gravity.toFixed(2));
-		this.orbit = Math.round(orbit);
-		this.dayInHours = dayInHours;
-		this.yearInEarthDays = Math.round(yearInEarthDays * 100) / 100;
-		this.tectonics = tectonics;
-		this.weather = weather;
-		this.temperature = temperature;
-
-		this.biosphere = biosphere;
-		this.energySources = energySources || [];
-		this.encounterOrbitName = encounterOrbitName;
+		this.characteristics = characteristics;
 	}
 
 	static from6
@@ -86,13 +39,11 @@ class Planet implements EntityProperty<Planet>, Satellite
 			defnName,
 			radiusOuter,
 			posAsPolar,
-			sizeSurface,
-			satellites,
-			null, null, null,
-			null, null, null,
-			null, null, null,
-			null, null, null,
-			null
+			PlanetCharacteristics.fromSizeSurfaceAndSatellites
+			(
+				sizeSurface,
+				satellites
+			)
 		);
 	}
 
@@ -146,15 +97,14 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return PlanetDefn.byName(this.defnName);
 	}
 
+	energySources(): EnergySource[]
+	{
+		return this.characteristics.energySources;
+	}
+
 	lifeforms(randomizer: Randomizer): Lifeform[]
 	{
-		if (this._lifeforms == null)
-		{
-			this._lifeforms = this.biosphere.lifeformsGenerateForPlanet(this, randomizer);
-		}
-
-		return this._lifeforms;
-
+		return this.characteristics.lifeforms(this, randomizer);
 	}
 
 	lifeformsGenerate(randomizer: Randomizer): Lifeform[]
@@ -169,43 +119,12 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 	resources(randomizer: Randomizer): Resource[]
 	{
-		if (this._resources == null)
-		{
-			var resources = new Array<Resource>();
-
-			var planetDefn = this.defn();
-			var planetSize = this.sizeSurface;
-			var resourceDistributions = planetDefn.resourceDistributions;
-
-			for (var i = 0; i < resourceDistributions.length; i++)
-			{
-				var resourceDistribution = resourceDistributions[i];
-
-				var resourceDefnName = resourceDistribution.resourceDefnName;
-				var numberOfDeposits = resourceDistribution.numberOfDeposits;
-				var quantityPerDeposit = resourceDistribution.quantityPerDeposit;
-
-				for (var d = 0; d < numberOfDeposits; d++)
-				{
-					var resourcePos =
-						Coords.create().randomize(randomizer).multiply(planetSize);
-					var resource = new Resource
-					(
-						resourceDefnName, quantityPerDeposit, resourcePos
-					);
-					resources.push(resource);
-				}
-			}
-
-			this._resources = resources;
-		}
-
-		return this._resources;
+		return this.characteristics.resources(this, randomizer);
 	}
 
 	orbitColor(): Color
 	{
-		var temperature = this.temperature;
+		var temperature = this.characteristics.temperature;
 		var colors = Color.Instances();
 		var orbitColor =
 		(
@@ -218,19 +137,48 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return orbitColor;
 	}
 
-	shipGroupAdd(shipGroup: ShipGroup): void
+	satelliteAdd(satellite: Satellite): Planet
 	{
-		this._shipGroups.push(shipGroup);
+		this.characteristics.satelliteAdd(satellite);
+		return this;
 	}
 
-	shipGroupRemove(shipGroup: ShipGroup): void
+	satelliteGetAtIndex(index: number): Satellite
 	{
-		this._shipGroups.splice(this._shipGroups.indexOf(shipGroup), 1);
+		return this.characteristics.satelliteGetAtIndex(index);
+	}
+
+	satelliteInsertAtIndex(satellite: Satellite, index: number): Planet
+	{
+		this.characteristics.satelliteInsertAtIndex(satellite, index);
+		return this;
+	}
+
+	satellitesGet(): Satellite[]
+	{
+		return this.characteristics.satellitesGet();
+	}
+
+	shipGroupAdd(shipGroup: ShipGroup): Planet
+	{
+		this.characteristics.shipGroupAdd(shipGroup);
+		return this;
+	}
+
+	shipGroupRemove(shipGroup: ShipGroup): Planet
+	{
+		this.characteristics.shipGroupRemove(shipGroup);
+		return this;
 	}
 
 	shipGroups(): ShipGroup[]
 	{
-		return this._shipGroups;
+		return this.characteristics.shipGroups();
+	}
+
+	sizeSurface(): Coords
+	{
+		return this.characteristics.sizeSurface;
 	}
 
 	toEntity(world: WorldExtended, primary: Planet, primaryPos: Coords): Entity
@@ -325,3 +273,161 @@ class Planet implements EntityProperty<Planet>, Satellite
 	equals(other: Planet): boolean { return false; }
 }
 
+
+class PlanetCharacteristics
+{
+	sizeSurface: Coords;
+	satellites: Satellite[];
+	_shipGroups: ShipGroup[];
+	mass: number;
+	radius: number;
+	gravity: number;
+	orbit: number;
+	dayInHours: number;
+	yearInEarthDays: number;
+	tectonics: number;
+	weather: number;
+	temperature: number;
+	biosphere: PlanetBiosphere;
+	energySources: EnergySource[];
+	encounterOrbitName: string;
+
+	_lifeforms: Lifeform[];
+	_resources: Resource[];
+
+	constructor
+	(
+		sizeSurface: Coords,
+		satellites: Planet[],
+		shipGroups: ShipGroup[],
+		mass: number,
+		radius: number,
+		gravity: number,
+		orbit: number,
+		dayInHours: number,
+		yearInEarthDays: number,
+		tectonics: number,
+		weather: number,
+		temperature: number,
+		biosphere: PlanetBiosphere,
+		energySources: EnergySource[],
+		encounterOrbitName: string
+	)
+	{
+		this.sizeSurface = sizeSurface;
+		this.satellites = satellites || [];
+		this._shipGroups = shipGroups || [];
+		this.mass = Math.round(mass);
+		this.radius = Math.round(radius);
+		this.gravity = parseFloat(gravity.toFixed(2));
+		this.orbit = Math.round(orbit);
+		this.dayInHours = dayInHours;
+		this.yearInEarthDays = Math.round(yearInEarthDays * 100) / 100;
+		this.tectonics = tectonics;
+		this.weather = weather;
+		this.temperature = temperature;
+		this.biosphere = biosphere;
+		this.energySources = energySources || [];
+		this.encounterOrbitName = encounterOrbitName;
+	}
+
+	static fromSizeSurfaceAndSatellites
+	(
+		sizeSurface: Coords,
+		satellites: Planet[] // todo
+	): PlanetCharacteristics
+	{
+		return new PlanetCharacteristics
+		(
+			sizeSurface,
+			satellites,
+			null, null, null,
+			null, null, null,
+			null, null, null,
+			null, null, null,
+			null
+		);
+	}
+
+	lifeforms(planet: Planet, randomizer: Randomizer): Lifeform[]
+	{
+		if (this._lifeforms == null)
+		{
+			this._lifeforms = this.biosphere.lifeformsGenerateForPlanet(planet, randomizer);
+		}
+
+		return this._lifeforms;
+	}
+
+	resources(planet: Planet, randomizer: Randomizer): Resource[]
+	{
+		if (this._resources == null)
+		{
+			var resources = new Array<Resource>();
+
+			var planetDefn = planet.defn();
+			var planetSize = this.sizeSurface;
+			var resourceDistributions = planetDefn.resourceDistributions;
+
+			for (var i = 0; i < resourceDistributions.length; i++)
+			{
+				var resourceDistribution = resourceDistributions[i];
+
+				var resourceDefnName = resourceDistribution.resourceDefnName;
+				var numberOfDeposits = resourceDistribution.numberOfDeposits;
+				var quantityPerDeposit = resourceDistribution.quantityPerDeposit;
+
+				for (var d = 0; d < numberOfDeposits; d++)
+				{
+					var resourcePos =
+						Coords.create().randomize(randomizer).multiply(planetSize);
+					var resource = new Resource
+					(
+						resourceDefnName, quantityPerDeposit, resourcePos
+					);
+					resources.push(resource);
+				}
+			}
+
+			this._resources = resources;
+		}
+
+		return this._resources;
+	}
+
+	satelliteAdd(satellite: Satellite): void
+	{
+		this.satellites.push(satellite);
+	}
+
+	satelliteGetAtIndex(index: number): Satellite
+	{
+		return this.satellites[index];
+	}
+
+	satelliteInsertAtIndex(satellite: Satellite, index: number): PlanetCharacteristics
+	{
+		this.satellites.splice(index, 0, satellite);
+		return this;
+	}
+
+	satellitesGet(): Satellite[]
+	{
+		return this.satellites;
+	}
+
+	shipGroupAdd(shipGroup: ShipGroup): void
+	{
+		this._shipGroups.push(shipGroup);
+	}
+
+	shipGroupRemove(shipGroup: ShipGroup): void
+	{
+		this._shipGroups.splice(this._shipGroups.indexOf(shipGroup), 1);
+	}
+
+	shipGroups(): ShipGroup[]
+	{
+		return this._shipGroups;
+	}
+}

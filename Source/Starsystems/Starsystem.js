@@ -17,6 +17,10 @@ class Starsystem {
     faction(world) {
         return world.factionByName(this.factionName);
     }
+    planetAdd(planet) {
+        this.planets.push(planet);
+        return this;
+    }
     planetClosestTo(posToCheck) {
         var planetClosestSoFar = this.planets[0];
         var planetClosestSoFarDistance = this._displacement
@@ -62,51 +66,13 @@ class Starsystem {
         var planetEarth = this.planets.find(x => x.name == "Earth");
         planetEarth.defnName = PlanetDefn.Instances().Shielded.name;
         // Put a base on the moon.
-        var moon = planetEarth.satellites[0];
+        var moon = planetEarth.satelliteGetAtIndex(0);
         moon.name = "Moon";
-        /*
-        var moonSizeSurface = moon.sizeSurface;
-
-        var mediaLibrary = universe.mediaLibrary;
-        var textAbandonedMoonbase = "AbandonedMoonbase";
-        var abandonedMoonbaseMessage =
-            mediaLibrary.textStringGetByName(EnergySource.name + textAbandonedMoonbase).value;
-        var visual =
-            new VisualImageFromLibrary(EnergySource.name + textAbandonedMoonbase);
-
-        var collideWithLander = (uwpe: UniverseWorldPlaceEntities) =>
-        {
-            var universe = uwpe.universe;
-
-            var acknowledgeReport = () =>
-            {
-                var place = uwpe.place as PlacePlanetSurface;
-                place.exit(uwpe);
-            };
-
-            var venueToReturnTo = universe.venueCurrent();
-
-            var venueMessage =
-                VenueMessage.fromTextAcknowledgeAndVenuePrev(abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo);
-
-            universe.venueTransitionTo(venueMessage);
-        };
-
-        var energySourceAbandonedMoonbase = new EnergySource
-        (
-            textAbandonedMoonbase,
-            Coords.random(universe.randomizer).multiply(moonSizeSurface),
-            visual,
-            collideWithLander
-        );
-        var energySources = [ energySourceAbandonedMoonbase ];
-        moon.energySources = energySources;
-        */
         // Put a station in orbit around the Earth.
         var station = new Station("Earth Station", Color.Instances().Gray, // color
         radiusBase, "Terran", // factionName
         new Polar(Math.random(), moon.posAsPolar.radius / 2, null));
-        planetEarth.satellites.splice(0, 0, station);
+        planetEarth.satelliteInsertAtIndex(station, 0);
         // Add a guard drone in the Earth system.
         var enemyShipDefnName = "GuardDrone";
         var enemyShip = new Ship(enemyShipDefnName);
@@ -154,11 +120,11 @@ class Starsystem {
         10, // radius
         "Terran", // factionName
         new Polar(Math.random(), distanceBetweenPlanetOrbits, null));
-        var satellites = planetWithStation.satellites;
+        var satellites = planetWithStation.characteristics.satellites;
         if (satellites.length > 0) {
             ArrayHelper.removeAt(satellites, 0);
         }
-        planetWithStation.satellites.push(station);
+        planetWithStation.satelliteAdd(station);
     }
     toPlace(world, playerLoc, planetDeparted) {
         return new PlaceStarsystem(world, this, playerLoc, planetDeparted);

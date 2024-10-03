@@ -66,7 +66,7 @@ class Lifeform implements EntityProperty<Lifeform>
 		var lifeformDamager = Damager.default();
 
 		var lifeformVisual: VisualBase = lifeformDefn.visual;
-		lifeformVisual = new VisualWrapped(planet.sizeSurface, lifeformVisual);
+		lifeformVisual = new VisualWrapped(planet.sizeSurface(), lifeformVisual);
 		var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
 
 		var lifeformKillable = new Killable

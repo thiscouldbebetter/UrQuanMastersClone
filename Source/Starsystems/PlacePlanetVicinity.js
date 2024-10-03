@@ -44,7 +44,7 @@ class PlacePlanetVicinity extends PlaceBase {
         ]);
         entities.push(planetEntity);
         // satellites
-        var satellites = planet.satellites;
+        var satellites = planet.satellitesGet();
         for (var i = 0; i < satellites.length; i++) {
             var satellite = satellites[i];
             var satelliteEntity = satellite.toEntity(world, planet, planetPos);

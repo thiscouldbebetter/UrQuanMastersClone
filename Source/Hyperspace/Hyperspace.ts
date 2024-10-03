@@ -278,12 +278,8 @@ class Hyperspace
 				encounterOrbitName = null;
 			}
 
-			var planet = new Planet
+			var planetCharacteristics = new PlanetCharacteristics
 			(
-				planetName,
-				planetDefnName,
-				planetRadius,
-				posAsPolar,
 				planetSize,
 				null, // satellites
 				null, // shipGroups,
@@ -301,20 +297,27 @@ class Hyperspace
 				encounterOrbitName
 			);
 
+			var planet = new Planet
+			(
+				planetName,
+				planetDefnName,
+				planetRadius,
+				posAsPolar,
+				planetCharacteristics
+			);
+
 			var isMoon = (orbitOrdinalParts.length > 1);
 			var planetCurrent;
-			var bodyListToAddTo;
 			if (isMoon == true)
 			{
-				bodyListToAddTo = planetCurrent.satellites;
+				planetCurrent.satelliteAdd(planet);
 			}
 			else
 			{
-				bodyListToAddTo = starsystem.planets;
+				starsystem.planetAdd(planet);
 				planetCurrent = planet;
 			}
 
-			bodyListToAddTo.push(planet);
 		}
 
 		var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
