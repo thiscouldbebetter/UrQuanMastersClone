@@ -122,7 +122,7 @@ class Encounter
 	talk(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var place = world.placeCurrent;
+		var place = world.place();
 
 		var encounter = this;
 		var faction = encounter.faction(world);

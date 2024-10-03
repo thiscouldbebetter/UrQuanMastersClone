@@ -74,7 +74,7 @@ class Encounter {
     }
     talk(universe) {
         var world = universe.world;
-        var place = world.placeCurrent;
+        var place = world.place();
         var encounter = this;
         var faction = encounter.faction(world);
         var conversationDefnName = faction.conversationDefnName;

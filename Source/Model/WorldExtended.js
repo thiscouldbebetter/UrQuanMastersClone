@@ -88,54 +88,54 @@ class WorldExtended extends World {
         var c = Color.Instances();
         var hostile = Faction.RelationsHostile;
         var neutral = Faction.RelationsNeutral;
-        var amorfus = f("Amorfus", "Umgah", c.Violet, soi(197.8, 596.8, .1), hostile, "Pustule");
-        var daskapital = f("Daskapital", "Druuge", c.Red, soi(946.9, 280.6, .1), neutral, "Kickback");
+        var daskapp = f("Daskapp", "Druuge", c.Red, soi(946.9, 280.6, .1), neutral, "Kickback");
         var ellfyn = f("Ellfyn", "Arilou", c.Blue, soi(100, 500, .05), neutral, "Discus");
+        var famorfex = f("Famorfex", "Umgah", c.Violet, soi(197.8, 596.8, .1), hostile, "Pustule");
+        var grimmotz = f("Grimmotz", "Utwig", c.Cyan, soi(863.0, 869.3, .1), neutral, "Punishpunj");
         var hyphae = f("Hyphae", "Mycon", c.Purple, soi(629.1, 220.8, .12), hostile, "Sporsac");
         var kehlemal = f("Kehlemal", "Kohrah", c.Gray, soi(610, 610, .25), hostile, "Silencer");
         var lahkemup = f("Lahkemup", "Urquan", c.Green, soi(590, 590, .25), hostile, "Shackler");
         var konstalyxz = f("Konstalyxz", "Chmmr", null, null, neutral, "Gravitar");
         var mauluska = f("Mauluska", "Spathi", c.Brown, soi(241.6, 368.7, .12), neutral, "Scuttler");
-        var moroz = f("Moroz", "Utwig", c.Cyan, soi(863.0, 869.3, .1), neutral, "Punishpunj");
-        var muuncaf = f("Muuncaf", "Pkunk", c.Cyan, soi(52.2, 52.5, .1), neutral, "Fireblossom");
+        var muunfaz = f("Muunfaz", "Pkunk", c.Cyan, soi(52.2, 52.5, .1), neutral, "Fireblossom");
         var mazonae = f("Mazonae", "Syreen", null, null, neutral, "Elysian");
         var murch = f("Murch", "Melnorme", null, null, neutral, "Indemnity");
-        var outsider = f("Outsider", "Orz", c.Purple, soi(371.3, 253.7, .1), neutral, "Wingshadow");
+        var outz = f("Outz", "Orz", c.Purple, soi(371.3, 253.7, .1), neutral, "Wingshadow");
         var raknoid = f("Raknoid", "Ilwrath", c.Purple, soi(22.9, 366.6, .15), hostile, "Infernus");
-        var raptor = f("Raptor", "Yehat", c.Violet, soi(492.3, 29.4, .1), neutral, "Aegis");
+        var raptodact = f("Raptodact", "Yehat", c.Violet, soi(492.3, 29.4, .1), neutral, "Aegis");
         //var raptorRebel 	= f("RaptorRebel", 	"Yehat", 	c("Mauve"), soi(492.3, 29.4, .1), 	neutral, "Aegis");
         //var raptorRoyalist= f("RaptorRoyalist","Yehat", 	c("Violet"),soi(492.3, 29.4, .1), 	neutral, "Aegis");
-        var supial = f("Supial", "Shofixti", null, null, hostile, "Starbright");
+        var supian = f("Supian", "Shofixti", null, null, hostile, "Starbright");
         var terran = f("Terran", "Earthling", null, null, neutral, "Broadsider");
         var tempestrial = f("Tempestrial", "Slylandro", null, soi(500, 500, 1000), hostile, "Tumbler");
         var triunion = f("Triunion", "Zoqfotpik", c.Red, soi(400, 543.7, .067), neutral, "Nitpiknik");
         var twyggan = f("Twyggan", "Supox", c.Brown, soi(741.4, 912.4, .1), neutral, "Efflorescence");
         var ugglegruj = f("Ugglegruj", "VUX", c.Blue, soi(433.3, 168.7, .12), hostile, "Encumbrator");
-        var warpig = f("Warpig", "Thraddash", c.Cyan, soi(253.5, 835.8, .1), hostile, "Afterburner");
+        var vaarphig = f("Vaarphig", "Thraddash", c.Cyan, soi(253.5, 835.8, .1), hostile, "Afterburner");
         var factions = [
-            amorfus,
-            daskapital,
+            daskapp,
             ellfyn,
+            famorfex,
+            grimmotz,
             hyphae,
             kehlemal,
             konstalyxz,
             lahkemup,
             lahkemupGuardDrone,
             mauluska,
-            moroz,
-            muuncaf,
+            muunfaz,
             mazonae,
             murch,
-            outsider,
+            outz,
             raknoid,
-            raptor,
-            supial,
+            raptodact,
+            supian,
             tempestrial,
             terran,
             triunion,
             twyggan,
             ugglegruj,
-            warpig
+            vaarphig
         ];
         var shipDefns = ShipDefn.Instances(universe)._All;
         var energySources = EnergySource.Instances()._All;
@@ -143,9 +143,9 @@ class WorldExtended extends World {
         var resourceDefns = ResourceDefn.Instances()._All;
         var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, resourceDefns, shipDefns, energySources);
         var mediaLibrary = universe.mediaLibrary;
-        var starsAndPlanetsAsStringCSVCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
+        var starsAndPlanetsAsStringCsvCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
         var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, 10, // starsystemRadiusOuter
-        Coords.fromXY(1, 1).multiplyScalar(300), factions, energySources, starsAndPlanetsAsStringCSVCompressed);
+        Coords.fromXY(1, 1).multiplyScalar(300), factions, energySources, starsAndPlanetsAsStringCsvCompressed);
         var starsystemStart = hyperspace.starsystemByName("Sol");
         starsystemStart.solarSystem(universe);
         var starsystems = hyperspace.starsystems;

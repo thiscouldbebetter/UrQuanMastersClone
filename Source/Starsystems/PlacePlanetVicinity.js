@@ -129,52 +129,71 @@ class PlacePlanetVicinity extends PlaceBase {
         var entityPlayer = uwpe.entity;
         var entityOther = uwpe.entity2;
         var entityOtherName = entityOther.name;
+        var entityOtherPlanet = Planet.fromEntity(entityOther);
+        var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
         if (entityOtherName.startsWith("Wall")) {
-            var placeStarsystem = place.placeStarsystem;
-            var starsystem = placeStarsystem.starsystem;
-            var planet = place.planet;
-            var posNext = planet.posAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
-            var dispositionNext = new Disposition(posNext, entityPlayer.locatable().loc.orientation.clone(), null);
-            var starsystemAsPlace = starsystem.toPlace(world, dispositionNext, planet);
-            world.placeNextSet(starsystemAsPlace);
+            place.playerCollide_Wall(world, entityPlayer);
+        }
+        else if (entityOtherPlanet != null) {
+            place.playerCollide_Planet(universe, world, entityPlayer, entityOther);
+        }
+        else if (entityOtherShipGroup != null) {
+            place.playerCollide_ShipGroup(uwpe, entityOther);
+        }
+    }
+    playerCollide_Planet(universe, world, entityPlayer, entityPlanet) {
+        var planet = Planet.fromEntity(entityPlanet);
+        var planetFaction = planet.faction(world);
+        var planetHasFaction = (planetFaction != null);
+        if (planetHasFaction == false) {
+            this.playerCollide_Planet_WithNoFaction(universe, world, entityPlayer, entityPlanet);
         }
         else {
-            var entityOtherPlanet = Planet.fromEntity(entityOther);
-            var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
-            if (entityOtherPlanet != null) {
-                var planetIsStation = entityOtherPlanet.isStation();
-                if (planetIsStation) {
-                    var station = entityOtherPlanet;
-                    var faction = station.faction(world);
-                    if (faction.relationsWithPlayer == Faction.RelationsAllied) {
-                        world.placeNextSet(new PlaceStation(world, station, place));
-                    }
-                    else {
-                        // entityOther.collidable().ticksUntilCanCollide = 50; // hack
-                        var playerPos = entityPlayer.locatable().loc.pos;
-                        var encounter = new Encounter(place.planet, station.factionName, entityPlayer, entityOther, place, playerPos);
-                        var placeEncounter = encounter.toPlace();
-                        world.placeNext = placeEncounter;
-                    }
-                }
-                else {
-                    var playerLoc = entityPlayer.locatable().loc;
-                    var planetPos = entityOther.locatable().loc.pos;
-                    playerLoc.pos.overwriteWith(planetPos);
-                    playerLoc.vel.clear();
-                    entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
-                    var placePlanetOrbit = new PlacePlanetOrbit(universe, world, entityOtherPlanet, place);
-                    world.placeNextSet(placePlanetOrbit);
-                }
-            }
-            else if (entityOtherShipGroup != null) {
-                entityOther.collidable().ticksUntilCanCollide = 100; // hack
-                var shipGroup = entityOtherShipGroup;
-                //uwpe.placeSet(place);
-                var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
-                world.placeNextSet(placeEncounter);
-            }
+            this.playerCollide_Planet_WithFaction(world, entityPlayer, entityPlanet);
         }
+    }
+    playerCollide_Planet_WithFaction(world, entityPlayer, entityPlanet) {
+        var planet = Planet.fromEntity(entityPlanet);
+        var planetFaction = planet.faction(world);
+        var planetIsStation = planet.isStation();
+        var planetIsAlliedWithPlayer = (planetFaction.relationsWithPlayer == Faction.RelationsAllied);
+        if (planetIsStation && planetIsAlliedWithPlayer) {
+            world.placeNextSet(new PlaceStation(world, planet, this));
+        }
+        else {
+            var playerPos = entityPlayer.locatable().loc.pos;
+            var encounter = new Encounter(planet, planet.factionName, entityPlayer, entityPlanet, this, playerPos);
+            var placeEncounter = encounter.toPlace();
+            world.placeNextSet(placeEncounter);
+        }
+    }
+    playerCollide_Planet_WithNoFaction(universe, world, entityPlayer, entityPlanet) {
+        var playerLoc = entityPlayer.locatable().loc;
+        var planetPos = entityPlanet.locatable().loc.pos;
+        playerLoc.pos.overwriteWith(planetPos);
+        playerLoc.vel.clear();
+        entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityPlanet);
+        var planet = Planet.fromEntity(entityPlanet);
+        var placePlanetOrbit = new PlacePlanetOrbit(universe, world, planet, this);
+        world.placeNextSet(placePlanetOrbit);
+    }
+    playerCollide_ShipGroup(uwpe, entityShipGroup) {
+        entityShipGroup.collidable().ticksUntilCanCollide = 100; // hack
+        var shipGroup = ShipGroup.fromEntity(entityShipGroup);
+        var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
+        uwpe.world.placeNextSet(placeEncounter);
+    }
+    playerCollide_Wall(world, entityPlayer) {
+        var placeStarsystem = this.placeStarsystem;
+        var starsystem = placeStarsystem.starsystem;
+        var planet = this.planet;
+        var posNext = planet
+            .posAsPolar
+            .toCoords(Coords.create())
+            .add(starsystem.sizeInner.clone().half());
+        var dispositionNext = new Disposition(posNext, entityPlayer.locatable().loc.orientation.clone(), null);
+        var starsystemAsPlace = starsystem.toPlace(world, dispositionNext, planet);
+        world.placeNextSet(starsystemAsPlace);
     }
     starsystem() {
         return this.placeStarsystem.starsystem;

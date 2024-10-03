@@ -112,9 +112,6 @@ class SystemTests extends TestFixture
 
 		this.moveToEntityWithNameAndWait(universe, stationName);
 
-		// hack - Should this be necessary?
-		this.waitForTicks(universe, 100);
-
 		// Talk to the station.
 
 		this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
@@ -757,8 +754,14 @@ class SystemTests extends TestFixture
 		// Go to Beta Librae I and talk to the Twyggan.
 		this.goToOrbitOfPlanetWithName(universe, "Beta Librae I");
 
+		// Verify that an encounter is initiated, rather than a normal orbit.
+		Assert.isTrue(place().constructor.name != PlacePlanetOrbit.name);
+		
+
 		callback();
 	}
+
+	// Helper methods.
 
 	acknowledgeMessage(universe: Universe): void
 	{
@@ -1000,7 +1003,17 @@ class SystemTests extends TestFixture
 			planetName = Planet.name;
 		}
 		this.moveToEntityWithNameAndWait(universe, planetName);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, universe.world);
+
+		var placeTypesExpectedNames =
+		[
+			PlacePlanetOrbit.name, // Colliding with most planets will take you to orbit,
+			PlaceEncounter.name, // but some special planets will instead initiate an encounter.
+		];
+
+		var world = universe.world;
+		var place = world.place();
+		var placeTypeName = place.constructor.name;
+		Assert.isTrue(placeTypesExpectedNames.indexOf(placeTypeName) >= 0);
 	}
 
 	goToStarsystemWithName(universe: Universe, starsystemName: string): void
@@ -1120,7 +1133,7 @@ class SystemTests extends TestFixture
 					displacementFromPlayerToTarget.magnitude();
 
 				// Per the Star Control Wiki:
-				// "To travel the entire length of one axis [...] requires exactly 100.0 units of fuel.
+				// "To travel the entire length of one axis [...] requires exactly 100.0 units of fuel."
 				// And this game's version of hyperspace is 10,000 pixels across.
 				var pixelsPerFuelUnit = 100;
 				var fuelUnitsNeeded = distanceFromPlayerToTarget / pixelsPerFuelUnit;

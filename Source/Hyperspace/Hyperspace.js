@@ -43,8 +43,8 @@ class Hyperspace {
         return returnValue;
     }
     static fromFileContentsAsString(size, starsystemRadiusOuter, starsystemSizeInner, factions, energySourcesAll, fileContentsAsString) {
-        var starsAndPlanetsAsStringCSV = new CsvCompressor().decompress(fileContentsAsString);
-        var starsAndPlanetsAsStringsCSV = starsAndPlanetsAsStringCSV.split("\n");
+        var starsAndPlanetsAsStringCsv = new CsvCompressor().decompress(fileContentsAsString);
+        var starsAndPlanetsAsStringsCSV = starsAndPlanetsAsStringCsv.split("\n");
         var iOffset = 0;
         while (starsAndPlanetsAsStringsCSV[iOffset].startsWith("Cluster") == false) {
             iOffset++;

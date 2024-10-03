@@ -113,11 +113,12 @@ class Hyperspace
 		fileContentsAsString: string
 	)
 	{
-		var starsAndPlanetsAsStringCSV = new CsvCompressor().decompress
+		var starsAndPlanetsAsStringCsv = new CsvCompressor().decompress
 		(
 			fileContentsAsString
 		);
-		var starsAndPlanetsAsStringsCSV = starsAndPlanetsAsStringCSV.split("\n");
+		var starsAndPlanetsAsStringsCSV =
+			starsAndPlanetsAsStringCsv.split("\n");
 
 		var iOffset = 0;
 		while (starsAndPlanetsAsStringsCSV[iOffset].startsWith("Cluster") == false)
