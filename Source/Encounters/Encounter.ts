@@ -7,6 +7,7 @@ class Encounter
 	entityOther: Entity;
 	placeToReturnTo: Place;
 	posToReturnTo: Coords;
+
 	endsInCombat: boolean
 
 	constructor

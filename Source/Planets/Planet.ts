@@ -19,6 +19,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	temperature: number;
 	biosphere: PlanetBiosphere;
 	energySources: EnergySource[];
+	encounterOrbitName: string;
 
 	_lifeforms: Lifeform[];
 	_resources: Resource[];
@@ -42,7 +43,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 		weather: number,
 		temperature: number,
 		biosphere: PlanetBiosphere,
-		energySources: EnergySource[]
+		energySources: EnergySource[],
+		encounterOrbitName: string
 	)
 	{
 		this.name = name;
@@ -65,6 +67,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 		this.biosphere = biosphere;
 		this.energySources = energySources || [];
+		this.encounterOrbitName = encounterOrbitName;
 	}
 
 	static from6
@@ -88,7 +91,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 			null, null, null,
 			null, null, null,
 			null, null, null,
-			null, null, null
+			null, null, null,
+			null
 		);
 	}
 

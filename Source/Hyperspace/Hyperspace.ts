@@ -115,7 +115,7 @@ class Hyperspace
 		starsystemRadiusOuter: number,
 		starsystemSizeInner: Coords,
 		factions: Faction[],
-		energySources: EnergySource[],
+		energySourcesAll: EnergySource[],
 		fileContentsAsString: string
 	)
 	{
@@ -268,8 +268,14 @@ class Hyperspace
 			if (energySourceAsString != "-")
 			{
 				var energySource =
-					energySources.find(x => x.name == energySourceAsString);
+					energySourcesAll.find(x => x.name == energySourceAsString);
 				energySourcesOnPlanet.push(energySource);
+			}
+
+			var encounterOrbitName = planetAsValues[30];
+			if (encounterOrbitName == "-")
+			{
+				encounterOrbitName = null;
 			}
 
 			var planet = new Planet
@@ -291,7 +297,8 @@ class Hyperspace
 				weather,
 				temperature,
 				biosphere,
-				energySourcesOnPlanet
+				energySourcesOnPlanet,
+				encounterOrbitName
 			);
 
 			var isMoon = (orbitOrdinalParts.length > 1);

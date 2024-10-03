@@ -704,7 +704,7 @@ class SystemTests extends TestFixture
 				// "What would you like to buy?"
 				"#(buy_fuel)", // "Fuel."
 				// "How much fuel?"
-				"#(fill_me_up)", // Fill me up.
+				"#(fill_me_up)", // "Fill me up."
 				// "Fuel transferred." 
 				// (And it's assumed you don't want any more fuel.)
 				// "What else would you like to buy?"
@@ -718,27 +718,8 @@ class SystemTests extends TestFixture
 		// Go to a system containing a rainbow world,
 		// in order to have some more info to sell to the traders.
 
-		var starsystemWithRainbowWorldName = "Gamma Kepler"; // Or Groombridge.
-		this.goToStarsystemWithName(universe, starsystemWithRainbowWorldName);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
-
-		var rainbowWorldLocationsKnownButUnsoldCount =
-			player.rainbowWorldLocationsKnownButUnsoldCount();
-		Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount); 
-
-		this.moveToEntityWithNameAndWait(universe, starsystemWithRainbowWorldName + " I");
-		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
-
-		this.moveToEntityWithNameAndWait(universe, Planet.name);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
-
-		var placeOrbit = place() as PlacePlanetOrbit;
-		var planet = placeOrbit.planet;
-		Assert.areStringsEqual("Rainbow", planet.defnName);
-
-		var rainbowWorldLocationsKnownButUnsoldCount =
-			player.rainbowWorldLocationsKnownButUnsoldCount();
-		Assert.areNumbersEqual(1, rainbowWorldLocationsKnownButUnsoldCount); 
+		var starsystemWithRainbowWorldName = "Gamma Kepler";
+		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
 
 		// It won't be possible to sell the location at a supergiant without going backwards,
 		// so instead go forward to pick up a hyperwave caster.
@@ -756,50 +737,24 @@ class SystemTests extends TestFixture
 		var itemHolderDevices = flagship.itemHolderDevices;
 		Assert.isNotEmpty(itemHolderDevices.items);
 
-		// Go to hyperspace and call the merchants with the caster.
-		this.goToHyperspace(universe);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-		flagship.deviceWithNameUse(deviceTtorstingCasterName, uwpe);
+		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
 
-		// Wait for the merchants to approach and start an encounter.
-		this.waitForTicks(universe, 100);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
-		placeEncounter = place() as PlaceEncounter;
-		encounter = placeEncounter.encounter;
-		talker = encounter.entityOther.talker();
+		// Now go to Alpha Andromadae, where there's another rainbow world.
+		starsystemWithRainbowWorldName = "Alpha Andromedae";
+		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
+		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
 
-		// Record how many infoCredits the player had before the sale.
-		var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
+		// And now Groombridge, where there's yet another rainbow world.
+		starsystemWithRainbowWorldName = "Groombridge";
+		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
+		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
 
-		// Sell it.
-		this.talkToTalker
-		(
-			universe,
-			talker,
-			[
-				// "Hello.  Buying or selling."
-				"#(sell)", // "Selling."
-				// "Selling what?"
-				"#(sell_rainbow_locations)", // "Rainbow world locations."
-				// "You know where 1 is, worth 500."
-			]
-		);
+		// And now Gamma Aquarii, where there's yet another rainbow world.
+		starsystemWithRainbowWorldName = "Gamma Aquarii";
+		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
+		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
 
-
-		var rainbowWorldLocationsKnownButUnsoldCount =
-			player.rainbowWorldLocationsKnownButUnsoldCount();
-		Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount); 
-
-		var infoCreditsAfterSaleOfRainbowWorldLocation = flagship.infoCredits;
-		var infoCreditsFromSaleOfRainbowWorldLocation =
-			infoCreditsAfterSaleOfRainbowWorldLocation
-			- infoCreditsBeforeSaleOfRainbowWorldLocation;
-		Assert.areNumbersEqual(500, infoCreditsFromSaleOfRainbowWorldLocation);
-
-
-		// Gather resources.
-		// Gather lifeforms.
-		// Return to Earth station.
+		this.goToOrbitOfPlanetWithName(universe, "Beta Librae I");
 
 		callback();
 	}
@@ -927,6 +882,112 @@ class SystemTests extends TestFixture
 		this.leavePlanetVicinityAndWait(universe);
 		this.leaveStarsystemAndWait(universe);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, universe.world);
+	}
+
+	goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+		var player = world.player;
+		var flagship = player.flagship;
+
+		// Go to hyperspace and call the merchants with the caster.
+		this.goToHyperspace(universe);
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+		const deviceTtorstingCasterName = "TtorstingCaster";
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
+		flagship.deviceWithNameUse(deviceTtorstingCasterName, uwpe);
+
+		// Wait for the merchants to approach and start an encounter.
+		this.waitForTicks(universe, 100);
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+		var placeEncounter = world.place() as PlaceEncounter;
+		var encounter = placeEncounter.encounter;
+		var talker = encounter.entityOther.talker();
+
+		// Record how many infoCredits the player had before the sale.
+		var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
+
+		// Sell it.
+		this.talkToTalker
+		(
+			universe,
+			talker,
+			[
+				// "Hello.  Buying or selling."
+				"#(sell)", // "Selling."
+				// "Selling what?"
+				"#(sell_rainbow_locations)", // "Rainbow world locations."
+				// "You know where 1 is, worth 500."
+			]
+		);
+
+		var rainbowWorldLocationsKnownButUnsoldCount =
+			player.rainbowWorldLocationsKnownButUnsoldCount();
+		Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount); 
+
+		var infoCreditsAfterSaleOfRainbowWorldLocation = flagship.infoCredits;
+		var infoCreditsFromSaleOfRainbowWorldLocation =
+			infoCreditsAfterSaleOfRainbowWorldLocation
+			- infoCreditsBeforeSaleOfRainbowWorldLocation;
+		const infoCreditsPerRainbowWorldLocation = 500;
+		Assert.areNumbersEqual(
+			infoCreditsPerRainbowWorldLocation,
+			infoCreditsFromSaleOfRainbowWorldLocation
+		);
+
+		// Now buy more fuel and then end the conversation.
+
+		this.talkToTalker
+		(
+			universe,
+			talker,
+			[
+				"#(buy)", // "I'd like to buy something."
+				// "What would you like to buy?"
+				"#(buy_fuel)", // "Fuel."
+				// "How much?"
+				"#(fill_me_up)", // "Fill me up."
+				// "What else would you like to buy?"
+				"#(done_buying)",
+				// "Anything else?"
+				"#(be_leaving_now)"
+			]
+		);
+
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+
+	}
+
+	goToRainbowWorldInStarsystemWithName(starsystemName: string, universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+
+		this.goToStarsystemWithName(universe, starsystemName);
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+
+		var player = world.player;
+
+		this.moveToEntityWithNameAndWait(universe, starsystemName + " I");
+		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+
+		var rainbowWorldLocationsKnownButUnsoldCountBefore =
+			player.rainbowWorldLocationsKnownButUnsoldCount();
+
+		this.moveToEntityWithNameAndWait(universe, Planet.name);
+		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+
+		var placeOrbit = world.place() as PlacePlanetOrbit;
+		var planet = placeOrbit.planet;
+		Assert.areStringsEqual("Rainbow", planet.defnName);
+
+		var rainbowWorldLocationsKnownButUnsoldCountAfter =
+			player.rainbowWorldLocationsKnownButUnsoldCount();
+
+		var rainbowWorldsDiscoveredCount =
+			rainbowWorldLocationsKnownButUnsoldCountAfter
+			- rainbowWorldLocationsKnownButUnsoldCountBefore;
+
+		Assert.areNumbersEqual(1, rainbowWorldsDiscoveredCount); 
 	}
 
 	goToOrbitOfPlanetWithName(universe: Universe, planetName: string): void

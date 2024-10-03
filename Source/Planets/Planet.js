@@ -1,6 +1,6 @@
 "use strict";
 class Planet {
-    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySources) {
+    constructor(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySources, encounterOrbitName) {
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
@@ -19,9 +19,10 @@ class Planet {
         this.temperature = temperature;
         this.biosphere = biosphere;
         this.energySources = energySources || [];
+        this.encounterOrbitName = encounterOrbitName;
     }
     static from6(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites) {
-        return new Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null);
+        return new Planet(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
     static activityDefnGravitate() {
         return new ActivityDefn("Gravitate", Planet.activityGravitatePerform);
