@@ -38,11 +38,6 @@ class Hyperspace {
             starsystem.contentsRandomize(randomizer);
             starsystems.push(starsystem);
         }
-        /*
-        var starsystemSol = starsystems[starsystems.length - 1];
-        starsystemSol.factionName = "todo"; // Spawns "enemy".
-        starsystemSol.solarSystem(universe);
-        */
         var returnValue = new Hyperspace(size, starsystemRadiusOuter, starsystems, [] // shipGroups
         );
         return returnValue;
@@ -153,15 +148,14 @@ class Hyperspace {
                 var energySource = energySourcesAll.find(x => x.name == energySourceAsString);
                 energySourcesOnPlanet.push(energySource);
             }
-            var encounterOrbitName = planetAsValues[30];
-            if (encounterOrbitName == "-") {
-                encounterOrbitName = null;
-            }
             var planetCharacteristics = new PlanetCharacteristics(planetSize, null, // satellites
             null, // shipGroups,
-            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet, encounterOrbitName);
-            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, null, // factionName
-            planetCharacteristics);
+            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet);
+            var factionName = planetAsValues[30];
+            if (factionName == "-") {
+                factionName = null;
+            }
+            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, factionName, planetCharacteristics);
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;
             if (isMoon == true) {

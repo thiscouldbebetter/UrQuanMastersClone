@@ -92,12 +92,6 @@ class Hyperspace
 			starsystems.push(starsystem);
 		}
 
-		/*
-		var starsystemSol = starsystems[starsystems.length - 1];
-		starsystemSol.factionName = "todo"; // Spawns "enemy".
-		starsystemSol.solarSystem(universe);
-		*/
-
 		var returnValue = new Hyperspace
 		(
 			size,
@@ -272,12 +266,6 @@ class Hyperspace
 				energySourcesOnPlanet.push(energySource);
 			}
 
-			var encounterOrbitName = planetAsValues[30];
-			if (encounterOrbitName == "-")
-			{
-				encounterOrbitName = null;
-			}
-
 			var planetCharacteristics = new PlanetCharacteristics
 			(
 				planetSize,
@@ -293,9 +281,14 @@ class Hyperspace
 				weather,
 				temperature,
 				biosphere,
-				energySourcesOnPlanet,
-				encounterOrbitName
+				energySourcesOnPlanet
 			);
+
+			var factionName = planetAsValues[30];
+			if (factionName == "-")
+			{
+				factionName = null;
+			}
 
 			var planet = new Planet
 			(
@@ -303,7 +296,7 @@ class Hyperspace
 				planetDefnName,
 				planetRadius,
 				posAsPolar,
-				null, // factionName
+				factionName,
 				planetCharacteristics
 			);
 
