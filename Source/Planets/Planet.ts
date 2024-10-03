@@ -5,7 +5,10 @@ class Planet implements EntityProperty<Planet>, Satellite
 	defnName: string;
 	radiusOuter: number;
 	posAsPolar: Polar;
+	factionName: string;
 	characteristics: PlanetCharacteristics;
+
+	_isStation: boolean;
 
 	constructor
 	(
@@ -13,6 +16,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		defnName: string,
 		radiusOuter: number,
 		posAsPolar: Polar,
+		factionName: string,
 		characteristics: PlanetCharacteristics
 	)
 	{
@@ -20,6 +24,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		this.defnName = defnName;
 		this.radiusOuter = radiusOuter;
 		this.posAsPolar = posAsPolar;
+		this.factionName = factionName;
 		this.characteristics = characteristics;
 	}
 
@@ -39,6 +44,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			defnName,
 			radiusOuter,
 			posAsPolar,
+			null, // factionName,
 			PlanetCharacteristics.fromSizeSurfaceAndSatellites
 			(
 				sizeSurface,
@@ -100,6 +106,22 @@ class Planet implements EntityProperty<Planet>, Satellite
 	energySources(): EnergySource[]
 	{
 		return this.characteristics.energySources;
+	}
+
+	faction(world: WorldExtended): Faction
+	{
+		return world.defnExtended().factionByName(this.factionName);
+	}
+
+	isStation(): boolean
+	{
+		return this._isStation;
+	}
+
+	isStationSet(value: boolean): Planet
+	{
+		this._isStation = value;
+		return this;
 	}
 
 	lifeforms(randomizer: Randomizer): Lifeform[]
@@ -178,7 +200,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 	sizeSurface(): Coords
 	{
-		return this.characteristics.sizeSurface;
+		return (this.isStation() ? Coords.zeroes() : this.characteristics.sizeSurface);
 	}
 
 	toEntity(world: WorldExtended, primary: Planet, primaryPos: Coords): Entity
@@ -218,6 +240,14 @@ class Planet implements EntityProperty<Planet>, Satellite
 				Locatable.fromPos(pos),
 			]
 		);
+
+		var faction = this.faction(world);
+		if (faction != null)
+		{
+			var talker = faction.toTalker();
+			returnValue.propertyAdd(talker);
+		}
+
 
 		return returnValue;
 	}

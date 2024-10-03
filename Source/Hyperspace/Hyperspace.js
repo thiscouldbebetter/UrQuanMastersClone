@@ -160,7 +160,8 @@ class Hyperspace {
             var planetCharacteristics = new PlanetCharacteristics(planetSize, null, // satellites
             null, // shipGroups,
             massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet, encounterOrbitName);
-            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, planetCharacteristics);
+            var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, null, // factionName
+            planetCharacteristics);
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;
             if (isMoon == true) {

@@ -38,7 +38,7 @@ class PlaceStation extends PlaceBase {
             world.placeCurrent = placeStation.placePlanetVicinity;
             universe.venueNextSet(new VenueWorld(world));
         };
-        var stationEntity = placeStation.entityByName(Station.name);
+        var stationEntity = placeStation.entityByName(Planet.name);
         var talker = stationEntity.talker();
         talker.conversationDefnName = conversationResourceName;
         talker.quit = conversationQuit;

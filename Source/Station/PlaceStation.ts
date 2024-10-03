@@ -1,7 +1,7 @@
 
 class PlaceStation extends PlaceBase
 {
-	station: Station;
+	station: Planet;
 	placePlanetVicinity: PlacePlanetVicinity;
 
 	placeToReturnTo: Place;
@@ -11,7 +11,7 @@ class PlaceStation extends PlaceBase
 	constructor
 	(
 		world: World,
-		station: Station,
+		station: Planet,
 		placePlanetVicinity: PlacePlanetVicinity
 	)
 	{
@@ -78,7 +78,7 @@ class PlaceStation extends PlaceBase
 			universe.venueNextSet(new VenueWorld(world) );
 		};
 
-		var stationEntity = placeStation.entityByName(Station.name);
+		var stationEntity = placeStation.entityByName(Planet.name);
 		var talker = stationEntity.talker();
 		talker.conversationDefnName = conversationResourceName;
 		talker.quit = conversationQuit;

@@ -82,6 +82,7 @@ class PlanetDefn_Instances {
         var visualsViolet = [visualStarsystemViolet, visualVicinityViolet, visualOrbitViolet];
         var visualsGray = [visualStarsystemGray, visualVicinityGray, visualOrbitGray];
         var visualsWhite = [visualStarsystemWhite, visualVicinityWhite, visualOrbitWhite];
+        var visualsStation = visualsGray; // todo
         var visualsRainbow = visualsYellow; // todo
         var visualVicinityShielded = new VisualGroup([
             new VisualCircleGradient(radiusVicinity, new ValueBreakGroup([
@@ -115,6 +116,8 @@ class PlanetDefn_Instances {
             return new ResourceDistribution(resourceDefnName, numberOfDeposits, quantityPerDeposit);
         };
         var pd = PlanetDefn;
+        // Station.
+        this.Station = new pd("Station", visualsStation, visualsSurface, cannotLand, 0, []);
         // Special worlds.
         this.Rainbow = new pd("Rainbow", visualsRainbow, visualsSurface, canLand, 0, [rd(ex, 6, huge),]);
         this.Shielded = new pd("Shielded", visualsShielded, visualsSurface, cannotLand, 0, []);
@@ -171,6 +174,7 @@ class PlanetDefn_Instances {
         this.Yttric = new pd("Yttric", visualsViolet, visualsSurface, canLand, 0, [rd(todo, 1, medium)]);
         this._All =
             [
+                this.Station,
                 //this.Shielded,
                 //this.Rainbow,
                 this.Acid,

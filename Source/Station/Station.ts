@@ -1,5 +1,5 @@
 
-class Station implements EntityProperty<Station>, Satellite
+class StationDeprecated implements EntityProperty<StationDeprecated>, Satellite
 {
 	name: string;
 	color: Color;
@@ -23,9 +23,9 @@ class Station implements EntityProperty<Station>, Satellite
 		this.posAsPolar = posAsPolar;
 	}
 
-	static fromEntity(entity: Entity): Station
+	static fromEntity(entity: Entity): StationDeprecated
 	{
-		return entity.propertyByName(Station.name) as Station;
+		return entity.propertyByName(StationDeprecated.name) as StationDeprecated;
 	}
 
 	faction(world: WorldExtended): Faction
@@ -81,12 +81,12 @@ class Station implements EntityProperty<Station>, Satellite
 
 	// Clonable.
 
-	clone(): Station
+	clone(): StationDeprecated
 	{
 		throw new Error("todo");
 	}
 
-	overwriteWith(other: Station): Station
+	overwriteWith(other: StationDeprecated): StationDeprecated
 	{
 		throw new Error("todo");
 	}
@@ -95,11 +95,11 @@ class Station implements EntityProperty<Station>, Satellite
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return Station.name; }
+	propertyName(): string { return StationDeprecated.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.
 
-	equals(other: Station): boolean { return false; }
+	equals(other: StationDeprecated): boolean { return false; }
 
 }

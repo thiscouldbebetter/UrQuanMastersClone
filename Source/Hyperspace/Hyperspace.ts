@@ -303,6 +303,7 @@ class Hyperspace
 				planetDefnName,
 				planetRadius,
 				posAsPolar,
+				null, // factionName
 				planetCharacteristics
 			);
 

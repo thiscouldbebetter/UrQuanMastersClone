@@ -1,5 +1,5 @@
 "use strict";
-class Station {
+class StationDeprecated {
     constructor(name, color, radiusOuter, factionName, posAsPolar) {
         this.name = name;
         this.color = color;
@@ -8,7 +8,7 @@ class Station {
         this.posAsPolar = posAsPolar;
     }
     static fromEntity(entity) {
-        return entity.propertyByName(Station.name);
+        return entity.propertyByName(StationDeprecated.name);
     }
     faction(world) {
         return world.defnExtended().factionByName(this.factionName);
@@ -46,7 +46,7 @@ class Station {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
-    propertyName() { return Station.name; }
+    propertyName() { return StationDeprecated.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

@@ -142,14 +142,18 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		// Put a station in orbit around the Earth.
 
-		var station = new Station
+		var stationPosAsPolar =
+			Polar.fromAzimuthInTurnsAndRadius(.5, moon.posAsPolar.radius / 2);
+
+		var station = new Planet
 		(
 			"Earth Station",
-			Color.Instances().Gray, // color
+			"Station", // defnName
 			radiusBase,
+			stationPosAsPolar,
 			"Terran", // factionName
-			new Polar(Math.random(), moon.posAsPolar.radius / 2, null)
-		);
+			null // characteristics
+		).isStationSet(true);
 
 		planetEarth.satelliteInsertAtIndex(station, 0);
 
@@ -231,31 +235,6 @@ class Starsystem implements EntityProperty<Starsystem>
 		}
 
 		this.planets = planets;
-	}
-
-	stationBuild(planetWithStation: Planet): void
-	{
-		throw new Error("Not yet implemented!");
-
-		var numberOfPlanets = this.planets.length;
-		var distanceBetweenPlanetOrbits =
-			this.sizeInner.clone().half().y / (numberOfPlanets + 1);
-
-		var station = new Station
-		(
-			"Earth Station",
-			Color.Instances().Gray, // color
-			10, // radius
-			"Terran", // factionName
-			new Polar(Math.random(), distanceBetweenPlanetOrbits, null),
-		);
-		var satellites = planetWithStation.characteristics.satellites;
-
-		if (satellites.length > 0)
-		{
-			ArrayHelper.removeAt(satellites, 0);
-		}
-		planetWithStation.satelliteAdd(station);
 	}
 
 	toPlace

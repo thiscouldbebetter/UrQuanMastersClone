@@ -26,7 +26,7 @@ class PlacePlanetVicinity extends PlaceBase
 			PlacePlanetVicinity.name + ":" + planet.name,
 			PlacePlanetVicinity.name, // defnName
 			null, // parentName
-			Coords.fromXY(300, 300),
+			Coords.fromXY(1, 1).multiplyScalar(300),
 			null // entities
 		);
 
@@ -266,9 +266,9 @@ class PlacePlanetVicinity extends PlaceBase
 
 		if (entityOtherName.startsWith("Wall"))
 		{
-			var planet = place.planet;
 			var placeStarsystem = place.placeStarsystem;
 			var starsystem = placeStarsystem.starsystem;
+			var planet = place.planet;
 			var posNext = planet.posAsPolar.toCoords(Coords.create()).add
 			(
 				starsystem.sizeInner.clone().half()
@@ -289,19 +289,47 @@ class PlacePlanetVicinity extends PlaceBase
 		{
 			var entityOtherPlanet = Planet.fromEntity(entityOther);
 			var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
-			var entityOtherStation = Station.fromEntity(entityOther);
 			if (entityOtherPlanet != null)
 			{
-				var playerLoc = entityPlayer.locatable().loc;
-				var planetPos = entityOther.locatable().loc.pos;
-				playerLoc.pos.overwriteWith(planetPos);
-				playerLoc.vel.clear();
-				entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
-				var placePlanetOrbit = new PlacePlanetOrbit
-				(
-					universe, world, entityOtherPlanet, place
-				);
-				world.placeNextSet(placePlanetOrbit);
+				var planetIsStation = entityOtherPlanet.isStation();
+				if (planetIsStation)
+				{
+					var station = entityOtherPlanet;
+					var faction = station.faction(world);
+					if (faction.relationsWithPlayer == Faction.RelationsAllied)
+					{
+						world.placeNextSet(new PlaceStation(world, station, place) );
+					}
+					else
+					{
+						// entityOther.collidable().ticksUntilCanCollide = 50; // hack
+						var playerPos = entityPlayer.locatable().loc.pos;
+						var encounter = new Encounter
+						(
+							place.planet,
+							station.factionName,
+							entityPlayer,
+							entityOther,
+							place,
+							playerPos
+						);
+						var placeEncounter = encounter.toPlace();
+						world.placeNext = placeEncounter;
+					}
+				}
+				else
+				{
+					var playerLoc = entityPlayer.locatable().loc;
+					var planetPos = entityOther.locatable().loc.pos;
+					playerLoc.pos.overwriteWith(planetPos);
+					playerLoc.vel.clear();
+					entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
+					var placePlanetOrbit = new PlacePlanetOrbit
+					(
+						universe, world, entityOtherPlanet, place
+					);
+					world.placeNextSet(placePlanetOrbit);
+				}
 			}
 			else if (entityOtherShipGroup != null)
 			{
@@ -310,31 +338,6 @@ class PlacePlanetVicinity extends PlaceBase
 				//uwpe.placeSet(place);
 				var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
 				world.placeNextSet(placeEncounter);
-			}
-			else if (entityOtherStation != null)
-			{
-				var station = entityOtherStation;
-				var faction = station.faction(world);
-				if (faction.relationsWithPlayer == Faction.RelationsAllied)
-				{
-					world.placeNextSet(new PlaceStation(world, station, place) );
-				}
-				else
-				{
-					// entityOther.collidable().ticksUntilCanCollide = 50; // hack
-					var playerPos = entityPlayer.locatable().loc.pos;
-					var encounter = new Encounter
-					(
-						place.planet,
-						station.factionName,
-						entityPlayer,
-						entityOther,
-						place,
-						playerPos
-					);
-					var placeEncounter = encounter.toPlace();
-					world.placeNext = placeEncounter;
-				}
 			}
 		}
 	}

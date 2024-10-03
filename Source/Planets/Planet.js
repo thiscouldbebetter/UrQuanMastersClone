@@ -1,14 +1,16 @@
 "use strict";
 class Planet {
-    constructor(name, defnName, radiusOuter, posAsPolar, characteristics) {
+    constructor(name, defnName, radiusOuter, posAsPolar, factionName, characteristics) {
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
         this.posAsPolar = posAsPolar;
+        this.factionName = factionName;
         this.characteristics = characteristics;
     }
     static from6(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites) {
-        return new Planet(name, defnName, radiusOuter, posAsPolar, PlanetCharacteristics.fromSizeSurfaceAndSatellites(sizeSurface, satellites));
+        return new Planet(name, defnName, radiusOuter, posAsPolar, null, // factionName,
+        PlanetCharacteristics.fromSizeSurfaceAndSatellites(sizeSurface, satellites));
     }
     static activityDefnGravitate() {
         return new ActivityDefn("Gravitate", Planet.activityGravitatePerform);
@@ -43,6 +45,16 @@ class Planet {
     }
     energySources() {
         return this.characteristics.energySources;
+    }
+    faction(world) {
+        return world.defnExtended().factionByName(this.factionName);
+    }
+    isStation() {
+        return this._isStation;
+    }
+    isStationSet(value) {
+        this._isStation = value;
+        return this;
     }
     lifeforms(randomizer) {
         return this.characteristics.lifeforms(this, randomizer);
@@ -92,7 +104,7 @@ class Planet {
         return this.characteristics.shipGroups();
     }
     sizeSurface() {
-        return this.characteristics.sizeSurface;
+        return (this.isStation() ? Coords.zeroes() : this.characteristics.sizeSurface);
     }
     toEntity(world, primary, primaryPos) {
         var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
@@ -111,6 +123,11 @@ class Planet {
             this, // planet
             Locatable.fromPos(pos),
         ]);
+        var faction = this.faction(world);
+        if (faction != null) {
+            var talker = faction.toTalker();
+            returnValue.propertyAdd(talker);
+        }
         return returnValue;
     }
     toPlace(world) {

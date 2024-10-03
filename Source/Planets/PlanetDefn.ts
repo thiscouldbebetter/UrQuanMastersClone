@@ -53,6 +53,8 @@ class PlanetDefn
 
 class PlanetDefn_Instances
 {
+	Station: PlanetDefn;
+
 	Rainbow: PlanetDefn;
 	Shielded: PlanetDefn;
 
@@ -193,6 +195,8 @@ class PlanetDefn_Instances
 		var visualsGray = [ visualStarsystemGray, visualVicinityGray, visualOrbitGray ];
 		var visualsWhite = [ visualStarsystemWhite, visualVicinityWhite, visualOrbitWhite ];
 
+		var visualsStation = visualsGray; // todo
+
 		var visualsRainbow = visualsYellow; // todo
 
 		var visualVicinityShielded = new VisualGroup
@@ -249,6 +253,9 @@ class PlanetDefn_Instances
 		}
 
 		var pd = PlanetDefn;
+
+		// Station.
+		this.Station 	= new pd("Station", 	visualsStation,		visualsSurface, cannotLand, 	0, [] );
 
 		// Special worlds.
 		this.Rainbow 	= new pd("Rainbow", 	visualsRainbow,		visualsSurface, canLand, 	0, [ rd(ex, 6, huge), ] );
@@ -311,6 +318,8 @@ class PlanetDefn_Instances
 
 		this._All =
 		[
+			this.Station,
+
 			//this.Shielded,
 			//this.Rainbow,
 
