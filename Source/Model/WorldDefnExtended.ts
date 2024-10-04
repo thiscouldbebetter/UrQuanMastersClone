@@ -67,7 +67,12 @@ class WorldDefnExtended extends WorldDefn
 
 	factionByName(factionName: string): Faction
 	{
-		return this.factionsByName.get(factionName);
+		var faction = this.factionsByName.get(factionName);
+		if (factionName != null && faction == null)
+		{
+			throw new Error("No faction found with name '" + factionName + "'.");
+		}
+		return faction;
 	}
 
 	lifeformDefnByName(defnName: string): LifeformDefn

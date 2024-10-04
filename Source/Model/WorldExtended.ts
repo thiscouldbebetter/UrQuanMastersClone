@@ -453,7 +453,12 @@ class WorldExtended extends World
 
 	factionByName(factionName: string): Faction
 	{
-		return this.factionsByName.get(factionName);
+		var faction = this.factionsByName.get(factionName);
+		if (faction == null)
+		{
+			throw new Error("No faction found with name '" + factionName + "'.");
+		}
+		return faction;
 	}
 
 	gameTimeAsString(): string

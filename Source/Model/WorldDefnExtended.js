@@ -28,7 +28,11 @@ class WorldDefnExtended extends WorldDefn {
         return this.energySources.find(x => x.name == name);
     }
     factionByName(factionName) {
-        return this.factionsByName.get(factionName);
+        var faction = this.factionsByName.get(factionName);
+        if (factionName != null && faction == null) {
+            throw new Error("No faction found with name '" + factionName + "'.");
+        }
+        return faction;
     }
     lifeformDefnByName(defnName) {
         return this.lifeformDefnsByName.get(defnName);
