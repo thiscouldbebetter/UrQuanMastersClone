@@ -3,6 +3,20 @@ class ShipGroupBase {
     static fromEntity(entity) {
         return entity.propertyByName(ShipGroupBase.name);
     }
+    static fromString(shipGroupAsString) {
+        if (shipGroupAsString == "-") {
+            return null;
+        }
+        var shipDefnNameAndCount = shipGroupAsString.split(":");
+        var shipDefnName = shipDefnNameAndCount[0];
+        var shipCount = parseInt(shipDefnNameAndCount[1]);
+        var shipGroupName = shipDefnName + " " + ShipGroupBase.name;
+        var factionName = "todo";
+        var shipGroup = shipCount == 0
+            ? new ShipGroupInfinite(shipGroupName, factionName, shipDefnName)
+            : new ShipGroupFinite(shipGroupName, factionName, Coords.create(), Ship.manyFromDefnNameAndCount(shipDefnName, shipCount));
+        return shipGroup;
+    }
     static activityDefnApproachPlayer() {
         return new ActivityDefn("Ship_ApproachPlayer", ShipGroupBase.activityDefnApproachPlayer_Perform);
     }
@@ -121,11 +135,11 @@ class ShipGroupBase {
     toStringDescription() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 }
 class ShipGroupInfinite extends ShipGroupBase {
-    constructor(name, factionName, shipsPrototype) {
+    constructor(name, factionName, shipDefnName) {
         super();
         this.name = name;
         this.factionName = factionName;
-        this.shipsPrototype = shipsPrototype;
+        this.shipDefnName = shipDefnName;
     }
     shipsCount() {
         return Number.POSITIVE_INFINITY;

@@ -273,17 +273,15 @@ class Hyperspace
 				factionName = null;
 			}
 
-			/*
 			var shipsInOrbitAsString = planetAsValues[31];
-			var shipsInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
-			*/
+			var shipGroupInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
 
 			var planetCharacteristics = new PlanetCharacteristics
 			(
 				planetSize,
 				null, // satellites
 				null, // shipGroupsInVicinity,
-				null, // shipGroupInOrbit
+				shipGroupInOrbit,
 				massInKg,
 				radiusInKm,
 				gravityAsFractionOfEarth,

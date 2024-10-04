@@ -25,6 +25,25 @@ class ShipGroupBase implements ShipGroup
 		return entity.propertyByName(ShipGroupBase.name) as ShipGroup;
 	}
 
+	static fromString(shipGroupAsString: string): ShipGroup
+	{
+		if (shipGroupAsString == "-")
+		{
+			return null;
+		}
+
+		var shipDefnNameAndCount = shipGroupAsString.split(":");
+		var shipDefnName = shipDefnNameAndCount[0];
+		var shipCount = parseInt(shipDefnNameAndCount[1]);
+		var shipGroupName = shipDefnName + " " + ShipGroupBase.name;
+		var factionName = "todo";
+		var shipGroup =
+			shipCount == 0
+			? new ShipGroupInfinite(shipGroupName, factionName, shipDefnName)
+			: new ShipGroupFinite(shipGroupName, factionName, Coords.create(), Ship.manyFromDefnNameAndCount(shipDefnName, shipCount) );
+		return shipGroup;
+	}
+
 	static activityDefnApproachPlayer(): ActivityDefn
 	{
 		return new ActivityDefn
@@ -234,14 +253,14 @@ class ShipGroupInfinite extends ShipGroupBase
 {
 	name: string;
 	factionName: string;
-	shipsPrototype: Ship[];
+	shipDefnName: string;
 
-	constructor(name: string, factionName: string, shipsPrototype: Ship[])
+	constructor(name: string, factionName: string, shipDefnName: string)
 	{
 		super();
 		this.name = name;
 		this.factionName = factionName;
-		this.shipsPrototype = shipsPrototype;
+		this.shipDefnName = shipDefnName;
 	}
 
 	shipsCount(): number

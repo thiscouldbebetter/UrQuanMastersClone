@@ -13,6 +13,14 @@ class Ship {
     static fromEntity(shipEntity) {
         return shipEntity.propertyByName(Ship.name);
     }
+    static manyFromDefnNameAndCount(defnName, count) {
+        var ships = new Array();
+        for (var i = 0; i < count; i++) {
+            var ship = Ship.fromDefnName(defnName);
+            ships.push(ship);
+        }
+        return ships;
+    }
     // static methods
     static actionAccelerate() {
         return new Action("Accelerate", (uwpe) => {

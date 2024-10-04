@@ -29,6 +29,17 @@ class Ship implements EntityProperty<Ship>
 		return shipEntity.propertyByName(Ship.name) as Ship;
 	}
 
+	static manyFromDefnNameAndCount(defnName: string, count: number): Ship[]
+	{
+		var ships = new Array<Ship>();
+		for (var i = 0; i < count; i++)
+		{
+			var ship = Ship.fromDefnName(defnName);
+			ships.push(ship);
+		}
+		return ships;
+	}
+
 	// temporary variables
 
 	static _polar = Polar.create();

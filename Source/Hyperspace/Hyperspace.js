@@ -152,14 +152,11 @@ class Hyperspace {
             if (factionName == "-") {
                 factionName = null;
             }
-            /*
             var shipsInOrbitAsString = planetAsValues[31];
-            var shipsInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
-            */
+            var shipGroupInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
             var planetCharacteristics = new PlanetCharacteristics(planetSize, null, // satellites
             null, // shipGroupsInVicinity,
-            null, // shipGroupInOrbit
-            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet);
+            shipGroupInOrbit, massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet);
             var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, factionName, planetCharacteristics);
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;
