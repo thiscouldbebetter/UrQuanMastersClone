@@ -427,14 +427,14 @@ class Game
 			encounter,
 			// shipGroups
 			[
-				new ShipGroup
+				new ShipGroupFinite
 				(
 					"Player",
 					null, // factionName
 					null, // pos
 					playerShips
 				),
-				new ShipGroup
+				new ShipGroupFinite
 				(
 					"Other",
 					null, // factionName

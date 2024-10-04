@@ -110,73 +110,21 @@ class PlacePlanetVicinity extends PlaceBase
 			entities.push(satelliteEntity);
 		}
 
-		var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
-
 		if (playerLoc != null)
 		{
-			// player - Can this be merged with similar code in PlaceStarsystem?
-
-			var playerActivityDefnName = Player.activityDefn().name;
-			var playerActivity = new Activity(playerActivityDefnName, null);
-			var playerActor = new Actor(playerActivity);
-
-			var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
-			var playerCollidable = new Collidable
-			(
-				false, // canCollideAgainWithoutSeparating
-				null, // ticks
-				playerCollider,
-				[ Collidable.name ], // entityPropertyNamesToCollideWith
-				this.playerCollide
-			);
-
-			var playerConstrainable = new Constrainable([constraintSpeedMax]);
-
-			var playerItemHolder = ItemHolder.create();
-
-			var playerLocatable = new Locatable(playerLoc);
-
-			var playerMovable = Movable.default();
-
-			var playerPlayable = new Playable();
-
-			var playerShipGroup = world.player.shipGroup;
-			var playerShip = playerShipGroup.ships[0];
-
-			var playerShipDefn = playerShip.defn(world);
-			var playerVisual = playerShipDefn.visual;
-			var playerDrawable = Drawable.fromVisual(playerVisual);
-
-			var playerEntity = new Entity
-			(
-				Player.name,
-				[
-					playerActor,
-					playerCollidable,
-					playerConstrainable,
-					playerDrawable,
-					playerItemHolder,
-					playerLocatable,
-					playerMovable,
-					playerPlayable,
-					playerShip,
-					playerShipGroup
-				]
-			);
-
-			//playerEntity.collidable.ticksUntilCanCollide = 100; // hack
+			var playerEntity = this.constructor_BuildEntityPlayer(entityDimension, world, playerLoc);
 
 			entities.push(playerEntity);
 		}
 
 		var entitiesForShipGroups =
-			this.planet.shipGroups().map(x => x.toEntity(world, this) );
+			this.planet.shipGroupsInVicinity().map(x => x.toEntity(world, this) );
 
 		entities.push(...entitiesForShipGroups);
 
 		this._camera = new Camera
 		(
-			Coords.fromXY(300, 300), // hack
+			Coords.fromXY(1, 1).multiplyScalar(300), // hack
 			null, // focalLength
 			Disposition.fromOrientation
 			(
@@ -214,6 +162,65 @@ class PlacePlanetVicinity extends PlaceBase
 			[ (world as WorldExtended).player.toControlSidebar(world) ]
 		);
 		this.venueControls = VenueControls.fromControl(containerSidebar);
+	}
+
+	constructor_BuildEntityPlayer(entityDimension: number, world: WorldExtended, playerLoc: Disposition): Entity
+	{
+		// player - Can this be merged with similar code in PlaceStarsystem?
+
+		var playerActivityDefnName = Player.activityDefn().name;
+		var playerActivity = new Activity(playerActivityDefnName, null);
+		var playerActor = new Actor(playerActivity);
+
+		var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
+		var playerCollidable = new Collidable
+		(
+			false, // canCollideAgainWithoutSeparating
+			null, // ticks
+			playerCollider,
+			[ Collidable.name ], // entityPropertyNamesToCollideWith
+			this.playerCollide
+		);
+
+		var constraintSpeedMax = new Constraint_SpeedMaxXY(1); // todo
+
+		var playerConstrainable = new Constrainable([constraintSpeedMax]);
+
+		var playerItemHolder = ItemHolder.create();
+
+		var playerLocatable = new Locatable(playerLoc);
+
+		var playerMovable = Movable.default();
+
+		var playerPlayable = new Playable();
+
+		var playerShipGroup = world.player.shipGroup;
+		var playerShip = playerShipGroup.shipFirst();
+
+		var playerShipDefn = playerShip.defn(world);
+		var playerVisual = playerShipDefn.visual;
+		var playerDrawable = Drawable.fromVisual(playerVisual);
+
+		var playerEntity = new Entity
+		(
+			Player.name,
+			[
+				playerActor,
+				playerCollidable,
+				playerConstrainable,
+				playerDrawable,
+				playerItemHolder,
+				playerLocatable,
+				playerMovable,
+				playerPlayable,
+				playerShip,
+				playerShipGroup
+			]
+		);
+
+		//playerEntity.collidable.ticksUntilCanCollide = 100; // hack
+
+		return playerEntity;
 	}
 
 	// methods
@@ -264,7 +271,7 @@ class PlacePlanetVicinity extends PlaceBase
 
 		var entityOtherName = entityOther.name;
 		var entityOtherPlanet = Planet.fromEntity(entityOther);
-		var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+		var entityOtherShipGroup = ShipGroupFinite.fromEntity(entityOther);
 
 		if (entityOtherName.startsWith("Wall"))
 		{
@@ -354,7 +361,7 @@ class PlacePlanetVicinity extends PlaceBase
 	playerCollide_ShipGroup(uwpe: UniverseWorldPlaceEntities, entityShipGroup: Entity): void
 	{
 		entityShipGroup.collidable().ticksUntilCanCollide = 100; // hack
-		var shipGroup = ShipGroup.fromEntity(entityShipGroup);
+		var shipGroup = ShipGroupFinite.fromEntity(entityShipGroup);
 		var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
 		uwpe.world.placeNextSet(placeEncounter);
 	}

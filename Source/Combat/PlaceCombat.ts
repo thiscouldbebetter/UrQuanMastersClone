@@ -150,11 +150,11 @@ class PlaceCombat extends PlaceBase
 		var combat = place.combat;
 		var shipGroups = combat.shipGroups;
 
-		if (shipGroups[0].ships.length == 0)
+		if (shipGroups[0].shipsCount() == 0)
 		{
-			throw "todo"; // Game over.
+			throw new Error("Not yet implemented!"); // Game over.
 		}
-		else if (shipGroups[1].ships.length > 0)
+		else if (shipGroups[1].shipsCount() > 0)
 		{
 			var controlShipSelect =
 				combat.toControlShipSelect(universe, universe.display.sizeInPixels);

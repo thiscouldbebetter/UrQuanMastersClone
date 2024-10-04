@@ -73,14 +73,14 @@ class WorldExtended extends World
 		[
 			Player.activityDefn(),
 			Lifeform.activityDefnApproachPlayer(),
-			ShipGroup.activityDefnApproachPlayer(),
-			ShipGroup.activityDefnApproachTarget(),
+			ShipGroupBase.activityDefnApproachPlayer(),
+			ShipGroupBase.activityDefnApproachTarget(),
 			Lifeform.activityDefnAvoidPlayer(),
-			ShipGroup.activityDefnDie(),
+			ShipGroupBase.activityDefnDie(),
 			Lifeform.activityDefnDoNothing(),
 			Combat.activityDefnEnemy(),
 			Planet.activityDefnGravitate(),
-			ShipGroup.activityDefnLeave(),
+			ShipGroupBase.activityDefnLeave(),
 			Lifeform.activityDefnMoveToRandomPosition()
 		];
 
@@ -209,7 +209,7 @@ class WorldExtended extends World
 			textConversation + textLahkemupGuardDrone, // conversationDefnName
 			null, // territory
 			"GuardDrone", // shipDefnName
-			new Activity(ShipGroup.activityDefnApproachPlayer().name, null)
+			new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null)
 		);
 
 		// normal
@@ -236,7 +236,7 @@ class WorldExtended extends World
 				textConversation + name, // conversationDefnName
 				territory,
 				shipDefnName,
-				new Activity(ShipGroup.activityDefnApproachPlayer().name, null)
+				new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null)
 			);
 		}
 
@@ -351,9 +351,9 @@ class WorldExtended extends World
 		(
 			starsystem =>
 			{
-				var shipGroup = new ShipGroup
+				var shipGroup = new ShipGroupFinite
 				(
-					murch.name + " " + ShipGroup.name,
+					murch.name + " " + "Ship Group",
 					murch.name,
 					Coords.random(universe.randomizer).multiply(starsystem.sizeInner),
 					[
@@ -373,7 +373,7 @@ class WorldExtended extends World
 			playerShip,
 			new Ship("Broadsider")
 		];
-		var playerShipGroup = new ShipGroup
+		var playerShipGroup = new ShipGroupFinite
 		(
 			"Player",
 			"Player", // factionName

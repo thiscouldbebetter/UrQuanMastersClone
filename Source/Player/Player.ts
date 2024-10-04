@@ -4,7 +4,7 @@ class Player
 	name: string;
 	flagship: Flagship;
 	factionsKnownNames: string[];
-	shipGroup: ShipGroup;
+	shipGroup: ShipGroupFinite;
 
 	variableLookup: Map<string, any>;
 	vars: Map<string,any>;
@@ -21,7 +21,7 @@ class Player
 		name: string,
 		flagship: Flagship,
 		factionsKnownNames: string[],
-		shipGroup: ShipGroup
+		shipGroup: ShipGroupFinite
 	)
 	{
 		this.name = name;

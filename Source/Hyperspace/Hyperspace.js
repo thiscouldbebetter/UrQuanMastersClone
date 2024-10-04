@@ -148,13 +148,18 @@ class Hyperspace {
                 var energySource = energySourcesAll.find(x => x.name == energySourceAsString);
                 energySourcesOnPlanet.push(energySource);
             }
-            var planetCharacteristics = new PlanetCharacteristics(planetSize, null, // satellites
-            null, // shipGroups,
-            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet);
             var factionName = planetAsValues[30];
             if (factionName == "-") {
                 factionName = null;
             }
+            /*
+            var shipsInOrbitAsString = planetAsValues[31];
+            var shipsInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
+            */
+            var planetCharacteristics = new PlanetCharacteristics(planetSize, null, // satellites
+            null, // shipGroupsInVicinity,
+            null, // shipGroupInOrbit
+            massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet);
             var planet = new Planet(planetName, planetDefnName, planetRadius, posAsPolar, factionName, planetCharacteristics);
             var isMoon = (orbitOrdinalParts.length > 1);
             var planetCurrent;
@@ -169,7 +174,7 @@ class Hyperspace {
         var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
         var starsystemSol = starsystemsByName.get("Sol");
         // todo - Encounter test.
-        var shipGroup = new ShipGroup("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), [new Ship("Tumbler")]);
+        var shipGroup = new ShipGroupFinite("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), [new Ship("Tumbler")]);
         var shipGroups = [shipGroup];
         var hyperspace = new Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups);
         return hyperspace;

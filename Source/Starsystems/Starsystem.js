@@ -53,7 +53,7 @@ class Starsystem {
             if (faction != null) {
                 var shipDefnName = faction.shipDefnName;
                 var ship = new Ship(shipDefnName);
-                var shipGroup = new ShipGroup(faction.name + " " + ShipGroup.name, faction.name, // factionName
+                var shipGroup = new ShipGroupFinite(faction.name + " " + ShipGroupBase.name, faction.name, // factionName
                 Coords.create(), [ship]);
                 this._shipGroups.push(shipGroup);
             }
@@ -78,10 +78,10 @@ class Starsystem {
         // Add a guard drone in the Earth system.
         var enemyShipDefnName = "GuardDrone";
         var enemyShip = new Ship(enemyShipDefnName);
-        var enemyShipGroup = new ShipGroup("LahkemupGuardDrone", "LahkemupGuardDrone", // factionName
+        var enemyShipGroup = new ShipGroupFinite("LahkemupGuardDrone", "LahkemupGuardDrone", // factionName
         Coords.create(), // todo
         [enemyShip]);
-        planetEarth.shipGroupAdd(enemyShipGroup);
+        planetEarth.shipGroupInVicinityAdd(enemyShipGroup);
     }
     contentsRandomize(randomizer) {
         var planetsPerStarsystemMax = 6;

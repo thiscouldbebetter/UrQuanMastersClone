@@ -804,7 +804,7 @@ class SystemTests extends TestFixture
 		var combat = placeCombat.combat;
 
 		var shipGroupForPlayer = combat.shipGroups[0];
-		var shipForPlayer = shipGroupForPlayer.ships[0];
+		var shipForPlayer = shipGroupForPlayer.shipFirst();
 		combat.shipsFighting[0] = shipForPlayer;
 		combat.fight(universe);
 		this.waitForTicks(universe, 100);
@@ -1179,8 +1179,8 @@ class SystemTests extends TestFixture
 			for (var i = 0; i < planets.length; i++)
 			{
 				var planet = planets[i];
-				var planetShipGroups = planet.shipGroups();
-				shipGroupBelongingToFaction = planetShipGroups.find
+				var shipGroupsInPlanetVicinity = planet.shipGroupsInVicinity();
+				shipGroupBelongingToFaction = shipGroupsInPlanetVicinity.find
 				(
 					x => x.factionName == factionName
 				);

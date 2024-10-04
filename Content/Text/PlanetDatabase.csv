@@ -9,9 +9,9 @@
 // Alphabetized and added detailed species counts,
 // then "compressed" by removing fields having the
 // same value as in the preceding row.
-//0, 	1, 	 2,3,4,		 5			6		7		8	9		10		11		12		13		14		15			16		17		 18		19		20		21		22		23	24	25			26			27			28			29						30
-Cluster,Star,X,Y,DistSol,StarColor,StarSize,Fleet,Planet,Type,Hazard,Tectonics,Weather,Thermal,BioHazard,BioUnits,MinValue,MinVolume,Fuel,AxialTilt,Density,Radius,Gravity,Temp,Day,Atmosphere,LifeChance,DistFromStar,SpeciesCounts,EnergySourcesPresent,OrbitalEncounterName
-Achernar,Prime,537.5,272.9,384.2,blue,dwarf,None,I,Selenic,1,1,1,1,1,0,105,35,0.3,23,58,27,15,-147,252,0,-740,5540,-,-,-
+//0, 	1, 	 2,3,4,		 5			6		7		8	9		10		11		12		13		14		15			16		17		 18		19		20		21		22		23	24	25			26			27			28			29						30			31
+Cluster,Star,X,Y,DistSol,StarColor,StarSize,Fleet,Planet,Type,Hazard,Tectonics,Weather,Thermal,BioHazard,BioUnits,MinValue,MinVolume,Fuel,AxialTilt,Density,Radius,Gravity,Temp,Day,Atmosphere,LifeChance,DistFromStar,SpeciesCounts,EnergySourcesPresent,FactionName,ShipGroup
+Achernar,Prime,537.5,272.9,384.2,blue,dwarf,None,I,Selenic,1,1,1,1,1,0,105,35,0.3,23,58,27,15,-147,252,0,-740,5540,-,-,-,-
 ,,,,,,,,II,Yttric,4,4,,,,,284,70,1.0,3,147,35,51,-154,250,10,160,6260,,,
 Alcor,,970.8,025.0,804.5,,,,I,Radioactive,2,1,2,,,,536,67,1.1,13,196,29,56,23,228,11,760,1208,,,
 ,,,,,,,,II,Gas Giant,8,2,8,,,,0,0,3.0,-14,21,1360,285,-55,127,65535,-1,1861,,,

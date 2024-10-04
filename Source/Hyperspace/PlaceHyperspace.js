@@ -80,7 +80,7 @@ class PlaceHyperspace extends PlaceBase {
         this.playerCollide);
         var boundable = Boundable.fromCollidable(collidable);
         var shipGroup = world.player.shipGroup;
-        var ship = shipGroup.ships[0];
+        var ship = shipGroup.shipFirst();
         var shipDefn = ship.defn(world);
         var visual = shipDefn.visual;
         var drawable = Drawable.fromVisual(visual);
@@ -167,7 +167,7 @@ class PlaceHyperspace extends PlaceBase {
         return this.entitiesByPropertyName(Ship.name);
     }
     entitiesShipGroups() {
-        return this.entitiesByPropertyName(ShipGroup.name);
+        return this.entitiesByPropertyName(ShipGroupBase.name);
     }
     factionShipGroupSpawnIfNeeded(universe, world, placeAsPlace, entityPlayer, entityOther) {
         var faction = Faction.fromEntity(entityOther);
@@ -182,7 +182,7 @@ class PlaceHyperspace extends PlaceBase {
         var entitiesShipGroupsAll = place.entitiesShipGroups();
         for (var i = 0; i < entitiesShipGroupsAll.length; i++) {
             var entityShipGroup = entitiesShipGroupsAll[i];
-            var shipGroup = ShipGroup.fromEntity(entityShipGroup);
+            let shipGroup = ShipGroupFinite.fromEntity(entityShipGroup);
             if (shipGroup.factionName == factionName) {
                 numberOfShipGroupsExistingForFaction++;
             }
@@ -193,7 +193,7 @@ class PlaceHyperspace extends PlaceBase {
             var shipGroupPos = factionTerritoryShape.pointRandom(universe.randomizer).clearZ();
             var shipDefnName = faction.shipDefnName; // todo
             var factionName = faction.name;
-            var shipGroup = new ShipGroup(factionName + " Ship Group", factionName, shipGroupPos, [new Ship(shipDefnName)]);
+            var shipGroup = new ShipGroupFinite(factionName + " Ship Group", factionName, shipGroupPos, [new Ship(shipDefnName)]);
             this.shipGroupAdd(shipGroup, world);
         }
     }
@@ -207,7 +207,7 @@ class PlaceHyperspace extends PlaceBase {
         var entityPlayer = uwpe.entity;
         var entityOther = uwpe.entity2;
         var entityOtherStarsystem = Starsystem.fromEntity(entityOther);
-        var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+        var entityOtherShipGroup = ShipGroupBase.fromEntity(entityOther);
         var entityOtherFaction = Faction.fromEntity(entityOther);
         if (entityOtherStarsystem != null) {
             var starsystem = entityOtherStarsystem;

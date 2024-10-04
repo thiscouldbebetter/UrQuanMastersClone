@@ -29,7 +29,7 @@ class Faction {
             var ship = Ship.fromDefnName(this.shipDefnName);
             ships.push(ship);
         }
-        var shipGroup = ShipGroup.fromFactionNameAndShips(this.name, ships).posSet(pos);
+        var shipGroup = ShipGroupFinite.fromFactionNameAndShips(this.name, ships).posSet(pos);
         return shipGroup;
     }
     starsystems(world) {

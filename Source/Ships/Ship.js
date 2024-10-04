@@ -129,9 +129,10 @@ class Ship {
         var shipGroups = combat.shipGroups;
         for (var g = 0; g < shipGroups.length; g++) {
             var shipGroup = shipGroups[g];
-            if (ArrayHelper.contains(shipGroup.ships, ship)) {
-                ArrayHelper.remove(shipGroup.ships, ship);
-                shipGroup.shipsLost.push(ship);
+            var shipsAll = shipGroup.shipsGetAll();
+            if (ArrayHelper.contains(shipsAll, ship)) {
+                ArrayHelper.remove(shipsAll, ship);
+                shipGroup.shipLostAdd(ship);
             }
         }
         var visualToRecycle = entityShipToDie.drawable().visual;
@@ -209,9 +210,9 @@ class Ship {
     }
     // movement
     accelerate(world, entity) {
-        var entityShipGroup = ShipGroup.fromEntity(entity);
+        var entityShipGroup = ShipGroupFinite.fromEntity(entity);
         var ship = (entityShipGroup != null
-            ? entityShipGroup.ships[0]
+            ? entityShipGroup.shipFirst()
             : Ship.fromEntity(entity));
         var shipDefn = ship.defn(world);
         var shipLoc = entity.locatable().loc;
@@ -229,7 +230,7 @@ class Ship {
         var entityForward = entityOrientation.forward;
         var entityShip = Ship.fromEntity(entity);
         var ship = (entityShip == null
-            ? ShipGroup.fromEntity(entity).ships[0]
+            ? ShipGroupFinite.fromEntity(entity).shipFirst()
             : entityShip);
         var shipDefn = ship.defn(world);
         var turnsPerTick = shipDefn.turnsPerTick;

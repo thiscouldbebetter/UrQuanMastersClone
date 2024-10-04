@@ -236,10 +236,11 @@ class Ship implements EntityProperty<Ship>
 		for (var g = 0; g < shipGroups.length; g++)
 		{
 			var shipGroup = shipGroups[g];
-			if (ArrayHelper.contains(shipGroup.ships, ship))
+			var shipsAll = shipGroup.shipsGetAll();
+			if (ArrayHelper.contains(shipsAll, ship))
 			{
-				ArrayHelper.remove(shipGroup.ships, ship);
-				shipGroup.shipsLost.push(ship);
+				ArrayHelper.remove(shipsAll, ship);
+				shipGroup.shipLostAdd(ship);
 			}
 		}
 
@@ -385,11 +386,11 @@ class Ship implements EntityProperty<Ship>
 
 	accelerate(world: WorldExtended, entity: Entity): void
 	{
-		var entityShipGroup = ShipGroup.fromEntity(entity);
+		var entityShipGroup = ShipGroupFinite.fromEntity(entity);
 		var ship =
 		(
 			entityShipGroup != null
-			? entityShipGroup.ships[0]
+			? entityShipGroup.shipFirst()
 			: Ship.fromEntity(entity)
 		);
 		var shipDefn = ship.defn(world);
@@ -419,7 +420,7 @@ class Ship implements EntityProperty<Ship>
 		var ship =
 		(
 			entityShip == null
-			? ShipGroup.fromEntity(entity).ships[0]
+			? ShipGroupFinite.fromEntity(entity).shipFirst()
 			: entityShip
 		);
 		var shipDefn = ship.defn(world);

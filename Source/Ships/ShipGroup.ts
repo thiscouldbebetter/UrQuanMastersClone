@@ -1,43 +1,28 @@
 
-class ShipGroup implements EntityPropertyBase
+interface ShipGroup extends EntityPropertyBase
 {
-	name: string;
 	factionName: string;
+	name: string;
 	pos: Coords;
-	ships: Ship[];
-
+	posSet(value: Coords): ShipGroup;
+	shipFirst(): Ship;
+	shipLostAdd(ship: Ship): ShipGroup;
+	shipSelectOptimum(): Ship;
 	shipSelected: Ship;
-	shipsLost: Ship[];
+	shipsCount(): number;
+	shipsGetAll(): Ship[];
+	shipsLost(): Ship[];
+	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter;
+	toEntity(world: WorldExtended, place: Place): Entity;
+	toEntitySpace(world: WorldExtended, place: Place): Entity;
+	toStringDescription(): string;
+}
 
-	_posInverted: Coords;
-
-	constructor(name: string, factionName: string, pos: Coords, ships: Ship[])
-	{
-		this.name = name || factionName + " Ship Group"
-		this.factionName = factionName;
-		this.pos = pos;
-		this.ships = ships;
-
-		this.shipSelected = this.ships[0];
-		this.shipsLost = [];
-
-		this._posInverted = Coords.create();
-	}
-
-	static fromFactionNameAndShips(factionName: string, ships: Ship[]): ShipGroup
-	{
-		return new ShipGroup
-		(
-			null, // name
-			factionName,
-			Coords.zeroes(), // pos
-			ships
-		);
-	}
-
+class ShipGroupBase implements ShipGroup
+{
 	static fromEntity(entity: Entity): ShipGroup
 	{
-		return entity.propertyByName(ShipGroup.name) as ShipGroup;
+		return entity.propertyByName(ShipGroupBase.name) as ShipGroup;
 	}
 
 	static activityDefnApproachPlayer(): ActivityDefn
@@ -45,7 +30,7 @@ class ShipGroup implements EntityPropertyBase
 		return new ActivityDefn
 		(
 			"Ship_ApproachPlayer",
-			ShipGroup.activityDefnApproachPlayer_Perform
+			ShipGroupBase.activityDefnApproachPlayer_Perform
 		);
 	}
 
@@ -67,7 +52,7 @@ class ShipGroup implements EntityPropertyBase
 			actor.activity.targetEntitySet(targetEntity);
 		}
 
-		ShipGroup.activityDefnApproachTarget_Perform(uwpe);
+		ShipGroupBase.activityDefnApproachTarget_Perform(uwpe);
 	}
 
 	static activityDefnApproachTarget(): ActivityDefn
@@ -75,7 +60,7 @@ class ShipGroup implements EntityPropertyBase
 		return new ActivityDefn
 		(
 			"Ship_ApproachTarget",
-			ShipGroup.activityDefnApproachTarget_Perform
+			ShipGroupBase.activityDefnApproachTarget_Perform
 		);
 	}
 
@@ -128,7 +113,7 @@ class ShipGroup implements EntityPropertyBase
 	{
 		return new ActivityDefn
 		(
-			"Leave", ShipGroup.activityDefnLeave_Perform
+			"Leave", ShipGroupBase.activityDefnLeave_Perform
 		);
 	}
 
@@ -175,7 +160,7 @@ class ShipGroup implements EntityPropertyBase
 			{
 				var placePlanetVicinity = actorPlace as PlacePlanetVicinity;
 				var planet = placePlanetVicinity.planet;
-				var shipGroup = ShipGroup.fromEntity(entityActor);
+				var shipGroup = ShipGroupFinite.fromEntity(entityActor);
 				planet.shipGroupRemove(shipGroup);
 			}
 		}
@@ -183,11 +168,6 @@ class ShipGroup implements EntityPropertyBase
 		{
 			actorLoc.vel.add(displacementToTarget.normalize()); // todo - * acceleration.
 		}
-	}
-
-	faction(world: WorldExtended): Faction
-	{
-		return world.defnExtended().factionByName(this.factionName);
 	}
 
 	static kill(uwpe: UniverseWorldPlaceEntities): void
@@ -198,13 +178,13 @@ class ShipGroup implements EntityPropertyBase
 
 		place.entityRemove(entity);
 
-		var shipGroup = ShipGroup.fromEntity(entity);
+		var shipGroup = ShipGroupFinite.fromEntity(entity);
 		var shipGroupsInPlace: ShipGroup[] = null;
 
 		var placeTypeName = place.constructor.name;
 		if (placeTypeName == PlacePlanetVicinity.name)
 		{
-			shipGroupsInPlace = (place as PlacePlanetVicinity).planet.shipGroups();
+			shipGroupsInPlace = (place as PlacePlanetVicinity).planet.shipGroupsInVicinity();
 		}
 		else if (placeTypeName == PlaceStarsystem.name)
 		{
@@ -218,22 +198,160 @@ class ShipGroup implements EntityPropertyBase
 		ArrayHelper.remove(shipGroupsInPlace, shipGroup);
 	}
 
+	static mustBeImplementedInSubclassError(): Error
+	{
+		return new Error("Must be implemented in subclass.");
+	}
+
+	// Entity implementation.
+	equals(other: ShipGroup): boolean { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	finalize(uwpe: UniverseWorldPlaceEntities): void { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	initialize(uwpe: UniverseWorldPlaceEntities): void { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	propertyName(): string { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+
+	// ShipGroup implementation.
+
+	factionName: string;
+	name: string;
+	pos: Coords;
+	posSet(value: Coords): ShipGroup { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipFirst(): Ship { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipLostAdd(ship: Ship): ShipGroup { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipSelectOptimum(): Ship { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipSelected: Ship;
+	shipsCount(): number { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipsGetAll(): Ship[] { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipsLost(): Ship[] { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	toEntity(world: WorldExtended, place: Place): Entity { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	toEntitySpace(world: WorldExtended, place: Place): Entity { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	toStringDescription(): string { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+
+}
+
+class ShipGroupInfinite extends ShipGroupBase
+{
+	name: string;
+	factionName: string;
+	shipsPrototype: Ship[];
+
+	constructor(name: string, factionName: string, shipsPrototype: Ship[])
+	{
+		super();
+		this.name = name;
+		this.factionName = factionName;
+		this.shipsPrototype = shipsPrototype;
+	}
+
+	shipsCount(): number
+	{
+		return Number.POSITIVE_INFINITY;
+	}
+}
+
+class ShipGroupFinite extends ShipGroupBase
+{
+	name: string;
+	factionName: string;
+	pos: Coords;
+	ships: Ship[];
+
+	shipSelected: Ship;
+	_shipsLost: Ship[];
+
+	_posInverted: Coords;
+
+	constructor(name: string, factionName: string, pos: Coords, ships: Ship[])
+	{
+		super();
+
+		this.name = name || factionName + " Ship Group"
+		this.factionName = factionName;
+		this.pos = pos;
+		this.ships = ships;
+
+		this.shipSelected = this.shipFirst();
+		this._shipsLost = [];
+
+		this._posInverted = Coords.create();
+	}
+
+	static fromFactionNameAndShips(factionName: string, ships: Ship[]): ShipGroup
+	{
+		return new ShipGroupFinite
+		(
+			null, // name
+			factionName,
+			Coords.zeroes(), // pos
+			ships
+		);
+	}
+
+	static fromFactionNameAndShipsAsString(factionName: string, shipsAsString: string): ShipGroup
+	{
+		var shipCountAndDefnNamePairs =
+			shipsAsString
+				.split("+")
+				.map
+				(
+					x => [ x.substr(0, 1), x.substr(1) ]
+				);
+
+		var ships = new Array<Ship>();
+		for (var p = 0; p < shipCountAndDefnNamePairs.length; p++)
+		{
+			var shipCountAndDefnNamePair = shipCountAndDefnNamePairs[p];
+			var shipCount = parseInt(shipCountAndDefnNamePair[0]);
+			if (shipCount == 0)
+			{
+				// Infinity.
+				throw new Error("Not yet implemented!");
+			}
+			else
+			{
+				for (var i = 0; i < shipCount; i++)
+				{
+					var shipDefnName = shipCountAndDefnNamePair[1];
+					var ship = Ship.fromDefnName(shipDefnName);
+					ships.push(ship);
+				}
+			}
+		}
+
+		var shipGroup = ShipGroupFinite.fromFactionNameAndShips(factionName, ships);
+
+		return shipGroup;
+	}
+
+
+	faction(world: WorldExtended): Faction
+	{
+		return world.defnExtended().factionByName(this.factionName);
+	}
+
 	posInHyperspace(world: World): Coords
 	{
 		var pos: Coords = null;
 
 		var place = world.placeCurrent;
+
+		if (place == null)
+		{
+			return Coords.create(); // hack
+		}
+
 		var placeTypeName = place.constructor.name;
 		if (placeTypeName == PlaceHyperspace.name)
 		{
-			var shipGroupEntity = place.entitiesAll().find(x => ShipGroup.fromEntity(x) == this);
+			var shipGroupEntity = place.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
 			pos = shipGroupEntity.locatable().loc.pos;
 		}
 		else if (placeTypeName == PlaceHyperspaceMap.name)
 		{
 			var placeHyperspaceMap = place as PlaceHyperspaceMap;
 			var placeHyperspace = placeHyperspaceMap.placeHyperspaceToReturnTo;
-			var shipGroupEntity = placeHyperspace.entitiesAll().find(x => ShipGroup.fromEntity(x) == this);
+			var shipGroupEntity = placeHyperspace.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
 			pos = shipGroupEntity.locatable().loc.pos;
 		}
 		else if (placeTypeName == PlaceStarsystem.name)
@@ -280,15 +398,41 @@ class ShipGroup implements EntityPropertyBase
 		return this;
 	}
 
+	shipFirst(): Ship
+	{
+		return this.ships[0];
+	}
+
+	shipLostAdd(ship: Ship): ShipGroupFinite
+	{
+		this._shipsLost.push(ship);
+		return this;
+	}
+
 	shipSelectOptimum(): Ship
 	{
 		if (this.shipSelected == null)
 		{
-			var ship = this.ships[0]; // todo
+			var ship = this.shipFirst(); // todo
 			this.shipSelected = ship;
 		}
 
 		return this.shipSelected;
+	}
+
+	shipsCount(): number
+	{
+		return this.ships.length;
+	}
+
+	shipsGetAll(): Ship[]
+	{
+		return this.ships;
+	}
+
+	shipsLost(): Ship[]
+	{
+		return this._shipsLost;
 	}
 
 	toEntity(world: WorldExtended, place: Place): Entity
@@ -309,7 +453,7 @@ class ShipGroup implements EntityPropertyBase
 		// var actor = new Actor(faction.shipGroupActivity);
 		var actor = Actor.fromActivityDefn
 		(
-			ShipGroup.activityDefnApproachPlayer()
+			ShipGroupBase.activityDefnApproachPlayer()
 		);
 
 		var entityDimension = 10;
@@ -340,7 +484,7 @@ class ShipGroup implements EntityPropertyBase
 		var drawable = Drawable.fromVisual(shipVisual);
 
 		// Note that ships may really only be killable in combat.
-		var killable = new Killable(1, null, ShipGroup.kill);
+		var killable = new Killable(1, null, ShipGroupBase.kill);
 
 		var	pos = this.pos;
 		var loc = Disposition.fromPos(pos);
@@ -480,7 +624,7 @@ class ShipGroup implements EntityPropertyBase
 		}
 	}
 
-	propertyName(): string { return ShipGroup.name; }
+	propertyName(): string { return ShipGroupBase.name; }
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 

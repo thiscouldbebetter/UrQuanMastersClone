@@ -267,11 +267,23 @@ class Hyperspace
 				energySourcesOnPlanet.push(energySource);
 			}
 
+			var factionName = planetAsValues[30];
+			if (factionName == "-")
+			{
+				factionName = null;
+			}
+
+			/*
+			var shipsInOrbitAsString = planetAsValues[31];
+			var shipsInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
+			*/
+
 			var planetCharacteristics = new PlanetCharacteristics
 			(
 				planetSize,
 				null, // satellites
-				null, // shipGroups,
+				null, // shipGroupsInVicinity,
+				null, // shipGroupInOrbit
 				massInKg,
 				radiusInKm,
 				gravityAsFractionOfEarth,
@@ -284,12 +296,6 @@ class Hyperspace
 				biosphere,
 				energySourcesOnPlanet
 			);
-
-			var factionName = planetAsValues[30];
-			if (factionName == "-")
-			{
-				factionName = null;
-			}
 
 			var planet = new Planet
 			(
@@ -320,7 +326,7 @@ class Hyperspace
 		var starsystemSol = starsystemsByName.get("Sol");
 
 		// todo - Encounter test.
-		var shipGroup = new ShipGroup
+		var shipGroup = new ShipGroupFinite
 		(
 			"Tempestrial Ship Group X",
 			"Tempestrial",

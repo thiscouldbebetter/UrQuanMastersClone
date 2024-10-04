@@ -92,16 +92,16 @@ class Planet {
     satellitesGet() {
         return this.characteristics.satellitesGet();
     }
-    shipGroupAdd(shipGroup) {
-        this.characteristics.shipGroupAdd(shipGroup);
+    shipGroupInVicinityAdd(shipGroup) {
+        this.characteristics.shipGroupInVicinityAdd(shipGroup);
         return this;
     }
     shipGroupRemove(shipGroup) {
-        this.characteristics.shipGroupRemove(shipGroup);
+        this.characteristics.shipGroupInVicinityRemove(shipGroup);
         return this;
     }
-    shipGroups() {
-        return this.characteristics.shipGroups();
+    shipGroupsInVicinity() {
+        return this.characteristics.shipGroupsInVicinity();
     }
     sizeSurface() {
         return (this.isStation() ? Coords.zeroes() : this.characteristics.sizeSurface);

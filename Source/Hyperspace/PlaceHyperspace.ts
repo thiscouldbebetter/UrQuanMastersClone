@@ -165,7 +165,7 @@ class PlaceHyperspace extends PlaceBase
 		var boundable = Boundable.fromCollidable(collidable);
 
 		var shipGroup = world.player.shipGroup;
-		var ship = shipGroup.ships[0];
+		var ship = shipGroup.shipFirst();
 
 		var shipDefn = ship.defn(world);
 		var visual = shipDefn.visual;
@@ -310,7 +310,7 @@ class PlaceHyperspace extends PlaceBase
 
 	entitiesShipGroups(): Entity[]
 	{
-		return this.entitiesByPropertyName(ShipGroup.name);
+		return this.entitiesByPropertyName(ShipGroupBase.name);
 	}
 
 	factionShipGroupSpawnIfNeeded
@@ -339,7 +339,7 @@ class PlaceHyperspace extends PlaceBase
 		for (var i = 0; i < entitiesShipGroupsAll.length; i++)
 		{
 			var entityShipGroup = entitiesShipGroupsAll[i];
-			var shipGroup = ShipGroup.fromEntity(entityShipGroup);
+			let shipGroup = ShipGroupFinite.fromEntity(entityShipGroup);
 			if (shipGroup.factionName == factionName)
 			{
 				numberOfShipGroupsExistingForFaction++;
@@ -356,7 +356,7 @@ class PlaceHyperspace extends PlaceBase
 			var shipDefnName = faction.shipDefnName; // todo
 			var factionName = faction.name;
 
-			var shipGroup = new ShipGroup
+			var shipGroup = new ShipGroupFinite
 			(
 				factionName + " Ship Group",
 				factionName,
@@ -383,7 +383,7 @@ class PlaceHyperspace extends PlaceBase
 		var entityOther = uwpe.entity2;
 
 		var entityOtherStarsystem = Starsystem.fromEntity(entityOther);
-		var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+		var entityOtherShipGroup = ShipGroupBase.fromEntity(entityOther);
 		var entityOtherFaction = Faction.fromEntity(entityOther);
 
 		if (entityOtherStarsystem != null)

@@ -297,10 +297,10 @@ class Game {
         var combat = new Combat(combatSize, encounter, 
         // shipGroups
         [
-            new ShipGroup("Player", null, // factionName
+            new ShipGroupFinite("Player", null, // factionName
             null, // pos
             playerShips),
-            new ShipGroup("Other", null, // factionName
+            new ShipGroupFinite("Other", null, // factionName
             null, // pos
             enemyShips)
         ]).initialize(universe, world, null);

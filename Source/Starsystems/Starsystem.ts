@@ -110,9 +110,9 @@ class Starsystem implements EntityProperty<Starsystem>
 				var shipDefnName = faction.shipDefnName;
 				var ship = new Ship(shipDefnName);
 
-				var shipGroup = new ShipGroup
+				var shipGroup = new ShipGroupFinite
 				(
-					faction.name + " " + ShipGroup.name,
+					faction.name + " " + ShipGroupBase.name,
 					faction.name, // factionName
 					Coords.create(),
 					[ ship ]
@@ -161,7 +161,7 @@ class Starsystem implements EntityProperty<Starsystem>
 
 		var enemyShipDefnName = "GuardDrone";
 		var enemyShip = new Ship(enemyShipDefnName);
-		var enemyShipGroup = new ShipGroup
+		var enemyShipGroup = new ShipGroupFinite
 		(
 			"LahkemupGuardDrone",
 			"LahkemupGuardDrone", // factionName
@@ -169,7 +169,7 @@ class Starsystem implements EntityProperty<Starsystem>
 			[ enemyShip ]
 		);
 
-		planetEarth.shipGroupAdd(enemyShipGroup);
+		planetEarth.shipGroupInVicinityAdd(enemyShipGroup);
 	}
 
 	contentsRandomize(randomizer: Randomizer): void

@@ -240,7 +240,7 @@ class Flagship {
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, DataBinding.fromContext("Cargo:"), font),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, labelSize.y * 5), labelSize, DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax(world)), font),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, DataBinding.fromContext("Loc:"), font),
-            new ControlLabel("todo", Coords.fromXY(marginSize.x * 4, labelSize.y * 6), labelSize, false, false, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => c.posInHyperspace(world).toStringXY()), font),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 6), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => c.posInHyperspace(world).toStringXY()), font),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, DataBinding.fromContext("Date:"), font),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 7), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[0]), font),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, DataBinding.fromContext("Time:"), font),

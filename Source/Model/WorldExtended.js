@@ -23,14 +23,14 @@ class WorldExtended extends World {
         var activityDefns = [
             Player.activityDefn(),
             Lifeform.activityDefnApproachPlayer(),
-            ShipGroup.activityDefnApproachPlayer(),
-            ShipGroup.activityDefnApproachTarget(),
+            ShipGroupBase.activityDefnApproachPlayer(),
+            ShipGroupBase.activityDefnApproachTarget(),
             Lifeform.activityDefnAvoidPlayer(),
-            ShipGroup.activityDefnDie(),
+            ShipGroupBase.activityDefnDie(),
             Lifeform.activityDefnDoNothing(),
             Combat.activityDefnEnemy(),
             Planet.activityDefnGravitate(),
-            ShipGroup.activityDefnLeave(),
+            ShipGroupBase.activityDefnLeave(),
             Lifeform.activityDefnMoveToRandomPosition()
         ];
         var actions = Ship.actions();
@@ -73,12 +73,12 @@ class WorldExtended extends World {
         textConversation + textLahkemupGuardDrone, // conversationDefnName
         null, // territory
         "GuardDrone", // shipDefnName
-        new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
+        new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null));
         // normal
         var f = (name, nameOriginal, color, territory, relations, shipDefnName) => {
             var talksImmediately = (territory == null); // hack
             return new Faction(name, nameOriginal, color, relations, talksImmediately, textConversation + name, // conversationDefnName
-            territory, shipDefnName, new Activity(ShipGroup.activityDefnApproachPlayer().name, null));
+            territory, shipDefnName, new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null));
         };
         var soi = (centerX, centerY, radius) => {
             var sphere = new Sphere(Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10), radius * hyperspaceSize.x);
@@ -151,7 +151,7 @@ class WorldExtended extends World {
         var starsystems = hyperspace.starsystems;
         var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);
         starsystemsSupergiant.forEach(starsystem => {
-            var shipGroup = new ShipGroup(murch.name + " " + ShipGroup.name, murch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), [
+            var shipGroup = new ShipGroupFinite(murch.name + " " + "Ship Group", murch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), [
                 new Ship(murch.shipDefnName)
             ]);
             starsystem.shipGroupAdd(shipGroup);
@@ -163,7 +163,7 @@ class WorldExtended extends World {
             playerShip,
             new Ship("Broadsider")
         ];
-        var playerShipGroup = new ShipGroup("Player", "Player", // factionName
+        var playerShipGroup = new ShipGroupFinite("Player", "Player", // factionName
         starsystemStart.posInHyperspace.clone(), // pos
         playerShips);
         var shipComponentDefns = ShipComponentDefn.Instances();

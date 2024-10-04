@@ -53,7 +53,7 @@ class Combat {
     }
     exit(universe) {
         var world = universe.world;
-        var shipsDestroyed = this.shipGroups[1].shipsLost;
+        var shipsDestroyed = this.shipGroups[1].shipsLost();
         var creditsForShipsDestroyed = 0;
         shipsDestroyed.forEach(x => creditsForShipsDestroyed += x.defn(world).salvageValue);
         var player = world.player;
@@ -126,8 +126,8 @@ class Combat {
     // controls
     toControlDebriefing(universe, size) {
         var world = universe.world;
-        var shipsLost = this.shipGroups[0].shipsLost;
-        var shipsDestroyed = this.shipGroups[1].shipsLost;
+        var shipsLost = this.shipGroups[0].shipsLost();
+        var shipsDestroyed = this.shipGroups[1].shipsLost();
         var numberOfShipsLost = shipsLost.length;
         var numberOfShipsDestroyed = shipsDestroyed.length;
         var creditsSalvaged = 0;
@@ -160,11 +160,11 @@ class Combat {
         var buttonSizeFight = Coords.fromXY(titleSize.x, buttonHeight);
         var listSize = Coords.fromXY(headingSize.x, size.y - titleSize.y - headingSize.y - buttonHeight * 2 - marginSize.y * 6);
         var bindingForOptionText = DataBinding.fromGet((c) => c.fullNameAndCrew(world));
-        var listShipsYours = ControlList.from9("listShipsYours", Coords.fromXY(marginSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContextAndGet(combat, (c) => c.shipGroups[0].ships), bindingForOptionText, font, new DataBinding(combat, (c) => c.shipGroups[0].shipSelected, (c, v) => c.shipGroups[0].shipSelected = v), // bindingForItemSelected
+        var listShipsYours = ControlList.from9("listShipsYours", Coords.fromXY(marginSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContextAndGet(combat, (c) => c.shipGroups[0].shipsGetAll()), bindingForOptionText, font, new DataBinding(combat, (c) => c.shipGroups[0].shipSelected, (c, v) => c.shipGroups[0].shipSelected = v), // bindingForItemSelected
         null, // bindingForItemValue
         DataBinding.fromContextAndGet(combat, (c) => c.shipsFighting[0] == null) // isEnabled
         );
-        var listShipsTheirs = ControlList.from9("listShipsTheirs", Coords.fromXY(marginSize.x * 2 + listSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContextAndGet(combat, (c) => c.shipGroups[1].ships), bindingForOptionText, font, new DataBinding(combat, (c) => c.shipGroups[1].shipSelected, (c, v) => c.shipGroups[1].shipSelected = v), // bindingForItemSelected
+        var listShipsTheirs = ControlList.from9("listShipsTheirs", Coords.fromXY(marginSize.x * 2 + listSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContextAndGet(combat, (c) => c.shipGroups[1].shipsGetAll()), bindingForOptionText, font, new DataBinding(combat, (c) => c.shipGroups[1].shipSelected, (c, v) => c.shipGroups[1].shipSelected = v), // bindingForItemSelected
         null, // bindingForItemValue
         DataBinding.fromFalse() // isEnabled
         );
@@ -188,7 +188,7 @@ class Combat {
             () => {
                 var shipGroupIndex = 0;
                 var shipGroup = combat.shipGroups[shipGroupIndex];
-                var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
+                var ship = ArrayHelper.random(shipGroup.shipsGetAll(), universe.randomizer);
                 combat.shipsFighting[shipGroupIndex] = ship;
                 shipGroup.shipSelected = ship;
             }, false // canBeHeldDown
@@ -209,7 +209,7 @@ class Combat {
             () => {
                 var shipGroupIndex = 1;
                 var shipGroup = combat.shipGroups[shipGroupIndex];
-                var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
+                var ship = ArrayHelper.random(shipGroup.shipsGetAll(), universe.randomizer);
                 combat.shipsFighting[shipGroupIndex] = ship;
                 shipGroup.shipSelected = ship;
             }, false // canBeHeldDown

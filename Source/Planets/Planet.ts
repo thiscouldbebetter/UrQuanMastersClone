@@ -181,21 +181,21 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return this.characteristics.satellitesGet();
 	}
 
-	shipGroupAdd(shipGroup: ShipGroup): Planet
+	shipGroupInVicinityAdd(shipGroup: ShipGroup): Planet
 	{
-		this.characteristics.shipGroupAdd(shipGroup);
+		this.characteristics.shipGroupInVicinityAdd(shipGroup);
 		return this;
 	}
 
 	shipGroupRemove(shipGroup: ShipGroup): Planet
 	{
-		this.characteristics.shipGroupRemove(shipGroup);
+		this.characteristics.shipGroupInVicinityRemove(shipGroup);
 		return this;
 	}
 
-	shipGroups(): ShipGroup[]
+	shipGroupsInVicinity(): ShipGroup[]
 	{
-		return this.characteristics.shipGroups();
+		return this.characteristics.shipGroupsInVicinity();
 	}
 
 	sizeSurface(): Coords

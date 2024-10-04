@@ -52,7 +52,7 @@ class PlaceEncounter extends PlaceBase
 			}
 
 			var shipGroupOther =
-				ShipGroup.fromEntity(encounter.entityOther);
+				ShipGroupBase.fromEntity(encounter.entityOther);
 			var shipGroupOtherDescription =
 				shipGroupOther.toStringDescription();
 

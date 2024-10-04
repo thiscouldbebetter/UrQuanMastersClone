@@ -1,9 +1,10 @@
 "use strict";
 class PlanetCharacteristics {
-    constructor(sizeSurface, satellites, shipGroups, mass, radius, gravity, orbit, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySources) {
+    constructor(sizeSurface, satellites, shipGroupsInVicinity, shipGroupInOrbit, mass, radius, gravity, orbit, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySources) {
         this.sizeSurface = sizeSurface;
         this.satellites = satellites || [];
-        this._shipGroups = shipGroups || [];
+        this._shipGroupsInVicinity = shipGroupsInVicinity || [];
+        this.shipGroupInOrbit = shipGroupInOrbit;
         this.mass = Math.round(mass);
         this.radius = Math.round(radius);
         this.gravity = parseFloat(gravity.toFixed(2));
@@ -18,7 +19,7 @@ class PlanetCharacteristics {
     }
     static fromSizeSurfaceAndSatellites(sizeSurface, satellites // todo
     ) {
-        return new PlanetCharacteristics(sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null);
+        return new PlanetCharacteristics(sizeSurface, satellites, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
     lifeforms(planet, randomizer) {
         if (this._lifeforms == null) {
@@ -60,13 +61,13 @@ class PlanetCharacteristics {
     satellitesGet() {
         return this.satellites;
     }
-    shipGroupAdd(shipGroup) {
-        this._shipGroups.push(shipGroup);
+    shipGroupInVicinityAdd(shipGroup) {
+        this._shipGroupsInVicinity.push(shipGroup);
     }
-    shipGroupRemove(shipGroup) {
-        this._shipGroups.splice(this._shipGroups.indexOf(shipGroup), 1);
+    shipGroupInVicinityRemove(shipGroup) {
+        this._shipGroupsInVicinity.splice(this._shipGroupsInVicinity.indexOf(shipGroup), 1);
     }
-    shipGroups() {
-        return this._shipGroups;
+    shipGroupsInVicinity() {
+        return this._shipGroupsInVicinity;
     }
 }

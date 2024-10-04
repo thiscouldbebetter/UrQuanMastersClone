@@ -47,7 +47,7 @@ class PlaceStarsystem extends PlaceBase {
             var playerMovable = Movable.default();
             var playerPlayable = new Playable();
             var playerShipGroup = world.player.shipGroup;
-            var playerShip = playerShipGroup.ships[0];
+            var playerShip = playerShipGroup.shipFirst();
             var playerShipDefn = playerShip.defn(world);
             var playerVisual = playerShipDefn.visual;
             var playerDrawable = Drawable.fromVisual(playerVisual);
@@ -144,7 +144,7 @@ class PlaceStarsystem extends PlaceBase {
         }
         else {
             var entityOtherPlanet = Planet.fromEntity(entityOther);
-            var entityOtherShipGroup = ShipGroup.fromEntity(entityOther);
+            var entityOtherShipGroup = ShipGroupFinite.fromEntity(entityOther);
             if (entityOtherPlanet != null) {
                 entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
                 var planet = entityOtherPlanet;

@@ -489,16 +489,14 @@ class Flagship
 					font
 				),
 
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"todo",
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 6),
 					labelSize,
-					false, false,
 					DataBinding.fromContextAndGet
 					(
 						world.player.shipGroup,
-						(c: ShipGroup) => c.posInHyperspace(world).toStringXY()
+						(c: ShipGroupFinite) => c.posInHyperspace(world).toStringXY()
 					),
 					font
 				),

@@ -3,7 +3,8 @@ class PlanetCharacteristics
 {
 	sizeSurface: Coords;
 	satellites: Satellite[];
-	_shipGroups: ShipGroup[];
+	_shipGroupsInVicinity: ShipGroup[];
+	shipGroupInOrbit: ShipGroup;
 	mass: number;
 	radius: number;
 	gravity: number;
@@ -23,7 +24,8 @@ class PlanetCharacteristics
 	(
 		sizeSurface: Coords,
 		satellites: Planet[],
-		shipGroups: ShipGroup[],
+		shipGroupsInVicinity: ShipGroup[],
+		shipGroupInOrbit: ShipGroup,
 		mass: number,
 		radius: number,
 		gravity: number,
@@ -39,7 +41,8 @@ class PlanetCharacteristics
 	{
 		this.sizeSurface = sizeSurface;
 		this.satellites = satellites || [];
-		this._shipGroups = shipGroups || [];
+		this._shipGroupsInVicinity = shipGroupsInVicinity || [];
+		this.shipGroupInOrbit = shipGroupInOrbit;
 		this.mass = Math.round(mass);
 		this.radius = Math.round(radius);
 		this.gravity = parseFloat(gravity.toFixed(2));
@@ -66,7 +69,8 @@ class PlanetCharacteristics
 			null, null, null,
 			null, null, null,
 			null, null, null,
-			null, null, null
+			null, null, null,
+			null
 		);
 	}
 
@@ -137,18 +141,18 @@ class PlanetCharacteristics
 		return this.satellites;
 	}
 
-	shipGroupAdd(shipGroup: ShipGroup): void
+	shipGroupInVicinityAdd(shipGroup: ShipGroup): void
 	{
-		this._shipGroups.push(shipGroup);
+		this._shipGroupsInVicinity.push(shipGroup);
 	}
 
-	shipGroupRemove(shipGroup: ShipGroup): void
+	shipGroupInVicinityRemove(shipGroup: ShipGroup): void
 	{
-		this._shipGroups.splice(this._shipGroups.indexOf(shipGroup), 1);
+		this._shipGroupsInVicinity.splice(this._shipGroupsInVicinity.indexOf(shipGroup), 1);
 	}
 
-	shipGroups(): ShipGroup[]
+	shipGroupsInVicinity(): ShipGroup[]
 	{
-		return this._shipGroups;
+		return this._shipGroupsInVicinity;
 	}
 }

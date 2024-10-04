@@ -97,7 +97,7 @@ class Combat
 	exit(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var shipsDestroyed = this.shipGroups[1].shipsLost;
+		var shipsDestroyed = this.shipGroups[1].shipsLost();
 		var creditsForShipsDestroyed = 0;
 		shipsDestroyed.forEach
 		(
@@ -219,8 +219,8 @@ class Combat
 	{
 		var world = universe.world as WorldExtended;
 
-		var shipsLost = this.shipGroups[0].shipsLost;
-		var shipsDestroyed = this.shipGroups[1].shipsLost;
+		var shipsLost = this.shipGroups[0].shipsLost();
+		var shipsDestroyed = this.shipGroups[1].shipsLost();
 
 		var numberOfShipsLost = shipsLost.length;
 		var numberOfShipsDestroyed = shipsDestroyed.length;
@@ -292,7 +292,8 @@ class Combat
 			listSize,
 			DataBinding.fromContextAndGet
 			(
-				combat, (c: Combat) => c.shipGroups[0].ships
+				combat,
+				(c: Combat) => c.shipGroups[0].shipsGetAll()
 			),
 			bindingForOptionText,
 			font,
@@ -320,7 +321,8 @@ class Combat
 			listSize,
 			DataBinding.fromContextAndGet
 			(
-				combat, (c: Combat) => c.shipGroups[1].ships
+				combat,
+				(c: Combat) => c.shipGroups[1].shipsGetAll()
 			),
 			bindingForOptionText,
 			font,
@@ -408,7 +410,7 @@ class Combat
 					{
 						var shipGroupIndex = 0;
 						var shipGroup = combat.shipGroups[shipGroupIndex];
-						var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
+						var ship = ArrayHelper.random(shipGroup.shipsGetAll(), universe.randomizer);
 						combat.shipsFighting[shipGroupIndex] = ship;
 						shipGroup.shipSelected = ship;
 					},
@@ -470,7 +472,7 @@ class Combat
 					{
 						var shipGroupIndex = 1;
 						var shipGroup = combat.shipGroups[shipGroupIndex];
-						var ship = ArrayHelper.random(shipGroup.ships, universe.randomizer);
+						var ship = ArrayHelper.random(shipGroup.shipsGetAll(), universe.randomizer);
 						combat.shipsFighting[shipGroupIndex] = ship;
 						shipGroup.shipSelected = ship;
 					},
