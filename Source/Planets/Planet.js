@@ -69,13 +69,22 @@ class Planet {
         return this.characteristics.resources(this, randomizer);
     }
     orbitColor() {
-        var temperature = this.characteristics.temperature;
+        var orbitColor;
         var colors = Color.Instances();
-        var orbitColor = (temperature > 100
-            ? colors.Brown
-            : temperature > 0
-                ? colors.GreenDark
-                : colors.BlueDark);
+        if (this.characteristics == null) {
+            orbitColor = colors.Gray;
+        }
+        else {
+            var temperature = this.characteristics.temperature;
+            orbitColor =
+                (temperature > 200
+                    ? colors.Red
+                    : temperature > 100
+                        ? colors.Brown
+                        : temperature > 0
+                            ? colors.GreenDark
+                            : colors.BlueDark);
+        }
         return orbitColor;
     }
     satelliteAdd(satellite) {
@@ -92,6 +101,9 @@ class Planet {
     satellitesGet() {
         return this.characteristics.satellitesGet();
     }
+    shipGroupInOrbit() {
+        return (this.characteristics == null ? null : this.characteristics.shipGroupInOrbit);
+    }
     shipGroupInVicinityAdd(shipGroup) {
         this.characteristics.shipGroupInVicinityAdd(shipGroup);
         return this;
@@ -106,14 +118,53 @@ class Planet {
     sizeSurface() {
         return (this.isStation() ? Coords.zeroes() : this.characteristics.sizeSurface);
     }
-    toEntity(world, primary, primaryPos) {
+    toEntityForPlanetVicinity(world, isPrimary, primaryPos, entityDimension) {
+        var globeRadius = entityDimension;
+        var orbitMultiplier = 4; // hack
+        var collider = Sphere.fromRadius(globeRadius);
+        var collidable = Collidable.fromCollider(collider);
+        var planetDefn = this.defn();
+        var globeVisual = planetDefn.visualVicinity;
+        var orbitRadius = this.posAsPolar.radius * orbitMultiplier;
+        var orbitColor = this.orbitColor();
+        var orbitVisual = new VisualAnchor(VisualCircle.fromRadiusAndColorBorder(orbitRadius, orbitColor), posWithinVicinity, null // ?
+        );
+        var visual = new VisualGroup([
+            orbitVisual,
+            globeVisual,
+        ]);
+        var drawable = Drawable.fromVisual(visual);
+        var posWithinVicinity = primaryPos.clone();
+        if (isPrimary == false) {
+            var offsetFromPrimary = Polar.fromAzimuthInTurnsAndRadius(this.posAsPolar.azimuthInTurns + .5, orbitRadius).wrap().toCoords(Coords.create());
+            posWithinVicinity.add(offsetFromPrimary);
+        }
+        var locatable = Locatable.fromPos(posWithinVicinity);
+        var entityName = isPrimary ? Planet.name : this.name;
+        var entity = new Entity(entityName, [
+            collidable,
+            drawable,
+            locatable,
+            this
+        ]);
+        var faction = this.faction(world);
+        if (faction != null) {
+            var talker = faction.toTalker();
+            entity.propertyAdd(talker);
+            var shipGroupInOrbit = this.shipGroupInOrbit();
+            if (shipGroupInOrbit != null) {
+                entity.propertyAdd(shipGroupInOrbit);
+            }
+        }
+        return entity;
+    }
+    toEntityForStarsystem(world, primary, primaryPos) {
         var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
         var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
         var planetDefn = this.defn();
         var visual = new VisualGroup([
             new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, orbitColor, null), primaryPos, null // ?
             ),
-            //VisualCircle.fromRadiusAndColorFill(this.radiusOuter, planetDefn.color)
             planetDefn.visualStarsystem
         ]);
         var collider = new Sphere(Coords.create(), this.radiusOuter);
@@ -123,11 +174,6 @@ class Planet {
             this, // planet
             Locatable.fromPos(pos),
         ]);
-        var faction = this.faction(world);
-        if (faction != null) {
-            var talker = faction.toTalker();
-            returnValue.propertyAdd(talker);
-        }
         return returnValue;
     }
     toPlace(world) {

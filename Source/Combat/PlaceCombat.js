@@ -39,40 +39,31 @@ class PlaceCombat extends PlaceBase {
         // entities
         // Planet.
         var planet = this.combat.encounter.planet;
-        var planetActivity = new Activity(Planet.activityDefnGravitate().name, null);
-        var planetActor = new Actor(planetActivity);
-        var planetCollider = new Sphere(Coords.create(), planetRadius);
-        var planetCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
-        null, // ticks
-        planetCollider, [Collidable.name], // entityPropertyNamesToCollideWith
-        this.planetCollide);
-        // todo - Match appearance to the actual planet.
+        var planetEntity = this.constructor_PlanetEntityBuild(planet);
+        this.entityToSpawnAdd(planetEntity);
+    }
+    constructor_PlanetEntityBuild(planet) {
         var planetDefn = planet.defn();
-        /*
-        var entityDimension = 10;
-        var planetRadius = entityDimension;
-        var planetColor = Color.Instances().Cyan;
-        var planetVisual = new VisualWrapped
-        (
-            this.size,
-            VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor)
-        );
-        */
-        var planetVisual = planetDefn.visualVicinity;
-        var planetRadius = planetVisual.radius;
-        planetVisual = new VisualWrapped(this.size(), planetVisual);
-        var planetDrawable = Drawable.fromVisual(planetVisual);
+        var visual = planetDefn.visualVicinity;
+        var radius = visual.radius;
+        var activity = new Activity(Planet.activityDefnGravitate().name, null);
+        var actor = new Actor(activity);
+        var collider = new Sphere(Coords.create(), radius);
+        var collidable = Collidable.from3(collider, [Collidable.name], // entityPropertyNamesToCollideWith
+        this.planetCollide);
+        visual = new VisualWrapped(this.size(), visual);
+        var drawable = Drawable.fromVisual(visual);
         var sizeHalf = this.size().clone().half();
-        var planetPos = sizeHalf.clone();
-        var planetLocatable = Locatable.fromPos(planetPos);
-        var planetEntity = new Entity("Planet", [
-            planetActor,
-            planetCollidable,
-            planetDrawable,
-            planetLocatable,
+        var pos = sizeHalf.clone();
+        var locatable = Locatable.fromPos(pos);
+        var planetEntity = new Entity(Planet.name, [
+            actor,
+            collidable,
+            drawable,
+            locatable,
             planet
         ]);
-        this.entityToSpawnAdd(planetEntity);
+        return planetEntity;
     }
     // methods
     actionToInputsMappings() {

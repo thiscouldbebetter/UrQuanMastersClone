@@ -305,7 +305,7 @@ class Game {
             enemyShips)
         ]).initialize(universe, world, null);
         var placeCombat = combat.toPlace(world);
-        world.placeCurrent = placeCombat;
+        world.placeCurrentSet(placeCombat);
         var controlShipSelect = combat.toControlShipSelect(universe, displaySize);
         var venueNext = VenueControls.fromControl(controlShipSelect);
         universe.venueNextSet(venueNext);
@@ -433,7 +433,7 @@ class Game {
         );
         uwpe.entitiesSwap();
         var placeEncounter = encounter.toPlace();
-        universe.world.placeCurrent = placeEncounter;
+        universe.world.placeCurrentSet(placeEncounter);
         talker.talk(uwpe);
     }
     debug_Talk_Triunion(universe) {

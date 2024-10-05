@@ -54,47 +54,11 @@ class PlacePlanetVicinity extends PlaceBase
 		// planet
 
 		var sizeHalf = this.size().clone().half();
-
-		var planetRadius = entityDimension;
 		var planetPos = sizeHalf.clone();
-		var orbitMultiplier = 16;
-		var planetOrbitRadius = planet.posAsPolar.radius * orbitMultiplier;
-		var planetOrbitColor = planet.orbitColor();
-		var planetOrbitVisual = new VisualAnchor
-		(
-			new VisualCircle(planetOrbitRadius, null, planetOrbitColor, null),
-			planetPos.clone().add
-			(
-				new Polar
-				(
-					planet.posAsPolar.azimuthInTurns + .5,
-					planetOrbitRadius,
-					null
-				).wrap().toCoords(Coords.create())
-			), // posToAnchorAt
-			null // ?
-		);
 
-		var planetDefn = planet.defn();
-		var planetGlobeVisual = planetDefn.visualVicinity;
-
-		var planetVisual = new VisualGroup
-		([
-			planetOrbitVisual,
-			planetGlobeVisual,
-		]);
-		var planetCollider = new Sphere(Coords.create(), planetRadius);
-
-		var planetEntity = new Entity
-		(
-			"Planet",
-			[
-				Collidable.fromCollider(planetCollider),
-				Drawable.fromVisual(planetVisual),
-				Locatable.fromPos(planetPos),
-				planet
-			]
-		);
+		const isPrimaryTrue = true;
+		var planetEntity =
+			this.planet.toEntityForPlanetVicinity(world, isPrimaryTrue, planetPos, entityDimension);
 
 		entities.push(planetEntity);
 
@@ -105,14 +69,16 @@ class PlacePlanetVicinity extends PlaceBase
 		{
 			var satellite = satellites[i];
 
-			var satelliteEntity = satellite.toEntity(world, planet, planetPos);
+			const isPrimaryFalse = false;
+			var satelliteEntity =
+				satellite.toEntityForPlanetVicinity(world, isPrimaryFalse, planetPos, entityDimension);
 
 			entities.push(satelliteEntity);
 		}
 
 		if (playerLoc != null)
 		{
-			var playerEntity = this.constructor_BuildEntityPlayer(entityDimension, world, playerLoc);
+			var playerEntity = this.constructor_PlayerEntityBuild(entityDimension, world, playerLoc);
 
 			entities.push(playerEntity);
 		}
@@ -137,13 +103,10 @@ class PlacePlanetVicinity extends PlaceBase
 
 		var wallsEntity = new Entity
 		(
-			"Walls",
+			PlacePlanetVicinity.EntityBoundaryWallName,
 			[
-				new Locatable
-				(
-					Disposition.fromPos(this.size().clone().half() )
-				),
-				Collidable.fromCollider
+				Locatable.fromPos(this.size().clone().half() ),
+				Collidable.fromShape
 				(
 					new ShapeInverse
 					(
@@ -164,57 +127,55 @@ class PlacePlanetVicinity extends PlaceBase
 		this.venueControls = VenueControls.fromControl(containerSidebar);
 	}
 
-	constructor_BuildEntityPlayer(entityDimension: number, world: WorldExtended, playerLoc: Disposition): Entity
+	constructor_PlayerEntityBuild(entityDimension: number, world: WorldExtended, playerLoc: Disposition): Entity
 	{
 		// player - Can this be merged with similar code in PlaceStarsystem?
 
-		var playerActivityDefnName = Player.activityDefn().name;
-		var playerActivity = new Activity(playerActivityDefnName, null);
-		var playerActor = new Actor(playerActivity);
+		var activityDefnName = Player.activityDefn().name;
+		var activity = new Activity(activityDefnName, null);
+		var actor = new Actor(activity);
 
-		var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
-		var playerCollidable = new Collidable
+		var collider = new Sphere(Coords.create(), entityDimension / 2);
+		var collidable = Collidable.from3
 		(
-			false, // canCollideAgainWithoutSeparating
-			null, // ticks
-			playerCollider,
+			collider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
 			this.playerCollide
 		);
 
 		var constraintSpeedMax = new Constraint_SpeedMaxXY(1); // todo
 
-		var playerConstrainable = new Constrainable([constraintSpeedMax]);
+		var constrainable = new Constrainable([constraintSpeedMax]);
 
-		var playerItemHolder = ItemHolder.create();
+		var itemHolder = ItemHolder.create();
 
-		var playerLocatable = new Locatable(playerLoc);
+		var locatable = new Locatable(playerLoc);
 
-		var playerMovable = Movable.default();
+		var movable = Movable.default();
 
-		var playerPlayable = new Playable();
+		var playable = new Playable();
 
-		var playerShipGroup = world.player.shipGroup;
-		var playerShip = playerShipGroup.shipFirst();
+		var shipGroup = world.player.shipGroup;
+		var ship = shipGroup.shipFirst();
 
-		var playerShipDefn = playerShip.defn(world);
-		var playerVisual = playerShipDefn.visual;
-		var playerDrawable = Drawable.fromVisual(playerVisual);
+		var shipDefn = ship.defn(world);
+		var visual = shipDefn.visual;
+		var drawable = Drawable.fromVisual(visual);
 
 		var playerEntity = new Entity
 		(
 			Player.name,
 			[
-				playerActor,
-				playerCollidable,
-				playerConstrainable,
-				playerDrawable,
-				playerItemHolder,
-				playerLocatable,
-				playerMovable,
-				playerPlayable,
-				playerShip,
-				playerShipGroup
+				actor,
+				collidable,
+				constrainable,
+				drawable,
+				itemHolder,
+				locatable,
+				movable,
+				playable,
+				ship,
+				shipGroup
 			]
 		);
 
@@ -255,6 +216,8 @@ class PlacePlanetVicinity extends PlaceBase
 		this.venueControls.draw(universe);
 	}
 
+	static EntityBoundaryWallName = "Walls";
+
 	playerCollide(uwpe: UniverseWorldPlaceEntities)
 	{
 		var universe = uwpe.universe;
@@ -273,9 +236,9 @@ class PlacePlanetVicinity extends PlaceBase
 		var entityOtherPlanet = Planet.fromEntity(entityOther);
 		var entityOtherShipGroup = ShipGroupFinite.fromEntity(entityOther);
 
-		if (entityOtherName.startsWith("Wall"))
+		if (entityOtherName == PlacePlanetVicinity.EntityBoundaryWallName)
 		{
-			place.playerCollide_Wall(world, entityPlayer);
+			place.playerCollide_Walls(world, entityPlayer);
 		}
 		else if (entityOtherPlanet != null)
 		{
@@ -366,7 +329,7 @@ class PlacePlanetVicinity extends PlaceBase
 		uwpe.world.placeNextSet(placeEncounter);
 	}
 
-	playerCollide_Wall(world: WorldExtended, entityPlayer: Entity): void
+	playerCollide_Walls(world: WorldExtended, entityPlayer: Entity): void
 	{
 		var placeStarsystem = this.placeStarsystem;
 		var starsystem = placeStarsystem.starsystem;

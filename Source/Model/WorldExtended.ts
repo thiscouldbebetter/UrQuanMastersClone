@@ -51,7 +51,7 @@ class WorldExtended extends World
 		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
 		this.shipDefnsByName = ArrayHelper.addLookupsByName(this.shipDefns);
 
-		this.placeCurrent = starsystemStart.toPlace
+		var placeStart = starsystemStart.toPlace
 		(
 			this, // world
 			Disposition.fromPosAndOrientation
@@ -61,7 +61,7 @@ class WorldExtended extends World
 			),
 			null // planet?
 		);
-		//this.place.entitiesSpawn(null, this);
+		this.placeCurrentSet(placeStart); 
 	}
 
 	static create(universe: Universe): World
@@ -527,6 +527,8 @@ class WorldExtended extends World
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
+		super.updateForTimerTick(uwpe);
+		/*
 		uwpe.worldSet(this);
 
 		if (this.placeNext != null)
@@ -539,6 +541,7 @@ class WorldExtended extends World
 
 		this.placeCurrent.updateForTimerTick(uwpe);
 		this.timerTicksSoFar++;
+		*/
 	}
 
 	toControl(universe: Universe): ControlBase

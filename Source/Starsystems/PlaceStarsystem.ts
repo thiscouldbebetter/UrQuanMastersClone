@@ -65,7 +65,7 @@ class PlaceStarsystem extends PlaceBase
 		for (var i = 0; i < planets.length; i++)
 		{
 			var planet = planets[i];
-			var planetEntity = planet.toEntity(world, null, sunPos);
+			var planetEntity = planet.toEntityForStarsystem(world, null, sunPos);
 			entities.push(planetEntity);
 		}
 

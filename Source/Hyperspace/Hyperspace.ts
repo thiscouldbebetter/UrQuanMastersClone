@@ -117,11 +117,11 @@ class Hyperspace
 		(
 			fileContentsAsString
 		);
-		var starsAndPlanetsAsStringsCSV =
+		var starsAndPlanetsAsStringsCsv =
 			starsAndPlanetsAsStringCsv.split("\n");
 
 		var iOffset = 0;
-		while (starsAndPlanetsAsStringsCSV[iOffset].startsWith("Cluster") == false)
+		while (starsAndPlanetsAsStringsCsv[iOffset].startsWith("Cluster") == false)
 		{
 			iOffset++;
 		}
@@ -162,10 +162,10 @@ class Hyperspace
 		var earthOrbitRadiusInKm = 150000000;
 		var earthYearInEarthDays = 365.25;
 
-		for (var i = iOffset; i < starsAndPlanetsAsStringsCSV.length; i++)
+		for (var i = iOffset; i < starsAndPlanetsAsStringsCsv.length; i++)
 		{
-			var planetAsCSV = starsAndPlanetsAsStringsCSV[i];
-			var planetAsValues = planetAsCSV.split(",");
+			var planetAsCsv = starsAndPlanetsAsStringsCsv[i];
+			var planetAsValues = planetAsCsv.split(",");
 			var starsystemOrdinal = planetAsValues[1];
 			var starsystemPrefix = (starsystemOrdinal == "Prime" ? "" : starsystemOrdinal + " ");
 			var starsystemName =  starsystemPrefix + planetAsValues[0];
@@ -274,7 +274,8 @@ class Hyperspace
 			}
 
 			var shipsInOrbitAsString = planetAsValues[31];
-			var shipGroupInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
+			var shipGroupInOrbit =
+				ShipGroupBase.fromFactionNameAndShipsAsString(factionName, shipsInOrbitAsString);
 
 			var planetCharacteristics = new PlanetCharacteristics
 			(

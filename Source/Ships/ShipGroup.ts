@@ -15,7 +15,7 @@ interface ShipGroup extends EntityPropertyBase
 	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter;
 	toEntity(world: WorldExtended, place: Place): Entity;
 	toEntitySpace(world: WorldExtended, place: Place): Entity;
-	toStringDescription(): string;
+	toStringDescription(world: WorldExtended): string;
 }
 
 class ShipGroupBase implements ShipGroup
@@ -25,7 +25,7 @@ class ShipGroupBase implements ShipGroup
 		return entity.propertyByName(ShipGroupBase.name) as ShipGroup;
 	}
 
-	static fromString(shipGroupAsString: string): ShipGroup
+	static fromFactionNameAndShipsAsString(factionName: string, shipGroupAsString: string): ShipGroup
 	{
 		if (shipGroupAsString == "-")
 		{
@@ -36,7 +36,6 @@ class ShipGroupBase implements ShipGroup
 		var shipDefnName = shipDefnNameAndCount[0];
 		var shipCount = parseInt(shipDefnNameAndCount[1]);
 		var shipGroupName = shipDefnName + " " + ShipGroupBase.name;
-		var factionName = "todo";
 		var shipGroup =
 			shipCount == 0
 			? new ShipGroupInfinite(shipGroupName, factionName, shipDefnName)
@@ -224,10 +223,10 @@ class ShipGroupBase implements ShipGroup
 
 	// Entity implementation.
 	equals(other: ShipGroup): boolean { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-	finalize(uwpe: UniverseWorldPlaceEntities): void { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-	initialize(uwpe: UniverseWorldPlaceEntities): void { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-	propertyName(): string { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	finalize(uwpe: UniverseWorldPlaceEntities): void { /* Do nothing. */ }
+	initialize(uwpe: UniverseWorldPlaceEntities): void { /* Do nothing. */ }
+	propertyName(): string { return ShipGroupBase.name; }
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void { /* Do nothing. */ }
 
 	// ShipGroup implementation.
 
@@ -245,7 +244,7 @@ class ShipGroupBase implements ShipGroup
 	toEncounter(uwpe: UniverseWorldPlaceEntities): Encounter { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 	toEntity(world: WorldExtended, place: Place): Entity { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 	toEntitySpace(world: WorldExtended, place: Place): Entity { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-	toStringDescription(): string { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	toStringDescription(world: WorldExtended): string { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 
 }
 
@@ -266,6 +265,12 @@ class ShipGroupInfinite extends ShipGroupBase
 	shipsCount(): number
 	{
 		return Number.POSITIVE_INFINITY;
+	}
+
+	toStringDescription(world: WorldExtended): string
+	{
+		var shipDefn = world.shipDefnByName(this.shipDefnName);
+		return "Infinite " + shipDefn.namePlural;
 	}
 }
 
@@ -601,7 +606,7 @@ class ShipGroupFinite extends ShipGroupBase
 
 	// Strings.
 
-	toStringDescription(): string
+	toStringDescription(world: WorldExtended): string
 	{
 		var shipCountsByDefnName = new Map<string, number>();
 		for (var i = 0; i < this.ships.length; i++)
@@ -623,7 +628,10 @@ class ShipGroupFinite extends ShipGroupBase
 		for (var shipDefnName of shipCountsByDefnName.keys())
 		{
 			var shipCount = shipCountsByDefnName.get(shipDefnName);
-			var shipCountAsString = shipCount + " " + shipDefnName;
+			var shipDefn = world.shipDefnByName(shipDefnName);
+			var shipDefnNameSingularOrPlural =
+				(shipCount == 1 ? shipDefn.name : shipDefn.namePlural);
+			var shipCountAsString = shipCount + " " + shipDefnNameSingularOrPlural;
 			shipCountsAsStrings.push(shipCountAsString);
 		}
 

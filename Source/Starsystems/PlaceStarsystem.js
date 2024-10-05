@@ -27,7 +27,7 @@ class PlaceStarsystem extends PlaceBase {
         var planets = starsystem.planets;
         for (var i = 0; i < planets.length; i++) {
             var planet = planets[i];
-            var planetEntity = planet.toEntity(world, null, sunPos);
+            var planetEntity = planet.toEntityForStarsystem(world, null, sunPos);
             entities.push(planetEntity);
         }
         var constraintSpeedMax = new Constraint_SpeedMaxXY(1);

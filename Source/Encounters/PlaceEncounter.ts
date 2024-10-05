@@ -51,10 +51,10 @@ class PlaceEncounter extends PlaceBase
 				return; // hack
 			}
 
-			var shipGroupOther =
-				ShipGroupBase.fromEntity(encounter.entityOther);
+			var entityOther = encounter.entityOther;
+			var shipGroupOther = ShipGroupBase.fromEntity(entityOther);
 			var shipGroupOtherDescription =
-				shipGroupOther.toStringDescription();
+				shipGroupOther.toStringDescription(world);
 
 			var newline = "\n";
 			var messageToShow =

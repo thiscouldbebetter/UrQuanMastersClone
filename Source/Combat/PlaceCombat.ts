@@ -83,56 +83,50 @@ class PlaceCombat extends PlaceBase
 
 		var planet = this.combat.encounter.planet;
 
-		var planetActivity =
-			new Activity(Planet.activityDefnGravitate().name, null);
-		var planetActor = new Actor(planetActivity);
+		var planetEntity = this.constructor_PlanetEntityBuild(planet);
 
-		var planetCollider = new Sphere(Coords.create(), planetRadius);
-		var planetCollidable = new Collidable
+		this.entityToSpawnAdd(planetEntity);
+	}
+
+	constructor_PlanetEntityBuild(planet: Planet): Entity
+	{
+		var planetDefn = planet.defn();
+		var visual: VisualBase = planetDefn.visualVicinity;
+		var radius = (visual as VisualCircleGradient).radius;
+
+		var activity =
+			new Activity(Planet.activityDefnGravitate().name, null);
+		var actor = new Actor(activity);
+
+		var collider = new Sphere(Coords.create(), radius);
+		var collidable = Collidable.from3
 		(
-			false, // canCollideAgainWithoutSeparating
-			null, // ticks
-			planetCollider,
+			collider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
 			this.planetCollide
 		);
 
-		// todo - Match appearance to the actual planet.
+		visual = new VisualWrapped(this.size(), visual);
 
-		var planetDefn = planet.defn();
-		/*
-		var entityDimension = 10;
-		var planetRadius = entityDimension;
-		var planetColor = Color.Instances().Cyan;
-		var planetVisual = new VisualWrapped
-		(
-			this.size,
-			VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor)
-		);
-		*/
-		var planetVisual: VisualBase = planetDefn.visualVicinity;
-		var planetRadius = (planetVisual as VisualCircleGradient).radius;
-		planetVisual = new VisualWrapped(this.size(), planetVisual);
-
-		var planetDrawable = Drawable.fromVisual(planetVisual);
+		var drawable = Drawable.fromVisual(visual);
 
 		var sizeHalf = this.size().clone().half();
-		var planetPos = sizeHalf.clone();
-		var planetLocatable = Locatable.fromPos(planetPos);
+		var pos = sizeHalf.clone();
+		var locatable = Locatable.fromPos(pos);
 
 		var planetEntity = new Entity
 		(
-			"Planet",
+			Planet.name,
 			[
-				planetActor,
-				planetCollidable,
-				planetDrawable,
-				planetLocatable,
+				actor,
+				collidable,
+				drawable,
+				locatable,
 				planet
 			]
 		);
 
-		this.entityToSpawnAdd(planetEntity);
+		return planetEntity;
 	}
 
 	// methods

@@ -44,9 +44,9 @@ class Hyperspace {
     }
     static fromFileContentsAsString(size, starsystemRadiusOuter, starsystemSizeInner, factions, energySourcesAll, fileContentsAsString) {
         var starsAndPlanetsAsStringCsv = new CsvCompressor().decompress(fileContentsAsString);
-        var starsAndPlanetsAsStringsCSV = starsAndPlanetsAsStringCsv.split("\n");
+        var starsAndPlanetsAsStringsCsv = starsAndPlanetsAsStringCsv.split("\n");
         var iOffset = 0;
-        while (starsAndPlanetsAsStringsCSV[iOffset].startsWith("Cluster") == false) {
+        while (starsAndPlanetsAsStringsCsv[iOffset].startsWith("Cluster") == false) {
             iOffset++;
         }
         iOffset++;
@@ -78,9 +78,9 @@ class Hyperspace {
         var earthRadiusInKm = 6371;
         var earthOrbitRadiusInKm = 150000000;
         var earthYearInEarthDays = 365.25;
-        for (var i = iOffset; i < starsAndPlanetsAsStringsCSV.length; i++) {
-            var planetAsCSV = starsAndPlanetsAsStringsCSV[i];
-            var planetAsValues = planetAsCSV.split(",");
+        for (var i = iOffset; i < starsAndPlanetsAsStringsCsv.length; i++) {
+            var planetAsCsv = starsAndPlanetsAsStringsCsv[i];
+            var planetAsValues = planetAsCsv.split(",");
             var starsystemOrdinal = planetAsValues[1];
             var starsystemPrefix = (starsystemOrdinal == "Prime" ? "" : starsystemOrdinal + " ");
             var starsystemName = starsystemPrefix + planetAsValues[0];
@@ -153,7 +153,7 @@ class Hyperspace {
                 factionName = null;
             }
             var shipsInOrbitAsString = planetAsValues[31];
-            var shipGroupInOrbit = ShipGroupBase.fromString(shipsInOrbitAsString);
+            var shipGroupInOrbit = ShipGroupBase.fromFactionNameAndShipsAsString(factionName, shipsInOrbitAsString);
             var planetCharacteristics = new PlanetCharacteristics(planetSize, null, // satellites
             null, // shipGroupsInVicinity,
             shipGroupInOrbit, massInKg, radiusInKm, gravityAsFractionOfEarth, orbitInKm, dayInHours, yearInEarthDays, tectonics, weather, temperature, biosphere, energySourcesOnPlanet);

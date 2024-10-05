@@ -12,10 +12,10 @@ class WorldExtended extends World {
         this.player = player;
         this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
         this.shipDefnsByName = ArrayHelper.addLookupsByName(this.shipDefns);
-        this.placeCurrent = starsystemStart.toPlace(this, // world
+        var placeStart = starsystemStart.toPlace(this, // world
         Disposition.fromPosAndOrientation(Coords.fromXY(.5, .95).multiply(starsystemStart.sizeInner), new Orientation(new Coords(0, -1, 0), new Coords(0, 0, 1))), null // planet?
         );
-        //this.place.entitiesSpawn(null, this);
+        this.placeCurrentSet(placeStart);
     }
     static create(universe) {
         var now = DateTime.now();
@@ -253,15 +253,21 @@ class WorldExtended extends World {
         return this.placeCurrent; // hack
     }
     updateForTimerTick(uwpe) {
+        super.updateForTimerTick(uwpe);
+        /*
         uwpe.worldSet(this);
-        if (this.placeNext != null) {
+
+        if (this.placeNext != null)
+        {
             this.placeCurrent.finalize(uwpe);
             this.placeCurrent = this.placeNext;
             this.placeCurrent.initialize(uwpe);
             this.placeNextSet(null);
         }
+
         this.placeCurrent.updateForTimerTick(uwpe);
         this.timerTicksSoFar++;
+        */
     }
     toControl(universe) {
         return new ControlNone();

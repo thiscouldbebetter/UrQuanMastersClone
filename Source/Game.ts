@@ -448,7 +448,7 @@ class Game
 		);
 
 		var placeCombat = combat.toPlace(world);
-		world.placeCurrent = placeCombat;
+		world.placeCurrentSet(placeCombat);
 
 		var controlShipSelect = combat.toControlShipSelect
 		(
@@ -644,7 +644,7 @@ class Game
 
 		uwpe.entitiesSwap();
 		var placeEncounter = encounter.toPlace();
-		universe.world.placeCurrent = placeEncounter;
+		universe.world.placeCurrentSet(placeEncounter);
 
 		talker.talk(uwpe);
 	}

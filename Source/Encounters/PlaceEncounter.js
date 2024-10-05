@@ -29,8 +29,9 @@ class PlaceEncounter extends PlaceBase {
                 this.encounter.talk(universe);
                 return; // hack
             }
-            var shipGroupOther = ShipGroupBase.fromEntity(encounter.entityOther);
-            var shipGroupOtherDescription = shipGroupOther.toStringDescription();
+            var entityOther = encounter.entityOther;
+            var shipGroupOther = ShipGroupBase.fromEntity(entityOther);
+            var shipGroupOtherDescription = shipGroupOther.toStringDescription(world);
             var newline = "\n";
             var messageToShow = "Encounter" + newline
                 + "with " + shipGroupOtherDescription + newline

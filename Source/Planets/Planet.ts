@@ -146,16 +146,28 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 	orbitColor(): Color
 	{
-		var temperature = this.characteristics.temperature;
+		var orbitColor: Color;
+
 		var colors = Color.Instances();
-		var orbitColor =
-		(
-			temperature > 100
-			? colors.Brown
-			: temperature > 0
-			? colors.GreenDark
-			: colors.BlueDark
-		);
+
+		if (this.characteristics == null)
+		{
+			orbitColor = colors.Gray;
+		}
+		else
+		{
+			var temperature = this.characteristics.temperature;
+			orbitColor =
+			(
+				temperature > 200
+				? colors.Red
+				: temperature > 100
+				? colors.Brown
+				: temperature > 0
+				? colors.GreenDark
+				: colors.BlueDark
+			);
+		}
 		return orbitColor;
 	}
 
@@ -181,6 +193,11 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return this.characteristics.satellitesGet();
 	}
 
+	shipGroupInOrbit(): ShipGroup
+	{
+		return (this.characteristics == null ? null : this.characteristics.shipGroupInOrbit);
+	}
+
 	shipGroupInVicinityAdd(shipGroup: ShipGroup): Planet
 	{
 		this.characteristics.shipGroupInVicinityAdd(shipGroup);
@@ -203,7 +220,80 @@ class Planet implements EntityProperty<Planet>, Satellite
 		return (this.isStation() ? Coords.zeroes() : this.characteristics.sizeSurface);
 	}
 
-	toEntity(world: WorldExtended, primary: Planet, primaryPos: Coords): Entity
+	toEntityForPlanetVicinity
+	(
+		world: WorldExtended, isPrimary: boolean, primaryPos: Coords, entityDimension: number
+	): Entity
+	{
+		var globeRadius = entityDimension;
+		var orbitMultiplier = 4; // hack
+
+		var collider = Sphere.fromRadius(globeRadius);
+		var collidable = Collidable.fromCollider(collider);
+
+		var planetDefn = this.defn();
+		var globeVisual = planetDefn.visualVicinity;
+
+		var orbitRadius = this.posAsPolar.radius * orbitMultiplier;
+		var orbitColor = this.orbitColor();
+		var orbitVisual = new VisualAnchor
+		(
+			VisualCircle.fromRadiusAndColorBorder(orbitRadius, orbitColor),
+			posWithinVicinity,
+			null // ?
+		);
+
+		var visual = new VisualGroup
+		([
+			orbitVisual,
+			globeVisual,
+		]);
+		var drawable = Drawable.fromVisual(visual);
+
+		var posWithinVicinity = primaryPos.clone();
+		if (isPrimary == false)
+		{
+			var offsetFromPrimary = Polar.fromAzimuthInTurnsAndRadius
+			(
+				this.posAsPolar.azimuthInTurns + .5,
+				orbitRadius
+			).wrap().toCoords(Coords.create());
+
+			posWithinVicinity.add(offsetFromPrimary);
+		}
+
+
+		var locatable = Locatable.fromPos(posWithinVicinity);
+
+		var entityName = isPrimary ? Planet.name : this.name;
+		var entity = new Entity
+		(
+			entityName,
+			[
+				collidable,
+				drawable,
+				locatable,
+				this
+			]
+		);
+
+		var faction = this.faction(world);
+		if (faction != null)
+		{
+			var talker = faction.toTalker();
+			entity.propertyAdd(talker);
+
+			var shipGroupInOrbit = this.shipGroupInOrbit();
+			if (shipGroupInOrbit != null)
+			{
+				entity.propertyAdd(shipGroupInOrbit);
+			}
+		}
+
+		return entity;
+	}
+
+	toEntityForStarsystem(world: WorldExtended, primary: Planet, primaryPos: Coords): Entity
 	{
 		var pos = primaryPos.clone().add
 		(
@@ -224,7 +314,6 @@ class Planet implements EntityProperty<Planet>, Satellite
 				primaryPos,
 				null // ?
 			),
-			//VisualCircle.fromRadiusAndColorFill(this.radiusOuter, planetDefn.color)
 			planetDefn.visualStarsystem
 		]);
 
@@ -240,14 +329,6 @@ class Planet implements EntityProperty<Planet>, Satellite
 				Locatable.fromPos(pos),
 			]
 		);
-
-		var faction = this.faction(world);
-		if (faction != null)
-		{
-			var talker = faction.toTalker();
-			returnValue.propertyAdd(talker);
-		}
-
 
 		return returnValue;
 	}

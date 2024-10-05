@@ -3,7 +3,7 @@ class ShipGroupBase {
     static fromEntity(entity) {
         return entity.propertyByName(ShipGroupBase.name);
     }
-    static fromString(shipGroupAsString) {
+    static fromFactionNameAndShipsAsString(factionName, shipGroupAsString) {
         if (shipGroupAsString == "-") {
             return null;
         }
@@ -11,7 +11,6 @@ class ShipGroupBase {
         var shipDefnName = shipDefnNameAndCount[0];
         var shipCount = parseInt(shipDefnNameAndCount[1]);
         var shipGroupName = shipDefnName + " " + ShipGroupBase.name;
-        var factionName = "todo";
         var shipGroup = shipCount == 0
             ? new ShipGroupInfinite(shipGroupName, factionName, shipDefnName)
             : new ShipGroupFinite(shipGroupName, factionName, Coords.create(), Ship.manyFromDefnNameAndCount(shipDefnName, shipCount));
@@ -118,10 +117,10 @@ class ShipGroupBase {
     }
     // Entity implementation.
     equals(other) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-    finalize(uwpe) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-    initialize(uwpe) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-    propertyName() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-    updateForTimerTick(uwpe) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    propertyName() { return ShipGroupBase.name; }
+    updateForTimerTick(uwpe) { }
     posSet(value) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     shipFirst() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     shipLostAdd(ship) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
@@ -132,7 +131,7 @@ class ShipGroupBase {
     toEncounter(uwpe) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     toEntity(world, place) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     toEntitySpace(world, place) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
-    toStringDescription() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+    toStringDescription(world) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 }
 class ShipGroupInfinite extends ShipGroupBase {
     constructor(name, factionName, shipDefnName) {
@@ -143,6 +142,10 @@ class ShipGroupInfinite extends ShipGroupBase {
     }
     shipsCount() {
         return Number.POSITIVE_INFINITY;
+    }
+    toStringDescription(world) {
+        var shipDefn = world.shipDefnByName(this.shipDefnName);
+        return "Infinite " + shipDefn.namePlural;
     }
 }
 class ShipGroupFinite extends ShipGroupBase {
@@ -346,7 +349,7 @@ class ShipGroupFinite extends ShipGroupBase {
         return cr.toControl_Layout_2(size, universe);
     }
     // Strings.
-    toStringDescription() {
+    toStringDescription(world) {
         var shipCountsByDefnName = new Map();
         for (var i = 0; i < this.ships.length; i++) {
             var ship = this.ships[i];
@@ -362,7 +365,9 @@ class ShipGroupFinite extends ShipGroupBase {
         var shipCountsAsStrings = [];
         for (var shipDefnName of shipCountsByDefnName.keys()) {
             var shipCount = shipCountsByDefnName.get(shipDefnName);
-            var shipCountAsString = shipCount + " " + shipDefnName;
+            var shipDefn = world.shipDefnByName(shipDefnName);
+            var shipDefnNameSingularOrPlural = (shipCount == 1 ? shipDefn.name : shipDefn.namePlural);
+            var shipCountAsString = shipCount + " " + shipDefnNameSingularOrPlural;
             shipCountsAsStrings.push(shipCountAsString);
         }
         return shipCountsAsStrings.join("\n");

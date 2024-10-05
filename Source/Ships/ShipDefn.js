@@ -1,6 +1,6 @@
 "use strict";
 class ShipDefn {
-    constructor(name, factionName, mass, acceleration, speedMax, turnsPerTick, crewInitial, crewMax, energyPerTick, energyMax, costToBuild, salvageValue, visual, attackDefn, specialDefn) {
+    constructor(name, namePlural, factionName, mass, acceleration, speedMax, turnsPerTick, crewInitial, crewMax, energyPerTick, energyMax, costToBuild, salvageValue, visual, attackDefn, specialDefn) {
         var speedDivisor = 32; // Trial and error.
         this.name = name;
         this.factionName = factionName;
@@ -32,31 +32,6 @@ class ShipDefn {
             Coords.fromXY(-.8, .8).multiplyScalar(dimension).half(),
             Coords.fromXY(-.8, -.8).multiplyScalar(dimension).half(),
         ]);
-        /*
-        var visualsPerTurn = 32;
-        var turnsPerPlayerVisual = 1 / visualsPerTurn;
-        var visualsForAngles = [];
-        var transformRotate2D = new Transform_Rotate2D();
-
-        for (var i = 0; i < visualsPerTurn; i++)
-        {
-            transformRotate2D.turnsToRotate = i * turnsPerPlayerVisual;
-
-            var visualForAngle = new VisualPolygon
-            (
-                visualPath.clone().transform(transformRotate2D),
-                colorFill, colorBorder
-            );
-
-            visualsForAngles.push(visualForAngle);
-        }
-
-        var returnValue = new VisualDirectional
-        (
-            new VisualPolygon(visualPath, colorFill, colorBorder),
-            visualsForAngles
-        );
-        */
         // Don't use a VisualDirectional, because the path is being transformed anyway!
         var returnValue = new VisualPolygon(visualPath, colorFill, colorBorder, true // shouldUseEntityOrientation
         );
@@ -134,7 +109,8 @@ class ShipDefn_Instances {
         var sv16 = (shipName, shipImageFilePrefix, shipSizesForHeadings) => sv(shipName, shipImageFilePrefix, shipSizesForHeadings, 16);
         var colorGray = colors.Gray;
         var colorBlack = colors.Black;
-        var shipDefnFlagship = new ShipDefn("Flagship", "Player", // factionName
+        var shipDefnFlagship = new ShipDefn("Flagship", null, // namePlural
+        "Player", // factionName
         1, // mass
         .5, // accel
         24, // speedMax
@@ -161,7 +137,8 @@ class ShipDefn_Instances {
             Coords.fromXY(46, 30)
         ].map(x => x.normalize().multiplyScalar(shipDimension))), attackDefnTodo, null // ?
         );
-        var shipDefnLander = new ShipDefn("Lander", "Player", // factionName
+        var shipDefnLander = new ShipDefn("Lander", null, // namePlural
+        "Player", // factionName
         1, // mass
         4, // accel
         128, // speedMax
@@ -175,7 +152,8 @@ class ShipDefn_Instances {
         ShipDefn.visual(shipDimension, colorGray, colorBlack), attackDefnTodo, null // ?
         );
         var shipDefnLahkemupGuardDroneVisual = sv("GuardDrone", "drone/drone", shipSizes16x16, 1);
-        var shipDefnLahkemupGuardDrone = new ShipDefn("GuardDrone", "Lahkemup", // factionName
+        var shipDefnLahkemupGuardDrone = new ShipDefn("GuardDrone", null, // namePlural
+        "Lahkemup", // factionName
         1, // mass
         .1, // accel
         2, // speedMax
@@ -646,33 +624,34 @@ class ShipDefn_Instances {
             Coords.fromXY(29, 27)
         ];
         var sd = ShipDefn;
-        //		name, 			factionName, 	mass, 	accel, 	speedMax,turnsPerTick, 		crew, 		e/tick,	eMax, 	cost, 	salvage,visual,														attack, special
-        this.Aegis = new sd("Aegis", "Raptodact", 3, 2, 30, .33 / headings16, 20, 20, .29, 10, 2300, 287, sv16("Aegis", "yehat/terminator", shipAegisSizes), adTodo, adTodo),
-            this.Afterburner = new sd("Afterburner", "Vaarphig", 7, 7, 28, .5 / headings16, 8, 8, .142, 24, 1000, 125, sv16("Afterburner", "thraddash/torch", shipAfterburnerSizes), adTodo, adTodo),
-            this.Collapsar = new sd("Collapsar", "Manalogues", 6, 3, 24, .2 / headings16, 20, 20, .111, 24, 1500, null, sv16("Collapsar", "androsynth/guardian", shipCollapsarSizes), adTodo, adTodo),
-            this.Broadsider = new sd("Broadsider", "Terran", 6, .6, 24, .5 / headings16, 18, 18, .111, 18, 1100, null, sv16("Broadsider", "human/cruiser", shipBroadsiderSizes), adTodo, adTodo),
-            this.Discus = new sd("Discus", "Ellfyn", 1, 40, 40, .5 / headings16, 6, 6, .142, 20, 1500, 200, sv16("Discus", "arilou/skiff", shipDiscusSizes), adTodo, adTodo),
-            this.Efflorescence = new sd("Efflorescence", "Twyggan", 4, 8, 40, .5 / headings16, 12, 12, .2, 16, 1600, 200, sv16("Efflorescence", "supox/blade", shipEfflorescenceSizes), adTodo, adTodo),
-            this.Elysian = new sd("Elysian", "Mazonae", 2, 4.5, 36, .5 / headings16, 12, 42, .142, 16, 1300, null, sv16("Elysian", "syreen/penetrator", shipElysianSizes), adTodo, shipElysianSpecialEnticer),
-            this.Encumbrator = new sd("Encumbrator", "Ugglegruj", 6, 1.4, 21, .142 / headings16, 20, 20, .111, 40, 1200, 150, sv16("Encumbrator", "vux/intruder", shipEncumbratorSizes), adTodo, shipEncumbratorSpecialBurr),
-            this.Fireblossom = new sd("Fireblossom", "Muunfaz", 1, 16, 64, 1 / headings16, 8, 8, 0, 12, 2000, 250, sv16("Fireblossom", "pkunk/fury", shipFireblossomSizes), adTodo, shipFireblossomSpecialRefuel),
-            this.Gravitar = new sd("Gravitar", "Konstalyxz", 10, 1.166, 35, .25 / headings16, 42, 42, .5, 42, 3000, null, sv16("Gravitar", "chmmr/avatar", shipGravitarSizes), adTodo, shipGravitarSpecialTractorBeam),
-            this.Hyphae = new sd("Sporsac", "Hyphae", 7, 1.29, 27, .14 / headings16, 20, 20, .2, 40, 2100, 262, sv16("Sporsac", "mycon/podship", shipSporsacSizes), adTodo, shipSporsacSpecialRegenerate),
-            this.Indemnity = new sd("Indemnity", "Murch", 7, 1.2, 36, .2 / headings16, 20, 20, .2, 42, 1800, 450, sv16("Indemnity", "melnorme/trader", shipIndemnitySizes), adTodo, adTodo),
-            this.Infernus = new sd("Infernus", "Raknoid", 17, 5, 25, .33 / headings16, 22, 22, .8, 16, 1000, 125, shipInfernusVisual, adTodo, shipInfernusSpecialCloak),
-            this.Kickback = new sd("Kickback", "Daskapp", 5, 1, 20, .2 / headings16, 14, 14, .02, 32, 1700, 212, sv16("Kickback", "druuge/mauler", shipKickbackSizes), adTodo, shipKickbackSpecialRightsize),
-            this.MetamorphA = new sd("MetamorphA", "Knsnynz", 3, 2.5, 20, .33 / headings16, 20, 20, .29, 10, 1900, null, sv16("MetamorphA", "mmrnmhrm/xform", shipMetamorphASizes), adTodo, adTodo),
-            this.MetamorphB = new sd("MetamorphB", "Knsnynz", 3, 10, 50, .07 / headings16, 20, 20, .14, 10, 1900, null, sv16("MetamorphB", "mmrnmhrm/xform", shipMetamorphBSizes), adTodo, adTodo),
-            this.Nitpiknik = new sd("Nitpiknik", "Triunion", 5, 10, 40, .5 / headings16, 10, 10, .2, 10, 600, 75, sv16("Nitpiknik", "zoqfotpik/stinger", shipNitpiknikSizes), adTodo, adTodo),
-            this.Punishpunj = new sd("Punishpunj", "Grimmotz", 8, .86, 36, .5 / headings16, 20, 20, 0, 20, 2200, 275, sv16("Punishpunj", "utwig/jugger", shipPunishpunjSizes), adTodo, adTodo),
-            this.Pustule = new sd("Pustule", "Famorfex", 1, 1.5, 18, .2 / headings16, 10, 10, .2, 30, 700, 87, sv16("Pustule", "umgah/drone", shipPustuleSizes), adTodo, shipPustuleSpecialRetrodrive),
-            this.Scuttler = new sd("Scuttler", "Mauluska", 7, 6, 48, .5 / headings16, 30, 30, .091, 10, 1800, 225, sv16("Scuttler", "spathi/eluder", shipScuttlerSizes), adTodo, shipScuttlerSpecialMoonbeam),
-            this.Shackler = new sd("Shackler", "Lahkemup", 10, .86, 30, .2 / headings16, 42, 42, .14, 42, 3000, 375, sv16("Shackler", "urquan/dreadnought", shipShacklerSizes), adTodo, shipShacklerSpecialFighter),
-            this.Silencer = new sd("Silencer", "Kehlemal", 10, 1.2, 30, .2 / headings16, 42, 42, .2, 42, 3000, 375, sv16("Silencer", "kohrah/marauder", shipSilencerSizes), adTodo, adTodo),
-            this.Starshard = new sd("Starshard", "Xtalix", 10, .6, 27, .142 / headings16, 36, 36, .2, 30, 2600, null, sv16("Starshard", "chenjesu/broodhome", shipSizes16x16), adTodo, shipStarshardSpecialLeech),
-            this.Sunbright = new sd("Sunbright", "Supian", 1, 5, 35, .5 / headings16, 6, 6, .1, 4, 500, 62, sv16("Sunbright", "shofixti/scout", shipSunbrightSizes), adTodo, shipSunbrightSpecialBigBadaBoom),
-            this.Tumbler = new sd("Tumbler", "Tempestrial", 1, 60, 60, .5 / headings16, 12, 12, 0, 20, 1700, 550, sv16("Tumbler", "slylandro/probe", shipTumblerSizes), adTodo, shipTumblerSpecialCatabolize),
-            this.Wingshadow = new sd("Wingshadow", "Outz", 4, 5, 35, .5 / headings16, 16, 16, .142, 20, 2300, 287, sv16("Wingshadow", "orz/nemesis", shipWingshadowSizes), adTodo, adTodo),
+        const namePluralNone = null;
+        //		name, 				namePlural, 	factionName, 	mass, 	accel, 	speedMax,turnsPerTick, 		crew, 		e/tick,	eMax, 	cost, 	salvage,visual,														attack, special
+        this.Aegis = new sd("Aegis", namePluralNone, "Raptodact", 3, 2, 30, .33 / headings16, 20, 20, .29, 10, 2300, 287, sv16("Aegis", "yehat/terminator", shipAegisSizes), adTodo, adTodo),
+            this.Afterburner = new sd("Afterburner", namePluralNone, "Vaarphig", 7, 7, 28, .5 / headings16, 8, 8, .142, 24, 1000, 125, sv16("Afterburner", "thraddash/torch", shipAfterburnerSizes), adTodo, adTodo),
+            this.Collapsar = new sd("Collapsar", namePluralNone, "Manalogues", 6, 3, 24, .2 / headings16, 20, 20, .111, 24, 1500, null, sv16("Collapsar", "androsynth/guardian", shipCollapsarSizes), adTodo, adTodo),
+            this.Broadsider = new sd("Broadsider", namePluralNone, "Terran", 6, .6, 24, .5 / headings16, 18, 18, .111, 18, 1100, null, sv16("Broadsider", "human/cruiser", shipBroadsiderSizes), adTodo, adTodo),
+            this.Discus = new sd("Discus", namePluralNone, "Ellfyn", 1, 40, 40, .5 / headings16, 6, 6, .142, 20, 1500, 200, sv16("Discus", "arilou/skiff", shipDiscusSizes), adTodo, adTodo),
+            this.Efflorescence = new sd("Efflorescence", namePluralNone, "Twyggan", 4, 8, 40, .5 / headings16, 12, 12, .2, 16, 1600, 200, sv16("Efflorescence", "supox/blade", shipEfflorescenceSizes), adTodo, adTodo),
+            this.Elysian = new sd("Elysian", namePluralNone, "Mazonae", 2, 4.5, 36, .5 / headings16, 12, 42, .142, 16, 1300, null, sv16("Elysian", "syreen/penetrator", shipElysianSizes), adTodo, shipElysianSpecialEnticer),
+            this.Encumbrator = new sd("Encumbrator", namePluralNone, "Ugglegruj", 6, 1.4, 21, .142 / headings16, 20, 20, .111, 40, 1200, 150, sv16("Encumbrator", "vux/intruder", shipEncumbratorSizes), adTodo, shipEncumbratorSpecialBurr),
+            this.Fireblossom = new sd("Fireblossom", namePluralNone, "Muunfaz", 1, 16, 64, 1 / headings16, 8, 8, 0, 12, 2000, 250, sv16("Fireblossom", "pkunk/fury", shipFireblossomSizes), adTodo, shipFireblossomSpecialRefuel),
+            this.Gravitar = new sd("Gravitar", namePluralNone, "Konstalyxz", 10, 1.166, 35, .25 / headings16, 42, 42, .5, 42, 3000, null, sv16("Gravitar", "chmmr/avatar", shipGravitarSizes), adTodo, shipGravitarSpecialTractorBeam),
+            this.Hyphae = new sd("Sporsac", namePluralNone, "Hyphae", 7, 1.29, 27, .14 / headings16, 20, 20, .2, 40, 2100, 262, sv16("Sporsac", "mycon/podship", shipSporsacSizes), adTodo, shipSporsacSpecialRegenerate),
+            this.Indemnity = new sd("Indemnity", namePluralNone, "Murch", 7, 1.2, 36, .2 / headings16, 20, 20, .2, 42, 1800, 450, sv16("Indemnity", "melnorme/trader", shipIndemnitySizes), adTodo, adTodo),
+            this.Infernus = new sd("Infernus", namePluralNone, "Raknoid", 17, 5, 25, .33 / headings16, 22, 22, .8, 16, 1000, 125, shipInfernusVisual, adTodo, shipInfernusSpecialCloak),
+            this.Kickback = new sd("Kickback", namePluralNone, "Daskapp", 5, 1, 20, .2 / headings16, 14, 14, .02, 32, 1700, 212, sv16("Kickback", "druuge/mauler", shipKickbackSizes), adTodo, shipKickbackSpecialRightsize),
+            this.MetamorphA = new sd("MetamorphA", namePluralNone, "Knsnynz", 3, 2.5, 20, .33 / headings16, 20, 20, .29, 10, 1900, null, sv16("MetamorphA", "mmrnmhrm/xform", shipMetamorphASizes), adTodo, adTodo),
+            this.MetamorphB = new sd("MetamorphB", namePluralNone, "Knsnynz", 3, 10, 50, .07 / headings16, 20, 20, .14, 10, 1900, null, sv16("MetamorphB", "mmrnmhrm/xform", shipMetamorphBSizes), adTodo, adTodo),
+            this.Nitpiknik = new sd("Nitpiknik", namePluralNone, "Triunion", 5, 10, 40, .5 / headings16, 10, 10, .2, 10, 600, 75, sv16("Nitpiknik", "zoqfotpik/stinger", shipNitpiknikSizes), adTodo, adTodo),
+            this.Punishpunj = new sd("Punishpunj", namePluralNone, "Grimmotz", 8, .86, 36, .5 / headings16, 20, 20, 0, 20, 2200, 275, sv16("Punishpunj", "utwig/jugger", shipPunishpunjSizes), adTodo, adTodo),
+            this.Pustule = new sd("Pustule", namePluralNone, "Famorfex", 1, 1.5, 18, .2 / headings16, 10, 10, .2, 30, 700, 87, sv16("Pustule", "umgah/drone", shipPustuleSizes), adTodo, shipPustuleSpecialRetrodrive),
+            this.Scuttler = new sd("Scuttler", namePluralNone, "Mauluska", 7, 6, 48, .5 / headings16, 30, 30, .091, 10, 1800, 225, sv16("Scuttler", "spathi/eluder", shipScuttlerSizes), adTodo, shipScuttlerSpecialMoonbeam),
+            this.Shackler = new sd("Shackler", namePluralNone, "Lahkemup", 10, .86, 30, .2 / headings16, 42, 42, .14, 42, 3000, 375, sv16("Shackler", "urquan/dreadnought", shipShacklerSizes), adTodo, shipShacklerSpecialFighter),
+            this.Silencer = new sd("Silencer", namePluralNone, "Kehlemal", 10, 1.2, 30, .2 / headings16, 42, 42, .2, 42, 3000, 375, sv16("Silencer", "kohrah/marauder", shipSilencerSizes), adTodo, adTodo),
+            this.Starshard = new sd("Starshard", namePluralNone, "Xtalix", 10, .6, 27, .142 / headings16, 36, 36, .2, 30, 2600, null, sv16("Starshard", "chenjesu/broodhome", shipSizes16x16), adTodo, shipStarshardSpecialLeech),
+            this.Sunbright = new sd("Sunbright", namePluralNone, "Supian", 1, 5, 35, .5 / headings16, 6, 6, .1, 4, 500, 62, sv16("Sunbright", "shofixti/scout", shipSunbrightSizes), adTodo, shipSunbrightSpecialBigBadaBoom),
+            this.Tumbler = new sd("Tumbler", namePluralNone, "Tempestrial", 1, 60, 60, .5 / headings16, 12, 12, 0, 20, 1700, 550, sv16("Tumbler", "slylandro/probe", shipTumblerSizes), adTodo, shipTumblerSpecialCatabolize),
+            this.Wingshadow = new sd("Wingshadow", namePluralNone, "Outz", 4, 5, 35, .5 / headings16, 16, 16, .142, 20, 2300, 287, sv16("Wingshadow", "orz/nemesis", shipWingshadowSizes), adTodo, adTodo),
             this._All =
                 [
                     shipDefnFlagship,
