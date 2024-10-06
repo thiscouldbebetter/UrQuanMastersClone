@@ -818,6 +818,16 @@ class SystemTests extends TestFixture
 
 		// todo - Verify that the crashed shackler is on board.
 
+		// Proceed to the paraspace portal.
+		// todo - Advance time to the 17th of the month.
+
+		this.goToHyperspace(universe);
+		this.moveToEntityWithNameAndWait(universe, "UNKNOWN");
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+		var placeHyperspace = place() as PlaceHyperspace;
+		var spaceOccupied = placeHyperspace.hyperspace;
+		Assert.areStringsEqual("Paraspace", spaceOccupied.name);
+
 		callback();
 	}
 
@@ -1025,7 +1035,6 @@ class SystemTests extends TestFixture
 		);
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-
 	}
 
 	goToRainbowWorldInStarsystemWithName(starsystemName: string, universe: Universe): void

@@ -133,6 +133,7 @@ class Starsystem {
     // Equatable.
     equals(other) { return false; }
 }
+Starsystem.RadiusOuter = 10; // todo
 Starsystem.StarColors = [
     Color.Instances().Red,
     Color.Instances().Orange,

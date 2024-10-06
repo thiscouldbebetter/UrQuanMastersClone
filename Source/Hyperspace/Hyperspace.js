@@ -1,18 +1,17 @@
 "use strict";
 class Hyperspace {
-    constructor(size, starsystemRadiusOuter, linkPortals, shipGroups, starsystems) {
+    constructor(name, size, linkPortals, shipGroups, starsystems) {
+        this.name = name || Hyperspace.name;
         this.size = size;
-        this.starsystemRadiusOuter = starsystemRadiusOuter;
-        this._linkPortals = linkPortals;
-        this.shipGroups = shipGroups;
-        this.starsystems = starsystems;
+        this._linkPortals = linkPortals || [];
+        this.shipGroups = shipGroups || [];
+        this.starsystems = starsystems || [];
         this.starsystemsByName = ArrayHelper.addLookupsByName(this.starsystems);
     }
     // static methods
-    static random(universe, randomizer, size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner) {
-        //var planetsPerStarsystemMax = 6;
+    static random(universe, randomizer, size, numberOfStarsystems, starsystemSizeInner) {
         var factionName = null; // todo
-        var distanceBetweenStarsystemsMin = starsystemRadiusOuter * 2;
+        var distanceBetweenStarsystemsMin = Starsystem.RadiusOuter * 2;
         var displacement = Coords.create();
         var starsystems = new Array();
         for (var i = 0; i < numberOfStarsystems; i++) {
@@ -39,12 +38,13 @@ class Hyperspace {
             starsystem.contentsRandomize(randomizer);
             starsystems.push(starsystem);
         }
-        var returnValue = new Hyperspace(size, starsystemRadiusOuter, [], // linkPortals
+        var returnValue = new Hyperspace(null, // name
+        size, [], // linkPortals
         [], // shipGroups
         starsystems);
         return returnValue;
     }
-    static fromFileContentsAsString(size, starsystemRadiusOuter, starsystemSizeInner, factions, energySourcesAll, fileContentsAsString) {
+    static fromFileContentsAsString(size, starsystemSizeInner, factions, energySourcesAll, fileContentsAsString) {
         var starsAndPlanetsAsStringCsv = new CsvCompressor().decompress(fileContentsAsString);
         var starsAndPlanetsAsStringsCsv = starsAndPlanetsAsStringCsv.split("\n");
         var iOffset = 0;
@@ -175,8 +175,14 @@ class Hyperspace {
         var starsystemSol = starsystemsByName.get("Sol");
         var shipGroup = new ShipGroupFinite("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), [new Ship("Tumbler")]);
         var shipGroups = [shipGroup];
-        var hyperspace = new Hyperspace(size, starsystemRadiusOuter, linkPortals, shipGroups, starsystems);
+        var hyperspace = new Hyperspace(null, // name
+        size, linkPortals, shipGroups, starsystems);
         return hyperspace;
+    }
+    static fromNameSizeAndLinkPortals(name, size, linkPortals) {
+        return new Hyperspace(name, size, linkPortals, null, // shipGroups
+        null // starsystems
+        );
     }
     // instance methods
     distanceBetweenStarsystemsWithNames(starsystemFromName, starsystemToName) {

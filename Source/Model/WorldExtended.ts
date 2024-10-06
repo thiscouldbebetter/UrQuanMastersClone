@@ -5,6 +5,7 @@ class WorldExtended extends World
 	dateCreated: DateTime;
 	defn: WorldDefnExtended;
 	hyperspace: Hyperspace;
+	paraspace: Hyperspace;
 	factions: Faction[];
 	shipDefns: ShipDefn[];
 	player: Player;
@@ -22,6 +23,7 @@ class WorldExtended extends World
 		defn: WorldDefnExtended,
 		gameTimeInitial: Date,
 		hyperspace: Hyperspace,
+		paraspace: Hyperspace,
 		factions: Faction[],
 		shipDefns: ShipDefn[],
 		player: Player,
@@ -44,6 +46,7 @@ class WorldExtended extends World
 		this.gameSecondsSinceStart = 0;
 
 		this.hyperspace = hyperspace;
+		this.paraspace = paraspace;
 		this.factions = factions;
 		this.shipDefns = shipDefns;
 		this.player = player;
@@ -256,7 +259,7 @@ class WorldExtended extends World
 		var hostile = Faction.RelationsHostile;
 		var neutral = Faction.RelationsNeutral;
 
-		var daskapp 		= f("Daskapp", 		"Druuge", 		c.Red, 	 	soi(946.9, 280.6, .1), 	neutral, "Kickback");
+		var daaskap 		= f("Daaskap", 		"Druuge", 		c.Red, 	 	soi(946.9, 280.6, .1), 	neutral, "Kickback");
 		var ellfyn			= f("Ellfyn", 		"Arilou", 		c.Blue, 	soi(100, 500, .05), 	neutral, "Discus");
 		var famorfex 		= f("Famorfex", 	"Umgah", 		c.Violet, 	soi(197.8, 596.8, .1), 	hostile, "Pustule");
 		var grimmotz 		= f("Grimmotz", 	"Utwig", 		c.Cyan, 	soi(863.0, 869.3, .1), 	neutral, "Punishpunj");
@@ -283,7 +286,7 @@ class WorldExtended extends World
 
 		var factions =
 		[
-			daskapp,
+			daaskap,
 			ellfyn,
 			famorfex,
 			grimmotz,
@@ -332,22 +335,71 @@ class WorldExtended extends World
 		var starsAndPlanetsAsStringCsvCompressed =
 			mediaLibrary.textStringGetByName("StarsAndPlanets").value;
 
+		var starsystemSizeInner = Coords.fromXY(1, 1).multiplyScalar(300);
+
 		var hyperspace = Hyperspace.fromFileContentsAsString
 		(
 			hyperspaceSize,
-			10, // starsystemRadiusOuter
-			Coords.fromXY(1, 1).multiplyScalar(300),
+			starsystemSizeInner,
 			factions,
 			energySources,
 			starsAndPlanetsAsStringCsvCompressed
 		);
 
-		// Add a Paraspace portal.
-		var starsystemAlphaCircini = hyperspace.starsystemByName("Alpha Circini");
-		var starsystemAlphaColumbae = hyperspace.starsystemByName("Alpha Columbae");
-		var paraspacePortalPos =
-			starsystemAlphaCircini.posInHyperspace.clone().add(starsystemAlphaColumbae.posInHyperspace).half();
-		var linkPortal = new LinkPortal("Anomaly", paraspacePortalPos);
+		// Create paraspace.
+
+		const hyperspaceName = "Hyperspace";
+		const paraspaceName = "Paraspace";
+
+		var paraspaceLinkPortalName = "UNKNOWN";
+		let lp = (fromPos: Coords, toPos: Coords) =>
+		{
+			return new LinkPortal
+			(
+				paraspaceLinkPortalName,
+				fromPos,
+				hyperspaceName,
+				toPos
+			);
+		};
+
+		var paraspaceSize = hyperspaceSize.clone();
+		var paraspaceLinkPortals =
+		[
+			lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712) ), // Lyncis (Freaky Beast)
+			lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607,  151) ), // Trianguli (SE)
+			lp(Coords.fromXY(4660, 5140), Coords.fromXY(2302, 3988) ), // Gruis (Mauluska) 
+			lp(Coords.fromXY(4680, 4640), Coords.fromXY(9211, 6104) ), // Arcturus (Ttosting)
+			lp(Coords.fromXY(4760, 4580), Coords.fromXY(4091, 7748) ), // Monocerotis (Lahk-Emup NW)
+			lp(Coords.fromXY(4760, 4960), Coords.fromXY(6117, 4131) ), // Camelopardalis (Lahk-Emup S)
+			lp(Coords.fromXY(4880, 5380), Coords.fromXY(9735, 3153) ), // Persei (Daaskap) 
+			lp(Coords.fromXY(4920, 4920), Coords.fromXY(  50, 1647) ), // Mizar (Raknoid)
+			lp(Coords.fromXY(5020, 4600), Coords.fromXY(3184, 4906) ), // Capricorni (Triunion)
+			lp(Coords.fromXY(5060, 4740), Coords.fromXY(1910,  962) ), // Lyrae (Sol)
+			lp(Coords.fromXY(5160, 4660), Coords.fromXY(5673, 1207) ), // Sculptoris (Hyphae)
+			lp(Coords.fromXY(5200, 5140), Coords.fromXY( 103, 9404) ), // Corvi (Tempestrials)
+			lp(Coords.fromXY(5200, 5400), Coords.fromXY(5850, 6213) ), // Crateris (Lahk-Emup Center)
+			lp(Coords.fromXY(5300, 5280), Coords.fromXY(7752, 8906) ), // Librae (Twyggan)
+			lp(Coords.fromXY(5440, 5320), Coords.fromXY( 368, 6332) ), // Circini (Elfynn)
+		];
+
+		var paraspace = Hyperspace.fromNameSizeAndLinkPortals
+		(
+			paraspaceName,
+			paraspaceSize,
+			paraspaceLinkPortals
+		);
+
+		// Add a portal to paraspace in hyperspace,
+		// and multiple portals to hyperspace in paraspace.
+		var paraspacePortalPos = Coords.fromXY(438, 6372);
+		var linkPortal = new LinkPortal
+		(
+			"UNKNOWN",
+			paraspacePortalPos,
+			paraspaceName,
+			Coords.fromXY(5000, 5000) // destinationPos
+		);
 		hyperspace.linkPortalAdd(linkPortal);
 
 		var starsystemStart = hyperspace.starsystemByName("Sol");
@@ -433,6 +485,7 @@ class WorldExtended extends World
 			defn,
 			new Date(Date.UTC(2155, 1, 17, 9, 27, 22)),
 			hyperspace,
+			paraspace,
 			factions,
 			shipDefns,
 			player,

@@ -967,7 +967,7 @@ class ShipDefn_Instances
 		this.Hyphae 		= new sd("Sporsac",			namePluralNone, "Hyphae",		7,		1.29,	27,		.14 / headings16, 	20, 20, 	.2,		40, 	2100, 	262,	sv16("Sporsac", "mycon/podship", shipSporsacSizes), 			adTodo,	shipSporsacSpecialRegenerate ),
 		this.Indemnity 		= new sd("Indemnity", 		namePluralNone, "Murch",		7,		1.2,	36,		.2 / headings16, 	20, 20, 	.2,		42, 	1800, 	450,	sv16("Indemnity", "melnorme/trader", shipIndemnitySizes), 		adTodo,	adTodo ),
 		this.Infernus 		= new sd("Infernus", 		namePluralNone, "Raknoid", 		17,		5, 		25, 	.33 / headings16, 	22, 22, 	.8,  	16, 	1000, 	125,	shipInfernusVisual, 											adTodo,	shipInfernusSpecialCloak ),
-		this.Kickback 		= new sd("Kickback",		namePluralNone, "Daskapp",		5,		1,		20,		.2 / headings16, 	14, 14, 	.02,	32, 	1700, 	212,	sv16("Kickback", "druuge/mauler", shipKickbackSizes), 			adTodo,	shipKickbackSpecialRightsize ),
+		this.Kickback 		= new sd("Kickback",		namePluralNone, "Daaskap",		5,		1,		20,		.2 / headings16, 	14, 14, 	.02,	32, 	1700, 	212,	sv16("Kickback", "druuge/mauler", shipKickbackSizes), 			adTodo,	shipKickbackSpecialRightsize ),
 		this.MetamorphA 	= new sd("MetamorphA", 		namePluralNone, "Knsnynz",		3,		2.5,	20,		.33 / headings16, 	20, 20, 	.29,	10, 	1900, 	null,	sv16("MetamorphA", "mmrnmhrm/xform", shipMetamorphASizes), 		adTodo,	adTodo ),
 		this.MetamorphB 	= new sd("MetamorphB", 		namePluralNone, "Knsnynz",		3,		10,		50,		.07 / headings16,  	20, 20, 	.14,	10, 	1900, 	null,	sv16("MetamorphB", "mmrnmhrm/xform", shipMetamorphBSizes), 		adTodo,	adTodo ),
 		this.Nitpiknik 		= new sd("Nitpiknik",		namePluralNone, "Triunion",		5,		10,		40,		.5 / headings16, 	10, 10, 	.2,		10, 	600, 	75, 	sv16("Nitpiknik", "zoqfotpik/stinger", shipNitpiknikSizes), 	adTodo,	adTodo ),

@@ -8,7 +8,7 @@ class PlaceHyperspace extends PlaceBase {
         // entities
         var entities = this.entitiesToSpawn;
         entities.push(new GameClock(2880).toEntity());
-        var entityDimension = hyperspace.starsystemRadiusOuter;
+        var entityDimension = Starsystem.RadiusOuter;
         // camera
         this._camera = new Camera(Coords.fromXY(300, 300), // hack
         null, // focalLength
@@ -16,11 +16,13 @@ class PlaceHyperspace extends PlaceBase {
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
+        // LinkPortals.
+        this.constructor_LinkPortalsBuild(entityDimension, entities);
         // Stars.
-        this.constructor_starsBuild(entityDimension, entities);
-        // factions
-        this.constructor_factionsBuild(universe, entities);
-        // shipGroups
+        this.constructor_StarsBuild(entityDimension, entities);
+        // Factions.
+        this.constructor_FactionsBuild(universe, entities);
+        // ShipGroups.
         var shipGroups = this.hyperspace.shipGroups;
         for (var i = 0; i < shipGroups.length; i++) {
             var shipGroup = shipGroups[i];
@@ -29,7 +31,7 @@ class PlaceHyperspace extends PlaceBase {
         }
         // Player.
         if (playerLoc != null) {
-            var playerEntity = this.constructor_playerEntityBuild(world, entityDimension, playerLoc);
+            var playerEntity = this.constructor_PlayerEntityBuild(world, entityDimension, playerLoc);
             if (starsystemDeparted != null) {
                 var entities = this.entitiesToSpawn; // hack
                 var entityForStarsystemDeparted = entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
@@ -47,7 +49,7 @@ class PlaceHyperspace extends PlaceBase {
         this._drawLoc = Disposition.create();
         this._polar = Polar.create();
     }
-    constructor_factionsBuild(universe, entities) {
+    constructor_FactionsBuild(universe, entities) {
         var world = universe.world;
         var worldDefn = world.defnExtended();
         var factions = worldDefn.factions;
@@ -70,13 +72,10 @@ class PlaceHyperspace extends PlaceBase {
             }
         }
     }
-    constructor_playerEntityBuild(world, entityDimension, loc) {
-        // player
-        var actor = new Actor(new Activity(Player.activityDefn().name, null));
+    constructor_PlayerEntityBuild(world, entityDimension, loc) {
+        var actor = Actor.fromActivityDefn(Player.activityDefn());
         var collider = new Sphere(Coords.create(), entityDimension / 2);
-        var collidable = new Collidable(false, // canCollideAgainWithoutSeparating
-        null, // ticks
-        collider, [Collidable.name], // entityPropertyNamesToCollideWith
+        var collidable = Collidable.from3(collider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.playerCollide);
         var boundable = Boundable.fromCollidable(collidable);
         var shipGroup = world.player.shipGroup;
@@ -111,7 +110,15 @@ class PlaceHyperspace extends PlaceBase {
         ]);
         return playerEntity;
     }
-    constructor_starsBuild(entityDimension, entities) {
+    constructor_LinkPortalsBuild(entityDimension, entities) {
+        var linkPortals = this.hyperspace.linkPortalsGetAll();
+        for (var i = 0; i < linkPortals.length; i++) {
+            var linkPortal = linkPortals[i];
+            var linkPortalEntity = linkPortal.toEntity(entityDimension);
+            entities.push(linkPortalEntity);
+        }
+    }
+    constructor_StarsBuild(entityDimension, entities) {
         var starsystems = this.hyperspace.starsystems;
         var numberOfStars = starsystems.length;
         var starRadius = entityDimension / 2;
@@ -162,7 +169,6 @@ class PlaceHyperspace extends PlaceBase {
             world.placeNextSet(placeNext);
         });
     }
-    // methods
     entitiesShips() {
         return this.entitiesByPropertyName(Ship.name);
     }
@@ -209,6 +215,7 @@ class PlaceHyperspace extends PlaceBase {
         var entityOtherStarsystem = Starsystem.fromEntity(entityOther);
         var entityOtherShipGroup = ShipGroupBase.fromEntity(entityOther);
         var entityOtherFaction = Faction.fromEntity(entityOther);
+        var entityOtherLinkPortal = LinkPortal.fromEntity(entityOther);
         if (entityOtherStarsystem != null) {
             var starsystem = entityOtherStarsystem;
             var playerLoc = entityPlayer.locatable().loc;
@@ -233,6 +240,9 @@ class PlaceHyperspace extends PlaceBase {
         }
         else if (entityOtherFaction != null) {
             place.factionShipGroupSpawnIfNeeded(universe, world, place, entityPlayer, entityOther);
+        }
+        else if (entityOtherLinkPortal != null) {
+            entityOtherLinkPortal.collideWithPlayer(uwpe);
         }
     }
     shipGroupAdd(shipGroup, world) {

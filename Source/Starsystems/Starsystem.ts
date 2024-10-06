@@ -12,6 +12,8 @@ class Starsystem implements EntityProperty<Starsystem>
 
 	private _displacement: Coords;
 
+	static RadiusOuter = 10; // todo
+
 	constructor
 	(
 		name: string,

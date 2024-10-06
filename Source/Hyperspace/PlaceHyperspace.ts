@@ -38,7 +38,7 @@ class PlaceHyperspace extends PlaceBase
 
 		entities.push(new GameClock(2880).toEntity());
 
-		var entityDimension = hyperspace.starsystemRadiusOuter;
+		var entityDimension = Starsystem.RadiusOuter;
 
 		// camera
 
@@ -55,15 +55,19 @@ class PlaceHyperspace extends PlaceBase
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
 		entities.push(cameraAsEntity);
 
+		// LinkPortals.
+
+		this.constructor_LinkPortalsBuild(entityDimension, entities);
+
 		// Stars.
 
-		this.constructor_starsBuild(entityDimension, entities);
+		this.constructor_StarsBuild(entityDimension, entities);
 
-		// factions
+		// Factions.
 
-		this.constructor_factionsBuild(universe, entities);
+		this.constructor_FactionsBuild(universe, entities);
 
-		// shipGroups
+		// ShipGroups.
 
 		var shipGroups = this.hyperspace.shipGroups;
 		for (var i = 0; i < shipGroups.length; i++)
@@ -77,7 +81,8 @@ class PlaceHyperspace extends PlaceBase
 
 		if (playerLoc != null)
 		{
-			var playerEntity = this.constructor_playerEntityBuild(world, entityDimension, playerLoc);
+			var playerEntity =
+				this.constructor_PlayerEntityBuild(world, entityDimension, playerLoc);
 
 			if (starsystemDeparted != null)
 			{
@@ -112,7 +117,7 @@ class PlaceHyperspace extends PlaceBase
 		this._polar = Polar.create();
 	}
 
-	constructor_factionsBuild(universe: Universe, entities: Entity[]): void
+	constructor_FactionsBuild(universe: Universe, entities: Entity[]): void
 	{
 		var world = universe.world as WorldExtended;
 		var worldDefn = world.defnExtended();
@@ -120,7 +125,7 @@ class PlaceHyperspace extends PlaceBase
 		for (var i = 0; i < factions.length; i++)
 		{
 			var faction = factions[i];
-			var factionTerritory = faction.territory
+			var factionTerritory = faction.territory;
 			if (factionTerritory != null)
 			{
 				var factionCollider = factionTerritory.shape;
@@ -146,17 +151,16 @@ class PlaceHyperspace extends PlaceBase
 		}
 	}
 
-	constructor_playerEntityBuild(world: WorldExtended, entityDimension: number, loc: Disposition): Entity
+	constructor_PlayerEntityBuild
+	(
+		world: WorldExtended, entityDimension: number, loc: Disposition
+	): Entity
 	{
-		// player
-
-		var actor = new Actor(new Activity(Player.activityDefn().name, null) );
+		var actor = Actor.fromActivityDefn(Player.activityDefn() );
 
 		var collider = new Sphere(Coords.create(), entityDimension / 2);
-		var collidable = new Collidable
+		var collidable = Collidable.from3
 		(
-			false, // canCollideAgainWithoutSeparating
-			null, // ticks
 			collider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
 			this.playerCollide
@@ -211,7 +215,18 @@ class PlaceHyperspace extends PlaceBase
 		return playerEntity;
 	}
 
-	constructor_starsBuild(entityDimension: number, entities: Entity[]): void
+	constructor_LinkPortalsBuild(entityDimension: number, entities: Entity[]): void
+	{
+		var linkPortals = this.hyperspace.linkPortalsGetAll();
+		for (var i = 0; i < linkPortals.length; i++)
+		{
+			var linkPortal = linkPortals[i];
+			var linkPortalEntity = linkPortal.toEntity(entityDimension);
+			entities.push(linkPortalEntity);
+		}
+	}
+
+	constructor_StarsBuild(entityDimension: number, entities: Entity[]): void
 	{
 		var starsystems = this.hyperspace.starsystems;
 		var numberOfStars = starsystems.length;
@@ -301,8 +316,6 @@ class PlaceHyperspace extends PlaceBase
 		);
 	}
 
-	// methods
-
 	entitiesShips(): Entity[]
 	{
 		return this.entitiesByPropertyName(Ship.name);
@@ -385,6 +398,7 @@ class PlaceHyperspace extends PlaceBase
 		var entityOtherStarsystem = Starsystem.fromEntity(entityOther);
 		var entityOtherShipGroup = ShipGroupBase.fromEntity(entityOther);
 		var entityOtherFaction = Faction.fromEntity(entityOther);
+		var entityOtherLinkPortal = LinkPortal.fromEntity(entityOther);
 
 		if (entityOtherStarsystem != null)
 		{
@@ -441,6 +455,10 @@ class PlaceHyperspace extends PlaceBase
 			(
 				universe, world, place, entityPlayer, entityOther
 			);
+		}
+		else if (entityOtherLinkPortal != null)
+		{
+			entityOtherLinkPortal.collideWithPlayer(uwpe);
 		}
 	}
 

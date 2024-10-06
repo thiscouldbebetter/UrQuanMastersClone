@@ -1,28 +1,28 @@
 
 class Hyperspace
 {
+	name: string;
 	size: Coords;
-	starsystemRadiusOuter: number;
 	_linkPortals: LinkPortal[];
 	shipGroups: ShipGroup[];
 	starsystems: Starsystem[];
 
-	starsystemsByName: Map<string,Starsystem>;
+	starsystemsByName: Map<string, Starsystem>;
 
 	constructor
 	(
+		name: string,
 		size: Coords,
-		starsystemRadiusOuter: number,
 		linkPortals: LinkPortal[],
 		shipGroups: ShipGroup[],
 		starsystems: Starsystem[]
 	)
 	{
+		this.name = name || Hyperspace.name;
 		this.size = size;
-		this.starsystemRadiusOuter = starsystemRadiusOuter;
-		this._linkPortals = linkPortals;
-		this.shipGroups = shipGroups;
-		this.starsystems = starsystems;
+		this._linkPortals = linkPortals || [];
+		this.shipGroups = shipGroups || [];
+		this.starsystems = starsystems || [];
 		this.starsystemsByName = ArrayHelper.addLookupsByName(this.starsystems);
 	}
 
@@ -34,13 +34,11 @@ class Hyperspace
 		randomizer: Randomizer,
 		size: Coords,
 		numberOfStarsystems: number,
-		starsystemRadiusOuter: number,
 		starsystemSizeInner: Coords
 	)
 	{
-		//var planetsPerStarsystemMax = 6;
 		var factionName = null; // todo
-		var distanceBetweenStarsystemsMin = starsystemRadiusOuter * 2;
+		var distanceBetweenStarsystemsMin = Starsystem.RadiusOuter * 2;
 		var displacement = Coords.create();
 
 		var starsystems = new Array<Starsystem>();
@@ -97,8 +95,8 @@ class Hyperspace
 
 		var returnValue = new Hyperspace
 		(
+			null, // name
 			size,
-			starsystemRadiusOuter,
 			[], // linkPortals
 			[], // shipGroups
 			starsystems,
@@ -111,7 +109,6 @@ class Hyperspace
 	static fromFileContentsAsString
 	(
 		size: Coords,
-		starsystemRadiusOuter: number,
 		starsystemSizeInner: Coords,
 		factions: Faction[],
 		energySourcesAll: EnergySource[],
@@ -343,14 +340,26 @@ class Hyperspace
 
 		var hyperspace = new Hyperspace
 		(
+			null, // name
 			size,
-			starsystemRadiusOuter,
 			linkPortals,
 			shipGroups,
 			starsystems
 		);
 
 		return hyperspace;
+	}
+
+	static fromNameSizeAndLinkPortals(name: string, size: Coords, linkPortals: LinkPortal[])
+	{
+		return new Hyperspace
+		(
+			name,
+			size,
+			linkPortals,
+			null, // shipGroups
+			null // starsystems
+		);
 	}
 
 	// instance methods

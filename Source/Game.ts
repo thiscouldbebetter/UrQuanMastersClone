@@ -166,7 +166,7 @@ class Game
 				ts("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
 
 				ts(conversation + "Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
-				ts(conversation + "Daskapp", conversationPlaceholderPath),
+				ts(conversation + "Daaskap", conversationPlaceholderPath),
 				ts(conversation + "Ellfyn", conversationPlaceholderPath),
 				ts(conversation + "Famorfex", conversationPlaceholderPath),
 				ts(conversation + "Grimmotz", conversationPlaceholderPath),	
