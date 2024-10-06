@@ -756,7 +756,48 @@ class SystemTests extends TestFixture
 
 		// Verify that an encounter is initiated, rather than a normal orbit.
 		Assert.isTrue(place().constructor.name != PlacePlanetOrbit.name);
-		
+
+		this.talkToTalker2
+		(
+			universe,
+			[
+				// "Hello, traveller."
+				"#(i_am)", // "Hello.  My name is..."
+				// "Our name is the Twyggan."
+				"#(my_ship)", // "My ship is the..."
+				// "Our ship is the...
+				"#(from_alliance)", // "We're from Earth."
+				// "We're also from Earth."
+				"#(are_you_copying)", // "Hey?  Are you just copying me?"
+				// "Well, yes.  But our planet's name also happens to means 'Dirt'."
+				"#(why_copy)", // "Why were you copying me?"
+				// "It's our nature."
+				"#(tell_us_of_your_species)",
+				// "We're symbotic plants."
+				"#(plants_arent_intelligent)", // "Plants can't evolve intelligence!"
+				// "We agree.  We suspect divine intervention."
+				"#(anyone_around_here)", // "What's this neighborhood like?"
+				// "Our neighbors are the Grimmotz."
+				"#(what_relation_to_utwig)",
+				// "They're our allies, usually, though they're not really up to it right now."
+				"#(whats_wrong_with_utwig)",
+				// "They broke their Extramatic."
+				"#(whats_ultron)", // "What's that?"
+				// "Some kind of ancient gewgaw.  They gave it to us.  Here, take it."
+				"#(what_do_i_do_now)",
+				// "Fix it, of course."
+				"#(where_get_repairs)", // "Where can I find the parts.
+				// "There's an ancient rhyme that says where..."
+				"#(bye_neutral)" // Oh, okay, I'll try.  Bye, I guess."
+				// "Goodbye."
+			]
+		);
+
+		// Verify that, after the talk is over, we return to the planet vicinity.
+
+		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+
+		// todo - Check that the Extramatic is now on board.
 
 		callback();
 	}
