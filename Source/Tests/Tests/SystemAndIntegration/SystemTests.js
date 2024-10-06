@@ -181,13 +181,7 @@ class SystemTests extends TestFixture {
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Land on the moon.
         this.landOnPlanetSurface(universe, world, place());
-        // Go to the enemy base.
-        this.moveToEntityWithNameAndWait(universe, "AbandonedMoonbase");
-        // It's empty.  The lander should display a report message, which must be acknowledged...
-        this.acknowledgeMessage(universe);
-        universe.updateForTimerTick();
-        // ...and then return to the ship automatically.
-        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+        this.moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, "AbandonedMoonbase");
         // Leave lunar orbit.
         this.waitForTicks(universe, 100);
         this.leavePlanetOrbitAndWait(universe);
@@ -386,11 +380,10 @@ class SystemTests extends TestFixture {
             .filter(x => Resource.fromEntity(x).defnName == resourceDefnBiodata.name);
         Assert.isEmpty(entitiesResourcesBiodata);
         // Gather up all the lifeforms.
+        // Cheat: kill (well, stun) them all!
         for (var i = 0; i < entitiesLifeforms.length; i++) {
             var entity = entitiesLifeforms[i];
-            // Cheat: kill (well, stun) them all!
             entity.killable().kill();
-            // this.moveToEntityWithNameAndWait(universe, entity.name);
         }
         this.waitForTicks(universe, 10);
         // Verify that the conscious lifeforms have been replaced with biodata resources.
@@ -512,6 +505,26 @@ class SystemTests extends TestFixture {
         ]);
         // Verify that, after the talk is over, we return to the planet vicinity.
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        // todo - Check that the Extramatic is now on board.
+        this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+        // Go to Delta Lyncis I and capture the Freaky Beast.
+        this.goToSurfaceOfPlanetWithName(universe, "Delta Lyncis I");
+        this.stunAllLifeformsOnPlanetSurfaceCollectBiodataAndLeave(universe);
+        // todo - Verify that the Freaky Beast is now on board.
+        // Go to Epsilon Draconis I and log a rainbow world.
+        this.goToOrbitOfPlanetWithName(universe, "Epsilon Draconis I");
+        // Go to Beta Corvi ? and talk to the Tempestrials.
+        this.goToOrbitOfPlanetWithName(universe, "Beta Corvi IV");
+        // todo - Talk to the Tempestrials.
+        // todo - Verify that the probe destruct code is now known.
+        this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+        // Go to Beta Pegasi and log another rainbow world.
+        this.goToOrbitOfPlanetWithName(universe, "Beta Pegasi I");
+        this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+        // Go to Alpha Pavonis VII and grab the warp pod from a shackler wreck.
+        this.goToSurfaceOfPlanetWithName(universe, "Alpha Pavonis VII");
+        this.moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, "CrashedShackler");
+        // todo - Verify that the crashed shackler is on board.
         callback();
     }
     // Helper methods.
@@ -607,23 +620,26 @@ class SystemTests extends TestFixture {
         var placeEncounter = world.place();
         var encounter = placeEncounter.encounter;
         var talker = encounter.entityOther.talker();
-        // Record how many infoCredits the player had before the sale.
-        var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
-        // Sell it.
-        this.talkToTalker(universe, talker, [
-            // "Hello.  Buying or selling."
-            "#(sell)", // "Selling."
-            // "Selling what?"
-            "#(sell_rainbow_locations)", // "Rainbow world locations."
-            // "You know where 1 is, worth 500."
-        ]);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
-        Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
-        var infoCreditsAfterSaleOfRainbowWorldLocation = flagship.infoCredits;
-        var infoCreditsFromSaleOfRainbowWorldLocation = infoCreditsAfterSaleOfRainbowWorldLocation
-            - infoCreditsBeforeSaleOfRainbowWorldLocation;
-        const infoCreditsPerRainbowWorldLocation = 500;
-        Assert.areNumbersEqual(infoCreditsPerRainbowWorldLocation, infoCreditsFromSaleOfRainbowWorldLocation);
+        if (rainbowWorldLocationsKnownButUnsoldCount > 0) {
+            // Record how many infoCredits the player had before the sale.
+            var infoCreditsBeforeSaleOfRainbowWorldLocation = flagship.infoCredits;
+            // Sell it.
+            this.talkToTalker(universe, talker, [
+                // "Hello.  Buying or selling."
+                "#(sell)", // "Selling."
+                // "Selling what?"
+                "#(sell_rainbow_locations)", // "Rainbow world locations."
+                // "You know where 1 is, worth 500."
+            ]);
+            var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
+            Assert.areNumbersEqual(0, rainbowWorldLocationsKnownButUnsoldCount);
+            var infoCreditsAfterSaleOfRainbowWorldLocation = flagship.infoCredits;
+            var infoCreditsFromSaleOfRainbowWorldLocation = infoCreditsAfterSaleOfRainbowWorldLocation
+                - infoCreditsBeforeSaleOfRainbowWorldLocation;
+            const infoCreditsPerRainbowWorldLocation = 500;
+            Assert.areNumbersEqual(infoCreditsPerRainbowWorldLocation, infoCreditsFromSaleOfRainbowWorldLocation);
+        }
         // Now buy more fuel and then end the conversation.
         this.talkToTalker(universe, talker, [
             "#(buy)", // "I'd like to buy something."
@@ -796,10 +812,54 @@ class SystemTests extends TestFixture {
         // Move to the ship and start an encounter (or, if friendly, just a talk).
         this.moveToEntityWithNameAndWait(universe, shipGroupBelongingToFaction.name);
     }
+    moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, energySourceName) {
+        var world = universe.world;
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
+        // Go to the energy source.
+        this.moveToEntityWithNameAndWait(universe, energySourceName);
+        // The lander should display a report message, which must be acknowledged...
+        this.acknowledgeMessage(universe);
+        universe.updateForTimerTick();
+        // ...and then return to the ship automatically.
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+    }
     returnToOrbit(universe, world, place) {
         var placeSurface = place;
         placeSurface.exit(new UniverseWorldPlaceEntities(universe, world, placeSurface, null, null));
         universe.updateForTimerTick();
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+    }
+    stunAllLifeformsOnPlanetSurfaceCollectBiodataAndLeave(universe) {
+        var world = universe.world;
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
+        var place = world.place();
+        var placePlanetSurface = place;
+        var entitiesOnPlanet = placePlanetSurface.entitiesAll();
+        var entitiesLifeforms = entitiesOnPlanet.filter(x => x.name.startsWith(Lifeform.name));
+        for (var i = 0; i < entitiesLifeforms.length; i++) {
+            var entity = entitiesLifeforms[i];
+            entity.killable().kill();
+        }
+        var resourceDefns = ResourceDefn.Instances();
+        var resourceDefnBiodata = resourceDefns.Biodata;
+        var entitiesResourcesBiodata = entitiesOnPlanet
+            .filter(x => Resource.fromEntity(x) != null)
+            .filter(x => Resource.fromEntity(x).defnName == resourceDefnBiodata.name);
+        // Pick up all the biodata.
+        // todo - Check for maximum capacity.
+        for (var i = 0; i < entitiesResourcesBiodata.length; i++) {
+            var entity = entitiesResourcesBiodata[i];
+            try {
+                this.moveToEntityWithNameAndWait(universe, entity.name);
+            }
+            catch (err) {
+                // Errors may be happening because some resources overlap,
+                // and are thus picked up by accident when picking up some other resource.
+            }
+        }
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, placePlanetSurface, null, null);
+        placePlanetSurface.exit(uwpe);
+        this.waitForTicks(universe, 1);
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
     }
     talkToTalker(universe, talker, optionsToSelect) {

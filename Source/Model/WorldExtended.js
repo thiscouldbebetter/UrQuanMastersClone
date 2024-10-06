@@ -146,6 +146,12 @@ class WorldExtended extends World {
         var starsAndPlanetsAsStringCsvCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
         var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, 10, // starsystemRadiusOuter
         Coords.fromXY(1, 1).multiplyScalar(300), factions, energySources, starsAndPlanetsAsStringCsvCompressed);
+        // Add a Paraspace portal.
+        var starsystemAlphaCircini = hyperspace.starsystemByName("Alpha Circini");
+        var starsystemAlphaColumbae = hyperspace.starsystemByName("Alpha Columbae");
+        var paraspacePortalPos = starsystemAlphaCircini.posInHyperspace.clone().add(starsystemAlphaColumbae.posInHyperspace).half();
+        var linkPortal = new LinkPortal("Anomaly", paraspacePortalPos);
+        hyperspace.linkPortalAdd(linkPortal);
         var starsystemStart = hyperspace.starsystemByName("Sol");
         starsystemStart.solarSystem(universe);
         var starsystems = hyperspace.starsystems;

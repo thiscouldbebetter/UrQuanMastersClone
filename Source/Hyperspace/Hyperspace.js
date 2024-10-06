@@ -1,11 +1,12 @@
 "use strict";
 class Hyperspace {
-    constructor(size, starsystemRadiusOuter, starsystems, shipGroups) {
+    constructor(size, starsystemRadiusOuter, linkPortals, shipGroups, starsystems) {
         this.size = size;
         this.starsystemRadiusOuter = starsystemRadiusOuter;
+        this._linkPortals = linkPortals;
+        this.shipGroups = shipGroups;
         this.starsystems = starsystems;
         this.starsystemsByName = ArrayHelper.addLookupsByName(this.starsystems);
-        this.shipGroups = shipGroups;
     }
     // static methods
     static random(universe, randomizer, size, numberOfStarsystems, starsystemRadiusOuter, starsystemSizeInner) {
@@ -38,8 +39,9 @@ class Hyperspace {
             starsystem.contentsRandomize(randomizer);
             starsystems.push(starsystem);
         }
-        var returnValue = new Hyperspace(size, starsystemRadiusOuter, starsystems, [] // shipGroups
-        );
+        var returnValue = new Hyperspace(size, starsystemRadiusOuter, [], // linkPortals
+        [], // shipGroups
+        starsystems);
         return returnValue;
     }
     static fromFileContentsAsString(size, starsystemRadiusOuter, starsystemSizeInner, factions, energySourcesAll, fileContentsAsString) {
@@ -168,12 +170,12 @@ class Hyperspace {
                 planetCurrent = planet;
             }
         }
+        var linkPortals = new Array();
         var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
         var starsystemSol = starsystemsByName.get("Sol");
-        // todo - Encounter test.
         var shipGroup = new ShipGroupFinite("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), [new Ship("Tumbler")]);
         var shipGroups = [shipGroup];
-        var hyperspace = new Hyperspace(size, starsystemRadiusOuter, starsystems, shipGroups);
+        var hyperspace = new Hyperspace(size, starsystemRadiusOuter, linkPortals, shipGroups, starsystems);
         return hyperspace;
     }
     // instance methods
@@ -183,6 +185,13 @@ class Hyperspace {
         var displacement = starsystemTo.posInHyperspace.clone().subtract(starsystemFrom.posInHyperspace);
         var distance = displacement.magnitude();
         return distance;
+    }
+    linkPortalAdd(linkPortal) {
+        this._linkPortals.push(linkPortal);
+        return this;
+    }
+    linkPortalsGetAll() {
+        return this._linkPortals;
     }
     shipGroupAdd(shipGroup) {
         this.shipGroups.push(shipGroup);

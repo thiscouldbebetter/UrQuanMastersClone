@@ -125,7 +125,6 @@ class Starsystem implements EntityProperty<Starsystem>
 		return this._shipGroups;
 	}
 
-
 	solarSystem(universe: Universe): void
 	{
 		this.name = "Sol";
@@ -135,7 +134,8 @@ class Starsystem implements EntityProperty<Starsystem>
 		var planetEarth = this.planets.find(x => x.name == "Earth");
 		planetEarth.defnName = PlanetDefn.Instances().Shielded.name;
 
-		// Put a base on the moon.
+		// Rename the moon.
+		// todo - Do this for all the other satellites in the solar system.
 
 		var moon = planetEarth.satelliteGetAtIndex(0) as Planet;
 		moon.name = "Moon";

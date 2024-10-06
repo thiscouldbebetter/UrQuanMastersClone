@@ -66,6 +66,7 @@ class Game {
             new i2("FreakyBeast", imageDirectoryLifeforms + "26-FreakyBeast" + png),
             // planets - energy sources
             new i2(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase-000" + png),
+            new i2(energySource + "CrashedShackler", directoryEnergySources + "urquanwreck-000" + png),
             new i2(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo-000" + png),
             new i2(energySource + "TtorstingCaster", directoryEnergySources + "burvixcaster-000" + png),
         ];
@@ -156,6 +157,7 @@ class Game {
             ts(conversation + "Vaarphig", conversationPlaceholderPath),
             // Energy sources.
             ts(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
+            ts(energySource + "CrashedShackler", directoryEnergySources + "urquanwreck.txt"),
             ts(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
             ts(energySource + "TtorstingCaster", directoryEnergySources + "burvixcaster.txt"),
         ]);

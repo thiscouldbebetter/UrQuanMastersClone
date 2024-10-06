@@ -82,12 +82,10 @@ class EnergySource_Instances {
     constructor() {
         var es = EnergySource;
         var posNone = null;
-        var visualNone = new VisualNone(); // todo
         var itemDefnNone = null;
-        var collideWithLanderTodo = (uwpe) => { throw new Error("todo"); };
         var vifl = VisualImageFromLibrary;
         this.AbandonedMoonbase = new es("AbandonedMoonbase", posNone, new vifl(EnergySource.name + "AbandonedMoonbase"), itemDefnNone, this.abandonedMoonbase_CollideWithLander);
-        this.CrashedShackler = new es("CrashedShackler", posNone, visualNone, itemDefnNone, collideWithLanderTodo);
+        this.CrashedShackler = new es("CrashedShackler", posNone, new vifl(EnergySource.name + "CrashedShackler"), this.crashedShackler_ItemDefn(), this.crashedShackler_CollideWithLander);
         this.MauluskaOrphan = new es("MauluskaOrphan", posNone, new vifl(EnergySource.name + "MauluskaOrphan"), itemDefnNone, this.mauluskaOrphan_CollideWithLander);
         this.TtorstingCaster = new es("TtorstingCaster", posNone, new vifl(EnergySource.name + "TtorstingCaster"), this.ttorstingCaster_ItemDefn(), this.ttorstingCaster_CollideWithLander);
         this._All =
@@ -109,6 +107,26 @@ class EnergySource_Instances {
         var abandonedMoonbaseMessage = mediaLibrary.textStringGetByName(EnergySource.name + "AbandonedMoonbase").value;
         var venueMessage = VenueMessage.fromTextAcknowledgeAndVenuePrev(abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo);
         universe.venueTransitionTo(venueMessage);
+    }
+    crashedShackler_CollideWithLander(uwpe) {
+        const textCrashedShackler = "CrashedShackler";
+        var universe = uwpe.universe;
+        var acknowledgeReport = (uwpe) => {
+            var place = uwpe.place;
+            var entityPlayer = place.entityByName(Player.name);
+            var lander = Lander.fromEntity(entityPlayer);
+            var entityEnergySource = place.entityByName(textCrashedShackler);
+            lander.itemHolderDevices.itemEntityPickUpFromPlace(entityEnergySource, place);
+            place.exit(uwpe);
+        };
+        var venueToReturnTo = universe.venueCurrent();
+        var mediaLibrary = universe.mediaLibrary;
+        var message = mediaLibrary.textStringGetByName(EnergySource.name + textCrashedShackler).value;
+        var venueMessage = VenueMessage.fromTextAcknowledgeAndVenuePrev(message, acknowledgeReport, venueToReturnTo);
+        universe.venueTransitionTo(venueMessage);
+    }
+    crashedShackler_ItemDefn() {
+        return ItemDefn.fromName("CrashedShackler");
     }
     mauluskaOrphan_CollideWithLander(uwpe) {
         var textMauluskaOrphan = "MauluskaOrphan";

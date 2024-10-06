@@ -152,10 +152,7 @@ class EnergySource_Instances
 	{
 		var es = EnergySource;
 		var posNone: Coords = null;
-		var visualNone = new VisualNone(); // todo
 		var itemDefnNone: ItemDefn = null;
-		var collideWithLanderTodo =
-			(uwpe: UniverseWorldPlaceEntities) => { throw new Error("todo") };
 
 		var vifl = VisualImageFromLibrary;
 
@@ -171,9 +168,9 @@ class EnergySource_Instances
 		(
 			"CrashedShackler",
 			posNone,
-			visualNone,
-			itemDefnNone,
-			collideWithLanderTodo
+			new vifl(EnergySource.name + "CrashedShackler"),
+			this.crashedShackler_ItemDefn(),
+			this.crashedShackler_CollideWithLander
 		);
 
 		this.MauluskaOrphan = new es
@@ -224,6 +221,43 @@ class EnergySource_Instances
 
 		universe.venueTransitionTo(venueMessage);
 	}
+
+	crashedShackler_CollideWithLander(uwpe: UniverseWorldPlaceEntities): void
+	{
+		const textCrashedShackler = "CrashedShackler";
+
+		var universe = uwpe.universe;
+
+		var acknowledgeReport = (uwpe: UniverseWorldPlaceEntities) =>
+		{
+			var place = uwpe.place as PlacePlanetSurface;
+			var entityPlayer = place.entityByName(Player.name);
+			var lander = Lander.fromEntity(entityPlayer);
+			var entityEnergySource = place.entityByName(textCrashedShackler);
+			lander.itemHolderDevices.itemEntityPickUpFromPlace(entityEnergySource, place);
+			place.exit(uwpe);
+		};
+
+		var venueToReturnTo = universe.venueCurrent();
+
+		var mediaLibrary = universe.mediaLibrary;
+		var message =
+			mediaLibrary.textStringGetByName(EnergySource.name + textCrashedShackler).value;
+
+		var venueMessage =
+			VenueMessage.fromTextAcknowledgeAndVenuePrev(message, acknowledgeReport, venueToReturnTo);
+
+		universe.venueTransitionTo(venueMessage);
+	}
+
+	crashedShackler_ItemDefn(): ItemDefn
+	{
+		return ItemDefn.fromName
+		(
+			"CrashedShackler"
+		);
+	}
+
 
 	mauluskaOrphan_CollideWithLander(uwpe: UniverseWorldPlaceEntities): void
 	{

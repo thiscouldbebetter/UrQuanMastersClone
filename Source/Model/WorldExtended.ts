@@ -342,6 +342,14 @@ class WorldExtended extends World
 			starsAndPlanetsAsStringCsvCompressed
 		);
 
+		// Add a Paraspace portal.
+		var starsystemAlphaCircini = hyperspace.starsystemByName("Alpha Circini");
+		var starsystemAlphaColumbae = hyperspace.starsystemByName("Alpha Columbae");
+		var paraspacePortalPos =
+			starsystemAlphaCircini.posInHyperspace.clone().add(starsystemAlphaColumbae.posInHyperspace).half();
+		var linkPortal = new LinkPortal("Anomaly", paraspacePortalPos);
+		hyperspace.linkPortalAdd(linkPortal);
+
 		var starsystemStart = hyperspace.starsystemByName("Sol");
 		starsystemStart.solarSystem(universe);
 

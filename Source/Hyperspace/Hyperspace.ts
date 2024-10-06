@@ -3,8 +3,9 @@ class Hyperspace
 {
 	size: Coords;
 	starsystemRadiusOuter: number;
-	starsystems: Starsystem[];
+	_linkPortals: LinkPortal[];
 	shipGroups: ShipGroup[];
+	starsystems: Starsystem[];
 
 	starsystemsByName: Map<string,Starsystem>;
 
@@ -12,15 +13,17 @@ class Hyperspace
 	(
 		size: Coords,
 		starsystemRadiusOuter: number,
-		starsystems: Starsystem[],
-		shipGroups: ShipGroup[]
+		linkPortals: LinkPortal[],
+		shipGroups: ShipGroup[],
+		starsystems: Starsystem[]
 	)
 	{
 		this.size = size;
 		this.starsystemRadiusOuter = starsystemRadiusOuter;
+		this._linkPortals = linkPortals;
+		this.shipGroups = shipGroups;
 		this.starsystems = starsystems;
 		this.starsystemsByName = ArrayHelper.addLookupsByName(this.starsystems);
-		this.shipGroups = shipGroups;
 	}
 
 	// static methods
@@ -96,8 +99,10 @@ class Hyperspace
 		(
 			size,
 			starsystemRadiusOuter,
+			[], // linkPortals
+			[], // shipGroups
 			starsystems,
-			[] // shipGroups
+
 		);
 
 		return returnValue;
@@ -320,11 +325,12 @@ class Hyperspace
 
 		}
 
+		var linkPortals = new Array<LinkPortal>();
+
 		var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
 
 		var starsystemSol = starsystemsByName.get("Sol");
 
-		// todo - Encounter test.
 		var shipGroup = new ShipGroupFinite
 		(
 			"Tempestrial Ship Group X",
@@ -337,7 +343,11 @@ class Hyperspace
 
 		var hyperspace = new Hyperspace
 		(
-			size, starsystemRadiusOuter, starsystems, shipGroups
+			size,
+			starsystemRadiusOuter,
+			linkPortals,
+			shipGroups,
+			starsystems
 		);
 
 		return hyperspace;
@@ -356,6 +366,17 @@ class Hyperspace
 			starsystemTo.posInHyperspace.clone().subtract(starsystemFrom.posInHyperspace);
 		var distance = displacement.magnitude();
 		return distance;
+	}
+
+	linkPortalAdd(linkPortal: LinkPortal): Hyperspace
+	{
+		this._linkPortals.push(linkPortal);
+		return this;
+	}
+
+	linkPortalsGetAll(): LinkPortal[]
+	{
+		return this._linkPortals;
 	}
 
 	shipGroupAdd(shipGroup: ShipGroup): Hyperspace
