@@ -533,6 +533,7 @@ class SystemTests extends TestFixture {
         var placeHyperspace = place();
         var spaceOccupied = placeHyperspace.hyperspace;
         Assert.areStringsEqual("Paraspace", spaceOccupied.name);
+        this.moveToEntityAtPosAndWait(universe, Coords.fromXY(6134, 5900));
         callback();
     }
     // Helper methods.
@@ -756,50 +757,59 @@ class SystemTests extends TestFixture {
             this.waitForTicks(universe, 10); // hack - Exactly how long is necessary?
         }
     }
+    moveToEntityAndWait(universe, targetEntity) {
+        var place = universe.world.place();
+        var targetPos = targetEntity.locatable().loc.pos;
+        var entityPlayer = place.entityByName(Player.name);
+        let playerPos = entityPlayer.locatable().loc.pos;
+        var placeTypeName = place.constructor.name;
+        if (placeTypeName == PlaceHyperspace.name) {
+            // These measurements are in pixels.
+            var displacementFromPlayerToTarget = targetPos.clone().subtract(playerPos);
+            var distanceFromPlayerToTarget = displacementFromPlayerToTarget.magnitude();
+            var placeHyperspace = place;
+            var spaceBeingTraversed = placeHyperspace.hyperspace;
+            var pixelsPerFuelUnit = spaceBeingTraversed.pixelsTraversablePerFuelUnit;
+            var fuelUnitsNeeded = distanceFromPlayerToTarget / pixelsPerFuelUnit;
+            var world = universe.world;
+            var flagship = world.player.flagship;
+            var fuelUnitsHeld = flagship.fuel;
+            if (fuelUnitsHeld < fuelUnitsNeeded) {
+                console.log("Not enough fuel!");
+                var directionFromPlayerToTarget = displacementFromPlayerToTarget.normalize();
+                var displacementUntilFuelRunsOut = directionFromPlayerToTarget.multiplyScalar(fuelUnitsHeld * pixelsPerFuelUnit);
+                targetPos = playerPos.add(displacementUntilFuelRunsOut);
+                fuelUnitsNeeded = fuelUnitsHeld;
+            }
+            flagship.fuelSubtract(fuelUnitsNeeded);
+        }
+        playerPos.overwriteWith(targetPos);
+        // hack - How long is necessary to wait?
+        // 20 seems to work most of the time,
+        // but sometimes results in the guard drone accosting the player too soon
+        // at the game's start.
+        // Maybe there is no correct answer in all cases!
+        this.waitForTicks(universe, 20);
+    }
+    moveToEntityAtPosAndWait(universe, targetEntityPos) {
+        var place = universe.world.place();
+        var placeEntities = place.entitiesAll();
+        var placeEntitiesLocatable = placeEntities.filter(x => x.locatable() != null);
+        var targetEntity = placeEntitiesLocatable.find(x => x.locatable().pos().equals(targetEntityPos));
+        this.moveToEntityAndWait(universe, targetEntity);
+    }
     moveToEntityWithNameAndWait(universe, targetEntityName) {
         return this.moveToEntityWithNameAndWait_CheckPartial(universe, targetEntityName, false);
     }
     moveToEntityWithNameAndWait_CheckPartial(universe, targetEntityName, partialMatchAllowed) {
         // This is pretty cheaty right now.  The player just teleports directly to the desired position.
-        var place = universe.world.placeCurrent;
-        var placeTypeName = place.constructor.name;
-        var entityPlayer = place.entityByName(Player.name);
-        var playerPos = entityPlayer.locatable().loc.pos;
-        var target = this.findEntityWithName(universe, targetEntityName, partialMatchAllowed);
-        if (target == null) {
+        var targetEntity = this.findEntityWithName(universe, targetEntityName, partialMatchAllowed);
+        if (targetEntity == null) {
             throw new Error("No entity was found matching the name '" + targetEntityName + "'.");
         }
         else {
-            var targetPos = target.locatable().loc.pos;
-            if (placeTypeName == PlaceHyperspace.name) {
-                // These measurements are in pixels.
-                var displacementFromPlayerToTarget = targetPos.clone().subtract(playerPos);
-                var distanceFromPlayerToTarget = displacementFromPlayerToTarget.magnitude();
-                // Per the Star Control Wiki:
-                // "To travel the entire length of one axis [...] requires exactly 100.0 units of fuel."
-                // And this game's version of hyperspace is 10,000 pixels across.
-                var pixelsPerFuelUnit = 100;
-                var fuelUnitsNeeded = distanceFromPlayerToTarget / pixelsPerFuelUnit;
-                var world = universe.world;
-                var flagship = world.player.flagship;
-                var fuelUnitsHeld = flagship.fuel;
-                if (fuelUnitsHeld < fuelUnitsNeeded) {
-                    console.log("Not enough fuel!");
-                    var directionFromPlayerToTarget = displacementFromPlayerToTarget.normalize();
-                    var displacementUntilFuelRunsOut = directionFromPlayerToTarget.multiplyScalar(fuelUnitsHeld * pixelsPerFuelUnit);
-                    targetPos = playerPos.add(displacementUntilFuelRunsOut);
-                    fuelUnitsNeeded = fuelUnitsHeld;
-                }
-                flagship.fuelSubtract(fuelUnitsNeeded);
-            }
-            playerPos.overwriteWith(targetPos);
+            this.moveToEntityAndWait(universe, targetEntity);
         }
-        // hack - How long is necessary to wait?
-        // 30 seems to work most of the time,
-        // but sometimes results in the guard drone accosting the player too soon
-        // at the game's start.
-        // Maybe there is no correct answer in all cases!
-        this.waitForTicks(universe, 20);
     }
     moveToShipGroupBelongingToFactionIfAny(universe, world, starsystem, factionName) {
         var shipGroupsInStarsystemAtLarge = starsystem.shipGroups(world);

@@ -150,12 +150,15 @@ class WorldExtended extends World {
         // Create paraspace.
         const hyperspaceName = "Hyperspace";
         const paraspaceName = "Paraspace";
-        var paraspaceLinkPortalName = "UNKNOWN";
+        const paraspaceLinkPortalName = "UNKNOWN";
         let lp = (fromPos, toPos) => {
             return new LinkPortal(paraspaceLinkPortalName, fromPos, hyperspaceName, toPos);
         };
         var paraspaceSize = hyperspaceSize.clone();
         var paraspaceLinkPortals = [
+            new LinkPortal(paraspaceLinkPortalName, Coords.fromXY(6134, 5900), // pos
+            Encounter.name + "-EllfynHomeworld", null // destinationPos
+            ),
             lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712)), // Lyncis (Freaky Beast)
             lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607, 151)), // Trianguli (SE)
             lp(Coords.fromXY(4660, 5140), Coords.fromXY(2302, 3988)), // Gruis (Mauluska) 
@@ -176,7 +179,7 @@ class WorldExtended extends World {
         // Add a portal to paraspace in hyperspace,
         // and multiple portals to hyperspace in paraspace.
         var paraspacePortalPos = Coords.fromXY(438, 6372);
-        var linkPortal = new LinkPortal("UNKNOWN", paraspacePortalPos, paraspaceName, Coords.fromXY(5000, 5000) // destinationPos
+        var linkPortal = new LinkPortal(paraspaceLinkPortalName, paraspacePortalPos, paraspaceName, Coords.fromXY(5000, 5000) // destinationPos
         );
         hyperspace.linkPortalAdd(linkPortal);
         var starsystemStart = hyperspace.starsystemByName("Sol");
@@ -287,20 +290,6 @@ class WorldExtended extends World {
     }
     updateForTimerTick(uwpe) {
         super.updateForTimerTick(uwpe);
-        /*
-        uwpe.worldSet(this);
-
-        if (this.placeNext != null)
-        {
-            this.placeCurrent.finalize(uwpe);
-            this.placeCurrent = this.placeNext;
-            this.placeCurrent.initialize(uwpe);
-            this.placeNextSet(null);
-        }
-
-        this.placeCurrent.updateForTimerTick(uwpe);
-        this.timerTicksSoFar++;
-        */
     }
     toControl(universe) {
         return new ControlNone();

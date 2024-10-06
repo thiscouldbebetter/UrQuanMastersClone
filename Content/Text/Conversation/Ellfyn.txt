@@ -1,0 +1,194 @@
+name=Ellfyn
+contentTextStringName=Conversation-Ellfyn-Content
+imagePortraitName=Conversation-Portrait-Ellfyn
+
+|VariablesImport|u.world.player.variableLookup
+
+|Display|#(FRDLY_HOMEWORLD_HELLO_1)||cr.varGetWithDefault('Ellfyn_TimesGreeted', 0) == 0
+|Display|#(FRDLY_HOMEWORLD_HELLO_2)||cr.varGet('Ellfyn_TimesGreeted') == 1
+|Display|#(FRDLY_HOMEWORLD_HELLO_3)||cr.varGet('Ellfyn_TimesGreeted') == 2
+|Display|#(FRDLY_HOMEWORLD_HELLO_4)||cr.varGet('Ellfyn_TimesGreeted') > 2
+|VariableAdd|Ellfyn_TimesGreeted|1
+|OptionsClear
+|Option|#(confused_by_hello)|#(CONFUSED_RESPONSE)
+|Option|#(happy_by_hello)|#(HAPPY_RESPONSE)
+|Option|#(miffed_by_hello)|#(MIFFED_RESPONSE)
+
+|Prompt
+
+	|Display|#(CONFUSED_RESPONSE)
+	|Goto||Main
+
+	|Display|#(HAPPY_RESPONSE)
+	|Goto||Main
+
+	|Display|#(MIFFED_RESPONSE)
+	|Goto||Main
+
+	Main|DoNothing
+	|OptionsClear
+	|Option|#(what_about_war)|#(ABOUT_WAR)
+	|Option|#(what_did_on_earth)|#(DID_THIS)
+	|Option|#(what_give_me)|#(ABOUT_PORTAL)
+	|Option|#(best_if_i_killed_you)|#(WICKED_HUMAN)
+	|Option|#(bye_friendly_homeworld)|
+	|Prompt
+
+		|Display|#(ABOUT_WAR)
+		|Disable||#(what_about_war)
+		|Option|#(what_about_urquan)|#(ABOUT_URQUAN)
+		|Prompt
+
+			|Display|#(ABOUT_URQUAN)
+			|Disable||#(what_about_urquan)
+			|Prompt
+
+		|Display|#(DID_THIS)
+		|Disable||#(what_did_on_earth)
+		|Option|#(why_did_this)|#(IDF_PARASITES)
+		|Prompt
+
+			|Display|#(IDF_PARASITES)
+			|Disable||#(why_did_this)
+			|Option|#(tell_more)|#(NOT_NOW)
+			|Prompt
+
+				|Display|#(NOT_NOW)
+				|Disable|#(tell_more)
+				|Prompt
+
+		|Display|#(ABOUT_PORTAL)
+		|Disable||#(what_give_me)
+		|Option|#(what_about_tpet)|#(ABOUT_TPET)
+		|Option|#(about_portal_again)|#(PORTAL_AGAIN)|u.world.player.hasItemWithName("todo")
+		|Option|#(got_it)|#(CLEVER_HUMAN)|u.world.player.hasItemWithName("todo") == false
+		|Prompt
+
+			|Display|#(ABOUT_TPET)
+			|Disable||#(what_about_tpet)
+			|Prompt
+
+			|Display|#(PORTAL_AGAIN)
+			|Disable||#(about_portal_again)
+			|Prompt
+
+			|Display|#(CLEVER_HUMAN)
+			|Script|alert("todo")
+			|Prompt
+
+	|Display|#(WICKED_HUMAN)
+	|Goto||Done
+
+	|Display|#(GOODBYE_FRDLY_HOMEWORLD)
+	|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+
+
+
+
+|Display|#(INIT_HELLO)
+|OptionsClear
+|Option|#(confused_by_hello)|#(CONFUSED_RESPONSE_SPACE)
+|Option|#(happy_by_hello)|#(HAPPY_RESPONSE_SPACE)
+|Option|#(miffed_by_hello)|#(MIFFED_RESPONSE_SPACE)
+
+	#(CONFUSED_RESPONSE_SPACE)|Display|#(CONFUSED_RESPONSE)
+	|Goto||MainSpace
+
+	#(HAPPY_RESPONSE_SPACE)|Display|#(HAPPY_RESPONSE)
+	|Goto||MainSpace
+
+	#(MIFFED_RESPONSE_SPACE)|Display|#(MIFFED_RESPONSE)
+	|Goto||MainSpace
+
+	MainSpace|DoNothing
+	|OptionsClear
+	|Option|#(why_you_here)|#(LEARN_THINGS)
+	|Option|#(whats_up_1)|#(GENERAL_INFO_1)
+	|Prompt
+
+		|Display|#(LEARN_THINGS)
+		|Disable||#(why_you_here)
+		|Option|#(what_things)|#(THESE_THINGS)
+		|Prompt
+
+			|Display|#(THESE_THINGS)
+			|Disable||#(what_things)
+			|Option|#(why_do_it)|#(DO_IT_BECAUSE)
+			|Prompt
+
+				|Display|#(DO_IT_BECAUSE)
+				|Disable||#(why_do_it)
+				|Prompt
+	
+		|Display|#(GENERAL_INFO_1)
+		|Disable||#(whats_up_1)
+		|Option|#(give_me_info_1)|#(ARILOU_HINTS_1)
+		|Prompt
+
+			|Display|#(ARILOU_HINTS_1)
+			|OptionsClear
+			|Display|#(bye_friendly_space)
+			|Prompt
+
+
+
+|Display|#(whats_up_2)
+|Display|#(FRIENDLY_SPACE_HELLO_1)
+|Display|#(FRIENDLY_SPACE_HELLO_2)
+|Display|#(FRIENDLY_SPACE_HELLO_3)
+|Display|#(FRIENDLY_SPACE_HELLO_4)
+|Display|#(GENERAL_INFO_2)
+|Display|#(GENERAL_INFO_3)
+|Display|#(GENERAL_INFO_4)
+|Display|#(give_me_info_2)
+|Display|#(ARILOU_HINTS_2)
+|Display|#(ARILOU_HINTS_3)
+|Display|#(ARILOU_HINTS_4)
+|Display|#(GOODBYE_FRIENDLY_SPACE)
+|Display|#(GOT_PART_YET_1)
+|Display|#(GOT_PART_YET_2)
+|Display|#(INIT_ANGRY_HWLD_HELLO)
+|Display|#(invaders_from_mars)
+|Display|#(HAD_OUR_REASONS)
+|Display|#(bug_eyed_fruitcakes)
+|Display|#(WE_NEVER_FRIENDS)
+|Display|#(ok_lets_be_friends)
+|Display|#(NO_ALLY_BUT_MUCH_GIVE)
+|Display|#(why_should_i_trust)
+|Display|#(TRUST_BECAUSE)
+|Display|#(what_about_interference)
+|Display|#(INTERFERENCE_NECESSARY)
+|Display|#(i_just_like_to_leave)
+|Display|#(SORRY_NO_LEAVE)
+|Display|#(umgah_acting_weird)
+|Display|#(learned_about_umgah)
+|Display|#(WELL_GO_CHECK)
+|Display|#(NO_NEWS_YET)
+|Display|#(UMGAH_UNDER_COMPULSION)
+|Display|#(what_do_now)
+|Display|#(GO_FIND_OUT)
+|Display|#(tell_arilou_about_tpet)
+|Display|#(BAD_NEWS_ABOUT_TPET)
+|Display|#(what_do_about_tpet)
+|Display|#(DANGEROUS_BUT_USEFUL)
+
+|Display|#(GIVE_PORTAL)
+
+|Display|#(HOSTILE_GOODBYE_1)
+|Display|#(HOSTILE_GOODBYE_2)
+|Display|#(HOSTILE_GOODBYE_3)
+|Display|#(HOSTILE_GOODBYE_4)
+|Display|#(ANGRY_SPACE_HELLO_1)
+|Display|#(ANGRY_SPACE_HELLO_2)
+|Display|#(lets_fight)
+|Display|#(NO_FIGHT)
+|Display|#(im_sorry)
+|Display|#(APOLOGIZE_AT_HOMEWORLD)
+|Display|#(bye_angry_space)
+|Display|#(GOODBYE_ANGRY_SPACE)
+|Display|#(OUT_TAKES)

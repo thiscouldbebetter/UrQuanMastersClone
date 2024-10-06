@@ -351,7 +351,7 @@ class WorldExtended extends World
 		const hyperspaceName = "Hyperspace";
 		const paraspaceName = "Paraspace";
 
-		var paraspaceLinkPortalName = "UNKNOWN";
+		const paraspaceLinkPortalName = "UNKNOWN";
 		let lp = (fromPos: Coords, toPos: Coords) =>
 		{
 			return new LinkPortal
@@ -366,6 +366,14 @@ class WorldExtended extends World
 		var paraspaceSize = hyperspaceSize.clone();
 		var paraspaceLinkPortals =
 		[
+			new LinkPortal
+			(
+				paraspaceLinkPortalName,
+				Coords.fromXY(6134, 5900), // pos
+				Encounter.name + "-EllfynHomeworld",
+				null // destinationPos
+			),
+
 			lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712) ), // Lyncis (Freaky Beast)
 			lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607,  151) ), // Trianguli (SE)
 			lp(Coords.fromXY(4660, 5140), Coords.fromXY(2302, 3988) ), // Gruis (Mauluska) 
@@ -395,7 +403,7 @@ class WorldExtended extends World
 		var paraspacePortalPos = Coords.fromXY(438, 6372);
 		var linkPortal = new LinkPortal
 		(
-			"UNKNOWN",
+			paraspaceLinkPortalName,
 			paraspacePortalPos,
 			paraspaceName,
 			Coords.fromXY(5000, 5000) // destinationPos
@@ -589,20 +597,6 @@ class WorldExtended extends World
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		super.updateForTimerTick(uwpe);
-		/*
-		uwpe.worldSet(this);
-
-		if (this.placeNext != null)
-		{
-			this.placeCurrent.finalize(uwpe);
-			this.placeCurrent = this.placeNext;
-			this.placeCurrent.initialize(uwpe);
-			this.placeNextSet(null);
-		}
-
-		this.placeCurrent.updateForTimerTick(uwpe);
-		this.timerTicksSoFar++;
-		*/
 	}
 
 	toControl(universe: Universe): ControlBase

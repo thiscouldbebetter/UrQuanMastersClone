@@ -5,25 +5,140 @@ class Game
 	{
 		var importDirectoryPath = contentDirectoryPath + "Import/sc2/content/base/";
 
-		var imageDirectory = contentDirectoryPath + "Images/";
-		var imageDirectoryHazards = importDirectoryPath + "lander/hazard/";
-		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
 		var directoryEnergySources = importDirectoryPath + "lander/energy/";
 		var energySource = EnergySource.name;
-		var png = ".png";
 
 		var audioDirectory = contentDirectoryPath + "Audio/";
 
 		var textDirectory = contentDirectoryPath + "Text/";
 
-		var conversation = "Conversation-";
-		var content = "-Content";
+		const conversation = "Conversation-";
+		const content = "-Content";
 		var conversationDirectory = textDirectory + "Conversation/";
 		var conversationPlaceholderPath =
 			conversationDirectory + "Placeholder.json";
-		var conversationPortrait = conversation + "Portrait-";
 		var contentPathPrefixComms =
 			importDirectoryPath + "comm/";
+
+		var images = this.mediaLibraryBuild_Images
+		(
+			contentDirectoryPath,
+			conversation,
+			importDirectoryPath,
+			energySource,
+			directoryEnergySources
+		);
+
+		var sffm = (a: string, b: string) => new SoundFromFileMod(a, b);
+		var ts = (a: string, b: string) => new TextString(a, b);
+
+		var sounds =
+		[
+			new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
+
+			new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
+			new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
+			//new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
+			sffm("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
+
+			sffm("Music_Combat", importDirectoryPath + "battle/battle.mod"),
+			sffm("Music_Encounter", importDirectoryPath + "ui/redalert.mod"),
+			sffm("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
+			sffm("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
+			sffm("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
+
+			sffm("Music_Faction_Terran", importDirectoryPath + "comm/commander/commander.mod"),
+			sffm("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
+		];
+
+		var videos =
+		[
+			new Video("Movie", contentDirectoryPath + "Video/Movie.webm"),
+		];
+
+		var fonts =
+		[
+				new Font("Font", contentDirectoryPath + "Fonts/Font.ttf"),
+		];
+
+		var textStrings = 
+		[
+			ts("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
+
+			ts(conversation + "Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
+			ts(conversation + "Daaskap", conversationPlaceholderPath),
+			ts(conversation + "Ellfyn", conversationDirectory + "Ellfyn.txt"),
+			ts(conversation + "Ellfyn" + content, contentPathPrefixComms + "arilou/arilou.txt"),
+			ts(conversation + "Famorfex", conversationPlaceholderPath),
+			ts(conversation + "Grimmotz", conversationPlaceholderPath),	
+			ts(conversation + "Hyphae", conversationPlaceholderPath),
+			ts(conversation + "Kehlemal", conversationPlaceholderPath),
+			ts(conversation + "Konstalyxz", conversationPlaceholderPath),
+			ts(conversation + "Lahkemup", conversationPlaceholderPath),
+			ts(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
+			ts(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.txt"),
+			//ts(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
+			ts(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
+			ts(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
+			ts(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
+			ts(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
+			ts(conversation + "Muunfaz", conversationPlaceholderPath),
+			ts(conversation + "Mazonae", conversationPlaceholderPath),
+			ts(conversation + "Murch", conversationDirectory + "Murch.txt"),
+			ts(conversation + "Murch" + content, contentPathPrefixComms + "melnorme/melnorme.txt"),
+			ts(conversation + "Outsider", conversationPlaceholderPath),
+			ts(conversation + "Raknoid", conversationDirectory + "Raknoid.txt"),
+			ts(conversation + "Raknoid" + content, contentPathPrefixComms + "ilwrath/ilwrath.txt"),
+			ts(conversation + "Raptodact", conversationPlaceholderPath),
+			ts(conversation + "Supian", conversationPlaceholderPath),
+			ts(conversation + "Tempestrial", conversationDirectory + "Tempestrial.txt"),
+			ts(conversation + "Tempestrial" + content, contentPathPrefixComms + "probe/probe.txt"),
+			ts(conversation + "Terran", conversationDirectory + "Terran.txt"),
+			ts(conversation + "Terran" + content, contentPathPrefixComms + "commander/commander.txt"),
+			ts(conversation + "Terran-Business", conversationDirectory + "Terran-Business.txt"),
+			ts(conversation + "Terran-Business" + content, contentPathPrefixComms + "starbase/starbase.txt"),
+			ts(conversation + "Triunion", conversationDirectory + "Triunion.json"),
+			ts(conversation + "Triunion" + content, contentPathPrefixComms + "zoqfotpik/zoqfotpik.txt"),
+			ts(conversation + "Twyggan", conversationDirectory + "Twyggan.txt"),
+			ts(conversation + "Twyggan" + content, contentPathPrefixComms + "supox/supox.txt"),
+			ts(conversation + "Ugglegruj", conversationPlaceholderPath),
+			ts(conversation + "Vaarphig", conversationPlaceholderPath),
+
+			// Energy sources.
+
+			ts(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
+			ts(energySource + "CrashedShackler", directoryEnergySources + "urquanwreck.txt"),
+			ts(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
+			ts(energySource + "TtorstingCaster", directoryEnergySources + "burvixcaster.txt"),
+		];
+
+		var mediaLibrary = new MediaLibrary
+		(
+			contentDirectoryPath,
+			images,
+			sounds,
+			videos,
+			fonts,
+			textStrings
+		);
+
+		return mediaLibrary
+	}
+
+	mediaLibraryBuild_Images
+	(
+		contentDirectoryPath: string,
+		conversation: string,
+		importDirectoryPath: string,
+		energySource: string,
+		directoryEnergySources: string
+	): Image2[]
+	{
+		var conversationPortrait = conversation + "Portrait-";
+		var imageDirectory = contentDirectoryPath + "Images/";
+		var imageDirectoryHazards = importDirectoryPath + "lander/hazard/";
+		var imageDirectoryLifeforms = imageDirectory + "Lifeforms/";
+		var png = ".png";
 
 		var i2 = Image2;
 
@@ -31,6 +146,8 @@ class Game
 		[
 			// conversation 
 			new i2("Conversation", imageDirectory + "Conversation.png"),
+
+			new i2(conversationPortrait + "Ellfyn", importDirectoryPath + "comm/arilou/arilou-000.png"),
 			new i2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
 			new i2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
 			new i2(conversationPortrait + "Murch", importDirectoryPath + "comm/melnorme/melnorme-000.png"),
@@ -125,94 +242,7 @@ class Game
 
 		images.push(...hazardImages);
 
-		var sffm = (a: string, b: string) => new SoundFromFileMod(a, b);
-		var ts = (a: string, b: string) => new TextString(a, b);
-
-		var mediaLibrary = new MediaLibrary
-		(
-			contentDirectoryPath,
-
-			images,
-
-			// sounds
-			[
-				new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
-
-				new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
-				new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
-				//new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
-				sffm("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
-
-				sffm("Music_Combat", importDirectoryPath + "battle/battle.mod"),
-				sffm("Music_Encounter", importDirectoryPath + "ui/redalert.mod"),
-				sffm("Music_Hyperspace", importDirectoryPath + "nav/hyper.mod"),
-				sffm("Music_Planet", importDirectoryPath + "nav/orbit.mod"),
-				sffm("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
-
-				sffm("Music_Faction_Terran", importDirectoryPath + "comm/commander/commander.mod"),
-				sffm("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
-			],
-
-			// videos
-			[
-				new Video("Movie", contentDirectoryPath + "Video/Movie.webm"),
-			],
-			// fonts
-			[
-				new Font("Font", contentDirectoryPath + "Fonts/Font.ttf"),
-			],
-			// textStrings
-			[
-				ts("StarsAndPlanets", textDirectory + "PlanetDatabase.csv"),
-
-				ts(conversation + "Placeholder-Content", conversationDirectory + "Placeholder-Content.txt"),
-				ts(conversation + "Daaskap", conversationPlaceholderPath),
-				ts(conversation + "Ellfyn", conversationPlaceholderPath),
-				ts(conversation + "Famorfex", conversationPlaceholderPath),
-				ts(conversation + "Grimmotz", conversationPlaceholderPath),	
-				ts(conversation + "Hyphae", conversationPlaceholderPath),
-				ts(conversation + "Kehlemal", conversationPlaceholderPath),
-				ts(conversation + "Konstalyxz", conversationPlaceholderPath),
-				ts(conversation + "Lahkemup", conversationPlaceholderPath),
-				ts(conversation + "Lahkemup" + content, contentPathPrefixComms + "urquan/urquan.txt"),
-				ts(conversation + "LahkemupGuardDrone", conversationDirectory + "LahkemupGuardDrone.txt"),
-				//ts(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
-				ts(conversation + "Mauluska", conversationDirectory + "Mauluska.json"),
-				ts(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-				ts(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
-				ts(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-				ts(conversation + "Muunfaz", conversationPlaceholderPath),
-				ts(conversation + "Mazonae", conversationPlaceholderPath),
-				ts(conversation + "Murch", conversationDirectory + "Murch.txt"),
-				ts(conversation + "Murch" + content, contentPathPrefixComms + "melnorme/melnorme.txt"),
-				ts(conversation + "Outsider", conversationPlaceholderPath),
-				ts(conversation + "Raknoid", conversationDirectory + "Raknoid.txt"),
-				ts(conversation + "Raknoid" + content, contentPathPrefixComms + "ilwrath/ilwrath.txt"),
-				ts(conversation + "Raptodact", conversationPlaceholderPath),
-				ts(conversation + "Supian", conversationPlaceholderPath),
-				ts(conversation + "Tempestrial", conversationDirectory + "Tempestrial.txt"),
-				ts(conversation + "Tempestrial" + content, contentPathPrefixComms + "probe/probe.txt"),
-				ts(conversation + "Terran", conversationDirectory + "Terran.txt"),
-				ts(conversation + "Terran" + content, contentPathPrefixComms + "commander/commander.txt"),
-				ts(conversation + "Terran-Business", conversationDirectory + "Terran-Business.txt"),
-				ts(conversation + "Terran-Business" + content, contentPathPrefixComms + "starbase/starbase.txt"),
-				ts(conversation + "Triunion", conversationDirectory + "Triunion.json"),
-				ts(conversation + "Triunion" + content, contentPathPrefixComms + "zoqfotpik/zoqfotpik.txt"),
-				ts(conversation + "Twyggan", conversationDirectory + "Twyggan.txt"),
-				ts(conversation + "Twyggan" + content, contentPathPrefixComms + "supox/supox.txt"),
-				ts(conversation + "Ugglegruj", conversationPlaceholderPath),
-				ts(conversation + "Vaarphig", conversationPlaceholderPath),
-
-				// Energy sources.
-
-				ts(energySource + "AbandonedMoonbase", directoryEnergySources + "moonbase.txt"),
-				ts(energySource + "CrashedShackler", directoryEnergySources + "urquanwreck.txt"),
-				ts(energySource + "MauluskaOrphan", directoryEnergySources + "fwiffo.txt"),
-				ts(energySource + "TtorstingCaster", directoryEnergySources + "burvixcaster.txt"),
-			]
-		);
-
-		return mediaLibrary
+		return images;
 	}
 
 	start(): void

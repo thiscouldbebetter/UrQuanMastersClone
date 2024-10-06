@@ -1,8 +1,13 @@
 "use strict";
 class Hyperspace {
-    constructor(name, size, linkPortals, shipGroups, starsystems) {
+    constructor(name, size, pixelsTraversablePerFuelUnit, linkPortals, shipGroups, starsystems) {
         this.name = name || Hyperspace.name;
         this.size = size;
+        // Per the Star Control Wiki:
+        // "To travel the entire length of one axis [...] requires exactly 100.0 units of fuel."
+        // And this game's version of hyperspace is 10,000 pixels across.
+        this.pixelsTraversablePerFuelUnit =
+            pixelsTraversablePerFuelUnit || 100;
         this._linkPortals = linkPortals || [];
         this.shipGroups = shipGroups || [];
         this.starsystems = starsystems || [];
@@ -39,7 +44,8 @@ class Hyperspace {
             starsystems.push(starsystem);
         }
         var returnValue = new Hyperspace(null, // name
-        size, [], // linkPortals
+        size, null, // pixelsTraversablePerFuelUnit
+        [], // linkPortals
         [], // shipGroups
         starsystems);
         return returnValue;
@@ -176,11 +182,13 @@ class Hyperspace {
         var shipGroup = new ShipGroupFinite("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), [new Ship("Tumbler")]);
         var shipGroups = [shipGroup];
         var hyperspace = new Hyperspace(null, // name
-        size, linkPortals, shipGroups, starsystems);
+        size, null, // pixelsTraversablePerFuelUnit,
+        linkPortals, shipGroups, starsystems);
         return hyperspace;
     }
     static fromNameSizeAndLinkPortals(name, size, linkPortals) {
-        return new Hyperspace(name, size, linkPortals, null, // shipGroups
+        return new Hyperspace(name, size, null, // pixelsTraversablePerFuelUnit
+        linkPortals, null, // shipGroups
         null // starsystems
         );
     }
@@ -198,6 +206,10 @@ class Hyperspace {
     }
     linkPortalsGetAll() {
         return this._linkPortals;
+    }
+    pixelsTraversablePerFuelUnitSet(value) {
+        this.pixelsTraversablePerFuelUnit = value;
+        return this;
     }
     shipGroupAdd(shipGroup) {
         this.shipGroups.push(shipGroup);

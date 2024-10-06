@@ -3,6 +3,7 @@ class Hyperspace
 {
 	name: string;
 	size: Coords;
+	pixelsTraversablePerFuelUnit: number
 	_linkPortals: LinkPortal[];
 	shipGroups: ShipGroup[];
 	starsystems: Starsystem[];
@@ -13,6 +14,7 @@ class Hyperspace
 	(
 		name: string,
 		size: Coords,
+		pixelsTraversablePerFuelUnit: number,
 		linkPortals: LinkPortal[],
 		shipGroups: ShipGroup[],
 		starsystems: Starsystem[]
@@ -20,6 +22,13 @@ class Hyperspace
 	{
 		this.name = name || Hyperspace.name;
 		this.size = size;
+
+		// Per the Star Control Wiki:
+		// "To travel the entire length of one axis [...] requires exactly 100.0 units of fuel."
+		// And this game's version of hyperspace is 10,000 pixels across.
+		this.pixelsTraversablePerFuelUnit =
+			pixelsTraversablePerFuelUnit || 100;
+
 		this._linkPortals = linkPortals || [];
 		this.shipGroups = shipGroups || [];
 		this.starsystems = starsystems || [];
@@ -97,6 +106,7 @@ class Hyperspace
 		(
 			null, // name
 			size,
+			null, // pixelsTraversablePerFuelUnit
 			[], // linkPortals
 			[], // shipGroups
 			starsystems,
@@ -342,6 +352,7 @@ class Hyperspace
 		(
 			null, // name
 			size,
+			null, // pixelsTraversablePerFuelUnit,
 			linkPortals,
 			shipGroups,
 			starsystems
@@ -356,6 +367,7 @@ class Hyperspace
 		(
 			name,
 			size,
+			null, // pixelsTraversablePerFuelUnit
 			linkPortals,
 			null, // shipGroups
 			null // starsystems
@@ -386,6 +398,12 @@ class Hyperspace
 	linkPortalsGetAll(): LinkPortal[]
 	{
 		return this._linkPortals;
+	}
+
+	pixelsTraversablePerFuelUnitSet(value: number): Hyperspace
+	{
+		this.pixelsTraversablePerFuelUnit = value;
+		return this;
 	}
 
 	shipGroupAdd(shipGroup: ShipGroup): Hyperspace

@@ -1,9 +1,9 @@
 "use strict";
 class LinkPortal {
-    constructor(name, posInSpace, destinationSpaceName, destinationPos) {
+    constructor(name, posInSpace, destinationPlaceName, destinationPos) {
         this.name = name;
         this.posInSpace = posInSpace;
-        this.destinationSpaceName = destinationSpaceName;
+        this.destinationPlaceName = destinationPlaceName;
         this.destinationPos = destinationPos;
     }
     static fromEntity(entity) {
@@ -12,25 +12,37 @@ class LinkPortal {
     collideWithPlayer(uwpe) {
         var universe = uwpe.universe;
         var world = uwpe.world;
+        var place = world.place();
         if (LinkPortal.fromEntity(uwpe.entity2) == null) {
             uwpe.entitiesSwap();
         }
         var entityPlayer = uwpe.entity;
         var entityLinkPortal = uwpe.entity2;
         var linkPortal = LinkPortal.fromEntity(entityLinkPortal);
-        var spaceBeingEntered = linkPortal.destinationSpace(world);
-        var playerLoc = entityPlayer.locatable().loc;
-        var playerPosNext = linkPortal.destinationPos.clone();
-        var playerDisposition = Disposition.fromPosOrientationAndPlaceName(playerPosNext, playerLoc.orientation.clone(), spaceBeingEntered.name);
-        var placeHyperspace = new PlaceHyperspace(universe, spaceBeingEntered, null, // starsystemDeparted
-        playerDisposition);
-        world.placeNextSet(placeHyperspace);
-    }
-    destinationSpace(world) {
-        var destinationSpace = (this.destinationSpaceName == "Paraspace")
-            ? world.paraspace
-            : world.hyperspace;
-        return destinationSpace;
+        var placeNext;
+        if (this.destinationPlaceName.endsWith("space")) {
+            var spaceBeingEntered = this.destinationPlaceName.startsWith("Hyper")
+                ? world.hyperspace
+                : world.paraspace;
+            var playerLoc = entityPlayer.locatable().loc;
+            var playerPosNext = linkPortal.destinationPos.clone();
+            var playerDisposition = Disposition.fromPosOrientationAndPlaceName(playerPosNext, playerLoc.orientation.clone(), spaceBeingEntered.name);
+            placeNext = new PlaceHyperspace(universe, spaceBeingEntered, null, // starsystemDeparted
+            playerDisposition);
+        }
+        else if (this.destinationPlaceName.startsWith(Encounter.name)) {
+            var factionName = this.destinationPlaceName.split("-")[1];
+            var playerPos = entityPlayer.locatable().loc.pos;
+            var encounter = new Encounter(null, // planet
+            factionName, entityPlayer, entityLinkPortal, place, // placeToReturnTo
+            playerPos);
+            var placeEncounter = encounter.toPlace();
+            world.placeNextSet(placeEncounter);
+        }
+        else {
+            throw new Error("Unrecognized value in .destinationPlaceName.");
+        }
+        world.placeNextSet(placeNext);
     }
     toEntity(radiusInHyperspace) {
         var collider = Sphere.fromRadius(radiusInHyperspace);

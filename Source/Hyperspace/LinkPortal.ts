@@ -3,20 +3,20 @@ class LinkPortal implements EntityProperty<LinkPortal>
 {
 	name: string;
 	posInSpace: Coords;
-	destinationSpaceName: string;
+	destinationPlaceName: string;
 	destinationPos: Coords;
 
 	constructor
 	(
 		name: string,
 		posInSpace: Coords,
-		destinationSpaceName: string,
+		destinationPlaceName: string,
 		destinationPos: Coords
 	)
 	{
 		this.name = name;
 		this.posInSpace = posInSpace;
-		this.destinationSpaceName = destinationSpaceName;
+		this.destinationPlaceName = destinationPlaceName;
 		this.destinationPos = destinationPos;
 	}
 
@@ -29,6 +29,7 @@ class LinkPortal implements EntityProperty<LinkPortal>
 	{
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
+		var place = world.place();
 		if (LinkPortal.fromEntity(uwpe.entity2) == null)
 		{
 			uwpe.entitiesSwap();
@@ -38,35 +39,54 @@ class LinkPortal implements EntityProperty<LinkPortal>
 
 		var linkPortal = LinkPortal.fromEntity(entityLinkPortal);
 
-		var spaceBeingEntered = linkPortal.destinationSpace(world);
-		var playerLoc = entityPlayer.locatable().loc;
-		var playerPosNext = linkPortal.destinationPos.clone();
-		var playerDisposition = Disposition.fromPosOrientationAndPlaceName
-		(
-			playerPosNext,
-			playerLoc.orientation.clone(),
-			spaceBeingEntered.name
-		);
+		var placeNext: Place;
 
-		var placeHyperspace = new PlaceHyperspace
-		(
-			universe,
-			spaceBeingEntered,
-			null, // starsystemDeparted
-			playerDisposition
-		);
+		if (this.destinationPlaceName.endsWith("space") )
+		{
+			var spaceBeingEntered =
+				this.destinationPlaceName.startsWith("Hyper")
+				? world.hyperspace
+				: world.paraspace;
 
-		world.placeNextSet(placeHyperspace);
-	}
+			var playerLoc = entityPlayer.locatable().loc;
+			var playerPosNext = linkPortal.destinationPos.clone();
+			var playerDisposition = Disposition.fromPosOrientationAndPlaceName
+			(
+				playerPosNext,
+				playerLoc.orientation.clone(),
+				spaceBeingEntered.name
+			);
 
-	destinationSpace(world: WorldExtended): Hyperspace
-	{
-		var destinationSpace =
-			(this.destinationSpaceName == "Paraspace")
-			? world.paraspace
-			: world.hyperspace;
+			placeNext = new PlaceHyperspace
+			(
+				universe,
+				spaceBeingEntered,
+				null, // starsystemDeparted
+				playerDisposition
+			);
+		}
+		else if (this.destinationPlaceName.startsWith(Encounter.name) )
+		{
+			var factionName = this.destinationPlaceName.split("-")[1];
+			var playerPos = entityPlayer.locatable().loc.pos;
+			var encounter = new Encounter
+			(
+				null, // planet
+				factionName,
+				entityPlayer,
+				entityLinkPortal,
+				place, // placeToReturnTo
+				playerPos
+			);
+			var placeEncounter = encounter.toPlace();
+			world.placeNextSet(placeEncounter);
+		}
+		else
+		{
+			throw new Error("Unrecognized value in .destinationPlaceName.");
+		}
 
-		return destinationSpace;
+		world.placeNextSet(placeNext);
 	}
 
 	toEntity(radiusInHyperspace: number): Entity
