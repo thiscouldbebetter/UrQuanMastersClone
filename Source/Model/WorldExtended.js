@@ -165,7 +165,7 @@ class WorldExtended extends World {
             lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712)), // Lyncis (Freaky Beast)
             lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607, 151)), // Trianguli (SE)
             lp(Coords.fromXY(4660, 5140), Coords.fromXY(2302, 3988)), // Gruis (Mauluska) 
-            lp(Coords.fromXY(4680, 4640), Coords.fromXY(9211, 6104)), // Arcturus (Ttosting)
+            lp(Coords.fromXY(4680, 4640), Coords.fromXY(9211, 6104)), // Arcturus (Ttorsting)
             lp(Coords.fromXY(4760, 4580), Coords.fromXY(4091, 7748)), // Monocerotis (Lahk-Emup NW)
             lp(Coords.fromXY(4760, 4960), Coords.fromXY(6117, 4131)), // Camelopardalis (Lahk-Emup S)
             lp(Coords.fromXY(4880, 5380), Coords.fromXY(9735, 3153)), // Persei (Daaskap) 

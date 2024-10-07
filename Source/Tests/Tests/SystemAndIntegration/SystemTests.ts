@@ -865,6 +865,22 @@ class SystemTests extends TestFixture
 		var devicePortalProjectorName = "ParaspacePortalProjector";
 		Assert.isTrue(itemHolderDevices.hasItemWithDefnName(devicePortalProjectorName) );
 
+		// Leave paraspace by the portal that lets out nearest to Earth.
+		this.moveToEntityAtPosAndWait(universe, Coords.fromXY(5060, 4740) );
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+		var placeHyperspace = place() as PlaceHyperspace;
+		var spaceOccupied = placeHyperspace.hyperspace;
+		Assert.areStringsEqual("Hyperspace", spaceOccupied.name);
+		var playerPos = placeHyperspace.player().locatable().pos();
+		var posExpected = Coords.fromXY(1910,  962);
+		Assert.isTrue(playerPos.equals(posExpected) );
+
+		// Fill up on fuel to sell back at the Earth station.
+
+		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+
+		this.goToEarthStation(universe);
+
 		callback();
 	}
 
@@ -986,6 +1002,13 @@ class SystemTests extends TestFixture
 		return targetFound;
 	}
 
+	goToEarthStation(universe: Universe): void
+	{
+		this.goToVicinityOfPlanetWithName(universe, "Earth");
+		this.moveToEntityWithNameAndWait(universe, "Earth Station");
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStation.name, universe.world);
+	}
+
 	goToHyperspace(universe: Universe): void
 	{
 		// todo - Leave the planet surface?
@@ -1074,6 +1097,28 @@ class SystemTests extends TestFixture
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
 	}
 
+	goToOrbitOfPlanetWithName(universe: Universe, planetName: string): void
+	{
+		this.goToVicinityOfPlanetWithName(universe, planetName);
+		if (planetName.split("-").length == 1)
+		{
+			// Consider: "Earth", "Moon", "Alpha Centauri I", "Alpha Centauri I-a", "Arcturus I", "Arcturus I-a"
+			planetName = Planet.name;
+		}
+		this.moveToEntityWithNameAndWait(universe, planetName);
+
+		var placeTypesExpectedNames =
+		[
+			PlacePlanetOrbit.name, // Colliding with most planets will take you to orbit,
+			PlaceEncounter.name, // but some special planets will instead initiate an encounter.
+		];
+
+		var world = universe.world;
+		var place = world.place();
+		var placeTypeName = place.constructor.name;
+		Assert.isTrue(placeTypesExpectedNames.indexOf(placeTypeName) >= 0);
+	}
+
 	goToRainbowWorldInStarsystemWithName(starsystemName: string, universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
@@ -1106,28 +1151,6 @@ class SystemTests extends TestFixture
 		Assert.areNumbersEqual(1, rainbowWorldsDiscoveredCount); 
 	}
 
-	goToOrbitOfPlanetWithName(universe: Universe, planetName: string): void
-	{
-		this.goToVicinityOfPlanetWithName(universe, planetName);
-		if (planetName.split("-").length == 1)
-		{
-			// Consider: "Earth", "Moon", "Alpha Centauri I", "Alpha Centauri I-a", "Arcturus I", "Arcturus I-a"
-			planetName = Planet.name;
-		}
-		this.moveToEntityWithNameAndWait(universe, planetName);
-
-		var placeTypesExpectedNames =
-		[
-			PlacePlanetOrbit.name, // Colliding with most planets will take you to orbit,
-			PlaceEncounter.name, // but some special planets will instead initiate an encounter.
-		];
-
-		var world = universe.world;
-		var place = world.place();
-		var placeTypeName = place.constructor.name;
-		Assert.isTrue(placeTypesExpectedNames.indexOf(placeTypeName) >= 0);
-	}
-
 	goToStarsystemWithName(universe: Universe, starsystemName: string): void
 	{
 		this.goToHyperspace(universe);
@@ -1150,7 +1173,12 @@ class SystemTests extends TestFixture
 			// It's a moon.
 			planetName = planetName.split("-")[0];
 		}
-		var starsystemName = planetName.substr(0, planetName.lastIndexOf(" "))
+
+		var starsystemName =
+			planetName == "Earth"
+			? "Sol"
+			: planetName.substr(0, planetName.lastIndexOf(" "));
+
 		this.goToStarsystemWithName(universe, starsystemName);
 		this.moveToEntityWithNameAndWait(universe, planetName);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, universe.world);
