@@ -533,7 +533,31 @@ class SystemTests extends TestFixture {
         var placeHyperspace = place();
         var spaceOccupied = placeHyperspace.hyperspace;
         Assert.areStringsEqual("Paraspace", spaceOccupied.name);
+        // Go to the Ellfyn homeworld, talk to them,
+        // and trade the warp outrigger for a portal projector.
         this.moveToEntityAtPosAndWait(universe, Coords.fromXY(6134, 5900));
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        var talker = place().encounter.entityOther.talker();
+        this.talkToTalker(universe, talker, [
+            // "Hello, and welcome back."
+            "#(confused_by_hello)", // "Have we met?"
+            // "Oh, not personally, but our species have a history.
+            "#(what_give_me)", // "You said you could offer us someting?"
+            // "Yes, we can convert a warp outrigger into a portal projector."
+            "#(got_it)", // "It just so happens I have one of those."
+            // "Aren't you clever.  Here, we'll build it... done."
+            "#(bye_friendly_homeworld)", // Great.  See ya."
+            // "See ya."
+        ]);
+        // Check to see that we're back in paraspace.
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
+        var placeHyperspace = place();
+        var spaceOccupied = placeHyperspace.hyperspace;
+        Assert.areStringsEqual("Paraspace", spaceOccupied.name);
+        // Check to see that the portal projector is now on board the flagship.
+        var itemHolderDevices = flagship.itemHolderDevices;
+        var devicePortalProjectorName = "ParaspacePortalProjector";
+        Assert.isTrue(itemHolderDevices.hasItemWithDefnName(devicePortalProjectorName));
         callback();
     }
     // Helper methods.

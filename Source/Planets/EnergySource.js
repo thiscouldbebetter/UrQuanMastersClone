@@ -136,6 +136,7 @@ class EnergySource_Instances {
         var conversationDefnSerialized = mediaLibrary.textStringGetByName("Conversation-" + textMauluskaOrphan).value;
         var controlMessage = universe.controlBuilder.message(universe, universe.display.sizeInPixels, DataBinding.fromContext(message), () => // acknowledge
          {
+            // todo - Do an encounter instead.
             var conversationDefn = ConversationDefn.deserialize(conversationDefnSerialized);
             var conversationRun = ConversationRun.fromConversationDefn(conversationDefn);
             var conversationVenue = conversationRun.toVenue(universe);

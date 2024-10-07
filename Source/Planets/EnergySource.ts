@@ -258,7 +258,6 @@ class EnergySource_Instances
 		);
 	}
 
-
 	mauluskaOrphan_CollideWithLander(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var textMauluskaOrphan = "MauluskaOrphan";
@@ -279,6 +278,7 @@ class EnergySource_Instances
 			DataBinding.fromContext(message),
 			() => // acknowledge
 			{
+				// todo - Do an encounter instead.
 				var conversationDefn =
 					ConversationDefn.deserialize(conversationDefnSerialized);
 				var conversationRun = ConversationRun.fromConversationDefn(conversationDefn);

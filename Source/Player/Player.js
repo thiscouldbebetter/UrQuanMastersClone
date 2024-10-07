@@ -35,6 +35,14 @@ class Player {
         this._factionsKnown = null;
         this.flagship.cachesCalculate();
     }
+    deviceWithNameAdd(deviceName) {
+        this.flagship.itemHolderDevices.itemAdd(Item.fromDefnName(deviceName));
+        return this;
+    }
+    deviceWithNameRemove(deviceName) {
+        this.flagship.itemHolderDevices.itemRemove(Item.fromDefnName(deviceName));
+        return this;
+    }
     factionsAllied(world) {
         if (this._factionsAllied == null) {
             this._factionsAllied = [];
@@ -69,6 +77,9 @@ class Player {
     }
     hasInfoToSell_RainbowWorldLocations() {
         return (this.rainbowWorldLocationsKnownButUnsoldCount() > 0);
+    }
+    hasDeviceWithName(deviceName) {
+        return this.flagship.hasDeviceWithName(deviceName);
     }
     initialize(uwpe) {
         var ships = this.shipGroup.ships;

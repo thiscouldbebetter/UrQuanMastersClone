@@ -203,6 +203,10 @@ class PlaceHyperspace extends PlaceBase {
             this.shipGroupAdd(shipGroup, world);
         }
     }
+    linkPortalAdd(linkPortal, world) {
+        var linkPortalAsEntity = linkPortal.toEntity(Starsystem.RadiusOuter); // hack
+        this.entityToSpawnAdd(linkPortalAsEntity);
+    }
     playerCollide(uwpe, collision) {
         var universe = uwpe.universe;
         var world = uwpe.world;

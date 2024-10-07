@@ -53,34 +53,42 @@ class PlaceEncounter extends PlaceBase
 
 			var entityOther = encounter.entityOther;
 			var shipGroupOther = ShipGroupBase.fromEntity(entityOther);
-			var shipGroupOtherDescription =
-				shipGroupOther.toStringDescription(world);
-
-			var newline = "\n";
-			var messageToShow =
-				"Encounter" + newline
-				+ "with " + shipGroupOtherDescription + newline
-				+ "near " + encounter.planet.name;
-
-			var choiceNames = [ "Talk" ];
-			var choiceActions = [ () => this.encounter.talk(universe) ];
-
-			if (faction.relationsWithPlayer == Faction.RelationsHostile)
+			if (shipGroupOther == null)
 			{
-				choiceNames.push("Fight");
-				choiceActions.push( () => this.encounter.fight(universe) );
+				this.encounter.talk(universe);
+				return; // hack
 			}
+			else
+			{
+				var shipGroupOtherDescription =
+					shipGroupOther.toStringDescription(world);
 
-			var controlRoot = universe.controlBuilder.choice5
-			(
-				universe,
-				universe.display.sizeInPixels.clone(),
-				DataBinding.fromContext(messageToShow),
-				choiceNames,
-				choiceActions
-			);
+				var newline = "\n";
+				var messageToShow =
+					"Encounter" + newline
+					+ "with " + shipGroupOtherDescription + newline
+					+ "near " + encounter.planet.name;
 
-			this.venueControls = VenueControls.fromControl(controlRoot);
+				var choiceNames = [ "Talk" ];
+				var choiceActions = [ () => this.encounter.talk(universe) ];
+
+				if (faction.relationsWithPlayer == Faction.RelationsHostile)
+				{
+					choiceNames.push("Fight");
+					choiceActions.push( () => this.encounter.fight(universe) );
+				}
+
+				var controlRoot = universe.controlBuilder.choice5
+				(
+					universe,
+					universe.display.sizeInPixels.clone(),
+					DataBinding.fromContext(messageToShow),
+					choiceNames,
+					choiceActions
+				);
+
+				this.venueControls = VenueControls.fromControl(controlRoot);
+			}
 		}
 
 		this.venueControls.updateForTimerTick(universe);

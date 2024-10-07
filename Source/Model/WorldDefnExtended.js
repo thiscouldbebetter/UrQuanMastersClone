@@ -1,15 +1,16 @@
 "use strict";
 class WorldDefnExtended extends WorldDefn {
-    constructor(activityDefns, factions, lifeformDefns, placeDefns, resourceDefns, shipDefns, energySources) {
+    constructor(activityDefns, energySources, factions, itemDefns, lifeformDefns, placeDefns, resourceDefns, shipDefns) {
         super([
             activityDefns,
             placeDefns,
             WorldDefnExtended.itemDefnsFromResourceDefnsAndEnergySources(resourceDefns, energySources)
         ]);
+        this.energySources = energySources;
         this.factions = factions;
         this.lifeformDefns = lifeformDefns;
         this.shipDefns = shipDefns;
-        this.energySources = energySources;
+        itemDefns.forEach(x => this.itemDefnAdd(x));
         this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
         this.lifeformDefnsByName = ArrayHelper.addLookupsByName(this.lifeformDefns);
         this.shipDefnsByName = ArrayHelper.addLookupsByName(this.shipDefns);
@@ -39,5 +40,27 @@ class WorldDefnExtended extends WorldDefn {
     }
     shipDefnByName(defnName) {
         return this.shipDefnsByName.get(defnName);
+    }
+    // ItemDefns.
+    // ItemDefns.
+    static itemDefn_ParaspacePortalProjector_Use(uwpe) {
+        var world = uwpe.world;
+        var place = world.place();
+        var placeTypeName = place.constructor.name;
+        if (placeTypeName == PlaceHyperspace.name) {
+            var placeHyperspace = place;
+            var spaceOccupied = placeHyperspace.hyperspace;
+            if (spaceOccupied.name != "Hyperspace") {
+                // Do nothing.
+            }
+            else {
+                var player = placeHyperspace.player();
+                var playerPos = player.locatable().pos();
+                var portalPos = playerPos.clone();
+                var linkPortalToParaspace = new LinkPortal("ParaspacePortal", portalPos, "Paraspace", Coords.fromXY(5000, 5000));
+                placeHyperspace.linkPortalAdd(linkPortalToParaspace, world);
+            }
+        }
+        return null;
     }
 }

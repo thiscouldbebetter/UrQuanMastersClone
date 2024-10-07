@@ -280,6 +280,11 @@ class Flagship
 		return this;
 	}
 
+	hasDeviceWithName(deviceName: string): boolean
+	{
+		return this.itemHolderDevices.hasItemWithDefnName(deviceName);
+	}
+
 	hasInfoCredits(): boolean
 	{
 		return this.hasInfoCreditsAtLeast(1);

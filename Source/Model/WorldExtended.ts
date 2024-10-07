@@ -315,6 +315,15 @@ class WorldExtended extends World
 
 		var energySources = EnergySource.Instances()._All;
 
+		var itemDefns =
+		[
+			ItemDefn.fromNameAndUse
+			(
+				"ParaspacePortalProjector",
+				WorldDefnExtended.itemDefn_ParaspacePortalProjector_Use
+			)
+		]
+
 		var lifeformDefns = LifeformDefn.Instances()._All;
 
 		var resourceDefns = ResourceDefn.Instances()._All;
@@ -322,12 +331,13 @@ class WorldExtended extends World
 		var defn = new WorldDefnExtended
 		(
 			activityDefns,
+			energySources,
 			factions,
+			itemDefns,
 			lifeformDefns,
 			placeDefns,
 			resourceDefns,
-			shipDefns,
-			energySources
+			shipDefns
 		);
 
 		var mediaLibrary = universe.mediaLibrary;
@@ -370,7 +380,7 @@ class WorldExtended extends World
 			(
 				paraspaceLinkPortalName,
 				Coords.fromXY(6134, 5900), // pos
-				Encounter.name + "-EllfynHomeworld",
+				Encounter.name + "-" + ellfyn.name,
 				null // destinationPos
 			),
 
@@ -396,7 +406,7 @@ class WorldExtended extends World
 			paraspaceName,
 			paraspaceSize,
 			paraspaceLinkPortals
-		);
+		).pixelsTraversablePerFuelUnitSet(Number.POSITIVE_INFINITY);
 
 		// Add a portal to paraspace in hyperspace,
 		// and multiple portals to hyperspace in paraspace.

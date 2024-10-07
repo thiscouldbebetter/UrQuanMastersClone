@@ -140,9 +140,12 @@ class WorldExtended extends World {
         ];
         var shipDefns = ShipDefn.Instances(universe)._All;
         var energySources = EnergySource.Instances()._All;
+        var itemDefns = [
+            ItemDefn.fromNameAndUse("ParaspacePortalProjector", WorldDefnExtended.itemDefn_ParaspacePortalProjector_Use)
+        ];
         var lifeformDefns = LifeformDefn.Instances()._All;
         var resourceDefns = ResourceDefn.Instances()._All;
-        var defn = new WorldDefnExtended(activityDefns, factions, lifeformDefns, placeDefns, resourceDefns, shipDefns, energySources);
+        var defn = new WorldDefnExtended(activityDefns, energySources, factions, itemDefns, lifeformDefns, placeDefns, resourceDefns, shipDefns);
         var mediaLibrary = universe.mediaLibrary;
         var starsAndPlanetsAsStringCsvCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
         var starsystemSizeInner = Coords.fromXY(1, 1).multiplyScalar(300);
@@ -157,7 +160,7 @@ class WorldExtended extends World {
         var paraspaceSize = hyperspaceSize.clone();
         var paraspaceLinkPortals = [
             new LinkPortal(paraspaceLinkPortalName, Coords.fromXY(6134, 5900), // pos
-            Encounter.name + "-EllfynHomeworld", null // destinationPos
+            Encounter.name + "-" + ellfyn.name, null // destinationPos
             ),
             lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712)), // Lyncis (Freaky Beast)
             lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607, 151)), // Trianguli (SE)
@@ -175,7 +178,7 @@ class WorldExtended extends World {
             lp(Coords.fromXY(5300, 5280), Coords.fromXY(7752, 8906)), // Librae (Twyggan)
             lp(Coords.fromXY(5440, 5320), Coords.fromXY(368, 6332)), // Circini (Elfynn)
         ];
-        var paraspace = Hyperspace.fromNameSizeAndLinkPortals(paraspaceName, paraspaceSize, paraspaceLinkPortals);
+        var paraspace = Hyperspace.fromNameSizeAndLinkPortals(paraspaceName, paraspaceSize, paraspaceLinkPortals).pixelsTraversablePerFuelUnitSet(Number.POSITIVE_INFINITY);
         // Add a portal to paraspace in hyperspace,
         // and multiple portals to hyperspace in paraspace.
         var paraspacePortalPos = Coords.fromXY(438, 6372);

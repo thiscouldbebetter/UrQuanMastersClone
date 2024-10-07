@@ -68,6 +68,8 @@ class LinkPortal implements EntityProperty<LinkPortal>
 		else if (this.destinationPlaceName.startsWith(Encounter.name) )
 		{
 			var factionName = this.destinationPlaceName.split("-")[1];
+			var faction = world.factionByName(factionName);
+			entityLinkPortal.propertyAdd(faction.toTalker() );
 			var playerPos = entityPlayer.locatable().loc.pos;
 			var encounter = new Encounter
 			(
@@ -79,7 +81,7 @@ class LinkPortal implements EntityProperty<LinkPortal>
 				playerPos
 			);
 			var placeEncounter = encounter.toPlace();
-			world.placeNextSet(placeEncounter);
+			placeNext = placeEncounter;
 		}
 		else
 		{

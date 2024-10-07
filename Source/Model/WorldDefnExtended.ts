@@ -14,12 +14,13 @@ class WorldDefnExtended extends WorldDefn
 	constructor
 	(
 		activityDefns: ActivityDefn[],
+		energySources: EnergySource[],
 		factions: Faction[],
+		itemDefns: ItemDefn[],
 		lifeformDefns: LifeformDefn[],
 		placeDefns: PlaceDefn[],
 		resourceDefns: ResourceDefn[],
-		shipDefns: ShipDefn[],
-		energySources: EnergySource[]
+		shipDefns: ShipDefn[]
 	)
 	{
 		super
@@ -28,14 +29,15 @@ class WorldDefnExtended extends WorldDefn
 				activityDefns,
 				placeDefns,
 				WorldDefnExtended.itemDefnsFromResourceDefnsAndEnergySources(resourceDefns, energySources)
-
 			]
 		);
 
+		this.energySources = energySources;
 		this.factions = factions;
 		this.lifeformDefns = lifeformDefns;
 		this.shipDefns = shipDefns;
-		this.energySources = energySources;
+
+		itemDefns.forEach(x => this.itemDefnAdd(x) );
 
 		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
 		this.lifeformDefnsByName = ArrayHelper.addLookupsByName(this.lifeformDefns);
@@ -84,4 +86,40 @@ class WorldDefnExtended extends WorldDefn
 	{
 		return this.shipDefnsByName.get(defnName);
 	}
+
+	// ItemDefns.
+
+	// ItemDefns.
+
+	static itemDefn_ParaspacePortalProjector_Use(uwpe: UniverseWorldPlaceEntities): string
+	{
+		var world = uwpe.world as WorldExtended;
+		var place = world.place();
+		var placeTypeName = place.constructor.name;
+		if (placeTypeName == PlaceHyperspace.name)
+		{
+			var placeHyperspace = place as PlaceHyperspace;
+			var spaceOccupied = placeHyperspace.hyperspace;
+			if (spaceOccupied.name != "Hyperspace")
+			{
+				// Do nothing.
+			}
+			else
+			{
+				var player = placeHyperspace.player();
+				var playerPos = player.locatable().pos();
+				var portalPos = playerPos.clone();
+				var linkPortalToParaspace = new LinkPortal
+				(
+					"ParaspacePortal",
+					portalPos,
+					"Paraspace",
+					Coords.fromXY(5000, 5000)
+				);
+				placeHyperspace.linkPortalAdd(linkPortalToParaspace, world);
+			}
+		}
+		return null;
+	}
+
 }

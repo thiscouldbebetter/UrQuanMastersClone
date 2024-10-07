@@ -79,6 +79,18 @@ class Player
 		this.flagship.cachesCalculate();
 	}
 
+	deviceWithNameAdd(deviceName: string): Player
+	{
+		this.flagship.itemHolderDevices.itemAdd(Item.fromDefnName(deviceName) );
+		return this;
+	}
+
+	deviceWithNameRemove(deviceName: string): Player
+	{
+		this.flagship.itemHolderDevices.itemRemove(Item.fromDefnName(deviceName) );
+		return this;
+	}
+
 	factionsAllied(world: WorldExtended): Faction[]
 	{
 		if (this._factionsAllied == null)
@@ -133,6 +145,11 @@ class Player
 	hasInfoToSell_RainbowWorldLocations(): boolean
 	{
 		return (this.rainbowWorldLocationsKnownButUnsoldCount() > 0);
+	}
+
+	hasDeviceWithName(deviceName: string): boolean
+	{
+		return this.flagship.hasDeviceWithName(deviceName);
 	}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void

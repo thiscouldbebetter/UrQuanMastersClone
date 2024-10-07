@@ -32,12 +32,14 @@ class LinkPortal {
         }
         else if (this.destinationPlaceName.startsWith(Encounter.name)) {
             var factionName = this.destinationPlaceName.split("-")[1];
+            var faction = world.factionByName(factionName);
+            entityLinkPortal.propertyAdd(faction.toTalker());
             var playerPos = entityPlayer.locatable().loc.pos;
             var encounter = new Encounter(null, // planet
             factionName, entityPlayer, entityLinkPortal, place, // placeToReturnTo
             playerPos);
             var placeEncounter = encounter.toPlace();
-            world.placeNextSet(placeEncounter);
+            placeNext = placeEncounter;
         }
         else {
             throw new Error("Unrecognized value in .destinationPlaceName.");

@@ -157,6 +157,9 @@ class Flagship {
         this.fuel = fuelAfterSubtract;
         return this;
     }
+    hasDeviceWithName(deviceName) {
+        return this.itemHolderDevices.hasItemWithDefnName(deviceName);
+    }
     hasInfoCredits() {
         return this.hasInfoCreditsAtLeast(1);
     }

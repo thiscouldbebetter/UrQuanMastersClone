@@ -381,6 +381,14 @@ class PlaceHyperspace extends PlaceBase
 		}
 	}
 
+	linkPortalAdd(linkPortal: LinkPortal, world: WorldExtended): void
+	{
+		var linkPortalAsEntity =
+			linkPortal.toEntity(Starsystem.RadiusOuter); // hack
+		this.entityToSpawnAdd(linkPortalAsEntity);
+	}
+
+
 	playerCollide(uwpe: UniverseWorldPlaceEntities, collision: Collision): void
 	{
 		var universe = uwpe.universe;

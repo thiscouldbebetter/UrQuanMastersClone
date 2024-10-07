@@ -16,13 +16,13 @@ imagePortraitName=Conversation-Portrait-Ellfyn
 
 |Prompt
 
-	|Display|#(CONFUSED_RESPONSE)
+	#(CONFUSED_RESPONSE)|Display|#(CONFUSED_RESPONSE)
 	|Goto||Main
 
-	|Display|#(HAPPY_RESPONSE)
+	#(HAPPY_RESPONSE)|Display|#(HAPPY_RESPONSE)
 	|Goto||Main
 
-	|Display|#(MIFFED_RESPONSE)
+	#(MIFFED_RESPONSE)|Display|#(MIFFED_RESPONSE)
 	|Goto||Main
 
 	Main|DoNothing
@@ -31,55 +31,55 @@ imagePortraitName=Conversation-Portrait-Ellfyn
 	|Option|#(what_did_on_earth)|#(DID_THIS)
 	|Option|#(what_give_me)|#(ABOUT_PORTAL)
 	|Option|#(best_if_i_killed_you)|#(WICKED_HUMAN)
-	|Option|#(bye_friendly_homeworld)|
+	|Option|#(bye_friendly_homeworld)|#(GOODBYE_FRDLY_HOMEWORLD)
 	|Prompt
 
-		|Display|#(ABOUT_WAR)
+		#(ABOUT_WAR)|Display|#(ABOUT_WAR)
 		|Disable||#(what_about_war)
 		|Option|#(what_about_urquan)|#(ABOUT_URQUAN)
 		|Prompt
 
-			|Display|#(ABOUT_URQUAN)
+			#(ABOUT_URQUAN)|Display|#(ABOUT_URQUAN)
 			|Disable||#(what_about_urquan)
 			|Prompt
 
-		|Display|#(DID_THIS)
+		#(DID_THIS)|Display|#(DID_THIS)
 		|Disable||#(what_did_on_earth)
 		|Option|#(why_did_this)|#(IDF_PARASITES)
 		|Prompt
 
-			|Display|#(IDF_PARASITES)
+			#(IDF_PARASITES)|Display|#(IDF_PARASITES)
 			|Disable||#(why_did_this)
 			|Option|#(tell_more)|#(NOT_NOW)
 			|Prompt
 
-				|Display|#(NOT_NOW)
+				#(NOT_NOW)|Display|#(NOT_NOW)
 				|Disable|#(tell_more)
 				|Prompt
 
-		|Display|#(ABOUT_PORTAL)
+		#(ABOUT_PORTAL)|Display|#(ABOUT_PORTAL)
 		|Disable||#(what_give_me)
 		|Option|#(what_about_tpet)|#(ABOUT_TPET)
-		|Option|#(about_portal_again)|#(PORTAL_AGAIN)|u.world.player.hasItemWithName("todo")
-		|Option|#(got_it)|#(CLEVER_HUMAN)|u.world.player.hasItemWithName("todo") == false
+		|Option|#(about_portal_again)|#(PORTAL_AGAIN)|u.world.player.hasDeviceWithName("CrashedShackler") == false
+		|Option|#(got_it)|#(CLEVER_HUMAN)|u.world.player.hasDeviceWithName("CrashedShackler")
 		|Prompt
 
-			|Display|#(ABOUT_TPET)
+			#(ABOUT_TPET)|Display|#(ABOUT_TPET)
 			|Disable||#(what_about_tpet)
 			|Prompt
 
-			|Display|#(PORTAL_AGAIN)
+			#(PORTAL_AGAIN)|Display|#(PORTAL_AGAIN)
 			|Disable||#(about_portal_again)
 			|Prompt
 
-			|Display|#(CLEVER_HUMAN)
-			|Script|alert("todo")
+			#(CLEVER_HUMAN)|Display|#(CLEVER_HUMAN)
+			|Script|u.world.player.deviceWithNameRemove("CrashedShackler").deviceWithNameAdd("ParaspacePortalProjector")
 			|Prompt
 
-	|Display|#(WICKED_HUMAN)
+	#(WICKED_HUMAN)|Display|#(WICKED_HUMAN)
 	|Goto||Done
 
-	|Display|#(GOODBYE_FRDLY_HOMEWORLD)
+	#(GOODBYE_FRDLY_HOMEWORLD)|Display|#(GOODBYE_FRDLY_HOMEWORLD)
 	|Goto||Done
 
 Done|DoNothing
@@ -111,30 +111,29 @@ Done|DoNothing
 	|Option|#(whats_up_1)|#(GENERAL_INFO_1)
 	|Prompt
 
-		|Display|#(LEARN_THINGS)
+		#(LEARN_THINGS)|Display|#(LEARN_THINGS)
 		|Disable||#(why_you_here)
 		|Option|#(what_things)|#(THESE_THINGS)
 		|Prompt
 
-			|Display|#(THESE_THINGS)
+			#(THESE_THINGS)|Display|#(THESE_THINGS)
 			|Disable||#(what_things)
 			|Option|#(why_do_it)|#(DO_IT_BECAUSE)
 			|Prompt
 
-				|Display|#(DO_IT_BECAUSE)
+				#(DO_IT_BECAUSE)|Display|#(DO_IT_BECAUSE)
 				|Disable||#(why_do_it)
 				|Prompt
-	
-		|Display|#(GENERAL_INFO_1)
+
+		#(GENERAL_INFO_1)|Display|#(GENERAL_INFO_1)
 		|Disable||#(whats_up_1)
 		|Option|#(give_me_info_1)|#(ARILOU_HINTS_1)
 		|Prompt
 
-			|Display|#(ARILOU_HINTS_1)
+			#(ARILOU_HINTS_1)|Display|#(ARILOU_HINTS_1)
 			|OptionsClear
 			|Display|#(bye_friendly_space)
 			|Prompt
-
 
 
 |Display|#(whats_up_2)
