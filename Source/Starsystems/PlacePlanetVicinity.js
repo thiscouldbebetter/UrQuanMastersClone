@@ -50,11 +50,6 @@ class PlacePlanetVicinity extends PlaceBase {
             Collidable.fromShape(new ShapeInverse(new Box(Coords.create(), this.size())))
         ]);
         entities.push(wallsEntity);
-        var playerAsControlSidebar = world.player.toControlSidebar(world);
-        var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), // todo
-        Coords.fromXY(100, 300), // size
-        [playerAsControlSidebar]);
-        this.venueControls = VenueControls.fromControl(containerSidebar);
     }
     constructor_PlayerEntityBuild(entityDimension, world, playerLoc) {
         // player - Can this be merged with similar code in PlaceStarsystem?
@@ -184,6 +179,14 @@ class PlacePlanetVicinity extends PlaceBase {
     }
     starsystem() {
         return this.placeStarsystem.starsystem;
+    }
+    initialize(uwpe) {
+        var world = uwpe.world;
+        var playerAsControlSidebar = world.player.toControlSidebar(world);
+        var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), // todo
+        Coords.fromXY(100, 300), // size
+        [playerAsControlSidebar]);
+        this.venueControls = VenueControls.fromControl(containerSidebar);
     }
 }
 PlacePlanetVicinity.EntityBoundaryWallName = "Walls";

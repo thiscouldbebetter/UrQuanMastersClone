@@ -35,7 +35,25 @@ class PlaceStationDock extends PlaceBase
 
 	// method
 
-	componentBackboneBuild(universe: Universe): void
+	componentBuild(universe: Universe, componentToBuild: ShipComponentDefn): void
+	{
+		if (componentToBuild != null)
+		{
+			var flagship = (universe.world as WorldExtended).player.flagship;
+			if (flagship.resourceCredits < componentToBuild.costInResourceCredits)
+			{
+				throw new Error("Insufficent credit!");
+			}
+			else
+			{
+				flagship.resourceCredits -= componentToBuild.costInResourceCredits;
+				flagship.componentNames.push(componentToBuild.name);
+				flagship.cachesReset();
+			}
+		}
+	}
+
+	componentBuildBackbone(universe: Universe): void
 	{
 		var player = (universe.world as WorldExtended).player;
 		var flagship = player.flagship;
@@ -46,12 +64,7 @@ class PlaceStationDock extends PlaceBase
 		}
 	}
 
-	componentBackboneScrap(universe: Universe): void
-	{
-		this.componentScrap(universe, this.componentToScrap);
-	}
-
-	componentThrusterBuild(universe: Universe): void
+	componentBuildThruster(universe: Universe): void
 	{
 		var player = (universe.world as WorldExtended).player;
 		var flagship = player.flagship;
@@ -64,15 +77,7 @@ class PlaceStationDock extends PlaceBase
 		}
 	}
 
-	componentThrusterScrap(universe: Universe): void
-	{
-		var player = (universe.world as WorldExtended).player;
-		var thrustersInstalled = player.flagship.componentsThruster();
-		var componentToScrap = thrustersInstalled[1]; // Cannot remove last.
-		this.componentScrap(universe, componentToScrap);
-	}
-
-	componentTurningJetsBuild(universe: Universe): void
+	componentBuildTurningJets(universe: Universe): void
 	{
 		var player = (universe.world as WorldExtended).player;
 		var flagship = player.flagship;
@@ -85,25 +90,19 @@ class PlaceStationDock extends PlaceBase
 		}
 	}
 
-	componentTurningJetsScrap(universe: Universe): void
+	componentBuildWithName(universe: Universe, componentName: string): void
 	{
-		var player = (universe.world as WorldExtended).player;
-		var turningJetsInstalled = player.flagship.componentsTurningJets();
-		var componentToScrap = turningJetsInstalled[1]; // Cannot remove last.
-		this.componentScrap(universe, componentToScrap);
-	}
-
-	componentBuild(universe: Universe, componentToBuild: ShipComponentDefn): void
-	{
-		if (componentToBuild != null)
+		var world = universe.world as WorldExtended;
+		var player = world.player;
+		var componentsKnown = player.shipComponentDefnsKnown();
+		var componentToBuild = componentsKnown.find(x => x.name == componentName);
+		if (componentToBuild == null)
 		{
-			var flagship = (universe.world as WorldExtended).player.flagship;
-			if (flagship.resourceCredits >= componentToBuild.costInResourceCredits)
-			{
-				flagship.resourceCredits -= componentToBuild.costInResourceCredits;
-				flagship.componentNames.push(componentToBuild.name);
-				flagship.cachesReset();
-			}
+			throw new Error("No component with name '" + componentName + "' is known.");
+		}
+		else
+		{
+			this.componentBuild(universe, componentToBuild);
 		}
 	}
 
@@ -116,6 +115,27 @@ class PlaceStationDock extends PlaceBase
 			flagship.resourceCredits += componentToScrap.costInResourceCredits;
 			flagship.cachesReset();
 		}
+	}
+
+	componentScrapBackbone(universe: Universe): void
+	{
+		this.componentScrap(universe, this.componentToScrap);
+	}
+
+	componentScrapThruster(universe: Universe): void
+	{
+		var player = (universe.world as WorldExtended).player;
+		var thrustersInstalled = player.flagship.componentsThruster();
+		var componentToScrap = thrustersInstalled[1]; // Cannot remove last.
+		this.componentScrap(universe, componentToScrap);
+	}
+
+	componentScrapTurningJets(universe: Universe): void
+	{
+		var player = (universe.world as WorldExtended).player;
+		var turningJetsInstalled = player.flagship.componentsTurningJets();
+		var componentToScrap = turningJetsInstalled[1]; // Cannot remove last.
+		this.componentScrap(universe, componentToScrap);
 	}
 
 	crewAdd(universe: Universe): void
@@ -376,7 +396,8 @@ class PlaceStationDock extends PlaceBase
 			buttonSizeShips.y
 		);
 
-		var buttonSizeSmall = Coords.fromXY(1, 1).multiplyScalar(buttonSizeShips.y * .8);
+		var buttonSizeSmall =
+			Coords.fromXY(1, 1).multiplyScalar(buttonSizeShips.y * .8);
 
 		var listComponentsSize = Coords.fromXY
 		(
@@ -392,7 +413,8 @@ class PlaceStationDock extends PlaceBase
 
 		var shipComponentsInstalled = player.flagship.componentsBackbone();
 
-		var shipComponentDefnsKnownBackbone = player.shipComponentDefnsKnownBackbone();
+		var shipComponentDefnsKnownBackbone =
+			player.shipComponentDefnsKnownBackbone();
 
 		var containerComponents = ControlContainer.from4
 		(
@@ -455,7 +477,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeComponents,
 					"Build",
 					fontShort,
-					() => this.componentBackboneBuild(universe)
+					() => this.componentBuildBackbone(universe)
 				),
 
 				ControlLabel.from4Uncentered
@@ -524,7 +546,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeComponents,
 					"Scrap",
 					fontShort,
-					() => this.componentBackboneScrap(universe)
+					() => this.componentScrapBackbone(universe)
 				),
 
 				ControlLabel.from4Uncentered
@@ -621,7 +643,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"+",
 					fontShort,
-					this.componentThrusterBuild.bind(this)
+					this.componentBuildThruster.bind(this)
 				),
 
 				ControlButton.from5
@@ -634,7 +656,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"-",
 					fontShort,
-					this.componentThrusterScrap.bind(this)
+					this.componentScrapThruster.bind(this)
 				),
 
 				ControlLabel.from4Uncentered
@@ -675,7 +697,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"+",
 					fontShort,
-					this.componentTurningJetsBuild.bind(this)
+					this.componentBuildTurningJets.bind(this)
 				),
 
 				ControlButton.from5
@@ -688,7 +710,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeSmall,
 					"-",
 					fontShort,
-					this.componentTurningJetsScrap.bind(this)
+					this.componentScrapTurningJets.bind(this)
 				),
 
 			]

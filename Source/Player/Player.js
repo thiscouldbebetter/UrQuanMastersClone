@@ -159,6 +159,12 @@ class Player {
         }
         return variableValue;
     }
+    varIncrement(variableName) {
+        var valueBefore = this.varGet(variableName);
+        var valueAfter = valueBefore + 1;
+        this.varSet(variableName, valueAfter);
+        return this;
+    }
     varSet(variableName, value) {
         this.vars.set(variableName, value);
         return this;

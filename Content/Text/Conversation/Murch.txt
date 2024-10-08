@@ -341,14 +341,14 @@ CannotHoldFuel|Display|#(NO_ROOM_FOR_FUEL)
 |Goto||BuyMoreFuel
 
 |Display|#(OK_FILL_YOU_UP)
-|Goto||#(buy)
+|Goto||Buy
 
 |Display|#(OK_DONE_BUYING_FUEL)
-|Goto||#(buy)
+|Goto||Buy
 
 #(NEED_MORE_CREDIT0)|Display|#(NEED_MORE_CREDIT0)
 |Display|#(NEED_MORE_CREDIT1)
-|Goto||#(buy)
+|Goto||Buy
 
 #(BUY_INFO_INTRO)|Display|#(BUY_INFO_INTRO)
 |Disable||#(BUY_INFO_INTRO)
@@ -363,68 +363,64 @@ CannotHoldFuel|Display|#(NO_ROOM_FOR_FUEL)
 |Enable|#(done_buying_info)
 |Prompt
 
-#(OK_NO_BUY_INFO)|Display|#(OK_NO_BUY_INFO)
-|Goto||#(buy)
+	#(OK_NO_BUY_INFO)|Display|#(OK_NO_BUY_INFO)
+	|Goto||Buy
 
-#(OK_DONE_BUYING_INFO)|Display|#(OK_DONE_BUYING_INFO)
-|Goto||#(buy)
+	#(OK_DONE_BUYING_INFO)|Display|#(OK_DONE_BUYING_INFO)
+	|Goto||Buy
 
-#(OK_BUY_EVENT)|DoNothing
-|VariableLoad|Murch_CurrentEventsBought|u.world.player.varGetWithDefault('Murch_InfoBought_CurrentEvents', 0)
-|Display|#(OK_BUY_EVENT_1)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 0
-|Display|#(OK_BUY_EVENT_2)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 1
-|Display|#(OK_BUY_EVENT_3)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 2
-|Display|#(OK_BUY_EVENT_4)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 3
-|Display|#(OK_BUY_EVENT_5)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 4
-|Display|#(OK_BUY_EVENT_6)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 5
-|Display|#(OK_BUY_EVENT_7)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 6
-|Display|#(OK_BUY_EVENT_8)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 7
-|VariableAdd|Murch_InfoBought_CurrentEvents|1
-|Goto||#(BUY_INFO_INTRO)
+	#(OK_BUY_EVENT)|DoNothing
+	|VariableLoad|Murch_CurrentEventsBought|u.world.player.varGetWithDefault('Murch_InfoBought_CurrentEvents', 0)
+	|Display|#(OK_BUY_EVENT_1)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 0
+	|Display|#(OK_BUY_EVENT_2)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 1
+	|Display|#(OK_BUY_EVENT_3)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 2
+	|Display|#(OK_BUY_EVENT_4)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 3
+	|Display|#(OK_BUY_EVENT_5)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 4
+	|Display|#(OK_BUY_EVENT_6)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 5
+	|Display|#(OK_BUY_EVENT_7)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 6
+	|Display|#(OK_BUY_EVENT_8)||u.world.player.varGet('Murch_InfoBought_CurrentEvents') == 7
+	|VariableAdd|Murch_InfoBought_CurrentEvents|1
+	|Goto||#(BUY_INFO_INTRO)
 
-#(OK_BUY_ALIEN_RACE)|DoNothing
-|VariableLoad|Murch_InfoBought_Aliens|u.world.player.varGetWithDefault('Murch_InfoBought_Aliens', 0)
-|Display|#(OK_BUY_ALIEN_RACE_1)||u.world.player.varGet('Murch_InfoBought_Aliens') == 0
-|Display|#(OK_BUY_ALIEN_RACE_2)||u.world.player.varGet('Murch_InfoBought_Aliens') == 1
-|Display|#(OK_BUY_ALIEN_RACE_3)||u.world.player.varGet('Murch_InfoBought_Aliens') == 2
-|Display|#(OK_BUY_ALIEN_RACE_4)||u.world.player.varGet('Murch_InfoBought_Aliens') == 3
-|Display|#(OK_BUY_ALIEN_RACE_5)||u.world.player.varGet('Murch_InfoBought_Aliens') == 4
-|Display|#(OK_BUY_ALIEN_RACE_6)||u.world.player.varGet('Murch_InfoBought_Aliens') == 5
-|Display|#(OK_BUY_ALIEN_RACE_7)||u.world.player.varGet('Murch_InfoBought_Aliens') == 6
-|Display|#(OK_BUY_ALIEN_RACE_8)||u.world.player.varGet('Murch_InfoBought_Aliens') == 7
-|Display|#(OK_BUY_ALIEN_RACE_9)||u.world.player.varGet('Murch_InfoBought_Aliens') == 8
-|Display|#(OK_BUY_ALIEN_RACE_10)||u.world.player.varGet('Murch_InfoBought_Aliens') == 9
-|Display|#(OK_BUY_ALIEN_RACE_11)||u.world.player.varGet('Murch_InfoBought_Aliens') == 10
-|Display|#(OK_BUY_ALIEN_RACE_12)||u.world.player.varGet('Murch_InfoBought_Aliens') == 11
-|Display|#(OK_BUY_ALIEN_RACE_13)||u.world.player.varGet('Murch_InfoBought_Aliens') == 12
-|Display|#(OK_BUY_ALIEN_RACE_14)||u.world.player.varGet('Murch_InfoBought_Aliens') == 13
-|Display|#(OK_BUY_ALIEN_RACE_15)||u.world.player.varGet('Murch_InfoBought_Aliens') == 14
-|Display|#(OK_BUY_ALIEN_RACE_16)||u.world.player.varGet('Murch_InfoBought_Aliens') == 15
-|VariableAdd|Murch_InfoBought_Aliens|1
-|Goto||#(BUY_INFO_INTRO)
+	#(OK_BUY_ALIEN_RACE)|DoNothing
+	|VariableLoad|Murch_InfoBought_Aliens|u.world.player.varGetWithDefault('Murch_InfoBought_Aliens', 0)
+	|Display|#(OK_BUY_ALIEN_RACE_1)||u.world.player.varGet('Murch_InfoBought_Aliens') == 0
+	|Display|#(OK_BUY_ALIEN_RACE_2)||u.world.player.varGet('Murch_InfoBought_Aliens') == 1
+	|Display|#(OK_BUY_ALIEN_RACE_3)||u.world.player.varGet('Murch_InfoBought_Aliens') == 2
+	|Display|#(OK_BUY_ALIEN_RACE_4)||u.world.player.varGet('Murch_InfoBought_Aliens') == 3
+	|Display|#(OK_BUY_ALIEN_RACE_5)||u.world.player.varGet('Murch_InfoBought_Aliens') == 4
+	|Display|#(OK_BUY_ALIEN_RACE_6)||u.world.player.varGet('Murch_InfoBought_Aliens') == 5
+	|Display|#(OK_BUY_ALIEN_RACE_7)||u.world.player.varGet('Murch_InfoBought_Aliens') == 6
+	|Display|#(OK_BUY_ALIEN_RACE_8)||u.world.player.varGet('Murch_InfoBought_Aliens') == 7
+	|Display|#(OK_BUY_ALIEN_RACE_9)||u.world.player.varGet('Murch_InfoBought_Aliens') == 8
+	|Display|#(OK_BUY_ALIEN_RACE_10)||u.world.player.varGet('Murch_InfoBought_Aliens') == 9
+	|Display|#(OK_BUY_ALIEN_RACE_11)||u.world.player.varGet('Murch_InfoBought_Aliens') == 10
+	|Display|#(OK_BUY_ALIEN_RACE_12)||u.world.player.varGet('Murch_InfoBought_Aliens') == 11
+	|Display|#(OK_BUY_ALIEN_RACE_13)||u.world.player.varGet('Murch_InfoBought_Aliens') == 12
+	|Display|#(OK_BUY_ALIEN_RACE_14)||u.world.player.varGet('Murch_InfoBought_Aliens') == 13
+	|Display|#(OK_BUY_ALIEN_RACE_15)||u.world.player.varGet('Murch_InfoBought_Aliens') == 14
+	|Display|#(OK_BUY_ALIEN_RACE_16)||u.world.player.varGet('Murch_InfoBought_Aliens') == 15
+	|VariableAdd|Murch_InfoBought_Aliens|1
+	|Goto||#(BUY_INFO_INTRO)
 
-#(OK_BUY_HISTORY)|DoNothing
-|VariableLoad|Murch_Info_AliensBought|u.world.player.varGetWithDefault('Murch_InfoBought_History', 0)
-|Display|#(OK_BUY_HISTORY_1)||u.world.player.varGet('Murch_InfoBought_History') == 0
-|Display|#(OK_BUY_HISTORY_2)||u.world.player.varGet('Murch_InfoBought_History') == 1
-|Display|#(OK_BUY_HISTORY_3)||u.world.player.varGet('Murch_InfoBought_History') == 2
-|Display|#(OK_BUY_HISTORY_4)||u.world.player.varGet('Murch_InfoBought_History') == 3
-|Display|#(OK_BUY_HISTORY_5)||u.world.player.varGet('Murch_InfoBought_History') == 4
-|Display|#(OK_BUY_HISTORY_6)||u.world.player.varGet('Murch_InfoBought_History') == 5
-|Display|#(OK_BUY_HISTORY_7)||u.world.player.varGet('Murch_InfoBought_History') == 6
-|Display|#(OK_BUY_HISTORY_8)||u.world.player.varGet('Murch_InfoBought_History') == 7
-|Display|#(OK_BUY_HISTORY_9)||u.world.player.varGet('Murch_InfoBought_History') == 8
-|VariableAdd|Murch_InfoBought_History|1
-|Goto||#(BUY_INFO_INTRO)
+	#(OK_BUY_HISTORY)|DoNothing
+	|VariableLoad|Murch_Info_AliensBought|u.world.player.varGetWithDefault('Murch_InfoBought_History', 0)
+	|Display|#(OK_BUY_HISTORY_1)||u.world.player.varGet('Murch_InfoBought_History') == 0
+	|Display|#(OK_BUY_HISTORY_2)||u.world.player.varGet('Murch_InfoBought_History') == 1
+	|Display|#(OK_BUY_HISTORY_3)||u.world.player.varGet('Murch_InfoBought_History') == 2
+	|Display|#(OK_BUY_HISTORY_4)||u.world.player.varGet('Murch_InfoBought_History') == 3
+	|Display|#(OK_BUY_HISTORY_5)||u.world.player.varGet('Murch_InfoBought_History') == 4
+	|Display|#(OK_BUY_HISTORY_6)||u.world.player.varGet('Murch_InfoBought_History') == 5
+	|Display|#(OK_BUY_HISTORY_7)||u.world.player.varGet('Murch_InfoBought_History') == 6
+	|Display|#(OK_BUY_HISTORY_8)||u.world.player.varGet('Murch_InfoBought_History') == 7
+	|Display|#(OK_BUY_HISTORY_9)||u.world.player.varGet('Murch_InfoBought_History') == 8
+	|VariableAdd|Murch_InfoBought_History|1
+	|Goto||#(BUY_INFO_INTRO)
 
-#(INFO_ALL_GONE)|Display|#(INFO_ALL_GONE)
-|Goto||#(buy)
+	#(INFO_ALL_GONE)|Display|#(INFO_ALL_GONE)
+	|Goto||Buy
 
 #(BUY_NEW_TECH_INTRO)|DoNothing
-|Disable||#(no_buy_new_tech)
-|Option|#(done_buying_new_tech)|#(OK_DONE_BUYING_NEW_TECH)|true
-|Enable|#(done_buying_new_tech)
-
 |Display|#(BUY_NEW_TECH_INTRO)
 |Disable||#(BUY_NEW_TECH_INTRO)
 |VariableLoad|Murch_TechsBought|u.world.player.varGetWithDefault('Murch_TechsBought', 0)
@@ -441,11 +437,13 @@ CannotHoldFuel|Display|#(NO_ROOM_FOR_FUEL)
 |Display|#(NEW_TECH_11)||cr.varGet('Murch_TechsBought') == 10
 |Display|#(NEW_TECH_12)||cr.varGet('Murch_TechsBought') == 11
 |Display|#(NEW_TECH_13)||cr.varGet('Murch_TechsBought') == 12
+|OptionsClear
 |Option|#(buy_new_tech)|#(OK_BUY_NEW_TECH)
 #(no_buy_new_tech)|Option|#(no_buy_new_tech)|#(OK_NO_BUY_NEW_TECH)
+// |Option|#(done_buying_new_tech)|#(OK_DONE_BUYING_NEW_TECH)|false
 |Prompt
 
-#(OK_BUY_NEW_TECH)|Display|#(OK_BUY_NEW_TECH)
+#(OK_BUY_NEW_TECH)|DoNothing
 |Display|#(OK_BUY_NEW_TECH_1)||cr.varGet('Murch_TechsBought') == 0
 |Display|#(OK_BUY_NEW_TECH_2)||cr.varGet('Murch_TechsBought') == 1
 |Display|#(OK_BUY_NEW_TECH_3)||cr.varGet('Murch_TechsBought') == 2
@@ -455,18 +453,23 @@ CannotHoldFuel|Display|#(NO_ROOM_FOR_FUEL)
 |Display|#(OK_BUY_NEW_TECH_7)||cr.varGet('Murch_TechsBought') == 6
 |Display|#(OK_BUY_NEW_TECH_8)||cr.varGet('Murch_TechsBought') == 7
 |Display|#(OK_BUY_NEW_TECH_9)||cr.varGet('Murch_TechsBought') == 8
-|Display|#(OK_BUY_NEW_TECH_10||cr.varGet('Murch_TechsBought') == 9
-|Display|#(OK_BUY_NEW_TECH_11||cr.varGet('Murch_TechsBought') == 10
-|Display|#(OK_BUY_NEW_TECH_12||cr.varGet('Murch_TechsBought') == 11
-|Display|#(OK_BUY_NEW_TECH_13||cr.varGet('Murch_TechsBought') == 12
+|Display|#(OK_BUY_NEW_TECH_10)||cr.varGet('Murch_TechsBought') == 9
+|Display|#(OK_BUY_NEW_TECH_11)||cr.varGet('Murch_TechsBought') == 10
+|Display|#(OK_BUY_NEW_TECH_12)||cr.varGet('Murch_TechsBought') == 11
+|Display|#(OK_BUY_NEW_TECH_13)||cr.varGet('Murch_TechsBought') == 12
 |VariableAdd|Murch_TechsBought|1
+|Goto||#(NEW_TECH_ALL_GONE)|cr.varGet('Murch_TechsBought') > 12
+|Prompt
 
 #(OK_NO_BUY_NEW_TECH)|Display|#(OK_NO_BUY_NEW_TECH)
-|Goto||#(buy)
+|Goto||Buy
 
 #(OK_DONE_BUYING_NEW_TECH)|Display|#(OK_DONE_BUYING_NEW_TECH)
+|Goto||Buy
 
-|Display|#(NEW_TECH_ALL_GONE)
+#(NEW_TECH_ALL_GONE)|Display|#(NEW_TECH_ALL_GONE)
+|Goto||Buy
+
 |Display|#(CHARITY)
 |Display|#(we_are_from_alliance)
 |Display|#(STRIP_HEAD)

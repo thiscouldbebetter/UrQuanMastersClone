@@ -721,22 +721,22 @@ class SystemTests extends TestFixture
 		var itemHolderDevices = flagship.itemHolderDevices;
 		Assert.isNotEmpty(itemHolderDevices.items);
 
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// Now go to Alpha Andromadae, where there's another rainbow world.
 		starsystemWithRainbowWorldName = "Alpha Andromedae";
 		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// And now Groombridge, where there's yet another rainbow world.
 		starsystemWithRainbowWorldName = "Groombridge";
 		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// And now Gamma Aquarii, where there's still another rainbow world.
 		starsystemWithRainbowWorldName = "Gamma Aquarii";
 		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// Go to Beta Librae I and talk to the Twyggan.
 		this.goToOrbitOfPlanetWithName(universe, "Beta Librae I");
@@ -786,7 +786,7 @@ class SystemTests extends TestFixture
 
 		// todo - Check that the Extramatic is now on board.
 
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// Go to Delta Lyncis I and capture the Freaky Beast.
 		this.goToSurfaceOfPlanetWithName(universe, "Delta Lyncis I");
@@ -804,12 +804,12 @@ class SystemTests extends TestFixture
 		// todo - Talk to the Tempestrials.
 		// todo - Verify that the probe destruct code is now known.
 
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// Go to Beta Pegasi and log another rainbow world.
 		this.goToOrbitOfPlanetWithName(universe, "Beta Pegasi I");
 
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// Go to Alpha Pavonis VII and grab the warp pod from a shackler wreck.
 		this.goToSurfaceOfPlanetWithName(universe, "Alpha Pavonis VII");
@@ -875,8 +875,44 @@ class SystemTests extends TestFixture
 		var posExpected = Coords.fromXY(1910,  962);
 		Assert.isTrue(playerPos.equals(posExpected) );
 
+		this.callMerchantsAndWaitForContact(universe);
+		placeEncounter = world.place() as PlaceEncounter;
+		encounter = placeEncounter.encounter;
+		talker = encounter.entityOther.talker();
+
+		this.talkToTalker
+		(
+			universe,
+			talker,
+			[
+				// "Hello.  Buying or selling?"
+				"#(buy)", // "Buying."
+				// "Buying what?"
+				"#(buy_technology)", // "Technology."
+				// "Okay, we're currently offering this tech."
+				"#(buy_new_tech)",
+				// "Sold.  Our next tech is this."
+				"#(no_buy_new_tech)", // "I don't want to buy that one.
+				// "What else would you like to buy?"
+				"#(done_buying)", // "Nothing."
+				// "Anything else?"
+				"#(be_leaving_now)",
+				// "Bye."
+			]
+		);
+
 		this.buyFuelFromMurchAndSellToEarthStation(universe);
 		this.buyFuelFromMurchAndSellToEarthStation(universe);
+		this.buyFuelFromMurchAndSellToEarthStation(universe);
+
+		this.goToEarthStationDocks(universe);
+		var placeStationDock = world.place() as PlaceStationDock;
+		placeStationDock.componentBuildThruster(universe);
+		placeStationDock.componentBuildTurningJets(universe);
+		placeStationDock.componentBuildWithName(universe, "Crew Habitat");
+		placeStationDock.componentBuildWithName(universe, "Cargo Bay");
+		placeStationDock.componentBuildWithName(universe, "Fuel Tank");
+		// todo - Verify speed, turn rate, crew, cargo, and fuel capacity has increased.
 
 		callback();
 	}
@@ -917,13 +953,12 @@ class SystemTests extends TestFixture
 	buyFuelFromMurchAndSellToEarthStation(universe: Universe): void
 	{
 		// Fill up on fuel to sell back at the Earth station.
-
 		var world = universe.world as WorldExtended;
 		var player = world.player;
 		var flagship = player.flagship;
 
 		var fuelBeforeBuyingFromMurch = flagship.fuel;
-		this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 		var fuelAfterBuyingFromMurch = flagship.fuel;
 		var fuelBoughtFromMurch =
 			fuelAfterBuyingFromMurch - fuelBeforeBuyingFromMurch;
@@ -932,13 +967,10 @@ class SystemTests extends TestFixture
 		// hack - In case we're on top of Sol, move over and then back.
 		var placeHyperspace = world.place() as PlaceHyperspace;
 		var playerEntity = placeHyperspace.player();
-		playerEntity.locatable().pos().add(Coords.fromXY(100, 100));
-
-		this.goToEarthStation(universe);
-		var placeStation = world.place() as PlaceStation;
-		placeStation.dock(universe);
+		playerEntity.locatable().pos().add(Coords.fromXY(50, 0));
 		this.waitForTicks(universe, 1);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStationDock.name, world);
+
+		this.goToEarthStationDocks(universe);
 		var placeStationDock = world.place() as PlaceStationDock;
 
 		// Sell all the fuel obtained from the Murch.
@@ -966,6 +998,19 @@ class SystemTests extends TestFixture
 		var placeStation = world.place() as PlaceStation;
 		placeStation.leave(world);
 		this.waitForTicks(universe, 1);
+	}
+
+	callMerchantsAndWaitForContact(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+		const deviceTtorstingCasterName = "TtorstingCaster";
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
+		var flagship = world.player.flagship;
+		flagship.deviceWithNameUse(deviceTtorstingCasterName, uwpe);
+
+		// Wait for the merchants to approach and start an encounter.
+		this.waitForTicks(universe, 100);
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 	}
 
 	cheatToWinCombat(universe: Universe): void
@@ -1060,6 +1105,16 @@ class SystemTests extends TestFixture
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStation.name, universe.world);
 	}
 
+	goToEarthStationDocks(universe: Universe): void
+	{
+		this.goToEarthStation(universe);
+		var world = universe.world;
+		var placeStation = world.place() as PlaceStation;
+		placeStation.dock(universe);
+		this.waitForTicks(universe, 1);
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStationDock.name, world);
+	}
+
 	goToHyperspace(universe: Universe): void
 	{
 		// todo - Leave the planet surface?
@@ -1069,7 +1124,7 @@ class SystemTests extends TestFixture
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, universe.world);
 	}
 
-	goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe: Universe): void
+	goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
 		var player = world.player;
@@ -1078,13 +1133,9 @@ class SystemTests extends TestFixture
 		// Go to hyperspace and call the merchants with the caster.
 		this.goToHyperspace(universe);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-		const deviceTtorstingCasterName = "TtorstingCaster";
-		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
-		flagship.deviceWithNameUse(deviceTtorstingCasterName, uwpe);
 
-		// Wait for the merchants to approach and start an encounter.
-		this.waitForTicks(universe, 100);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+		this.callMerchantsAndWaitForContact(universe);
+
 		var placeEncounter = world.place() as PlaceEncounter;
 		var encounter = placeEncounter.encounter;
 		var talker = encounter.entityOther.talker();
@@ -1125,6 +1176,8 @@ class SystemTests extends TestFixture
 				infoCreditsFromSaleOfRainbowWorldLocation
 			);
 		}
+
+		// todo - Sell any lifeform data as well.
 
 		// Now buy more fuel and then end the conversation.
 
@@ -1204,10 +1257,22 @@ class SystemTests extends TestFixture
 
 	goToStarsystemWithName(universe: Universe, starsystemName: string): void
 	{
-		this.goToHyperspace(universe);
-		this.moveToEntityWithNameAndWait(universe, starsystemName);
-		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, universe.world);
-		var starsystemActual = (universe.world.place() as PlaceStarsystem).starsystem;
+		var world = universe.world;
+		var placeStart = world.place();
+		var placeDestinationName =
+			PlaceStarsystem.name + ":" + starsystemName;
+
+		if (placeStart.name == placeDestinationName)
+		{
+			// Do nothing.
+		}
+		else
+		{
+			this.goToHyperspace(universe);
+			this.moveToEntityWithNameAndWait(universe, starsystemName);
+			this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
+			var starsystemActual = (world.place() as PlaceStarsystem).starsystem;
+		}
 		Assert.areStringsEqual(starsystemName, starsystemActual.name);
 	}
 
@@ -1219,19 +1284,30 @@ class SystemTests extends TestFixture
 
 	goToVicinityOfPlanetWithName(universe: Universe, planetName: string): void
 	{
-		if (planetName.indexOf("-") >= 0)
+		var world = universe.world;
+		var place = world.place();
+		var destinationPlaceName = PlacePlanetVicinity.name + ":" + planetName;
+		if (place.name == destinationPlaceName)
 		{
-			// It's a moon.
-			planetName = planetName.split("-")[0];
+			// Do nothing.
+		}
+		else
+		{
+			if (planetName.indexOf("-") >= 0)
+			{
+				// It's a moon.
+				planetName = planetName.split("-")[0];
+			}
+
+			var starsystemName =
+				planetName == "Earth"
+				? "Sol"
+				: planetName.substr(0, planetName.lastIndexOf(" "));
+
+			this.goToStarsystemWithName(universe, starsystemName);
+			this.moveToEntityWithNameAndWait(universe, planetName);
 		}
 
-		var starsystemName =
-			planetName == "Earth"
-			? "Sol"
-			: planetName.substr(0, planetName.lastIndexOf(" "));
-
-		this.goToStarsystemWithName(universe, starsystemName);
-		this.moveToEntityWithNameAndWait(universe, planetName);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, universe.world);
 	}
 

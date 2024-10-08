@@ -12,7 +12,20 @@ class PlaceStationDock extends PlaceBase {
         this.entityToSpawnAdd(new GameClock(60).toEntity());
     }
     // method
-    componentBackboneBuild(universe) {
+    componentBuild(universe, componentToBuild) {
+        if (componentToBuild != null) {
+            var flagship = universe.world.player.flagship;
+            if (flagship.resourceCredits < componentToBuild.costInResourceCredits) {
+                throw new Error("Insufficent credit!");
+            }
+            else {
+                flagship.resourceCredits -= componentToBuild.costInResourceCredits;
+                flagship.componentNames.push(componentToBuild.name);
+                flagship.cachesReset();
+            }
+        }
+    }
+    componentBuildBackbone(universe) {
         var player = universe.world.player;
         var flagship = player.flagship;
         var componentsBackboneInstalled = flagship.componentsBackbone();
@@ -20,10 +33,7 @@ class PlaceStationDock extends PlaceBase {
             this.componentBuild(universe, this.componentToBuild);
         }
     }
-    componentBackboneScrap(universe) {
-        this.componentScrap(universe, this.componentToScrap);
-    }
-    componentThrusterBuild(universe) {
+    componentBuildThruster(universe) {
         var player = universe.world.player;
         var flagship = player.flagship;
         var thrustersInstalled = flagship.componentsThruster();
@@ -33,13 +43,7 @@ class PlaceStationDock extends PlaceBase {
             this.componentBuild(universe, componentToBuild);
         }
     }
-    componentThrusterScrap(universe) {
-        var player = universe.world.player;
-        var thrustersInstalled = player.flagship.componentsThruster();
-        var componentToScrap = thrustersInstalled[1]; // Cannot remove last.
-        this.componentScrap(universe, componentToScrap);
-    }
-    componentTurningJetsBuild(universe) {
+    componentBuildTurningJets(universe) {
         var player = universe.world.player;
         var flagship = player.flagship;
         var turningJetsInstalled = flagship.componentsTurningJets();
@@ -49,20 +53,16 @@ class PlaceStationDock extends PlaceBase {
             this.componentBuild(universe, componentToBuild);
         }
     }
-    componentTurningJetsScrap(universe) {
-        var player = universe.world.player;
-        var turningJetsInstalled = player.flagship.componentsTurningJets();
-        var componentToScrap = turningJetsInstalled[1]; // Cannot remove last.
-        this.componentScrap(universe, componentToScrap);
-    }
-    componentBuild(universe, componentToBuild) {
-        if (componentToBuild != null) {
-            var flagship = universe.world.player.flagship;
-            if (flagship.resourceCredits >= componentToBuild.costInResourceCredits) {
-                flagship.resourceCredits -= componentToBuild.costInResourceCredits;
-                flagship.componentNames.push(componentToBuild.name);
-                flagship.cachesReset();
-            }
+    componentBuildWithName(universe, componentName) {
+        var world = universe.world;
+        var player = world.player;
+        var componentsKnown = player.shipComponentDefnsKnown();
+        var componentToBuild = componentsKnown.find(x => x.name == componentName);
+        if (componentToBuild == null) {
+            throw new Error("No component with name '" + componentName + "' is known.");
+        }
+        else {
+            this.componentBuild(universe, componentToBuild);
         }
     }
     componentScrap(universe, componentToScrap) {
@@ -72,6 +72,21 @@ class PlaceStationDock extends PlaceBase {
             flagship.resourceCredits += componentToScrap.costInResourceCredits;
             flagship.cachesReset();
         }
+    }
+    componentScrapBackbone(universe) {
+        this.componentScrap(universe, this.componentToScrap);
+    }
+    componentScrapThruster(universe) {
+        var player = universe.world.player;
+        var thrustersInstalled = player.flagship.componentsThruster();
+        var componentToScrap = thrustersInstalled[1]; // Cannot remove last.
+        this.componentScrap(universe, componentToScrap);
+    }
+    componentScrapTurningJets(universe) {
+        var player = universe.world.player;
+        var turningJetsInstalled = player.flagship.componentsTurningJets();
+        var componentToScrap = turningJetsInstalled[1]; // Cannot remove last.
+        this.componentScrap(universe, componentToScrap);
     }
     crewAdd(universe) {
         var world = universe.world;
@@ -241,13 +256,13 @@ class PlaceStationDock extends PlaceBase {
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToBuild, (c, v) => c.componentToBuild = v), // bindingForItemSelected
             DataBinding.fromContext(null) // ?
             ),
-            ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Build", fontShort, () => this.componentBackboneBuild(universe)),
+            ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Build", fontShort, () => this.componentBuildBackbone(universe)),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Installed:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 8 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.componentsBackboneCurrentOverMax()), fontShort),
             ControlList.from8("listComponentsInstalled", Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentsInstalled), DataBinding.fromGet((c) => c.name), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToScrap, (c, v) => c.componentToScrap = v), // bindingForItemSelected
             DataBinding.fromContext(null)),
-            ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Scrap", fontShort, () => this.componentBackboneScrap(universe)),
+            ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Scrap", fontShort, () => this.componentScrapBackbone(universe)),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y), labelSize, DataBinding.fromContext("Weapons:"), fontShort),
             ControlList.from8("listWeapons", Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipWeaponSlots), DataBinding.fromGet((c) => c.nameAndComponentInstalled() // bindingForItemText
             ), fontShort, new DataBinding(placeStationDock, (c) => c.weaponSlotToMove, (c, v) => c.weaponSlotToMove = v), // bindingForItemSelected
@@ -258,12 +273,12 @@ class PlaceStationDock extends PlaceBase {
             }),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Thrusters:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 8, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.thrustersCurrentOverMax()), fontShort),
-            ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentThrusterBuild.bind(this)),
-            ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentThrusterScrap.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentBuildThruster.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentScrapThruster.bind(this)),
             ControlLabel.from4Uncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Turning Jets:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x * 9, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.turningJetsCurrentOverMax()), fontShort),
-            ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentTurningJetsBuild.bind(this)),
-            ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentTurningJetsScrap.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentBuildTurningJets.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentScrapTurningJets.bind(this)),
         ]);
         var shipsInFleet = playerShipGroup.ships;
         var shipPlansAvailable = player.shipDefnsAvailable(universe);

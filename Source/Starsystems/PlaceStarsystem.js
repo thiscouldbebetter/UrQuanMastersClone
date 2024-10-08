@@ -1,7 +1,7 @@
 "use strict";
 class PlaceStarsystem extends PlaceBase {
     constructor(world, starsystem, playerLoc, planetDeparted) {
-        super(PlaceStarsystem.name, PlaceStarsystem.name, null, // parentName
+        super(PlaceStarsystem.name + ":" + starsystem.name, PlaceStarsystem.name, null, // parentName
         Coords.fromXY(300, 300), // size
         null // entities
         );

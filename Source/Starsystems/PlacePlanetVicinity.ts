@@ -116,18 +116,6 @@ class PlacePlanetVicinity extends PlaceBase
 			]
 		);
 		entities.push(wallsEntity);
-
-		var playerAsControlSidebar =
-			world.player.toControlSidebar(world);
-
-		var containerSidebar = ControlContainer.from4
-		(
-			"containerSidebar",
-			Coords.fromXY(300, 0), // todo
-			Coords.fromXY(100, 300), // size
-			[ playerAsControlSidebar ]
-		);
-		this.venueControls = VenueControls.fromControl(containerSidebar);
 	}
 
 	constructor_PlayerEntityBuild(entityDimension: number, world: WorldExtended, playerLoc: Disposition): Entity
@@ -362,5 +350,23 @@ class PlacePlanetVicinity extends PlaceBase
 	starsystem(): Starsystem
 	{
 		return this.placeStarsystem.starsystem;
+	}
+
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var world = uwpe.world as WorldExtended;
+
+		var playerAsControlSidebar =
+			world.player.toControlSidebar(world);
+
+		var containerSidebar = ControlContainer.from4
+		(
+			"containerSidebar",
+			Coords.fromXY(300, 0), // todo
+			Coords.fromXY(100, 300), // size
+			[ playerAsControlSidebar ]
+		);
+
+		this.venueControls = VenueControls.fromControl(containerSidebar);
 	}
 }

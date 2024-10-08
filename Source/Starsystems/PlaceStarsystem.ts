@@ -23,7 +23,7 @@ class PlaceStarsystem extends PlaceBase
 	{
 		super
 		(
-			PlaceStarsystem.name,
+			PlaceStarsystem.name + ":" + starsystem.name,
 			PlaceStarsystem.name,
 			null, // parentName
 			Coords.fromXY(300, 300), // size
