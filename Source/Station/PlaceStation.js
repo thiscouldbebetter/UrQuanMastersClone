@@ -15,9 +15,8 @@ class PlaceStation extends PlaceBase {
         var placeNext = new PlaceStationDock(world, placeStation);
         world.placeNextSet(placeNext);
     }
-    leave(universe) {
-        var world = universe.world;
-        var place = world.placeCurrent;
+    leave(world) {
+        var place = world.place();
         var placePrev = place.placePlanetVicinity;
         var size = placePrev.size();
         var planet = placePrev.planet;
@@ -53,6 +52,7 @@ class PlaceStation extends PlaceBase {
     updateForTimerTick(uwpe) {
         super.updateForTimerTick(uwpe.placeSet(this));
         var universe = uwpe.universe;
+        var world = uwpe.world;
         if (this.venueControls == null) {
             var messageToShow = "[Station]";
             var placeStation = this;
@@ -67,7 +67,7 @@ class PlaceStation extends PlaceBase {
                 },
                 () => // leave
                  {
-                    placeStation.leave(universe);
+                    placeStation.leave(world);
                 }
             ]);
             this.venueControls = new VenueControls(controlRoot, null);

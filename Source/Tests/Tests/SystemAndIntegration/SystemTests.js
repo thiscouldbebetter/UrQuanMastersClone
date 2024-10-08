@@ -567,9 +567,8 @@ class SystemTests extends TestFixture {
         var playerPos = placeHyperspace.player().locatable().pos();
         var posExpected = Coords.fromXY(1910, 962);
         Assert.isTrue(playerPos.equals(posExpected));
-        // Fill up on fuel to sell back at the Earth station.
-        this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
-        this.goToEarthStation(universe);
+        this.buyFuelFromMurchAndSellToEarthStation(universe);
+        this.buyFuelFromMurchAndSellToEarthStation(universe);
         callback();
     }
     // Helper methods.
@@ -591,6 +590,43 @@ class SystemTests extends TestFixture {
         var venue = universe.venueCurrent();
         var venueTypeName = venue.constructor.name;
         Assert.areStringsEqual(venueTypeNameExpected, venueTypeName);
+    }
+    buyFuelFromMurchAndSellToEarthStation(universe) {
+        // Fill up on fuel to sell back at the Earth station.
+        var world = universe.world;
+        var player = world.player;
+        var flagship = player.flagship;
+        var fuelBeforeBuyingFromMurch = flagship.fuel;
+        this.goToHyperspaceCallMerchantsSellRainbowWorldLocationsAndBuyFuel(universe);
+        var fuelAfterBuyingFromMurch = flagship.fuel;
+        var fuelBoughtFromMurch = fuelAfterBuyingFromMurch - fuelBeforeBuyingFromMurch;
+        Assert.isTrue(fuelBoughtFromMurch > 0);
+        // hack - In case we're on top of Sol, move over and then back.
+        var placeHyperspace = world.place();
+        var playerEntity = placeHyperspace.player();
+        playerEntity.locatable().pos().add(Coords.fromXY(100, 100));
+        this.goToEarthStation(universe);
+        var placeStation = world.place();
+        placeStation.dock(universe);
+        this.waitForTicks(universe, 1);
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceStationDock.name, world);
+        var placeStationDock = world.place();
+        // Sell all the fuel obtained from the Murch.
+        var fuelBeforeSellingToEarthStation = flagship.fuel;
+        var resourceCreditsBefore = flagship.resourceCredits;
+        placeStationDock.fuelSellAll(universe);
+        var fuelAfterSellingToStation = flagship.fuel;
+        Assert.areNumbersEqual(0, fuelAfterSellingToStation);
+        var resourceCreditsAfter = flagship.resourceCredits;
+        var fuelSold = fuelBeforeSellingToEarthStation - fuelAfterSellingToStation;
+        var resourceCreditsFromSale = resourceCreditsAfter - resourceCreditsBefore;
+        var fuelPriceExpected = fuelSold * placeStationDock.fuelValuePerUnit;
+        Assert.areNumbersEqual(Math.round(fuelPriceExpected), Math.round(resourceCreditsFromSale));
+        placeStationDock.leave(world);
+        this.waitForTicks(universe, 1);
+        var placeStation = world.place();
+        placeStation.leave(world);
+        this.waitForTicks(universe, 1);
     }
     cheatToWinCombat(universe) {
         universe.updateForTimerTick();

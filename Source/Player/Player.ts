@@ -72,11 +72,9 @@ class Player
 		}
 	}
 
-	cachesCalculate(): void
+	cachesReset(): void
 	{
-		this._factionsKnown = null;
-
-		this.flagship.cachesCalculate();
+		this.flagship.cachesReset();
 	}
 
 	deviceWithNameAdd(deviceName: string): Player

@@ -61,7 +61,7 @@ class PlaceStationDock extends PlaceBase {
             if (flagship.resourceCredits >= componentToBuild.costInResourceCredits) {
                 flagship.resourceCredits -= componentToBuild.costInResourceCredits;
                 flagship.componentNames.push(componentToBuild.name);
-                flagship.cachesCalculate();
+                flagship.cachesReset();
             }
         }
     }
@@ -70,7 +70,7 @@ class PlaceStationDock extends PlaceBase {
             var flagship = universe.world.player.flagship;
             ArrayHelper.remove(flagship.componentNames, componentToScrap.name);
             flagship.resourceCredits += componentToScrap.costInResourceCredits;
-            flagship.cachesCalculate();
+            flagship.cachesReset();
         }
     }
     crewAdd(universe) {
@@ -92,30 +92,41 @@ class PlaceStationDock extends PlaceBase {
             ship.crew--;
         }
     }
-    fuelAdd(universe) {
+    fuelBuy(universe, fuelUnitsToBuy) {
         var flagship = universe.world.player.flagship;
-        var fuelMax = flagship._fuelMax;
-        if (flagship.resourceCredits >= this.fuelValuePerUnit && flagship.fuel < fuelMax) {
-            var fuelUnitsToBuy = 1;
-            if (flagship.fuel + fuelUnitsToBuy > fuelMax) {
-                fuelUnitsToBuy = fuelMax + flagship.fuel;
-            }
-            var fuelValue = Math.ceil(this.fuelValuePerUnit * fuelUnitsToBuy);
+        var fuelMax = flagship.fuelMax();
+        if (flagship.fuel + fuelUnitsToBuy > fuelMax) {
+            fuelUnitsToBuy = fuelMax - flagship.fuel;
+        }
+        var fuelToBuyCost = fuelUnitsToBuy * this.fuelValuePerUnit;
+        if (flagship.resourceCredits >= fuelToBuyCost && flagship.fuel < fuelMax) {
+            var fuelValue = this.fuelValuePerUnit * fuelUnitsToBuy;
             flagship.resourceCredits -= fuelValue;
             flagship.fuelAdd(fuelUnitsToBuy);
         }
     }
-    fuelRemove(universe) {
+    fuelBuyOneUnit(universe) {
+        this.fuelBuy(universe, 1);
+    }
+    fuelBuyToMax(universe) {
         var flagship = universe.world.player.flagship;
-        if (flagship.fuel > 0) {
-            var fuelUnitsToSell = 1;
-            if (flagship.fuel < fuelUnitsToSell) {
-                fuelUnitsToSell = flagship.fuel;
-            }
-            var fuelValue = Math.floor(fuelUnitsToSell * this.fuelValuePerUnit);
-            flagship.resourceCredits += fuelValue;
-            flagship.fuelSubtract(fuelUnitsToSell);
+        this.fuelBuy(universe, flagship.fuelMax() - flagship.fuel);
+    }
+    fuelSell(universe, fuelUnitsToSell) {
+        var flagship = universe.world.player.flagship;
+        if (flagship.fuel < fuelUnitsToSell) {
+            fuelUnitsToSell = flagship.fuel;
         }
+        var fuelValue = fuelUnitsToSell * this.fuelValuePerUnit;
+        flagship.resourceCredits += fuelValue;
+        flagship.fuelSubtract(fuelUnitsToSell);
+    }
+    fuelSellOneUnit(universe) {
+        return this.fuelSell(universe, 1);
+    }
+    fuelSellAll(universe) {
+        var flagship = universe.world.player.flagship;
+        return this.fuelSell(universe, flagship.fuel);
     }
     landerAdd(universe) {
         var flagship = universe.world.player.flagship;
@@ -131,6 +142,9 @@ class PlaceStationDock extends PlaceBase {
             flagship.numberOfLanders--;
             flagship.resourceCredits += this.landerValue;
         }
+    }
+    leave(world) {
+        world.placeNextSet(this.placeStation);
     }
     offload(universe) {
         var world = universe.world;
@@ -170,7 +184,7 @@ class PlaceStationDock extends PlaceBase {
     }
     // Place
     draw(universe, world) {
-        super.draw(universe, world, null);
+        // super.draw(universe, world, null);
         this.venueControls.draw(universe);
     }
     initialize(uwpe) {
@@ -276,8 +290,8 @@ class PlaceStationDock extends PlaceBase {
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => "" + c.flagship.resourceCredits), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContext("Fuel:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.flagship.fuelCurrentOverMax()), fontShort),
-            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "+", fontShort, this.fuelAdd.bind(this)),
-            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "-", fontShort, this.fuelRemove.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "+", fontShort, this.fuelBuyOneUnit.bind(this)),
+            ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "-", fontShort, this.fuelSellOneUnit.bind(this)),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContext("Landers:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 6, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => "" + c.numberOfLanders), fontShort),
             ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 3 + labelSize.y * 2), buttonSizeSmall, "+", fontShort, this.landerAdd.bind(this)),
@@ -314,13 +328,5 @@ class PlaceStationDock extends PlaceBase {
             }),
         ]);
         return controlRoot;
-    }
-    returnToPlace(world) {
-        var placeNext = this.placeToReturnTo;
-        var playerFromPlaceNext = placeNext.entityByName(Player.name);
-        var playerLoc = playerFromPlaceNext.locatable().loc;
-        playerLoc.pos.overwriteWith(this.posToReturnTo);
-        playerLoc.vel.clear();
-        world.placeNextSet(placeNext);
     }
 }

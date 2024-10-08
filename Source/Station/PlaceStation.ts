@@ -37,10 +37,9 @@ class PlaceStation extends PlaceBase
 		world.placeNextSet(placeNext);
 	}
 
-	leave(universe: Universe): void
+	leave(world: WorldExtended): void
 	{
-		var world = universe.world as WorldExtended;
-		var place = (world.placeCurrent as PlaceStation);
+		var place = world.place() as PlaceStation;
 		var placePrev = place.placePlanetVicinity;
 		var size = placePrev.size();
 		var planet = placePrev.planet;
@@ -100,6 +99,7 @@ class PlaceStation extends PlaceBase
 		super.updateForTimerTick(uwpe.placeSet(this));
 
 		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
 
 		if (this.venueControls == null)
 		{
@@ -125,7 +125,7 @@ class PlaceStation extends PlaceBase
 
 					() => // leave
 					{
-						placeStation.leave(universe);
+						placeStation.leave(world);
 					}
 				]
 			);

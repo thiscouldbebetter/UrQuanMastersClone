@@ -203,6 +203,7 @@ RadioactivesTransfer|DoNothing
 |Prompt
 
 StarbaseOperational|DoNothing
+|Script|u.world.player.diplomaticRelationshipWithFaction(u.world.factionByName("Terran") ).allianceEstablish()
 |Script|u.world.faction("Terran").conversationDefnNameSet("Conversation-Terran-Business")
 |Script|u.world.placeNextSet(u.world.faction("Terran").toEncounter(u.toUwpe().entitySet(cr.p) ).placeToReturnToSet(u.world.place().encounter.placeToReturnTo ).toPlace() )
 |Goto||Done

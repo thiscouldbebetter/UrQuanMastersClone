@@ -31,9 +31,8 @@ class Player {
             }
         }
     }
-    cachesCalculate() {
-        this._factionsKnown = null;
-        this.flagship.cachesCalculate();
+    cachesReset() {
+        this.flagship.cachesReset();
     }
     deviceWithNameAdd(deviceName) {
         this.flagship.itemHolderDevices.itemAdd(Item.fromDefnName(deviceName));

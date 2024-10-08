@@ -117,12 +117,15 @@ class PlacePlanetVicinity extends PlaceBase
 		);
 		entities.push(wallsEntity);
 
+		var playerAsControlSidebar =
+			world.player.toControlSidebar(world);
+
 		var containerSidebar = ControlContainer.from4
 		(
 			"containerSidebar",
 			Coords.fromXY(300, 0), // todo
 			Coords.fromXY(100, 300), // size
-			[ (world as WorldExtended).player.toControlSidebar(world) ]
+			[ playerAsControlSidebar ]
 		);
 		this.venueControls = VenueControls.fromControl(containerSidebar);
 	}

@@ -50,9 +50,10 @@ class PlacePlanetVicinity extends PlaceBase {
             Collidable.fromShape(new ShapeInverse(new Box(Coords.create(), this.size())))
         ]);
         entities.push(wallsEntity);
+        var playerAsControlSidebar = world.player.toControlSidebar(world);
         var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), // todo
         Coords.fromXY(100, 300), // size
-        [world.player.toControlSidebar(world)]);
+        [playerAsControlSidebar]);
         this.venueControls = VenueControls.fromControl(containerSidebar);
     }
     constructor_PlayerEntityBuild(entityDimension, world, playerLoc) {

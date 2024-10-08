@@ -2,40 +2,43 @@
 class Flagship {
     constructor(name, thrustersMax, turningJetsMax, componentsBackboneMax, componentNames, numberOfLanders, crew, fuel, resourceCredits, infoCredits, itemsCargo, shipsMax) {
         this.name = name;
-        this.thrustersMax = thrustersMax;
-        this.turningJetsMax = turningJetsMax;
-        this.componentsBackboneMax = componentsBackboneMax;
-        this.componentNames = componentNames;
-        this.numberOfLanders = numberOfLanders;
-        this.crew = crew;
-        this.fuel = fuel;
-        this.resourceCredits = resourceCredits;
-        this.infoCredits = infoCredits;
-        this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(itemsCargo);
+        this.thrustersMax = thrustersMax || Number.POSITIVE_INFINITY;
+        this.turningJetsMax = turningJetsMax || Number.POSITIVE_INFINITY;
+        this.componentsBackboneMax = componentsBackboneMax || Number.POSITIVE_INFINITY;
+        this.componentNames = componentNames || [];
+        this.numberOfLanders = numberOfLanders || 0;
+        this.crew = crew || 0;
+        this.fuel = fuel || 0;
+        this.resourceCredits = resourceCredits || 0;
+        this.infoCredits = infoCredits || 0;
+        this.itemHolderCargo = this.itemHolderCargoBuildOrUpdate(itemsCargo || []);
         this.itemHolderDevices = ItemHolder.default();
         this.itemHolderLifeforms = ItemHolder.default();
-        this.shipsMax = shipsMax;
-        this.cachesCalculate();
+        this.shipsMax = shipsMax || Number.POSITIVE_INFINITY;
+        this.cachesReset();
     }
     biodataSell(world) {
         var value = this.resourcesBelongingToCategorySell(world, this.itemHolderLifeforms, ResourceDefn.CategoryBiodataName);
         this.infoCredits += value;
     }
-    cachesCalculate() {
-        this._cargoMax = 0;
-        this._crewMax = 0;
-        this._fuelMax = 0;
-        this._components = null;
-        this._componentsThruster = null;
-        this._componentsTurningJets = null;
-        var components = this.components();
-        for (var i = 0; i < components.length; i++) {
-            var component = components[i];
-            component.applyToFlagship(this);
-        }
+    cachesReset() {
+        this._cargoMax = null;
+        this._crewMax = null;
+        this._fuelMax = null;
+        var cargoMax = this.cargoMax();
+        this.itemHolderCargo.encumbranceMaxSet(cargoMax);
+        return this;
     }
     cargoCurrentOverMax(world) {
         return this.itemHolderCargo.encumbranceOfAllItemsOverMax(world);
+    }
+    cargoMax() {
+        if (this._cargoMax == null) {
+            this._cargoMax = 0;
+            var componentsCargo = this.componentsCargo();
+            componentsCargo.forEach(x => x.applyToFlagship(this));
+        }
+        return this._cargoMax;
     }
     cargoSell(world) {
         var value = this.resourcesBelongingToCategorySell(world, this.itemHolderCargo, ResourceDefn.CategoryMineralName);
@@ -142,6 +145,11 @@ class Flagship {
         return NumberHelper.roundToDecimalPlaces(this.fuel, 1) + "/" + fuelMax;
     }
     fuelMax() {
+        if (this._fuelMax == null) {
+            this._fuelMax = 0;
+            var componentsFuel = this.componentsFuel();
+            componentsFuel.forEach(x => x.applyToFlagship(this));
+        }
         return this._fuelMax;
     }
     fuelNeededToFillToCapacity() {
