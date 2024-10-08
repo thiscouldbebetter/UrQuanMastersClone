@@ -4,10 +4,10 @@ class Faction implements EntityPropertyBase
 	name: string;
 	nameOriginal: string;
 	color: Color;
-	relationsWithPlayer: string;
 	talksImmediately: boolean;
 	conversationDefnName: string;
 	territory: FactionTerritory;
+	diplomaticRelationshipTypeWithPlayerDefault: DiplomaticRelationshipType;
 	shipDefnName: string;
 	shipGroupActivity: Activity;
 
@@ -16,28 +16,25 @@ class Faction implements EntityPropertyBase
 		name: string,
 		nameOriginal: string,
 		color: Color,
-		relationsWithPlayer: string,
 		talksImmediately: boolean,
 		conversationDefnName: string,
 		territory: FactionTerritory,
 		shipDefnName: string,
+		diplomaticRelationshipTypeWithPlayerDefault: DiplomaticRelationshipType,
 		shipGroupActivity: Activity
 	)
 	{
 		this.name = name;
 		this.nameOriginal = nameOriginal;
 		this.color = color;
-		this.relationsWithPlayer = relationsWithPlayer;
 		this.talksImmediately = talksImmediately;
 		this.conversationDefnName = conversationDefnName;
 		this.territory = territory;
 		this.shipDefnName = shipDefnName;
+		this.diplomaticRelationshipTypeWithPlayerDefault =
+			diplomaticRelationshipTypeWithPlayerDefault;
 		this.shipGroupActivity = shipGroupActivity;
 	}
-
-	static RelationsAllied = "Allied";
-	static RelationsHostile = "Hostile";
-	static RelationsNeutral = "Neutral";
 
 	static fromEntity(entity: Entity): Faction
 	{
@@ -48,6 +45,15 @@ class Faction implements EntityPropertyBase
 	{
 		this.conversationDefnName = value;
 		return this;
+	}
+
+	diplomaticRelationshipDefaultBuild(): DiplomaticRelationship
+	{
+		return new DiplomaticRelationship
+		(
+			this.name,
+			DiplomaticRelationshipType.Instances().Neutral.name
+		);
 	}
 
 	shipDefn(world: WorldExtended): ShipDefn

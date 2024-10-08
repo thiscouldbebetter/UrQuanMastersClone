@@ -494,10 +494,8 @@ class Game
 	debug_Docks(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var worldDefn = world.defn as WorldDefnExtended;
-		worldDefn.factionsByName.get("Terran").relationsWithPlayer
-			= Faction.RelationsAllied;
 		var player = world.player;
+		// todo - Set up alliance.
 		player.flagship.resourceCredits = 1000;
 		var resourceDefns = ResourceDefn.Instances();
 		var playerItemHolder = player.flagship.itemHolderCargo;

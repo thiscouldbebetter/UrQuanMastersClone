@@ -1,14 +1,15 @@
 "use strict";
 class Faction {
-    constructor(name, nameOriginal, color, relationsWithPlayer, talksImmediately, conversationDefnName, territory, shipDefnName, shipGroupActivity) {
+    constructor(name, nameOriginal, color, talksImmediately, conversationDefnName, territory, shipDefnName, diplomaticRelationshipTypeWithPlayerDefault, shipGroupActivity) {
         this.name = name;
         this.nameOriginal = nameOriginal;
         this.color = color;
-        this.relationsWithPlayer = relationsWithPlayer;
         this.talksImmediately = talksImmediately;
         this.conversationDefnName = conversationDefnName;
         this.territory = territory;
         this.shipDefnName = shipDefnName;
+        this.diplomaticRelationshipTypeWithPlayerDefault =
+            diplomaticRelationshipTypeWithPlayerDefault;
         this.shipGroupActivity = shipGroupActivity;
     }
     static fromEntity(entity) {
@@ -17,6 +18,9 @@ class Faction {
     conversationDefnNameSet(value) {
         this.conversationDefnName = value;
         return this;
+    }
+    diplomaticRelationshipDefaultBuild() {
+        return new DiplomaticRelationship(this.name, DiplomaticRelationshipType.Instances().Neutral.name);
     }
     shipDefn(world) {
         var returnValue = world.shipDefnByName(this.shipDefnName);
@@ -63,6 +67,3 @@ class Faction {
     // Equatable.
     equals(other) { return false; }
 }
-Faction.RelationsAllied = "Allied";
-Faction.RelationsHostile = "Hostile";
-Faction.RelationsNeutral = "Neutral";

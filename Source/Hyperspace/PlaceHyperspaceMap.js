@@ -51,11 +51,9 @@ class PlaceHyperspaceMap extends PlaceBase {
             }
             display.drawCircle(drawPos, starRadiusApparent, starColor, null, null);
         }
-        var factionsKnownNames = world.player.factionsKnownNames;
-        var worldDefn = world.defnExtended();
-        for (var i = 0; i < factionsKnownNames.length; i++) {
-            var factionName = factionsKnownNames[i];
-            var faction = worldDefn.factionByName(factionName);
+        var factionsKnown = world.player.factionsKnown(world);
+        for (var i = 0; i < factionsKnown.length; i++) {
+            var faction = factionsKnown[i];
             var factionZone = faction.territory.shape;
             if (factionZone != null && factionZone.constructor.name == Sphere.name) {
                 var factionZoneAsSphere = factionZone;

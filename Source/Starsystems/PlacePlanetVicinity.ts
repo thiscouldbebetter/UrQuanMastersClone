@@ -280,8 +280,9 @@ class PlacePlanetVicinity extends PlaceBase
 		var planet = Planet.fromEntity(entityPlanet);
 		var planetFaction = planet.faction(world);
 		var planetIsStation = planet.isStation();
+		var player = world.player;
 		var planetIsAlliedWithPlayer =
-			(planetFaction.relationsWithPlayer == Faction.RelationsAllied);
+			(player.diplomaticRelationshipWithFactionIsAllied(planetFaction) );
 		if (planetIsStation && planetIsAlliedWithPlayer)
 		{
 			world.placeNextSet(new PlaceStation(world, planet, this) );

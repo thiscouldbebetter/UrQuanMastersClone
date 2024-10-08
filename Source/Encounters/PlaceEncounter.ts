@@ -72,7 +72,9 @@ class PlaceEncounter extends PlaceBase
 				var choiceNames = [ "Talk" ];
 				var choiceActions = [ () => this.encounter.talk(universe) ];
 
-				if (faction.relationsWithPlayer == Faction.RelationsHostile)
+				var player = world.player;
+
+				if (player.diplomaticRelationshipWithFactionIsHostile(faction) )
 				{
 					choiceNames.push("Fight");
 					choiceActions.push( () => this.encounter.fight(universe) );

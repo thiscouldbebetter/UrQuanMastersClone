@@ -3,8 +3,8 @@ class Player
 {
 	name: string;
 	flagship: Flagship;
-	factionsKnownNames: string[];
 	shipGroup: ShipGroupFinite;
+	diplomaticRelationships: DiplomaticRelationship[];
 
 	variableLookup: Map<string, any>;
 	vars: Map<string,any>;
@@ -20,14 +20,14 @@ class Player
 	(
 		name: string,
 		flagship: Flagship,
-		factionsKnownNames: string[],
-		shipGroup: ShipGroupFinite
+		shipGroup: ShipGroupFinite,
+		diplomaticRelationships: DiplomaticRelationship[]
 	)
 	{
 		this.name = name;
 		this.flagship = flagship;
-		this.factionsKnownNames = factionsKnownNames;
 		this.shipGroup = shipGroup;
+		this.diplomaticRelationships = diplomaticRelationships || [];
 
 		this.variableLookup = new Map<string,any>();
 
@@ -91,21 +91,35 @@ class Player
 		return this;
 	}
 
+	diplomaticRelationshipWithFaction(faction: Faction): DiplomaticRelationship
+	{
+		var relationship =
+			this.diplomaticRelationships.find(x => x.factionOtherName = faction.name);
+		if (relationship == null)
+		{
+			relationship = faction.diplomaticRelationshipDefaultBuild();
+			this.diplomaticRelationships.push(relationship);
+		}
+		return relationship;
+	}
+
+	diplomaticRelationshipWithFactionIsAllied(faction: Faction): boolean
+	{
+		return this.diplomaticRelationshipWithFaction(faction).isAllied();
+	}
+
+	diplomaticRelationshipWithFactionIsHostile(faction: Faction): boolean
+	{
+		return this.diplomaticRelationshipWithFaction(faction).isHostile();
+	}
+
 	factionsAllied(world: WorldExtended): Faction[]
 	{
 		if (this._factionsAllied == null)
 		{
-			this._factionsAllied = [];
-
 			var factionsKnown = this.factionsKnown(world);
-			for (var i = 0; i < factionsKnown.length; i++)
-			{
-				var faction = factionsKnown[i];
-				if (faction.relationsWithPlayer == Faction.RelationsAllied)
-				{
-					this._factionsAllied.push(faction);
-				}
-			}
+			this._factionsAllied =
+				factionsKnown.filter(x => this.diplomaticRelationshipWithFactionIsAllied(x));
 		}
 
 		return this._factionsAllied;
@@ -115,14 +129,8 @@ class Player
 	{
 		if (this._factionsKnown == null)
 		{
-			this._factionsKnown = [];
-
-			for (var i = 0; i < this.factionsKnownNames.length; i++)
-			{
-				var factionName = this.factionsKnownNames[i];
-				var faction = world.defnExtended().factionByName(factionName);
-				this._factionsKnown.push(faction);
-			}
+			this._factionsKnown =
+				this.diplomaticRelationships.map(x => x.factionOther(world) );
 		}
 
 		return this._factionsKnown;

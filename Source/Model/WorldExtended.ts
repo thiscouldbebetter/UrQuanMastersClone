@@ -207,12 +207,12 @@ class WorldExtended extends World
 			textLahkemupGuardDrone,
 			null, // nameOriginal
 			null, // color
-			Faction.RelationsHostile,
 			true, // talksImmediately
 			textConversation + textLahkemupGuardDrone, // conversationDefnName
 			null, // territory
 			"GuardDrone", // shipDefnName
-			new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null)
+			DiplomaticRelationshipType.Instances().Hostile,
+			Activity.fromDefnName(ShipGroupBase.activityDefnApproachPlayer().name)
 		);
 
 		// normal
@@ -223,7 +223,7 @@ class WorldExtended extends World
 			nameOriginal: string,
 			color: Color,
 			territory: FactionTerritory,
-			relations: any,
+			diplomaticRelationshipTypeWithPlayerDefault: DiplomaticRelationshipType,
 			shipDefnName: string
 		) =>
 		{
@@ -234,12 +234,12 @@ class WorldExtended extends World
 				name,
 				nameOriginal,
 				color,
-				relations,
 				talksImmediately,
 				textConversation + name, // conversationDefnName
 				territory,
 				shipDefnName,
-				new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null)
+				diplomaticRelationshipTypeWithPlayerDefault,
+				Activity.fromDefnName(ShipGroupBase.activityDefnApproachPlayer().name)
 			);
 		}
 
@@ -256,8 +256,9 @@ class WorldExtended extends World
 
 		var c = Color.Instances();
 
-		var hostile = Faction.RelationsHostile;
-		var neutral = Faction.RelationsNeutral;
+		var relationshipTypes = DiplomaticRelationshipType.Instances();
+		var hostile = relationshipTypes.Hostile;
+		var neutral = relationshipTypes.Neutral;
 
 		var daaskap 		= f("Daaskap", 		"Druuge", 		c.Red, 	 	soi(946.9, 280.6, .1), 	neutral, "Kickback");
 		var ellfyn			= f("Ellfyn", 		"Arilou", 		c.Blue, 	soi(100, 500, .05), 	neutral, "Discus");
@@ -488,10 +489,8 @@ class WorldExtended extends World
 		(
 			"Player",
 			playerFlagship,
-			[
-				//"Terran"
-			], // factionsKnownNames
-			playerShipGroup
+			playerShipGroup,
+			null // diplomaticRelationships
 		);
 
 		var shipDefns = ShipDefn.Instances(universe)._All;

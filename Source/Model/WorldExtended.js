@@ -70,16 +70,16 @@ class WorldExtended extends World {
         var textLahkemupGuardDrone = "LahkemupGuardDrone";
         var lahkemupGuardDrone = new Faction(textLahkemupGuardDrone, null, // nameOriginal
         null, // color
-        Faction.RelationsHostile, true, // talksImmediately
+        true, // talksImmediately
         textConversation + textLahkemupGuardDrone, // conversationDefnName
         null, // territory
         "GuardDrone", // shipDefnName
-        new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null));
+        DiplomaticRelationshipType.Instances().Hostile, Activity.fromDefnName(ShipGroupBase.activityDefnApproachPlayer().name));
         // normal
-        var f = (name, nameOriginal, color, territory, relations, shipDefnName) => {
+        var f = (name, nameOriginal, color, territory, diplomaticRelationshipTypeWithPlayerDefault, shipDefnName) => {
             var talksImmediately = (territory == null); // hack
-            return new Faction(name, nameOriginal, color, relations, talksImmediately, textConversation + name, // conversationDefnName
-            territory, shipDefnName, new Activity(ShipGroupBase.activityDefnApproachPlayer().name, null));
+            return new Faction(name, nameOriginal, color, talksImmediately, textConversation + name, // conversationDefnName
+            territory, shipDefnName, diplomaticRelationshipTypeWithPlayerDefault, Activity.fromDefnName(ShipGroupBase.activityDefnApproachPlayer().name));
         };
         var soi = (centerX, centerY, radius) => {
             var sphere = new Sphere(Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10), radius * hyperspaceSize.x);
@@ -87,8 +87,9 @@ class WorldExtended extends World {
             return territory;
         };
         var c = Color.Instances();
-        var hostile = Faction.RelationsHostile;
-        var neutral = Faction.RelationsNeutral;
+        var relationshipTypes = DiplomaticRelationshipType.Instances();
+        var hostile = relationshipTypes.Hostile;
+        var neutral = relationshipTypes.Neutral;
         var daaskap = f("Daaskap", "Druuge", c.Red, soi(946.9, 280.6, .1), neutral, "Kickback");
         var ellfyn = f("Ellfyn", "Arilou", c.Blue, soi(100, 500, .05), neutral, "Discus");
         var famorfex = f("Famorfex", "Umgah", c.Violet, soi(197.8, 596.8, .1), hostile, "Pustule");
@@ -225,10 +226,8 @@ class WorldExtended extends World {
         30 // shipsMax
         );
         //var factionNamesAll = factions.elementProperties("name");
-        var player = new Player("Player", playerFlagship, [
-        //"Terran"
-        ], // factionsKnownNames
-        playerShipGroup);
+        var player = new Player("Player", playerFlagship, playerShipGroup, null // diplomaticRelationships
+        );
         var shipDefns = ShipDefn.Instances(universe)._All;
         var returnValue = new WorldExtended("World-" + nowAsString, now, // dateCreated
         defn, new Date(Date.UTC(2155, 1, 17, 9, 27, 22)), hyperspace, paraspace, factions, shipDefns, player, starsystemStart);
