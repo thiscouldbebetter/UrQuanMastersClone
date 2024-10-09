@@ -1,0 +1,291 @@
+name=Muunfaz
+imagePortraitName=Conversation-Portrait-Muunfaz
+contentTextStringName=Conversation-Muunfaz-Content
+
+|VariablesImport|u.world.player.variableLookup
+
+Homeworld|DoNothing
+
+|Display|#(GIVE_SPINDLE)
+|Script|u.world.player.deviceWithNameAdd('TranslucentOblong')
+
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_1)
+|OptionsClear
+TopLevel|DoNothing
+|Option|#(we_conquer)|#(WHY_CONQUER)
+|Option|#(we_are_vindicator)|#(WHY_YOU_HERE)
+|Option|#(what_about_you)|#(ABOUT_US)
+|Option|#(what_about_ilwrath)|#(ABOUT_ILWRATH)
+|Option|#(bye_friendly)|#(GOODBYE_FRIENDLY)
+|Prompt
+
+	#(WHY_CONQUER)|Display|#(WHY_CONQUER)
+	|OptionsClear
+	|Option|#(conquer_because_1)|#(NOT_CONQUER_1)
+	|Option|#(conquer_because_2)|#(NOT_CONQUER_2)
+	|Option|#(must_conquer)|#(BAD_IDEA)
+	|Option|#(no_conquest)|#(GOOD_IDEA)
+	|Prompt
+
+		#(NOT_CONQUER_1)|Display|#(NOT_CONQUER_1)
+		|OptionRemove|#(conquer_because_1)
+		|Prompt
+
+		#(NOT_CONQUER_2)|Display|#(NOT_CONQUER_2)
+		|OptionRemove|#(conquer_because_2)
+		|Prompt
+
+		#(BAD_IDEA)|Display|#(BAD_IDEA)
+		|DoNothing|Combat!
+		|Goto||Done
+
+		#(GOOD_IDEA)|Display|#(GOOD_IDEA)
+		|OptionRemove|#(we_conquer)
+		|Goto||TopLevel
+
+	#(WHY_YOU_HERE)|Display|#(WHY_YOU_HERE)
+	|OptionsClear
+	|Option|#(we_here_to_help)|#(NEED_HELP)
+	|Option|#(we_need_help)|#(GIVE_HELP)
+	|Option|#(exploring_universe)|#(SENSE_DEEPER_CONFLICT)
+	|Option|#(fun_cruise)|#(REPRESS)
+	|Prompt
+
+		#(NEED_HELP)|Display|#(NEED_HELP)
+		|OptionRemove||#(we_here_to_help)
+		|Prompt
+
+		#(GIVE_HELP)|Display|#(GIVE_HELP)
+		|Script|u.world.player.shipAdd(Ship.fromDefnName('Fireblossom').crewSetToMax(UniverseWorldPlaceEntities.fromUniverse(u) ) )
+		|Script|u.world.player.shipAdd(Ship.fromDefnName('Fireblossom').crewSetToMax(UniverseWorldPlaceEntities.fromUniverse(u) ) )
+		|Script|u.world.player.shipAdd(Ship.fromDefnName('Fireblossom').crewSetToMax(UniverseWorldPlaceEntities.fromUniverse(u) ) )
+		|Script|u.world.player.shipAdd(Ship.fromDefnName('Fireblossom').crewSetToMax(UniverseWorldPlaceEntities.fromUniverse(u) ) )
+		|Goto||Done
+
+		#(SENSE_DEEPER_CONFLICT)|Display|#(SENSE_DEEPER_CONFLICT)
+		|OptionRemove|#(exploring_universe)
+		|Prompt
+
+		#(REPRESS)|Display|#(REPRESS)
+		|OptionRemove||#(fun_cruise)
+		|Prompt
+
+	#(ABOUT_US)|Display|#(ABOUT_US)
+	|OptionsClear
+	#(what_about_history)|Option|#(what_about_history)|#(ABOUT_HISTORY)
+	#(what_about_culture)|Option|#(what_about_culture)|#(ABOUT_CULTURE)
+	|Prompt
+
+		#(ABOUT_HISTORY)|Display|#(ABOUT_HISTORY)
+		|OptionRemove||#(what_about_history)
+		|Option|#(what_about_yehat)|#(ABOUT_YEHAT)
+		|Prompt
+
+			#(ABOUT_YEHAT)|Display|#(ABOUT_YEHAT)
+			|OptionRemove||#(what_about_yehat)
+			|Prompt
+
+		#(ABOUT_CULTURE)|Display|#(ABOUT_CULTURE)
+		|OptionRemove||#(what_about_culture)
+		|OptionsClear
+		|Option|#(elaborate_culture)|#(OK_ELABORATE_CULTURE)
+		|Option|#(what_about_future)|#(ABOUT_FUTURE)
+		|Option|#(enough_about_you)|#(OK_ENOUGH_ABOUT_US)
+		|Prompt
+
+			#(OK_ELABORATE_CULTURE)|Display|#(OK_ELABORATE_CULTURE)
+			|Prompt
+
+			#(ABOUT_FUTURE)|Display|#(ABOUT_FUTURE)
+			|Prompt
+
+			#(OK_ENOUGH_ABOUT_US)|Display|#(OK_ENOUGH_ABOUT_US)
+			|Goto||#(ABOUT_US)
+
+	#(ABOUT_ILWRATH)|Display|#(ABOUT_ILWRATH)
+	|OptionsClear
+	|Option|#(why_ilwrath_fight)|#(ILWRATH_FIGHT_BECAUSE)
+	|Option|#(when_fight_start)|#(FIGHT_START_WHEN)
+	|Option|#(how_goes_fight)|#(FIGHT_GOES)
+	|Option|#(how_stop_fight)|#(STOP_FIGHT_LIKE_SO)
+	|Option|#(enough_ilwrath)|#(OK_ENOUGH_ILWRATH)
+	|Prompt
+
+		#(ILWRATH_FIGHT_BECAUSE)|Display|#(ILWRATH_FIGHT_BECAUSE)
+		|OptionRemove||#(why_ilwrath_fight)
+		|Prompt
+
+		#(FIGHT_START_WHEN)|Display|#(FIGHT_START_WHEN)
+		|OptionRemove|#(when_fight_start)
+		|Prompt
+
+		#(FIGHT_GOES)|Display|#(FIGHT_GOES)
+		|OptionRemove|#(how_goes_fight)
+		|Prompt
+
+		#(STOP_FIGHT_LIKE_SO)|Display|#(STOP_FIGHT_LIKE_SO)
+		|OptionRemove|#(how_stop_fight)
+		|Prompt
+
+		#(OK_ENOUGH_ILWRATH)|Display|#(OK_ENOUGH_ILWRATH)
+		|Goto||#(ABOUT_US)
+
+	#(GOODBYE_FRIENDLY)|Display|#(GOODBYE_FRIENDLY)
+	|Goto||Done
+
+Space|DoNothing
+|Display|#(NEUTRAL_SPACE_HELLO_1)
+|OptionsClear
+|Option|#(form_alliance)|#(GO_TO_HOMEWORLD)
+|Option|#(can_you_help)|#(GO_TO_HOMEWORLD_AGAIN)
+|Option|#(whats_up_neutral)|#(GENERAL_INFO_NEUTRAL)
+|Option|#(neutral_bye_space)|#(NEUTRAL_GOODBYE_SPACE)
+|Prompt
+
+	#(GO_TO_HOMEWORLD)|Display|#(GO_TO_HOMEWORLD)
+	|Prompt
+
+	#(GO_TO_HOMEWORLD_AGAIN)|Display|#(GO_TO_HOMEWORLD_AGAIN)
+	|Prompt
+
+	#(GENERAL_INFO_NEUTRAL)|DoNothing
+	|Display|#(GENERAL_INFO_NEUTRAL_1)
+	// |Display|#(GENERAL_INFO_NEUTRAL_2)
+	// |Display|#(GENERAL_INFO_NEUTRAL_3)
+	// |Display|#(GENERAL_INFO_NEUTRAL_4)
+	|Prompt
+
+	#(NEUTRAL_GOODBYE_SPACE)|Display|#(NEUTRAL_GOODBYE_SPACE)
+	|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+
+
+
+|Display|#(name_1)
+|Display|#(name_2)
+|Display|#(name_3)
+|Display|#(name_40)
+|Display|#(name_41)
+|Display|#(NEUTRAL_SPACE_HELLO_3)
+|Display|#(NEUTRAL_SPACE_HELLO_2)
+|Display|#(NEUTRAL_SPACE_HELLO_4)
+|Display|#(FRIENDLY_SPACE_HELLO_1)
+|Display|#(FRIENDLY_SPACE_HELLO_2)
+|Display|#(FRIENDLY_SPACE_HELLO_3)
+|Display|#(FRIENDLY_SPACE_HELLO_4)
+|Display|#(FRIENDLY_SPACE_HELLO_5)
+|Display|#(FRIENDLY_SPACE_HELLO_6)
+|Display|#(FRIENDLY_SPACE_HELLO_7)
+|Display|#(FRIENDLY_SPACE_HELLO_8)
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_2)
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_3)
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_4)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_1)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_2)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_3)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_4)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_5)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_6)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_7)
+|Display|#(FRIENDLY_HOMEWORLD_HELLO_8)
+|Display|#(good_reason_1)
+|Display|#(WE_GO_HOME_1)
+|Display|#(good_reason_2)
+|Display|#(WE_GO_HOME_2)
+|Display|#(bad_reason_1)
+|Display|#(NO_GO_HOME_1)
+|Display|#(bad_reason_2)
+|Display|#(NO_GO_HOME_2)
+|Display|#(SENSE_KOHRAH_VICTORY)
+|Display|#(SPIRITUAL_PROBLEMS_1)
+|Display|#(SPIRITUAL_PROBLEMS_2)
+|Display|#(SPIRITUAL_PROBLEMS_3)
+|Display|#(SPIRITUAL_PROBLEMS_4)
+|Display|#(HATE_YOU_FOREVER_1)
+|Display|#(HATE_YOU_FOREVER_2)
+|Display|#(HATE_YOU_FOREVER_3)
+|Display|#(HATE_YOU_FOREVER_4)
+|Display|#(MIGRATING_SPACE_1)
+|Display|#(MIGRATING_SPACE_2)
+|Display|#(MIGRATING_SPACE_3)
+|Display|#(MIGRATING_SPACE_4)
+|Display|#(MIGRATING_SPACE_5)
+|Display|#(MIGRATING_SPACE_6)
+|Display|#(MIGRATING_SPACE_7)
+|Display|#(MIGRATING_SPACE_8)
+|Display|#(die_idiot_fools)
+|Display|#(VERY_WELL)
+|Display|#(why_insults)
+|Display|#(RELEASE_TENSION)
+|Display|#(what_about_you_angry)
+|Display|#(ABOUT_US_ANGRY)
+|Display|#(should_be_friends)
+|Display|#(YES_FRIENDS)
+|Display|#(try_to_be_nicer)
+|Display|#(CANT_ASK_FOR_MORE)
+|Display|#(VISIT_OUR_HOMEWORLD)
+|Display|#(CAN_BE_FRIENDS)
+|Display|#(bye_angry)
+|Display|#(GOODBYE_ANGRY)
+
+
+
+
+|Display|#(how_goes_war)
+|Display|#(WAR_GOES_1)
+|Display|#(WAR_GOES_2)
+|Display|#(WAR_GOES_3)
+|Display|#(WAR_GOES_4)
+
+|Display|#(where_fleet_1)
+|Display|#(where_fleet_2)
+|Display|#(where_fleet_3)
+|Display|#(MIGRATING_HOMEWORLD_1)
+|Display|#(MIGRATING_HOMEWORLD_2)
+|Display|#(MIGRATING_HOMEWORLD_3)
+|Display|#(RETURNING_FROM_YEHAT_1)
+|Display|#(RETURNING_FROM_YEHAT_2)
+|Display|#(am_worried_1)
+|Display|#(am_worried_2)
+|Display|#(am_worried_3)
+|Display|#(DONT_WORRY_1)
+|Display|#(DONT_WORRY_2)
+|Display|#(DONT_WORRY_3)
+|Display|#(hostile_greeting)
+|Display|#(DONT_BE_HOSTILE)
+|Display|#(obey)
+|Display|#(NO_OBEY)
+|Display|#(NEUTRAL_GOODBYE_SPACE)
+|Display|#(SHIP_GIFT)
+|Display|#(NO_ROOM)
+|Display|#(friendly_bye_space)
+|Display|#(FRIENDLY_GOODBYE_SPACE)
+|Display|#(ALMOST_ALLIANCE)
+|Display|#(INIT_NO_ROOM)
+|Display|#(INIT_SHIP_GIFT)
+|Display|#(suit_yourself)
+|Display|#(GOODBYE_MIGRATION)
+|Display|#(whats_up_space)
+|Display|#(SHIPS_AT_HOME)
+|Display|#(GENERAL_INFO_SPACE_1)
+|Display|#(GENERAL_INFO_SPACE_2)
+|Display|#(GENERAL_INFO_SPACE_3)
+|Display|#(GENERAL_INFO_SPACE_4)
+|Display|#(GENERAL_INFO_SPACE_5)
+|Display|#(GENERAL_INFO_SPACE_6)
+|Display|#(GENERAL_INFO_SPACE_7)
+|Display|#(GENERAL_INFO_SPACE_8)
+|Display|#(tell_my_fortune)
+|Display|#(FORTUNE_IS_1)
+|Display|#(FORTUNE_IS_2)
+|Display|#(FORTUNE_IS_3)
+|Display|#(FORTUNE_IS_4)
+|Display|#(FORTUNE_IS_5)
+|Display|#(FORTUNE_IS_6)
+|Display|#(FORTUNE_IS_7)
+|Display|#(FORTUNE_IS_8)
+|Display|#(OUT_TAKES)

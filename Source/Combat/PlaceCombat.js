@@ -78,7 +78,7 @@ class PlaceCombat extends PlaceBase {
             throw new Error("Not yet implemented!"); // Game over.
         }
         else if (shipGroups[1].shipsCount() > 0) {
-            var controlShipSelect = combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+            var controlShipSelect = combat.toControlShipSelect(uwpe, universe.display.sizeInPixels);
             var venueNext = VenueControls.fromControl(controlShipSelect);
             universe.venueNextSet(venueNext);
         }
@@ -172,7 +172,7 @@ class PlaceCombat extends PlaceBase {
         var world = uwpe.world;
         var place = uwpe.place;
         this.combat.initialize(universe, world, place);
-        var controlShipSelect = this.combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+        var controlShipSelect = this.combat.toControlShipSelect(uwpe, universe.display.sizeInPixels);
         if (this.venueControls == null) {
             this.venueControls = VenueControls.fromControl(controlShipSelect);
         }

@@ -24,10 +24,8 @@ class Ship {
     // static methods
     static actionAccelerate() {
         return new Action("Accelerate", (uwpe) => {
-            var world = uwpe.world;
-            var actor = uwpe.entity;
-            var ship = Ship.fromEntity(actor);
-            ship.accelerate(world, actor);
+            var ship = Ship.fromEntity(uwpe.entity);
+            ship.accelerate(uwpe);
         });
     }
     static actionFire() {
@@ -72,16 +70,12 @@ class Ship {
     }
     static actionTurnLeft() {
         return new Action("TurnLeft", (uwpe) => {
-            var world = uwpe.world;
-            var actor = uwpe.entity;
-            Ship.fromEntity(actor).turnLeft(world, actor);
+            Ship.fromEntity(uwpe.entity).turnLeft(uwpe);
         });
     }
     static actionTurnRight() {
         return new Action("TurnRight", (uwpe) => {
-            var world = uwpe.world;
-            var actor = uwpe.entity;
-            Ship.fromEntity(actor).turnRight(world, actor);
+            Ship.fromEntity(uwpe.entity).turnRight(uwpe);
         });
     }
     static actions() {
@@ -122,8 +116,22 @@ class Ship {
     collide(uwpe) {
         // todo
     }
-    crewCurrentOverMax(world) {
-        return this.crew + "/" + this.defn(world).crewMax;
+    crewCurrentOverMax(uwpe) {
+        return this.crew + "/" + this.crewMax(uwpe);
+    }
+    crewMax(uwpe) {
+        var world = uwpe.world;
+        var defn = this.defn(world);
+        var crewMax = defn.crewMax(uwpe);
+        return crewMax;
+    }
+    crewSet(value) {
+        this.crew = value;
+        return this;
+    }
+    crewSetToMax(uwpe) {
+        var crewMax = this.crewMax(uwpe);
+        return this.crewSet(crewMax);
     }
     defn(world) {
         return world.defnExtended().shipDefnByName(this.defnName);
@@ -154,14 +162,19 @@ class Ship {
         ]);
         place.entityToSpawnAdd(entityExplosion);
     }
-    energyCurrentOverMax(world) {
-        return Math.floor(this.energy) + "/" + this.defn(world).energyMax;
+    energyCurrentOverMax(uwpe) {
+        return Math.floor(this.energy) + "/" + this.energyMax(uwpe);
     }
-    fullName(world) {
+    energyMax(uwpe) {
+        var world = uwpe.world;
+        return this.defn(world).energyMax(uwpe);
+    }
+    fullName(uwpe) {
+        var world = uwpe.world;
         return this.defn(world).factionName + " " + this.defnName;
     }
-    fullNameAndCrew(world) {
-        return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
+    fullNameAndCrew(uwpe) {
+        return this.fullName(uwpe) + "(" + this.crewCurrentOverMax(uwpe) + ")";
     }
     toEntity(uwpe) {
         var world = uwpe.world;
@@ -201,8 +214,10 @@ class Ship {
         var world = uwpe.world;
         var defn = this.defn(world);
         if (this.crew == null) {
-            this.crew = defn.crewMax;
-            this.energy = defn.energyMax;
+            this.crew = defn.crewInitial;
+        }
+        if (this.energy == null) {
+            this.energy = defn.energyMax(uwpe);
         }
     }
     propertyName() { return Ship.name; }
@@ -211,28 +226,33 @@ class Ship {
         var entityShip = uwpe.entity;
         var ship = Ship.fromEntity(entityShip);
         var shipDefn = ship.defn(world);
-        ship.energy += shipDefn.energyPerTick;
-        if (ship.energy > shipDefn.energyMax) {
-            ship.energy = shipDefn.energyMax;
+        var energyPerTick = shipDefn.energyPerTick(uwpe);
+        ship.energy += energyPerTick;
+        var energyMax = shipDefn.energyMax(uwpe);
+        if (ship.energy > energyMax) {
+            ship.energy = energyMax;
         }
     }
     // movement
-    accelerate(world, entity) {
+    accelerate(uwpe) {
+        var entity = uwpe.entity;
         var entityShipGroup = ShipGroupFinite.fromEntity(entity);
         var ship = (entityShipGroup != null
             ? entityShipGroup.shipFirst()
             : Ship.fromEntity(entity));
+        var world = uwpe.world;
         var shipDefn = ship.defn(world);
         var shipLoc = entity.locatable().loc;
         var shipForward = shipLoc.orientation.forward;
-        shipLoc.accel.overwriteWith(shipForward).multiplyScalar(shipDefn.acceleration);
+        shipLoc.accel.overwriteWith(shipForward).multiplyScalar(shipDefn.acceleration(uwpe));
         var shipVel = shipLoc.vel;
         var shipSpeed = shipVel.magnitude();
         if (shipSpeed > shipDefn.speedMax) {
             shipVel.normalize().multiplyScalar(shipDefn.speedMax);
         }
     }
-    turnInDirection(world, entity, direction) {
+    turnInDirection(uwpe, direction) {
+        var entity = uwpe.entity;
         var entityLoc = entity.locatable().loc;
         var entityOrientation = entityLoc.orientation;
         var entityForward = entityOrientation.forward;
@@ -240,16 +260,17 @@ class Ship {
         var ship = (entityShip == null
             ? ShipGroupFinite.fromEntity(entity).shipFirst()
             : entityShip);
+        var world = uwpe.world;
         var shipDefn = ship.defn(world);
-        var turnsPerTick = shipDefn.turnsPerTick;
+        var turnsPerTick = shipDefn.turnsPerTick(uwpe);
         var entityForwardNew = Ship._polar.fromCoords(entityForward).addToAzimuthInTurns(turnsPerTick * direction).wrap().toCoords(entityForward);
         entityOrientation.forwardSet(entityForwardNew);
     }
-    turnLeft(world, entity) {
-        this.turnInDirection(world, entity, -1);
+    turnLeft(uwpe) {
+        this.turnInDirection(uwpe, -1);
     }
-    turnRight(world, entity) {
-        this.turnInDirection(world, entity, 1);
+    turnRight(uwpe) {
+        this.turnInDirection(uwpe, 1);
     }
     // Clonable.
     clone() {
@@ -259,7 +280,7 @@ class Ship {
         throw new Error("todo");
     }
     // controls
-    toControlSidebar(containerSidebarSize, indexTopOrBottom, world) {
+    toControlSidebar(containerSidebarSize, indexTopOrBottom, uwpe) {
         var ship = this;
         var marginWidth = containerSidebarSize.x / 10;
         var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
@@ -270,29 +291,21 @@ class Ship {
         var fontShort = FontNameAndHeight.fromHeightInPixels(fontHeightShort);
         var labelSizeWide = Coords.fromXY(containerShipSize.x - marginSize.x * 2, fontHeightShort);
         var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
+        var world = uwpe.world;
         var defn = this.defn(world);
-        var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, [
-            new ControlLabel("labelName", Coords.fromXY(marginSize.x, marginSize.y), // pos
-            labelSizeWide, false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext(defn.factionName), fontShort),
-            new ControlLabel("labelCrew", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos
-            labelSizeShort, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Crew:"), fontShort),
-            new ControlLabel("infoCrew", Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 2 + labelSizeShort.y), // pos
-            labelSizeShort, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(ship, (c) => c.crewCurrentOverMax(world)), fontShort),
-            new ControlLabel("labelEnergy", Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
-            labelSizeShort, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Energy:"), fontShort),
-            new ControlLabel("infoEnergy", Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
-            labelSizeShort, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(ship, (c) => c.energyCurrentOverMax(world)), fontShort),
-        ]);
+        var childControls = [
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), // pos
+            labelSizeWide, DataBinding.fromContext(defn.factionName), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos
+            labelSizeShort, DataBinding.fromContext("Crew:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 2 + labelSizeShort.y), // pos
+            labelSizeShort, DataBinding.fromContextAndGet(ship, (c) => c.crewCurrentOverMax(uwpe)), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
+            labelSizeShort, DataBinding.fromContext("Energy:"), fontShort),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
+            labelSizeShort, DataBinding.fromContextAndGet(ship, (c) => c.energyCurrentOverMax(uwpe)), fontShort),
+        ];
+        var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, childControls);
         return returnValue;
     }
     // Equatable.

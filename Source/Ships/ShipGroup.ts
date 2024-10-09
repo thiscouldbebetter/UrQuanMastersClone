@@ -5,8 +5,10 @@ interface ShipGroup extends EntityPropertyBase
 	name: string;
 	pos: Coords;
 	posSet(value: Coords): ShipGroup;
+	shipAdd(ship: Ship): ShipGroup;
 	shipFirst(): Ship;
 	shipLostAdd(ship: Ship): ShipGroup;
+	shipRemove(ship: Ship): ShipGroup;
 	shipSelectOptimum(): Ship;
 	shipSelected: Ship;
 	shipsCount(): number;
@@ -39,7 +41,7 @@ class ShipGroupBase implements ShipGroup
 		var shipGroup =
 			shipCount == 0
 			? new ShipGroupInfinite(shipGroupName, factionName, shipDefnName)
-			: new ShipGroupFinite(shipGroupName, factionName, Coords.create(), Ship.manyFromDefnNameAndCount(shipDefnName, shipCount) );
+			: new ShipGroupFinite(shipGroupName, factionName, Coords.create(), null, Ship.manyFromDefnNameAndCount(shipDefnName, shipCount) );
 		return shipGroup;
 	}
 
@@ -234,8 +236,10 @@ class ShipGroupBase implements ShipGroup
 	name: string;
 	pos: Coords;
 	posSet(value: Coords): ShipGroup { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipAdd(ship: Ship): ShipGroup { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 	shipFirst(): Ship { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 	shipLostAdd(ship: Ship): ShipGroup { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+	shipRemove(ship: Ship): ShipGroup { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 	shipSelectOptimum(): Ship { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
 	shipSelected: Ship;
 	shipsCount(): number { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
@@ -279,6 +283,7 @@ class ShipGroupFinite extends ShipGroupBase
 	name: string;
 	factionName: string;
 	pos: Coords;
+	shipsMax: number;
 	ships: Ship[];
 
 	shipSelected: Ship;
@@ -286,13 +291,21 @@ class ShipGroupFinite extends ShipGroupBase
 
 	_posInverted: Coords;
 
-	constructor(name: string, factionName: string, pos: Coords, ships: Ship[])
+	constructor
+	(
+		name: string,
+		factionName: string,
+		pos: Coords,
+		shipsMax: number,
+		ships: Ship[]
+	)
 	{
 		super();
 
 		this.name = name || factionName + " Ship Group"
 		this.factionName = factionName;
 		this.pos = pos;
+		this.shipsMax = shipsMax || Number.POSITIVE_INFINITY;
 		this.ships = ships;
 
 		this.shipSelected = this.shipFirst();
@@ -308,11 +321,15 @@ class ShipGroupFinite extends ShipGroupBase
 			null, // name
 			factionName,
 			Coords.zeroes(), // pos
+			null, // shipsMax
 			ships
 		);
 	}
 
-	static fromFactionNameAndShipsAsString(factionName: string, shipsAsString: string): ShipGroup
+	static fromFactionNameAndShipsAsString
+	(
+		factionName: string, shipsAsString: string
+	): ShipGroup
 	{
 		var shipCountAndDefnNamePairs =
 			shipsAsString
@@ -343,7 +360,8 @@ class ShipGroupFinite extends ShipGroupBase
 			}
 		}
 
-		var shipGroup = ShipGroupFinite.fromFactionNameAndShips(factionName, ships);
+		var shipGroup =
+			ShipGroupFinite.fromFactionNameAndShips(factionName, ships);
 
 		return shipGroup;
 	}
@@ -368,14 +386,16 @@ class ShipGroupFinite extends ShipGroupBase
 		var placeTypeName = place.constructor.name;
 		if (placeTypeName == PlaceHyperspace.name)
 		{
-			var shipGroupEntity = place.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
+			var shipGroupEntity =
+				place.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
 			pos = shipGroupEntity.locatable().loc.pos;
 		}
 		else if (placeTypeName == PlaceHyperspaceMap.name)
 		{
 			var placeHyperspaceMap = place as PlaceHyperspaceMap;
 			var placeHyperspace = placeHyperspaceMap.placeHyperspaceToReturnTo;
-			var shipGroupEntity = placeHyperspace.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
+			var shipGroupEntity =
+				placeHyperspace.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
 			pos = shipGroupEntity.locatable().loc.pos;
 		}
 		else if (placeTypeName == PlaceStarsystem.name)
@@ -422,6 +442,17 @@ class ShipGroupFinite extends ShipGroupBase
 		return this;
 	}
 
+	shipAdd(ship: Ship): ShipGroup
+	{
+		var shipCountBefore = this.ships.length;
+		var shipCountAfter = shipCountBefore + 1;
+		if (shipCountAfter <= this.shipsMax)
+		{
+			this.ships.push(ship);
+		}
+		return this;
+	}
+
 	shipFirst(): Ship
 	{
 		return this.ships[0];
@@ -430,6 +461,16 @@ class ShipGroupFinite extends ShipGroupBase
 	shipLostAdd(ship: Ship): ShipGroupFinite
 	{
 		this._shipsLost.push(ship);
+		return this;
+	}
+
+	shipRemove(ship: Ship): ShipGroup
+	{
+		var index = this.ships.indexOf(ship);
+		if (index >= 0)
+		{
+			this.ships.splice(index, 1);
+		}
 		return this;
 	}
 

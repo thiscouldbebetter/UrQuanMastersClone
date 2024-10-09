@@ -343,7 +343,8 @@ class Hyperspace
 			"Tempestrial Ship Group X",
 			"Tempestrial",
 			starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)),
-			[ new Ship("Tumbler") ]
+			null, // shipsMax
+			[ Ship.fromDefnName("Tumbler") ]
 		);
 
 		var shipGroups = [ shipGroup ];

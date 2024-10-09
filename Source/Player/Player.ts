@@ -258,6 +258,23 @@ class Player
 		return this._shipDefnsAvailable;
 	}
 
+	shipAdd(shipToAdd: Ship): Player
+	{
+		this.shipGroup.shipAdd(shipToAdd);
+		return this;
+	}
+
+	shipRemove(ship: Ship): Player
+	{
+		this.shipGroup.shipRemove(ship);
+		return this;
+	}
+
+	ships(): Ship[]
+	{
+		return this.shipGroup.ships;
+	}
+
 	varGet(variableName: string): unknown
 	{
 		return this.vars.get(variableName);

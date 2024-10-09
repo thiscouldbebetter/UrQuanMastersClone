@@ -12,9 +12,9 @@ class PlaceStationDock extends PlaceBase {
         this.entityToSpawnAdd(new GameClock(60).toEntity());
     }
     // method
-    componentBuild(universe, componentToBuild) {
+    componentBuild(uwpe, componentToBuild) {
         if (componentToBuild != null) {
-            var flagship = universe.world.player.flagship;
+            var flagship = uwpe.world.player.flagship;
             if (flagship.resourceCredits < componentToBuild.costInResourceCredits) {
                 throw new Error("Insufficent credit!");
             }
@@ -25,36 +25,36 @@ class PlaceStationDock extends PlaceBase {
             }
         }
     }
-    componentBuildBackbone(universe) {
-        var player = universe.world.player;
+    componentBuildBackbone(uwpe) {
+        var player = uwpe.world.player;
         var flagship = player.flagship;
         var componentsBackboneInstalled = flagship.componentsBackbone();
         if (componentsBackboneInstalled.length < flagship.componentsBackboneMax) {
-            this.componentBuild(universe, this.componentToBuild);
+            this.componentBuild(uwpe, this.componentToBuild);
         }
     }
-    componentBuildThruster(universe) {
-        var player = universe.world.player;
+    componentBuildThruster(uwpe) {
+        var player = uwpe.world.player;
         var flagship = player.flagship;
         var thrustersInstalled = flagship.componentsThruster();
         if (thrustersInstalled.length < flagship.thrustersMax) {
             var componentName = thrustersInstalled[0].name;
             var componentToBuild = ShipComponentDefn.byName(componentName);
-            this.componentBuild(universe, componentToBuild);
+            this.componentBuild(uwpe, componentToBuild);
         }
     }
-    componentBuildTurningJets(universe) {
-        var player = universe.world.player;
+    componentBuildTurningJets(uwpe) {
+        var player = uwpe.world.player;
         var flagship = player.flagship;
         var turningJetsInstalled = flagship.componentsTurningJets();
         if (turningJetsInstalled.length < flagship.turningJetsMax) {
             var componentName = turningJetsInstalled[0].name;
             var componentToBuild = ShipComponentDefn.byName(componentName);
-            this.componentBuild(universe, componentToBuild);
+            this.componentBuild(uwpe, componentToBuild);
         }
     }
-    componentBuildWithName(universe, componentName) {
-        var world = universe.world;
+    componentBuildWithName(uwpe, componentName) {
+        var world = uwpe.world;
         var player = world.player;
         var componentsKnown = player.shipComponentDefnsKnown();
         var componentToBuild = componentsKnown.find(x => x.name == componentName);
@@ -62,53 +62,77 @@ class PlaceStationDock extends PlaceBase {
             throw new Error("No component with name '" + componentName + "' is known.");
         }
         else {
-            this.componentBuild(universe, componentToBuild);
+            this.componentBuild(uwpe, componentToBuild);
         }
     }
-    componentScrap(universe, componentToScrap) {
+    componentScrap(uwpe, componentToScrap) {
         if (componentToScrap != null) {
-            var flagship = universe.world.player.flagship;
+            var flagship = uwpe.world.player.flagship;
             ArrayHelper.remove(flagship.componentNames, componentToScrap.name);
             flagship.resourceCredits += componentToScrap.costInResourceCredits;
             flagship.cachesReset();
         }
     }
-    componentScrapBackbone(universe) {
-        this.componentScrap(universe, this.componentToScrap);
+    componentScrapBackbone(uwpe) {
+        this.componentScrap(uwpe, this.componentToScrap);
     }
-    componentScrapThruster(universe) {
-        var player = universe.world.player;
+    componentScrapThruster(uwpe) {
+        var player = uwpe.world.player;
         var thrustersInstalled = player.flagship.componentsThruster();
         var componentToScrap = thrustersInstalled[1]; // Cannot remove last.
-        this.componentScrap(universe, componentToScrap);
+        this.componentScrap(uwpe, componentToScrap);
     }
-    componentScrapTurningJets(universe) {
-        var player = universe.world.player;
+    componentScrapTurningJets(uwpe) {
+        var player = uwpe.world.player;
         var turningJetsInstalled = player.flagship.componentsTurningJets();
         var componentToScrap = turningJetsInstalled[1]; // Cannot remove last.
-        this.componentScrap(universe, componentToScrap);
+        this.componentScrap(uwpe, componentToScrap);
     }
-    crewAdd(universe) {
-        var world = universe.world;
+    crewAdd(uwpe, crewToAdd) {
+        // todo
+        // Keep track of how many crew have been lost,
+        // and raise the price if it's too many.
+        var world = uwpe.world;
         var ship = this.shipInFleetSelected;
-        if (ship.crew < ship.defn(world).crewMax) {
+        var crewMax = ship.crewMax(uwpe);
+        var crewBefore = ship.crew;
+        var crewAfter = crewBefore + crewToAdd;
+        if (crewAfter <= crewMax) {
             var flagship = world.player.flagship;
-            if (flagship.resourceCredits >= this.crewValuePerUnit) {
-                flagship.resourceCredits -= this.crewValuePerUnit;
-                ship.crew++;
+            var crewCost = crewToAdd * this.crewValuePerUnit;
+            if (flagship.resourceCredits >= crewCost) {
+                flagship.resourceCredits -= crewCost;
+                ship.crew += crewToAdd;
             }
         }
     }
-    crewRemove(universe) {
+    crewAddOne(uwpe) {
+        this.crewAdd(uwpe, 1);
+    }
+    crewAddToCapacity(uwpe) {
         var ship = this.shipInFleetSelected;
-        if (ship.crew > 1) {
-            var flagship = universe.world.player.flagship;
-            flagship.resourceCredits += this.crewValuePerUnit;
-            ship.crew--;
+        var crewMax = ship.crewMax(uwpe);
+        var crewToAdd = crewMax - ship.crew;
+        this.crewAdd(uwpe, crewToAdd);
+    }
+    crewRemove(uwpe, crewToRemove) {
+        var ship = this.shipInFleetSelected;
+        if (ship.crew >= crewToRemove) {
+            var flagship = uwpe.world.player.flagship;
+            var crewValue = crewToRemove * this.crewValuePerUnit;
+            flagship.resourceCredits += crewValue;
+            ship.crew -= crewToRemove;
         }
     }
-    fuelBuy(universe, fuelUnitsToBuy) {
-        var flagship = universe.world.player.flagship;
+    crewRemoveAll(uwpe) {
+        var ship = this.shipInFleetSelected;
+        this.crewRemove(uwpe, ship.crew);
+    }
+    crewRemoveOne(uwpe) {
+        this.crewRemove(uwpe, 1);
+    }
+    fuelBuy(uwpe, fuelUnitsToBuy) {
+        var flagship = uwpe.world.player.flagship;
         var fuelMax = flagship.fuelMax();
         if (flagship.fuel + fuelUnitsToBuy > fuelMax) {
             fuelUnitsToBuy = fuelMax - flagship.fuel;
@@ -120,15 +144,16 @@ class PlaceStationDock extends PlaceBase {
             flagship.fuelAdd(fuelUnitsToBuy);
         }
     }
-    fuelBuyOneUnit(universe) {
-        this.fuelBuy(universe, 1);
+    fuelBuyOneUnit(uwpe) {
+        this.fuelBuy(uwpe, 1);
     }
-    fuelBuyToMax(universe) {
-        var flagship = universe.world.player.flagship;
-        this.fuelBuy(universe, flagship.fuelMax() - flagship.fuel);
+    fuelBuyToMax(uwpe) {
+        var flagship = uwpe.world.player.flagship;
+        var fuelMax = flagship.fuelMax();
+        this.fuelBuy(uwpe, fuelMax - flagship.fuel);
     }
-    fuelSell(universe, fuelUnitsToSell) {
-        var flagship = universe.world.player.flagship;
+    fuelSell(uwpe, fuelUnitsToSell) {
+        var flagship = uwpe.world.player.flagship;
         if (flagship.fuel < fuelUnitsToSell) {
             fuelUnitsToSell = flagship.fuel;
         }
@@ -136,22 +161,22 @@ class PlaceStationDock extends PlaceBase {
         flagship.resourceCredits += fuelValue;
         flagship.fuelSubtract(fuelUnitsToSell);
     }
-    fuelSellOneUnit(universe) {
-        return this.fuelSell(universe, 1);
+    fuelSellOneUnit(uwpe) {
+        return this.fuelSell(uwpe, 1);
     }
-    fuelSellAll(universe) {
-        var flagship = universe.world.player.flagship;
-        return this.fuelSell(universe, flagship.fuel);
+    fuelSellAll(uwpe) {
+        var flagship = uwpe.world.player.flagship;
+        return this.fuelSell(uwpe, flagship.fuel);
     }
-    landerAdd(universe) {
-        var flagship = universe.world.player.flagship;
+    landerAdd(uwpe) {
+        var flagship = uwpe.world.player.flagship;
         if (flagship.resourceCredits >= this.landerValue) {
             flagship.resourceCredits -= this.landerValue;
             flagship.numberOfLanders++;
         }
     }
-    landerRemove(universe) {
-        var player = universe.world.player;
+    landerRemove(uwpe) {
+        var player = uwpe.world.player;
         var flagship = player.flagship;
         if (flagship.numberOfLanders > 0) {
             flagship.numberOfLanders--;
@@ -185,17 +210,58 @@ class PlaceStationDock extends PlaceBase {
             }
         }
     }
+    shipSelectByDefnName(universe, shipDefnName) {
+        var player = universe.world.player;
+        var ships = player.ships();
+        if (this.shipInFleetSelected == null) {
+            this.shipInFleetSelected = ships[0];
+        }
+        else {
+            var shipToSelectIndex = ships.indexOf(this.shipInFleetSelected);
+            shipToSelectIndex++;
+            if (shipToSelectIndex >= ships.length) {
+                shipToSelectIndex = 0;
+            }
+            var shipToSelect = ships[shipToSelectIndex];
+            this.shipInFleetSelected = shipToSelect;
+        }
+        return this;
+    }
+    shipSelectNext(universe) {
+        var world = universe.world;
+        var player = world.player;
+        var ships = player.ships();
+        if (this.shipInFleetSelected == null) {
+            this.shipInFleetSelected = ships[0];
+        }
+        else {
+            var shipToSelectIndex = ships.indexOf(this.shipInFleetSelected);
+            shipToSelectIndex++;
+            if (shipToSelectIndex >= ships.length) {
+                shipToSelectIndex = 0;
+            }
+            var shipToSelect = ships[shipToSelectIndex];
+            this.shipInFleetSelected = shipToSelect;
+        }
+        return this;
+    }
     shipScrap(universe) {
         var world = universe.world;
         var shipToScrap = this.shipInFleetSelected;
         if (shipToScrap != null) {
-            var shipToScrapDefn = shipToScrap.defn(world);
-            var shipValue = shipToScrapDefn.costToBuild
-                + shipToScrap.crew * this.crewValuePerUnit;
-            var flagship = world.player.flagship;
-            flagship.resourceCredits += shipValue;
-            ArrayHelper.remove(world.player.shipGroup.ships, shipToScrap);
+            var player = world.player;
+            if (true) // shipToScrap != player.flagship)
+             {
+                var shipToScrapDefn = shipToScrap.defn(world);
+                var crewTransferredBackToStation = shipToScrap.crew; // todo
+                var shipValue = shipToScrapDefn.costToBuild
+                    + crewTransferredBackToStation * this.crewValuePerUnit;
+                var flagship = world.player.flagship;
+                flagship.resourceCredits += shipValue;
+                player.shipRemove(shipToScrap);
+            }
         }
+        return this;
     }
     // Place
     draw(universe, world) {
@@ -223,9 +289,12 @@ class PlaceStationDock extends PlaceBase {
     toControl(universe, worldAsWorld) {
         var placeStationDock = this;
         var world = worldAsWorld;
+        var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
         var player = world.player;
         var playerItemHolder = player.flagship.itemHolderCargo;
         var playerShipGroup = player.shipGroup;
+        var shipsInFleet = playerShipGroup.ships;
+        this.shipInFleetSelected = shipsInFleet[0];
         var shipWeaponSlots = ShipWeaponSlot.Instances()._All;
         var containerDockSize = universe.display.sizeInPixels.clone();
         var fontHeight = 20;
@@ -256,13 +325,13 @@ class PlaceStationDock extends PlaceBase {
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToBuild, (c, v) => c.componentToBuild = v), // bindingForItemSelected
             DataBinding.fromContext(null) // ?
             ),
-            ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Build", fontShort, () => this.componentBuildBackbone(universe)),
+            ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Build", fontShort, () => this.componentBuildBackbone(uwpe)),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Installed:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 8 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.componentsBackboneCurrentOverMax()), fontShort),
             ControlList.from8("listComponentsInstalled", Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentsInstalled), DataBinding.fromGet((c) => c.name), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToScrap, (c, v) => c.componentToScrap = v), // bindingForItemSelected
             DataBinding.fromContext(null)),
-            ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Scrap", fontShort, () => this.componentScrapBackbone(universe)),
+            ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Scrap", fontShort, () => this.componentScrapBackbone(uwpe)),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y), labelSize, DataBinding.fromContext("Weapons:"), fontShort),
             ControlList.from8("listWeapons", Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipWeaponSlots), DataBinding.fromGet((c) => c.nameAndComponentInstalled() // bindingForItemText
             ), fontShort, new DataBinding(placeStationDock, (c) => c.weaponSlotToMove, (c, v) => c.weaponSlotToMove = v), // bindingForItemSelected
@@ -280,7 +349,6 @@ class PlaceStationDock extends PlaceBase {
             ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentBuildTurningJets.bind(this)),
             ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentScrapTurningJets.bind(this)),
         ]);
-        var shipsInFleet = playerShipGroup.ships;
         var shipPlansAvailable = player.shipDefnsAvailable(universe);
         var containerShips = ControlContainer.from4("containerShips", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y + containerLeftSize.y), containerLeftSize, 
         // children
@@ -291,7 +359,7 @@ class PlaceStationDock extends PlaceBase {
             ControlButton.from5(Coords.fromXY(marginSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShips, "Build", fontShort, this.shipBuild.bind(this)),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Fleet:"), fontShort),
             ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 6 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.shipsCurrentOverMax()), fontShort),
-            ControlList.from8("listShipsInFleet", Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipsInFleet), DataBinding.fromGet((c) => c.fullNameAndCrew(world)), // bindingForItemText
+            ControlList.from8("listShipsInFleet", Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipsInFleet), DataBinding.fromGet((c) => c.fullNameAndCrew(uwpe)), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.shipInFleetSelected, (c, v) => c.shipInFleetSelected = v), DataBinding.fromContext(null) // ?
             ),
             ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listShipsSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Scrap", fontShort, this.shipScrap.bind(this)),

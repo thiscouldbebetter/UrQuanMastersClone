@@ -151,7 +151,7 @@ class PlaceCombat extends PlaceBase
 		else if (shipGroups[1].shipsCount() > 0)
 		{
 			var controlShipSelect =
-				combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+				combat.toControlShipSelect(uwpe, universe.display.sizeInPixels);
 			var venueNext = VenueControls.fromControl(controlShipSelect);
 			universe.venueNextSet(venueNext);
 		}
@@ -302,7 +302,7 @@ class PlaceCombat extends PlaceBase
 
 		this.combat.initialize(universe, world, place);
 
-		var controlShipSelect = this.combat.toControlShipSelect(universe, universe.display.sizeInPixels);
+		var controlShipSelect = this.combat.toControlShipSelect(uwpe, universe.display.sizeInPixels);
 
 		if (this.venueControls == null)
 		{

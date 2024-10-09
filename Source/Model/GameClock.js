@@ -3,6 +3,9 @@ class GameClock {
     constructor(gameSecondsPerRealSecond) {
         this.gameSecondsPerRealSecond = gameSecondsPerRealSecond;
     }
+    static fromGameSecondsPerRealSecond(gameSecondsPerRealSecond) {
+        return new GameClock(gameSecondsPerRealSecond);
+    }
     toEntity() {
         return new Entity(GameClock.name, [this]);
     }

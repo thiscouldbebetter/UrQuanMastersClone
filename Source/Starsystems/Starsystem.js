@@ -54,7 +54,8 @@ class Starsystem {
                 var shipDefnName = faction.shipDefnName;
                 var ship = new Ship(shipDefnName);
                 var shipGroup = new ShipGroupFinite(faction.name + " " + ShipGroupBase.name, faction.name, // factionName
-                Coords.create(), [ship]);
+                Coords.create(), null, // shipsMax
+                [ship]);
                 this._shipGroups.push(shipGroup);
             }
         }
@@ -81,6 +82,7 @@ class Starsystem {
         var enemyShip = new Ship(enemyShipDefnName);
         var enemyShipGroup = new ShipGroupFinite("LahkemupGuardDrone", "LahkemupGuardDrone", // factionName
         Coords.create(), // todo
+        null, // shipsMax
         [enemyShip]);
         planetEarth.shipGroupInVicinityAdd(enemyShipGroup);
     }

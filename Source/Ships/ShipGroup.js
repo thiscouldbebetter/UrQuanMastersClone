@@ -13,7 +13,7 @@ class ShipGroupBase {
         var shipGroupName = shipDefnName + " " + ShipGroupBase.name;
         var shipGroup = shipCount == 0
             ? new ShipGroupInfinite(shipGroupName, factionName, shipDefnName)
-            : new ShipGroupFinite(shipGroupName, factionName, Coords.create(), Ship.manyFromDefnNameAndCount(shipDefnName, shipCount));
+            : new ShipGroupFinite(shipGroupName, factionName, Coords.create(), null, Ship.manyFromDefnNameAndCount(shipDefnName, shipCount));
         return shipGroup;
     }
     static activityDefnApproachPlayer() {
@@ -122,8 +122,10 @@ class ShipGroupBase {
     propertyName() { return ShipGroupBase.name; }
     updateForTimerTick(uwpe) { }
     posSet(value) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+    shipAdd(ship) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     shipFirst() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     shipLostAdd(ship) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
+    shipRemove(ship) { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     shipSelectOptimum() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     shipsCount() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
     shipsGetAll() { throw ShipGroupBase.mustBeImplementedInSubclassError(); }
@@ -149,11 +151,12 @@ class ShipGroupInfinite extends ShipGroupBase {
     }
 }
 class ShipGroupFinite extends ShipGroupBase {
-    constructor(name, factionName, pos, ships) {
+    constructor(name, factionName, pos, shipsMax, ships) {
         super();
         this.name = name || factionName + " Ship Group";
         this.factionName = factionName;
         this.pos = pos;
+        this.shipsMax = shipsMax || Number.POSITIVE_INFINITY;
         this.ships = ships;
         this.shipSelected = this.shipFirst();
         this._shipsLost = [];
@@ -162,6 +165,7 @@ class ShipGroupFinite extends ShipGroupBase {
     static fromFactionNameAndShips(factionName, ships) {
         return new ShipGroupFinite(null, // name
         factionName, Coords.zeroes(), // pos
+        null, // shipsMax
         ships);
     }
     static fromFactionNameAndShipsAsString(factionName, shipsAsString) {
@@ -238,11 +242,26 @@ class ShipGroupFinite extends ShipGroupBase {
         this.pos = value;
         return this;
     }
+    shipAdd(ship) {
+        var shipCountBefore = this.ships.length;
+        var shipCountAfter = shipCountBefore + 1;
+        if (shipCountAfter <= this.shipsMax) {
+            this.ships.push(ship);
+        }
+        return this;
+    }
     shipFirst() {
         return this.ships[0];
     }
     shipLostAdd(ship) {
         this._shipsLost.push(ship);
+        return this;
+    }
+    shipRemove(ship) {
+        var index = this.ships.indexOf(ship);
+        if (index >= 0) {
+            this.ships.splice(index, 1);
+        }
         return this;
     }
     shipSelectOptimum() {

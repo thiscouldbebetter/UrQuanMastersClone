@@ -117,6 +117,7 @@ class Starsystem implements EntityProperty<Starsystem>
 					faction.name + " " + ShipGroupBase.name,
 					faction.name, // factionName
 					Coords.create(),
+					null, // shipsMax
 					[ ship ]
 				);
 
@@ -168,6 +169,7 @@ class Starsystem implements EntityProperty<Starsystem>
 			"LahkemupGuardDrone",
 			"LahkemupGuardDrone", // factionName
 			Coords.create(), // todo
+			null, // shipsMax
 			[ enemyShip ]
 		);
 

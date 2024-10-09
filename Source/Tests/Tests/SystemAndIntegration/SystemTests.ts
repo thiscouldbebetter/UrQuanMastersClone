@@ -907,12 +907,53 @@ class SystemTests extends TestFixture
 
 		this.goToEarthStationDocks(universe);
 		var placeStationDock = world.place() as PlaceStationDock;
-		placeStationDock.componentBuildThruster(universe);
-		placeStationDock.componentBuildTurningJets(universe);
-		placeStationDock.componentBuildWithName(universe, "Crew Habitat");
-		placeStationDock.componentBuildWithName(universe, "Cargo Bay");
-		placeStationDock.componentBuildWithName(universe, "Fuel Tank");
+		placeStationDock.componentBuildThruster(uwpe);
+		placeStationDock.componentBuildTurningJets(uwpe);
+		placeStationDock.componentBuildWithName(uwpe, "Crew Habitat");
+		placeStationDock.componentBuildWithName(uwpe, "Cargo Bay");
+		placeStationDock.componentBuildWithName(uwpe, "Fuel Tank");
+		placeStationDock.crewAddToCapacity(uwpe);
+
 		// todo - Verify speed, turn rate, crew, cargo, and fuel capacity has increased.
+
+		this.leaveStation(universe);
+
+		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
+
+		this.goToOrbitOfPlanetWithName(universe, "Gamma Krueger I");
+		Assert.isFalse(place().constructor.name == PlacePlanetOrbit.name);
+
+		this.talkToTalker2
+		(
+			universe,
+			[
+				// "Hello.  We're giving you this oblong."
+				"#(we_are_vindicator)",
+				// "What do you want?"
+				"#(we_need_help)",
+				// "Well, no alliance, but here's four ships.  Bye."
+			]
+		);
+
+		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+
+		var playerHasTranslucentOblong =
+			flagship.itemHolderDevices.hasItemWithDefnName("TranslucentOblong");
+		Assert.isTrue(playerHasTranslucentOblong);
+
+		const shipDefnNameFireblossom = "Fireblossom";
+		var muunfazShipCount =
+			world.player.shipGroup.ships.filter(x => x.defnName == shipDefnNameFireblossom).length
+		Assert.areNumbersEqual(4, muunfazShipCount);
+
+		// Go back to Earth Station and sell the ships.
+
+		this.goToEarthStationDocks(universe);
+		placeStationDock = world.place() as PlaceStationDock;
+		for (var i = 0; i < muunfazShipCount; i++)
+		{
+			placeStationDock.shipSelectByDefnName(universe, shipDefnNameFireblossom).shipScrap(universe);
+		}
 
 		callback();
 	}
@@ -978,7 +1019,8 @@ class SystemTests extends TestFixture
 		var fuelBeforeSellingToEarthStation = flagship.fuel;
 		var resourceCreditsBefore = flagship.resourceCredits;
 
-		placeStationDock.fuelSellAll(universe);
+		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+		placeStationDock.fuelSellAll(uwpe);
 
 		var fuelAfterSellingToStation = flagship.fuel;
 		Assert.areNumbersEqual(0, fuelAfterSellingToStation);
@@ -1025,7 +1067,8 @@ class SystemTests extends TestFixture
 		var shipGroupForPlayer = combat.shipGroups[0];
 		var shipForPlayer = shipGroupForPlayer.shipFirst();
 		combat.shipsFighting[0] = shipForPlayer;
-		combat.fight(universe);
+		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+		combat.fight(uwpe);
 		this.waitForTicks(universe, 100);
 
 		var shipEnemy = combat.shipsFighting[1];
@@ -1362,6 +1405,25 @@ class SystemTests extends TestFixture
 		{
 			this.leavePlanetVicinityOrStarsystem(universe);
 			this.waitForTicks(universe, 10); // hack - Exactly how long is necessary?
+		}
+	}
+
+	leaveStation(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+		var place = world.place();
+		if (place.constructor.name == PlaceStationDock.name)
+		{
+			var placeStationDock = place as PlaceStationDock;
+			placeStationDock.leave(world);
+			this.waitForTicks(universe, 1);
+		}
+		place = world.place();
+		if (place.constructor.name == PlaceStation.name)
+		{
+			var placeStation = place as PlaceStation;
+			placeStation.leave(world);
+			this.waitForTicks(universe, 1);
 		}
 	}
 

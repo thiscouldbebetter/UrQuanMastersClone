@@ -8,6 +8,11 @@ class GameClock implements EntityProperty<GameClock>
 		this.gameSecondsPerRealSecond = gameSecondsPerRealSecond;
 	}
 
+	static fromGameSecondsPerRealSecond(gameSecondsPerRealSecond: number)
+	{
+		return new GameClock(gameSecondsPerRealSecond);
+	}
+
 	toEntity(): Entity
 	{
 		return new Entity(GameClock.name, [ this ] );

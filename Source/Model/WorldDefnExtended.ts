@@ -89,7 +89,10 @@ class WorldDefnExtended extends WorldDefn
 
 	// ItemDefns.
 
-	// ItemDefns.
+	static itemDefn_HummingSpiral_Use(uwpe: UniverseWorldPlaceEntities): string
+	{
+		throw new Error("todo");
+	}
 
 	static itemDefn_ParaspacePortalProjector_Use(uwpe: UniverseWorldPlaceEntities): string
 	{
@@ -120,6 +123,16 @@ class WorldDefnExtended extends WorldDefn
 			}
 		}
 		return null;
+	}
+
+	static itemDefn_ShimmeringHemitrope_Use(uwpe: UniverseWorldPlaceEntities): string
+	{
+		throw new Error("todo");
+	}
+
+	static itemDefn_TranslucentOblong_Use(uwpe: UniverseWorldPlaceEntities): string
+	{
+		throw new Error("todo");
 	}
 
 }

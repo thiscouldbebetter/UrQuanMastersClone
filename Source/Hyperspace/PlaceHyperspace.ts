@@ -374,6 +374,7 @@ class PlaceHyperspace extends PlaceBase
 				factionName + " Ship Group",
 				factionName,
 				shipGroupPos,
+				null, // shipsMax
 				[ new Ship(shipDefnName) ]
 			);
 

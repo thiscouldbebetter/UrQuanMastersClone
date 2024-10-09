@@ -179,7 +179,8 @@ class Hyperspace {
         var linkPortals = new Array();
         var starsystemsByName = ArrayHelper.addLookupsByName(starsystems);
         var starsystemSol = starsystemsByName.get("Sol");
-        var shipGroup = new ShipGroupFinite("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), [new Ship("Tumbler")]);
+        var shipGroup = new ShipGroupFinite("Tempestrial Ship Group X", "Tempestrial", starsystemSol.posInHyperspace.clone().add(Coords.fromXY(100, 0)), null, // shipsMax
+        [Ship.fromDefnName("Tumbler")]);
         var shipGroups = [shipGroup];
         var hyperspace = new Hyperspace(null, // name
         size, null, // pixelsTraversablePerFuelUnit,

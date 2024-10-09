@@ -35,11 +35,11 @@ class PlaceStationDock extends PlaceBase
 
 	// method
 
-	componentBuild(universe: Universe, componentToBuild: ShipComponentDefn): void
+	componentBuild(uwpe: UniverseWorldPlaceEntities, componentToBuild: ShipComponentDefn): void
 	{
 		if (componentToBuild != null)
 		{
-			var flagship = (universe.world as WorldExtended).player.flagship;
+			var flagship = (uwpe.world as WorldExtended).player.flagship;
 			if (flagship.resourceCredits < componentToBuild.costInResourceCredits)
 			{
 				throw new Error("Insufficent credit!");
@@ -53,46 +53,46 @@ class PlaceStationDock extends PlaceBase
 		}
 	}
 
-	componentBuildBackbone(universe: Universe): void
+	componentBuildBackbone(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var player = (universe.world as WorldExtended).player;
+		var player = (uwpe.world as WorldExtended).player;
 		var flagship = player.flagship;
 		var componentsBackboneInstalled = flagship.componentsBackbone();
 		if (componentsBackboneInstalled.length < flagship.componentsBackboneMax)
 		{
-			this.componentBuild(universe, this.componentToBuild);
+			this.componentBuild(uwpe, this.componentToBuild);
 		}
 	}
 
-	componentBuildThruster(universe: Universe): void
+	componentBuildThruster(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var player = (universe.world as WorldExtended).player;
+		var player = (uwpe.world as WorldExtended).player;
 		var flagship = player.flagship;
 		var thrustersInstalled = flagship.componentsThruster();
 		if (thrustersInstalled.length < flagship.thrustersMax)
 		{
 			var componentName = thrustersInstalled[0].name;
 			var componentToBuild = ShipComponentDefn.byName(componentName);
-			this.componentBuild(universe, componentToBuild);
+			this.componentBuild(uwpe, componentToBuild);
 		}
 	}
 
-	componentBuildTurningJets(universe: Universe): void
+	componentBuildTurningJets(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var player = (universe.world as WorldExtended).player;
+		var player = (uwpe.world as WorldExtended).player;
 		var flagship = player.flagship;
 		var turningJetsInstalled = flagship.componentsTurningJets();
 		if (turningJetsInstalled.length < flagship.turningJetsMax)
 		{
 			var componentName = turningJetsInstalled[0].name;
 			var componentToBuild = ShipComponentDefn.byName(componentName);
-			this.componentBuild(universe, componentToBuild);
+			this.componentBuild(uwpe, componentToBuild);
 		}
 	}
 
-	componentBuildWithName(universe: Universe, componentName: string): void
+	componentBuildWithName(uwpe: UniverseWorldPlaceEntities, componentName: string): void
 	{
-		var world = universe.world as WorldExtended;
+		var world = uwpe.world as WorldExtended;
 		var player = world.player;
 		var componentsKnown = player.shipComponentDefnsKnown();
 		var componentToBuild = componentsKnown.find(x => x.name == componentName);
@@ -102,71 +102,104 @@ class PlaceStationDock extends PlaceBase
 		}
 		else
 		{
-			this.componentBuild(universe, componentToBuild);
+			this.componentBuild(uwpe, componentToBuild);
 		}
 	}
 
-	componentScrap(universe: Universe, componentToScrap: ShipComponentDefn): void
+	componentScrap(uwpe: UniverseWorldPlaceEntities, componentToScrap: ShipComponentDefn): void
 	{
 		if (componentToScrap != null)
 		{
-			var flagship = (universe.world as WorldExtended).player.flagship;
+			var flagship = (uwpe.world as WorldExtended).player.flagship;
 			ArrayHelper.remove(flagship.componentNames, componentToScrap.name);
 			flagship.resourceCredits += componentToScrap.costInResourceCredits;
 			flagship.cachesReset();
 		}
 	}
 
-	componentScrapBackbone(universe: Universe): void
+	componentScrapBackbone(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.componentScrap(universe, this.componentToScrap);
+		this.componentScrap(uwpe, this.componentToScrap);
 	}
 
-	componentScrapThruster(universe: Universe): void
+	componentScrapThruster(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var player = (universe.world as WorldExtended).player;
+		var player = (uwpe.world as WorldExtended).player;
 		var thrustersInstalled = player.flagship.componentsThruster();
 		var componentToScrap = thrustersInstalled[1]; // Cannot remove last.
-		this.componentScrap(universe, componentToScrap);
+		this.componentScrap(uwpe, componentToScrap);
 	}
 
-	componentScrapTurningJets(universe: Universe): void
+	componentScrapTurningJets(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var player = (universe.world as WorldExtended).player;
+		var player = (uwpe.world as WorldExtended).player;
 		var turningJetsInstalled = player.flagship.componentsTurningJets();
 		var componentToScrap = turningJetsInstalled[1]; // Cannot remove last.
-		this.componentScrap(universe, componentToScrap);
+		this.componentScrap(uwpe, componentToScrap);
 	}
 
-	crewAdd(universe: Universe): void
+	crewAdd(uwpe: UniverseWorldPlaceEntities, crewToAdd: number): void
 	{
-		var world = universe.world as WorldExtended;
+		// todo
+		// Keep track of how many crew have been lost,
+		// and raise the price if it's too many.
+
+		var world = uwpe.world as WorldExtended;
 		var ship = this.shipInFleetSelected;
-		if (ship.crew < ship.defn(world).crewMax)
+		var crewMax = ship.crewMax(uwpe);
+		var crewBefore = ship.crew;
+		var crewAfter = crewBefore + crewToAdd;
+		if (crewAfter <= crewMax)
 		{
 			var flagship = world.player.flagship;
-			if (flagship.resourceCredits >= this.crewValuePerUnit)
+			var crewCost = crewToAdd * this.crewValuePerUnit;
+			if (flagship.resourceCredits >= crewCost)
 			{
-				flagship.resourceCredits -= this.crewValuePerUnit;
-				ship.crew++;
+				flagship.resourceCredits -= crewCost;
+				ship.crew += crewToAdd;
 			}
 		}
 	}
 
-	crewRemove(universe: Universe): void
+	crewAddOne(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this.crewAdd(uwpe, 1);
+	}
+
+	crewAddToCapacity(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var ship = this.shipInFleetSelected;
-		if (ship.crew > 1)
+		var crewMax = ship.crewMax(uwpe);
+		var crewToAdd = crewMax - ship.crew;
+		this.crewAdd(uwpe, crewToAdd);
+	}
+
+	crewRemove(uwpe: UniverseWorldPlaceEntities, crewToRemove: number): void
+	{
+		var ship = this.shipInFleetSelected;
+		if (ship.crew >= crewToRemove)
 		{
-			var flagship = (universe.world as WorldExtended).player.flagship;
-			flagship.resourceCredits += this.crewValuePerUnit;
-			ship.crew--;
+			var flagship = (uwpe.world as WorldExtended).player.flagship;
+			var crewValue = crewToRemove * this.crewValuePerUnit;
+			flagship.resourceCredits += crewValue;
+			ship.crew -= crewToRemove;
 		}
 	}
 
-	fuelBuy(universe: Universe, fuelUnitsToBuy: number): void
+	crewRemoveAll(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var flagship = (universe.world as WorldExtended).player.flagship;
+		var ship = this.shipInFleetSelected;
+		this.crewRemove(uwpe, ship.crew);
+	}
+
+	crewRemoveOne(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this.crewRemove(uwpe, 1);
+	}
+
+	fuelBuy(uwpe: UniverseWorldPlaceEntities, fuelUnitsToBuy: number): void
+	{
+		var flagship = (uwpe.world as WorldExtended).player.flagship;
 
 		var fuelMax = flagship.fuelMax();
 
@@ -186,21 +219,21 @@ class PlaceStationDock extends PlaceBase
 		}
 	}
 
-	fuelBuyOneUnit(universe: Universe): void
+	fuelBuyOneUnit(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.fuelBuy(universe, 1);
+		this.fuelBuy(uwpe, 1);
 	}
 
-	fuelBuyToMax(universe: Universe): void
+	fuelBuyToMax(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var flagship = (universe.world as WorldExtended).player.flagship;
-
-		this.fuelBuy(universe, flagship.fuelMax() - flagship.fuel);
+		var flagship = (uwpe.world as WorldExtended).player.flagship;
+		var fuelMax = flagship.fuelMax();
+		this.fuelBuy(uwpe, fuelMax - flagship.fuel);
 	}
 
-	fuelSell(universe: Universe, fuelUnitsToSell: number): void
+	fuelSell(uwpe: UniverseWorldPlaceEntities, fuelUnitsToSell: number): void
 	{
-		var flagship = (universe.world as WorldExtended).player.flagship;
+		var flagship = (uwpe.world as WorldExtended).player.flagship;
 
 		if (flagship.fuel < fuelUnitsToSell)
 		{
@@ -212,21 +245,21 @@ class PlaceStationDock extends PlaceBase
 		flagship.fuelSubtract(fuelUnitsToSell);
 	}
 
-	fuelSellOneUnit(universe: Universe): void
+	fuelSellOneUnit(uwpe: UniverseWorldPlaceEntities): void
 	{
-		return this.fuelSell(universe, 1);
+		return this.fuelSell(uwpe, 1);
 	}
 
-	fuelSellAll(universe: Universe): void
+	fuelSellAll(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var flagship = (universe.world as WorldExtended).player.flagship;
+		var flagship = (uwpe.world as WorldExtended).player.flagship;
 
-		return this.fuelSell(universe, flagship.fuel);
+		return this.fuelSell(uwpe, flagship.fuel);
 	}
 
-	landerAdd(universe: Universe): void
+	landerAdd(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var flagship = (universe.world as WorldExtended).player.flagship;
+		var flagship = (uwpe.world as WorldExtended).player.flagship;
 		if (flagship.resourceCredits >= this.landerValue)
 		{
 			flagship.resourceCredits -= this.landerValue;
@@ -234,9 +267,9 @@ class PlaceStationDock extends PlaceBase
 		}
 	}
 
-	landerRemove(universe: Universe): void
+	landerRemove(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var player = (universe.world as WorldExtended).player;
+		var player = (uwpe.world as WorldExtended).player;
 		var flagship = player.flagship;
 		if (flagship.numberOfLanders > 0)
 		{
@@ -287,20 +320,76 @@ class PlaceStationDock extends PlaceBase
 		}
 	}
 
-	shipScrap(universe: Universe): void
+	shipSelectByDefnName(universe: Universe,shipDefnName: string): PlaceStationDock
+	{
+		var player = (universe.world as WorldExtended).player;
+		var ships = player.ships();
+
+		if (this.shipInFleetSelected == null)
+		{
+			this.shipInFleetSelected = ships[0];
+		}
+		else
+		{
+			var shipToSelectIndex = ships.indexOf(this.shipInFleetSelected);
+			shipToSelectIndex++;
+			if (shipToSelectIndex >= ships.length)
+			{
+				shipToSelectIndex = 0;
+			}
+			var shipToSelect = ships[shipToSelectIndex];
+			this.shipInFleetSelected = shipToSelect;
+		}
+
+		return this;
+	}
+
+	shipSelectNext(universe: Universe): PlaceStationDock
+	{
+		var world = universe.world as WorldExtended;
+		var player = world.player;
+		var ships = player.ships();
+
+		if (this.shipInFleetSelected == null)
+		{
+			this.shipInFleetSelected = ships[0];
+		}
+		else
+		{
+			var shipToSelectIndex = ships.indexOf(this.shipInFleetSelected);
+			shipToSelectIndex++;
+			if (shipToSelectIndex >= ships.length)
+			{
+				shipToSelectIndex = 0;
+			}
+			var shipToSelect = ships[shipToSelectIndex];
+			this.shipInFleetSelected = shipToSelect;
+		}
+
+		return this;
+	}
+
+	shipScrap(universe: Universe): PlaceStationDock
 	{
 		var world = universe.world as WorldExtended;
 		var shipToScrap = this.shipInFleetSelected;
 		if (shipToScrap != null)
 		{
-			var shipToScrapDefn = shipToScrap.defn(world);
-			var shipValue =
-				shipToScrapDefn.costToBuild
-				+ shipToScrap.crew * this.crewValuePerUnit;
-			var flagship = world.player.flagship;
-			flagship.resourceCredits += shipValue;
-			ArrayHelper.remove(world.player.shipGroup.ships, shipToScrap);
+			var player = world.player;
+			if (true) // shipToScrap != player.flagship)
+			{
+				var shipToScrapDefn = shipToScrap.defn(world);
+				var crewTransferredBackToStation = shipToScrap.crew; // todo
+				var shipValue =
+					shipToScrapDefn.costToBuild
+					+ crewTransferredBackToStation * this.crewValuePerUnit;
+				var flagship = world.player.flagship;
+				flagship.resourceCredits += shipValue;
+				player.shipRemove(shipToScrap);
+			}
 		}
+
+		return this;
 	}
 
 	// Place
@@ -342,10 +431,13 @@ class PlaceStationDock extends PlaceBase
 	{
 		var placeStationDock = this;
 		var world = worldAsWorld as WorldExtended;
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
 
 		var player = world.player;
 		var playerItemHolder = player.flagship.itemHolderCargo;
 		var playerShipGroup = player.shipGroup;
+		var shipsInFleet = playerShipGroup.ships;
+		this.shipInFleetSelected = shipsInFleet[0];
 		var shipWeaponSlots = ShipWeaponSlot.Instances()._All;
 
 		var containerDockSize = universe.display.sizeInPixels.clone();
@@ -477,7 +569,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeComponents,
 					"Build",
 					fontShort,
-					() => this.componentBuildBackbone(universe)
+					() => this.componentBuildBackbone(uwpe)
 				),
 
 				ControlLabel.from4Uncentered
@@ -546,7 +638,7 @@ class PlaceStationDock extends PlaceBase
 					buttonSizeComponents,
 					"Scrap",
 					fontShort,
-					() => this.componentScrapBackbone(universe)
+					() => this.componentScrapBackbone(uwpe)
 				),
 
 				ControlLabel.from4Uncentered
@@ -716,8 +808,6 @@ class PlaceStationDock extends PlaceBase
 			]
 		);
 
-		var shipsInFleet = playerShipGroup.ships;
-
 		var shipPlansAvailable = player.shipDefnsAvailable(universe);
 
 		var containerShips = ControlContainer.from4
@@ -827,7 +917,7 @@ class PlaceStationDock extends PlaceBase
 					),
 					DataBinding.fromGet
 					(
-						(c: Ship) => c.fullNameAndCrew(world)
+						(c: Ship) => c.fullNameAndCrew(uwpe)
 					), // bindingForItemText
 					fontShort,
 					new DataBinding

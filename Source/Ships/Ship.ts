@@ -19,7 +19,7 @@ class Ship implements EntityProperty<Ship>
 			"Captain " + ("" + Math.random()).split(".").join(""); // todo
 	}
 
-	static fromDefnName(defnName: string)
+	static fromDefnName(defnName: string): Ship
 	{
 		return new Ship(defnName);
 	}
@@ -53,11 +53,8 @@ class Ship implements EntityProperty<Ship>
 			"Accelerate",
 			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var world = uwpe.world as WorldExtended;
-				var actor = uwpe.entity;
-
-				var ship = Ship.fromEntity(actor);
-				ship.accelerate(world, actor);
+				var ship = Ship.fromEntity(uwpe.entity);
+				ship.accelerate(uwpe);
 			}
 		);
 	}
@@ -143,10 +140,7 @@ class Ship implements EntityProperty<Ship>
 			"TurnLeft",
 			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var world = uwpe.world as WorldExtended;
-				var actor = uwpe.entity;
-
-				Ship.fromEntity(actor).turnLeft(world, actor);
+				Ship.fromEntity(uwpe.entity).turnLeft(uwpe);
 			}
 		);
 	}
@@ -158,10 +152,7 @@ class Ship implements EntityProperty<Ship>
 			"TurnRight",
 			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var world = uwpe.world as WorldExtended;
-				var actor = uwpe.entity;
-
-				Ship.fromEntity(actor).turnRight(world, actor);
+				Ship.fromEntity(uwpe.entity).turnRight(uwpe);
 			}
 		);
 	}
@@ -224,9 +215,29 @@ class Ship implements EntityProperty<Ship>
 		// todo
 	}
 
-	crewCurrentOverMax(world: WorldExtended): string
+	crewCurrentOverMax(uwpe: UniverseWorldPlaceEntities): string
 	{
-		return this.crew + "/" + this.defn(world).crewMax;
+		return this.crew + "/" + this.crewMax(uwpe);
+	}
+
+	crewMax(uwpe: UniverseWorldPlaceEntities): number
+	{
+		var world = uwpe.world as WorldExtended;
+		var defn = this.defn(world);
+		var crewMax = defn.crewMax(uwpe);
+		return crewMax;
+	}
+
+	crewSet(value: number): Ship
+	{
+		this.crew = value;
+		return this;
+	}
+
+	crewSetToMax(uwpe: UniverseWorldPlaceEntities): Ship
+	{
+		var crewMax = this.crewMax(uwpe);
+		return this.crewSet(crewMax);
 	}
 
 	defn(world: WorldExtended): ShipDefn
@@ -275,19 +286,26 @@ class Ship implements EntityProperty<Ship>
 		place.entityToSpawnAdd(entityExplosion);
 	}
 
-	energyCurrentOverMax(world: WorldExtended): string
+	energyCurrentOverMax(uwpe: UniverseWorldPlaceEntities): string
 	{
-		return Math.floor(this.energy) + "/" + this.defn(world).energyMax;
+		return Math.floor(this.energy) + "/" + this.energyMax(uwpe);
 	}
 
-	fullName(world: WorldExtended): string
+	energyMax(uwpe: UniverseWorldPlaceEntities): number
 	{
+		var world = uwpe.world as WorldExtended;
+		return this.defn(world).energyMax(uwpe);
+	}
+
+	fullName(uwpe: UniverseWorldPlaceEntities): string
+	{
+		var world = uwpe.world as WorldExtended;
 		return this.defn(world).factionName + " " + this.defnName;
 	}
 
-	fullNameAndCrew(world: WorldExtended): string
+	fullNameAndCrew(uwpe: UniverseWorldPlaceEntities): string
 	{
-		return this.fullName(world) + "(" + this.crewCurrentOverMax(world) + ")";
+		return this.fullName(uwpe) + "(" + this.crewCurrentOverMax(uwpe) + ")";
 	}
 
 	toEntity(uwpe: UniverseWorldPlaceEntities): Entity
@@ -372,8 +390,11 @@ class Ship implements EntityProperty<Ship>
 
 		if (this.crew == null)
 		{
-			this.crew = defn.crewMax;
-			this.energy = defn.energyMax;
+			this.crew = defn.crewInitial;
+		}
+		if (this.energy == null)
+		{
+			this.energy = defn.energyMax(uwpe);
 		}
 	}
 
@@ -386,17 +407,20 @@ class Ship implements EntityProperty<Ship>
 
 		var ship = Ship.fromEntity(entityShip);
 		var shipDefn = ship.defn(world as WorldExtended);
-		ship.energy += shipDefn.energyPerTick;
-		if (ship.energy > shipDefn.energyMax)
+		var energyPerTick = shipDefn.energyPerTick(uwpe);
+		ship.energy += energyPerTick;
+		var energyMax = shipDefn.energyMax(uwpe);
+		if (ship.energy > energyMax)
 		{
-			ship.energy = shipDefn.energyMax;
+			ship.energy = energyMax;
 		}
 	}
 
 	// movement
 
-	accelerate(world: WorldExtended, entity: Entity): void
+	accelerate(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var entity = uwpe.entity;
 		var entityShipGroup = ShipGroupFinite.fromEntity(entity);
 		var ship =
 		(
@@ -404,12 +428,13 @@ class Ship implements EntityProperty<Ship>
 			? entityShipGroup.shipFirst()
 			: Ship.fromEntity(entity)
 		);
+		var world = uwpe.world as WorldExtended;
 		var shipDefn = ship.defn(world);
 		var shipLoc = entity.locatable().loc;
 		var shipForward = shipLoc.orientation.forward;
 		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
 		(
-			shipDefn.acceleration
+			shipDefn.acceleration(uwpe)
 		);
 		var shipVel = shipLoc.vel;
 		var shipSpeed = shipVel.magnitude();
@@ -421,9 +446,10 @@ class Ship implements EntityProperty<Ship>
 
 	turnInDirection
 	(
-		world: WorldExtended, entity: Entity, direction: number
+		uwpe: UniverseWorldPlaceEntities, direction: number
 	): void
 	{
+		var entity = uwpe.entity;
 		var entityLoc = entity.locatable().loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
@@ -434,8 +460,9 @@ class Ship implements EntityProperty<Ship>
 			? ShipGroupFinite.fromEntity(entity).shipFirst()
 			: entityShip
 		);
+		var world = uwpe.world as WorldExtended;
 		var shipDefn = ship.defn(world);
-		var turnsPerTick = shipDefn.turnsPerTick;
+		var turnsPerTick = shipDefn.turnsPerTick(uwpe);
 		var entityForwardNew = Ship._polar.fromCoords
 		(
 			entityForward
@@ -449,14 +476,14 @@ class Ship implements EntityProperty<Ship>
 		entityOrientation.forwardSet(entityForwardNew);
 	}
 
-	turnLeft(world: WorldExtended, entity: Entity): void
+	turnLeft(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.turnInDirection(world, entity, -1);
+		this.turnInDirection(uwpe, -1);
 	}
 
-	turnRight(world: WorldExtended, entity: Entity): void
+	turnRight(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.turnInDirection(world, entity, 1);
+		this.turnInDirection(uwpe, 1);
 	}
 
 	// Clonable.
@@ -477,7 +504,7 @@ class Ship implements EntityProperty<Ship>
 	(
 		containerSidebarSize: Coords,
 		indexTopOrBottom: number,
-		world: WorldExtended
+		uwpe: UniverseWorldPlaceEntities
 	): ControlBase
 	{
 		var ship = this;
@@ -499,7 +526,74 @@ class Ship implements EntityProperty<Ship>
 		var labelSizeWide = Coords.fromXY(containerShipSize.x - marginSize.x * 2, fontHeightShort);
 		var labelSizeShort = Coords.fromXY(containerShipSize.x / 2, fontHeightShort);
 
+		var world = uwpe.world as WorldExtended;
 		var defn = this.defn(world);
+
+		var childControls =
+		[
+			ControlLabel.from4Uncentered
+			(
+				Coords.fromXY
+				(
+					marginSize.x,
+					marginSize.y
+				), // pos
+				labelSizeWide,
+				DataBinding.fromContext(defn.factionName),
+				fontShort
+			),
+
+			ControlLabel.from4Uncentered
+			(
+				Coords.fromXY
+				(
+					marginSize.x,
+					marginSize.y * 2 + labelSizeShort.y
+				), // pos
+				labelSizeShort,
+				DataBinding.fromContext("Crew:"),
+				fontShort
+			),
+
+			ControlLabel.from4Uncentered
+			(
+				Coords.fromXY
+				(
+					marginSize.x / 2 + labelSizeShort.x,
+					marginSize.y * 2 + labelSizeShort.y
+				), // pos
+				labelSizeShort,
+				DataBinding.fromContextAndGet
+				(
+					ship, (c: Ship) => c.crewCurrentOverMax(uwpe)
+				),
+				fontShort
+			),
+
+			ControlLabel.from4Uncentered
+			(
+				Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
+				labelSizeShort,
+				DataBinding.fromContext("Energy:"),
+				fontShort
+			),
+
+			ControlLabel.from4Uncentered
+			(
+				Coords.fromXY
+				(
+					marginSize.x / 2 + labelSizeShort.x,
+					marginSize.y * 3 + labelSizeShort.y * 2
+				), // pos
+				labelSizeShort,
+				DataBinding.fromContextAndGet
+				(
+					ship,
+					(c: Ship) => c.energyCurrentOverMax(uwpe)
+				),
+				fontShort
+			),
+		];
 
 		var returnValue = ControlContainer.from4
 		(
@@ -510,84 +604,7 @@ class Ship implements EntityProperty<Ship>
 				marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom
 			),
 			containerShipSize,
-			[
-				new ControlLabel
-				(
-					"labelName",
-					Coords.fromXY
-					(
-						marginSize.x,
-						marginSize.y
-					), // pos
-					labelSizeWide,
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext(defn.factionName),
-					fontShort
-				),
-
-				new ControlLabel
-				(
-					"labelCrew",
-					Coords.fromXY
-					(
-						marginSize.x,
-						marginSize.y * 2 + labelSizeShort.y
-					), // pos
-					labelSizeShort,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Crew:"),
-					fontShort
-				),
-
-				new ControlLabel
-				(
-					"infoCrew",
-					Coords.fromXY
-					(
-						marginSize.x / 2 + labelSizeShort.x,
-						marginSize.y * 2 + labelSizeShort.y
-					), // pos
-					labelSizeShort,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						ship, (c: Ship) => c.crewCurrentOverMax(world)
-					),
-					fontShort
-				),
-
-				new ControlLabel
-				(
-					"labelEnergy",
-					Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
-					labelSizeShort,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Energy:"),
-					fontShort
-				),
-
-				new ControlLabel
-				(
-					"infoEnergy",
-					Coords.fromXY
-					(
-						marginSize.x / 2 + labelSizeShort.x,
-						marginSize.y * 3 + labelSizeShort.y * 2
-					), // pos
-					labelSizeShort,
-					false, // isTextCentered
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						ship, (c: Ship) => c.energyCurrentOverMax(world)
-					),
-					fontShort
-				),
-			]
+			childControls
 		);
 
 		return returnValue;

@@ -27,7 +27,6 @@ class Combat {
         return new ActivityDefn("CombatEnemy", Combat.activityDefnEnemyPerform);
     }
     static activityDefnEnemyPerform(uwpe) {
-        var world = uwpe.world;
         var place = uwpe.place;
         var actor = uwpe.entity;
         var actorShip = Ship.fromEntity(actor);
@@ -47,9 +46,9 @@ class Combat {
         var angleTargetMinusForward = NumberHelper.subtractWrappedToRangeMax(angleToTarget, angleForward, 1);
         if (angleTargetMinusForward != 0) {
             var directionToTurn = angleTargetMinusForward / Math.abs(angleTargetMinusForward);
-            actorShip.turnInDirection(world, actor, directionToTurn);
+            actorShip.turnInDirection(uwpe, directionToTurn);
         }
-        actorShip.accelerate(world, actor);
+        actorShip.accelerate(uwpe);
     }
     exit(universe) {
         var world = universe.world;
@@ -61,7 +60,8 @@ class Combat {
         world.placeNextSet(this.encounter.placeToReturnTo);
         universe.venueNextSet(new VenueWorld(world));
     }
-    fight(universe) {
+    fight(uwpe) {
+        var universe = uwpe.universe;
         var world = universe.world;
         var placeCombat = world.placeCurrent;
         var uwpe = new UniverseWorldPlaceEntities(universe, world, placeCombat, null, null);
@@ -74,7 +74,7 @@ class Combat {
             }
         }
         var venueWorld = world.toVenue();
-        placeCombat.venueControls = new VenueControls(this.toControlSidebar(world), false // ignoreInputs?
+        placeCombat.venueControls = new VenueControls(this.toControlSidebar(uwpe), false // ignoreInputs?
         );
         world.placeNextSet(placeCombat);
         universe.venueNextSet(venueWorld);
@@ -139,13 +139,13 @@ class Combat {
         var returnValue = universe.controlBuilder.message4(universe, size, DataBinding.fromContext(message), () => this.exit(universe));
         return returnValue;
     }
-    toControlShipSelect(universe, size) {
+    toControlShipSelect(uwpe, size) {
+        var universe = uwpe.universe;
         // hack
         if (this.shipsFighting[1] == null) {
             this.shipsFighting[1] = this.shipGroups[1].shipSelectOptimum();
         }
         var combat = this;
-        var world = universe.world;
         // todo - Variable sizes.
         var marginWidth = 10;
         var marginSize = Coords.fromXY(1, 1).multiplyScalar(marginWidth);
@@ -159,7 +159,7 @@ class Combat {
         var buttonSizeSelect = Coords.fromXY((titleSize.x - marginSize.x * 3) / 4, buttonHeight);
         var buttonSizeFight = Coords.fromXY(titleSize.x, buttonHeight);
         var listSize = Coords.fromXY(headingSize.x, size.y - titleSize.y - headingSize.y - buttonHeight * 2 - marginSize.y * 6);
-        var bindingForOptionText = DataBinding.fromGet((c) => c.fullNameAndCrew(world));
+        var bindingForOptionText = DataBinding.fromGet((c) => c.fullNameAndCrew(uwpe));
         var listShipsYours = ControlList.from9("listShipsYours", Coords.fromXY(marginSize.x, titleSize.y + headingSize.y + marginSize.y * 3), listSize, DataBinding.fromContextAndGet(combat, (c) => c.shipGroups[0].shipsGetAll()), bindingForOptionText, font, new DataBinding(combat, (c) => c.shipGroups[0].shipSelected, (c, v) => c.shipGroups[0].shipSelected = v), // bindingForItemSelected
         null, // bindingForItemValue
         DataBinding.fromContextAndGet(combat, (c) => c.shipsFighting[0] == null) // isEnabled
@@ -168,13 +168,11 @@ class Combat {
         null, // bindingForItemValue
         DataBinding.fromFalse() // isEnabled
         );
-        var returnValue = ControlContainer.from4("containerShipSelect", Coords.Instances().Zeroes, size, [
+        var containerChildren = [
             new ControlLabel("labelTitle", Coords.fromXY(marginSize.x, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Ship Select"), fontTitle),
-            new ControlLabel("labelYours", Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2), titleSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext(this.shipGroups[0].name + ":"), FontNameAndHeight.fromHeightInPixels(fontHeight)),
+            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2), titleSize, DataBinding.fromContext(this.shipGroups[0].name + ":"), FontNameAndHeight.fromHeightInPixels(fontHeight)),
             listShipsYours,
             new ControlButton("buttonSelectYours", Coords.fromXY(marginSize.x, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, DataBinding.fromContextAndGet(combat, () => "Select"), font, true, // hasBorder
             DataBinding.fromContextAndGet(combat, (c) => (c.shipsFighting[0] == null)), // isEnabled,
@@ -193,9 +191,7 @@ class Combat {
                 shipGroup.shipSelected = ship;
             }, false // canBeHeldDown
             ),
-            new ControlLabel("labelTheirs", Coords.fromXY(listSize.x + marginSize.x * 2, titleSize.y + marginSize.y * 2), titleSize, false, // isTextCentered
-            false, // isTextCenteredVertically
-            DataBinding.fromContext(this.shipGroups[1].name + ":"), font),
+            ControlLabel.from4Uncentered(Coords.fromXY(listSize.x + marginSize.x * 2, titleSize.y + marginSize.y * 2), titleSize, DataBinding.fromContext(this.shipGroups[1].name + ":"), font),
             listShipsTheirs,
             new ControlButton("buttonSelectTheirs", Coords.fromXY(marginSize.x * 2 + listSize.x, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, DataBinding.fromContext("Select"), font, true, // hasBorder
             DataBinding.fromFalse(), // isEnabled,
@@ -220,19 +216,20 @@ class Combat {
                 var shipYours = combat.shipsFighting[0];
                 var shipTheirs = combat.shipsFighting[1];
                 if (shipYours != null && shipTheirs != null) {
-                    combat.fight(universe);
+                    combat.fight(uwpe);
                 }
             }, false // canBeHeldDown
             ),
-        ]);
+        ];
+        var returnValue = ControlContainer.from4("containerShipSelect", Coords.Instances().Zeroes, size, containerChildren);
         return returnValue;
     }
-    toControlSidebar(world) {
+    toControlSidebar(uwpe) {
         var containerSidebarSize = Coords.fromXY(100, 300); // hack
         var shipsFighting = this.shipsFighting;
         var childControls = [
-            shipsFighting[0].toControlSidebar(containerSidebarSize, 0, world),
-            shipsFighting[1].toControlSidebar(containerSidebarSize, 1, world),
+            shipsFighting[0].toControlSidebar(containerSidebarSize, 0, uwpe),
+            shipsFighting[1].toControlSidebar(containerSidebarSize, 1, uwpe),
         ];
         var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), containerSidebarSize, childControls);
         return containerSidebar;

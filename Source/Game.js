@@ -53,7 +53,8 @@ class Game {
             ts(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
             ts(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
             ts(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-            ts(conversation + "Muunfaz", conversationPlaceholderPath),
+            ts(conversation + "Muunfaz", conversationDirectory + "Muunfaz.txt"),
+            ts(conversation + "Muunfaz" + content, contentPathPrefixComms + "pkunk/pkunk.txt"),
             ts(conversation + "Mazonae", conversationPlaceholderPath),
             ts(conversation + "Murch", conversationDirectory + "Murch.txt"),
             ts(conversation + "Murch" + content, contentPathPrefixComms + "melnorme/melnorme.txt"),
@@ -304,14 +305,17 @@ class Game {
         [
             new ShipGroupFinite("Player", null, // factionName
             null, // pos
+            null, // shipsMax
             playerShips),
             new ShipGroupFinite("Other", null, // factionName
             null, // pos
+            null, // shipsMax
             enemyShips)
         ]).initialize(universe, world, null);
         var placeCombat = combat.toPlace(world);
         world.placeCurrentSet(placeCombat);
-        var controlShipSelect = combat.toControlShipSelect(universe, displaySize);
+        var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+        var controlShipSelect = combat.toControlShipSelect(uwpe, displaySize);
         var venueNext = VenueControls.fromControl(controlShipSelect);
         universe.venueNextSet(venueNext);
     }

@@ -320,9 +320,27 @@ class WorldExtended extends World
 		[
 			ItemDefn.fromNameAndUse
 			(
+				"HummingSpiral",
+				WorldDefnExtended.itemDefn_HummingSpiral_Use
+			),
+
+			ItemDefn.fromNameAndUse
+			(
 				"ParaspacePortalProjector",
 				WorldDefnExtended.itemDefn_ParaspacePortalProjector_Use
-			)
+			),
+
+			ItemDefn.fromNameAndUse
+			(
+				"ShimmeringHemitrope",
+				WorldDefnExtended.itemDefn_ShimmeringHemitrope_Use
+			),
+
+			ItemDefn.fromNameAndUse
+			(
+				"TranslucentOblong",
+				WorldDefnExtended.itemDefn_TranslucentOblong_Use
+			),
 		]
 
 		var lifeformDefns = LifeformDefn.Instances()._All;
@@ -435,6 +453,7 @@ class WorldExtended extends World
 					murch.name + " " + "Ship Group",
 					murch.name,
 					Coords.random(universe.randomizer).multiply(starsystem.sizeInner),
+					null, // shipsMax
 					[
 						new Ship(murch.shipDefnName)
 					]
@@ -452,11 +471,13 @@ class WorldExtended extends World
 			playerShip,
 			new Ship("Broadsider")
 		];
+
 		var playerShipGroup = new ShipGroupFinite
 		(
 			"Player",
 			"Player", // factionName
 			starsystemStart.posInHyperspace.clone(), // pos
+			13, // shipsMax
 			playerShips
 		);
 		var shipComponentDefns = ShipComponentDefn.Instances();

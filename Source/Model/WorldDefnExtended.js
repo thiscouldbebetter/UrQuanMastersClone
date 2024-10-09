@@ -42,7 +42,9 @@ class WorldDefnExtended extends WorldDefn {
         return this.shipDefnsByName.get(defnName);
     }
     // ItemDefns.
-    // ItemDefns.
+    static itemDefn_HummingSpiral_Use(uwpe) {
+        throw new Error("todo");
+    }
     static itemDefn_ParaspacePortalProjector_Use(uwpe) {
         var world = uwpe.world;
         var place = world.place();
@@ -62,5 +64,11 @@ class WorldDefnExtended extends WorldDefn {
             }
         }
         return null;
+    }
+    static itemDefn_ShimmeringHemitrope_Use(uwpe) {
+        throw new Error("todo");
+    }
+    static itemDefn_TranslucentOblong_Use(uwpe) {
+        throw new Error("todo");
     }
 }

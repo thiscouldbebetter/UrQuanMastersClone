@@ -148,6 +148,17 @@ class Player {
         }
         return this._shipDefnsAvailable;
     }
+    shipAdd(shipToAdd) {
+        this.shipGroup.shipAdd(shipToAdd);
+        return this;
+    }
+    shipRemove(ship) {
+        this.shipGroup.shipRemove(ship);
+        return this;
+    }
+    ships() {
+        return this.shipGroup.ships;
+    }
     varGet(variableName) {
         return this.vars.get(variableName);
     }

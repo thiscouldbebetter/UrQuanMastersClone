@@ -142,7 +142,10 @@ class WorldExtended extends World {
         var shipDefns = ShipDefn.Instances(universe)._All;
         var energySources = EnergySource.Instances()._All;
         var itemDefns = [
-            ItemDefn.fromNameAndUse("ParaspacePortalProjector", WorldDefnExtended.itemDefn_ParaspacePortalProjector_Use)
+            ItemDefn.fromNameAndUse("HummingSpiral", WorldDefnExtended.itemDefn_HummingSpiral_Use),
+            ItemDefn.fromNameAndUse("ParaspacePortalProjector", WorldDefnExtended.itemDefn_ParaspacePortalProjector_Use),
+            ItemDefn.fromNameAndUse("ShimmeringHemitrope", WorldDefnExtended.itemDefn_ShimmeringHemitrope_Use),
+            ItemDefn.fromNameAndUse("TranslucentOblong", WorldDefnExtended.itemDefn_TranslucentOblong_Use),
         ];
         var lifeformDefns = LifeformDefn.Instances()._All;
         var resourceDefns = ResourceDefn.Instances()._All;
@@ -191,7 +194,8 @@ class WorldExtended extends World {
         var starsystems = hyperspace.starsystems;
         var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);
         starsystemsSupergiant.forEach(starsystem => {
-            var shipGroup = new ShipGroupFinite(murch.name + " " + "Ship Group", murch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), [
+            var shipGroup = new ShipGroupFinite(murch.name + " " + "Ship Group", murch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), null, // shipsMax
+            [
                 new Ship(murch.shipDefnName)
             ]);
             starsystem.shipGroupAdd(shipGroup);
@@ -205,6 +209,7 @@ class WorldExtended extends World {
         ];
         var playerShipGroup = new ShipGroupFinite("Player", "Player", // factionName
         starsystemStart.posInHyperspace.clone(), // pos
+        13, // shipsMax
         playerShips);
         var shipComponentDefns = ShipComponentDefn.Instances();
         var playerFlagship = new Flagship(playerShipDefnName, 12, // componentsMax
