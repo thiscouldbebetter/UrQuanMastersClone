@@ -1,0 +1,239 @@
+name=Mauluska
+imagePortraitName=Conversation-Portrait-Mauluska
+contentTextStringName=Conversation-Mauluska-Content
+
+|VariablesImport|u.world.player.variableLookup
+
+|Display|#(SORRY_ABOUT_THAT)
+|Option|#(identify)|#(I_FWIFFO)
+|Option|#(hi_there)|#(ARE_YOU_SURE)
+|Option|#(dont_kill)|#(OK_WONT)
+|Option|#(we_fight_1)|#(OK_WE_FIGHT_AT_PLUTO)
+|Prompt
+
+	#(I_FWIFFO)|Display|#(I_FWIFFO)
+	|OptionsClear
+	|Option|#(do_cultural)|#(WEZZY_WEZZAH)
+	|Option|#(youre_forgiven)|#(THANKS_FOR_FORGIVENESS)
+	|Option|#(die_slugboy)|#(OK_WE_FIGHT_AT_PLUTO)
+	|Prompt
+
+		#(WEZZY_WEZZAH)|Display|#(WEZZY_WEZZAH)
+		|OptionRemove||#(do_cultural)
+		|Option|#(begin_ritual)|#(MUST_DO_RITUAL_AT_HOME)
+		|Prompt
+
+			#(MUST_DO_RITUAL_AT_HOME)|Display|#(MUST_DO_RITUAL_AT_HOME)
+			|OptionRemove||#(begin_ritual)
+			|Option|#(you_may_live)|#(GEE_THANKS)
+			|Prompt
+
+				#(GEE_THANKS)|Display|#(GEE_THANKS)
+				|Goto||Mauluska_Orphan_DecidedNotToFight
+
+		#(THANKS_FOR_FORGIVENESS)|Display|#(THANKS_FOR_FORGIVENESS)
+		|Goto||Mauluska_Orphan_DecidedNotToFight
+
+	#(ARE_YOU_SURE)|Display|#(ARE_YOU_SURE)
+	|Goto||Mauluska_Orphan_DecidedNotToFight
+
+	|Display|#(OK_WONT)
+	|Goto||Mauluska_Orphan_DecidedNotToFight
+
+	#(OK_WE_FIGHT_AT_PLUTO)|Display|#(OK_WE_FIGHT_AT_PLUTO)
+	|Goto||Combat
+
+Mauluska_Orphan_DecidedNotToFight|DoNothing
+|OptionsClear
+|Option|#(what_doing_on_pluto_1)|#(ABOUT_20_YEARS_AGO)
+|Option|#(where_are_urquan)|#(URQUAN_LEFT)
+#(join_us_1)|Option|#(join_us)|#(WONT_JOIN_1)
+|Option|#(changed_mind)|#(OK_WE_FIGHT_AT_PLUTO)
+|Prompt
+
+	#(ABOUT_20_YEARS_AGO)|Display|#(ABOUT_20_YEARS_AGO)
+	|OptionRemove||(what_doing_on_pluto_1)
+	|Option|#(what_doing_on_pluto_2)|#(WHEN_URQUAN_ARRIVED)
+	|Prompt
+
+		#(WHEN_URQUAN_ARRIVED)|Display|#(WHEN_URQUAN_ARRIVED)
+		|OptionRemove||(what_doing_on_pluto_2)
+		|Option|#(what_doing_on_pluto_3)|#(STATIONED_ON_EARTH_MOON)
+		|Prompt
+
+			#(STATIONED_ON_EARTH_MOON)|Display|#(STATIONED_ON_EARTH_MOON)
+			|OptionRemove||(what_doing_on_pluto_3)
+			|Option|#(what_about_ilwrath)|#(ABOUT_ILWRATH)
+			|Option|#(what_about_moonbase)|#(SET_UP_BASE)
+			|Prompt
+
+				#(ABOUT_ILWRATH)|Display|#(ABOUT_ILWRATH)
+				|OptionRemove||#(what_about_ilwrath)
+				|Option|#(when_ilwrath)
+				|Prompt
+
+					|Display|#(THEN_ILWRATH)
+					|OptionRemove||#(when_ilwrath)
+					|Prompt
+
+				#(SET_UP_BASE)|Display|#(SET_UP_BASE)
+				|OptionRemove||#(what_about_moonbase)
+				|Option|#(what_about_other_spathi)
+				|Prompt
+
+					|Display|#(SPATHI_ARE)
+					||OptionRemove||#(what_about_other_spathi)
+					|Option|#(how_many_crew)|#(THOUSANDS)
+					|Option|#(what_enemy)|#(ENEMY_IS)
+					|Prompt
+
+						#(THOUSANDS)|Display|#(THOUSANDS)
+						|OptionRemove||#(how_many_crew)
+						|Option|#(really_thousands)
+						|Prompt
+
+							#(JUST_ME)|Display|#(JUST_ME)
+							|OptionRemove||#(really_thousands)
+							|Option|#(full_of_monsters)|#(HOW_TRUE)
+							|Prompt
+
+								#(HOW_TRUE)|Display|#(HOW_TRUE)
+								|OptionRemove||#(join_us_1)
+								|OptionRemove||#(join_us_2)
+								|OptionRemove||#(join_us_3)
+								|Option|#(join_us)|#(WILL_JOIN)
+								|Prompt
+
+									#(WILL_JOIN)|Display|#(WILL_JOIN)
+									|Script|throw new Error("todo")
+									|Goto||Done
+
+						#(ENEMY_IS)|Display|#(ENEMY_IS)
+						|OptionRemove||#(what_enemy)
+						|Option|#(why_you_here)|#(DREW_SHORT_STRAW)
+						|Prompt
+
+							#(DREW_SHORT_STRAW)|Display|#(DREW_SHORT_STRAW)
+							|Prompt
+
+	#(URQUAN_LEFT)|Display|#(URQUAN_LEFT)
+	|OptionRemove||#(where_are_urquan)
+	|Option|#(what_about_other_races)|#(ABOUT_OTHER_RACES)
+	|Prompt
+
+		#(ABOUT_OTHER_RACES)|Display|#(ABOUT_OTHER_RACES)
+		|OptionRemove||#(what_about_other_races)
+		|Option|#(what_blaze_of_glory)|#(BLAZE_IS)
+		|Prompt
+
+			#(BLAZE_IS)|Display|#(BLAZE_IS)
+			|OptionRemove|#(what_blaze_of_glory)
+			|Option|#(what_about_yourself)|#(ABOUT_MYSELF)
+			|Prompt
+
+				#(ABOUT_MYSELF)|Display|#(ABOUT_MYSELF)
+				|Prompt
+
+	#(WONT_JOIN_1)|Display|#(WONT_JOIN_1)
+	|OptionRemove|#(join_us_1)
+	#(join_us_2)|Option|#(join_us)|#(WONT_JOIN_2)
+	|Prompt
+
+		#(WONT_JOIN_2)|Display|#(WONT_JOIN_2)
+		|OptionRemove|#(join_us_2)
+		#(join_us_3)|Option|#(join_us)|#(WONT_JOIN_3)
+		|Prompt
+
+			#(WONT_JOIN_3)|Display|#(WONT_JOIN_3)
+			|Prompt
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+|Quit
+
+
+|Display|#(we_fight_2)
+
+
+|Display|#(you_wont_die_yet)
+|Display|#(ETERNAL_GRATITUDE)
+|Display|#(we_fight)
+|Display|#(pay_for_crimes)
+|Display|#(CLUTCH_MAVEN)
+|Display|#(HONEST_AND_FRIENDLY)
+|Display|#(what_are_coordinates)
+|Display|#(COORDINATES_ARE)
+|Display|#(tell_me_coordinates)
+|Display|#(FAKE_COORDINATES)
+|Display|#(TOO_SCARY)
+|Display|#(youve_got_me_all_wrong)
+|Display|#(SORRY_NO_COORDS)
+|Display|#(give_ship_or_die)
+
+|Display|#(HATE_YOU_FOREVER_SPACE)
+|Display|#(INIT_ANGRY_HELLO_SPACE)
+|Display|#(SUBSEQUENT_ANGRY_HELLO_SPACE)
+|Display|#(INIT_NEUTRAL_HELLO_SPACE)
+|Display|#(SUBSEQUENT_NEUTRAL_HELLO_SPACE)
+|Display|#(INIT_FRIENDLY_HELLO_SPACE)
+|Display|#(SUBSEQUENT_FRIENDLY_HELLO_SPACE)
+|Display|#(INIT_ALLIED_HELLO_SPACE)
+|Display|#(SUBSEQUENT_ALLIED_HELLO_SPACE)
+|Display|#(give_info_space)
+|Display|#(HERES_SOME_INFO)
+|Display|#(we_sorry_space)
+|Display|#(APOLOGIZE_AT_HOMEWORLD)
+|Display|#(we_fight_again_space)
+|Display|#(OK_FIGHT_AGAIN_SPACE)
+|Display|#(bye_angry_space)
+|Display|#(GOODBYE_ANGRY_SPACE)
+|Display|#(look_weird)
+|Display|#(YOU_LOOK_WEIRD)
+|Display|#(no_look_really_weird)
+|Display|#(NO_YOU_LOOK_REALLY_WEIRD)
+|Display|#(come_in_peace)
+|Display|#(AGAINST_NATURE)
+|Display|#(prepare_to_die)
+|Display|#(ALWAYS_PREPARED)
+|Display|#(since_friendly_give_stuff)
+|Display|#(GIVE_ADVICE)
+|Display|#(whats_up_space_1)
+|Display|#(GENERAL_INFO_SPACE_1)
+|Display|#(bye_friendly_space)
+|Display|#(GOODBYE_FRIENDLY_SPACE)
+|Display|#(looking_for_a_few_good_squids)
+|Display|#(URQUAN_SLAVES)
+|Display|#(why_slaves)
+|Display|#(UMGAH_TRICK)
+|Display|#(tell_us_about_you)
+|Display|#(ABOUT_US)
+|Display|#(what_you_really_want)
+|Display|#(WANT_THIS)
+|Display|#(how_about_alliance)
+|Display|#(SURE)
+|Display|#(part_in_peace)
+|Display|#(KEEP_IT_SECRET)
+|Display|#(heard_youre_cowards)
+|Display|#(DARN_TOOTIN)
+|Display|#(wanna_fight)
+|Display|#(YES_WE_DO)
+|Display|#(so_lets_fight)
+|Display|#(OK_LETS_FIGHT)
+|Display|#(so_lets_fight_already)
+|Display|#(DONT_REALLY_WANT_TO_FIGHT)
+|Display|#(attack_you_now)
+|Display|#(YIPES)
+|Display|#(whats_up_space_2)
+|Display|#(GENERAL_INFO_SPACE_2)
+|Display|#(give_us_info_from_space)
+|Display|#(GET_INFO_FROM_SPATHIWA)
+|Display|#(give_us_resources_space)
+|Display|#(GET_RESOURCES_FROM_SPATHIWA)
+|Display|#(what_do_for_fun)
+|Display|#(DO_THIS_FOR_FUN)
+|Display|#(bye_ally_space)
+|Display|#(GOODBYE_ALLY_SPACE)

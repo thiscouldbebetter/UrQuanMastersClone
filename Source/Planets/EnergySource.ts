@@ -260,36 +260,36 @@ class EnergySource_Instances
 
 	mauluskaOrphan_CollideWithLander(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var textMauluskaOrphan = "MauluskaOrphan";
+		const textMauluskaOrphan = "MauluskaOrphan";
 
 		var universe = uwpe.universe;
 
+		var acknowledgeReport = (uwpe: UniverseWorldPlaceEntities) =>
+		{
+			var place = uwpe.place as PlacePlanetSurface;
+			var entityPlayer = place.entityByName(Player.name);
+			var lander = Lander.fromEntity(entityPlayer);
+			var entityEnergySource = place.entityByName(textMauluskaOrphan);
+			lander.itemHolderDevices.itemEntityPickUpFromPlace(entityEnergySource, place);
+			place.exit(uwpe);
+
+			var world = uwpe.world as WorldExtended;
+			var factionMauluska = world.factionByName(textMauluskaOrphan);
+			var encounter = factionMauluska.toEncounter(uwpe);
+			var placeEncounter = encounter.toPlace();
+			world.placeNextSet(placeEncounter);
+		};
+
+		var venueToReturnTo = universe.venueCurrent();
+
 		var mediaLibrary = universe.mediaLibrary;
-
-		var message = 
+		var message =
 			mediaLibrary.textStringGetByName(EnergySource.name + textMauluskaOrphan).value;
-		var conversationDefnSerialized =
-			mediaLibrary.textStringGetByName("Conversation-" + textMauluskaOrphan).value;
 
-		var controlMessage = universe.controlBuilder.message
-		(
-			universe,
-			universe.display.sizeInPixels,
-			DataBinding.fromContext(message),
-			() => // acknowledge
-			{
-				// todo - Do an encounter instead.
-				var conversationDefn =
-					ConversationDefn.deserialize(conversationDefnSerialized);
-				var conversationRun = ConversationRun.fromConversationDefn(conversationDefn);
-				var conversationVenue = conversationRun.toVenue(universe);
-				universe.venueTransitionTo(conversationVenue);
-			},
-			null, // showMessageOnly
-			FontNameAndHeight.fromHeightInPixels(5)
-		);
+		var venueMessage =
+			VenueMessage.fromTextAcknowledgeAndVenuePrev(message, acknowledgeReport, venueToReturnTo);
 
-		universe.venueTransitionTo(VenueControls.fromControl(controlMessage));
+		universe.venueTransitionTo(venueMessage);
 	}
 
 	ttorstingCaster_CollideWithLander(uwpe: UniverseWorldPlaceEntities): void

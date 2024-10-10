@@ -619,8 +619,17 @@ class SystemTests extends TestFixture {
         this.goToEarthStationDocks(universe);
         placeStationDock = world.place();
         for (var i = 0; i < muunfazShipCount; i++) {
-            placeStationDock.shipSelectByDefnName(universe, shipDefnNameFireblossom).shipScrap(universe);
+            placeStationDock
+                .shipSelectByDefnName(universe, shipDefnNameFireblossom)
+                .shipScrap(universe);
         }
+        this.leaveStation(universe);
+        // Go to Pluto and locate the Mauluska orphan hiding there.
+        this.leavePlanetVicinityAndWait(universe);
+        this.moveToEntityWithNameAndWait(universe, "Pluto");
+        this.moveToEntityWithNameAndWait(universe, Planet.name);
+        this.landOnPlanetSurface(universe, world, place());
+        this.moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, "MauluskaOrphan");
         callback();
     }
     // Helper methods.
@@ -870,7 +879,9 @@ class SystemTests extends TestFixture {
                 // It's a moon.
                 planetName = planetName.split("-")[0];
             }
-            var starsystemName = planetName == "Earth"
+            var starsystemName = (planetName == "Mercury"
+                || planetName == "Earth"
+                || planetName == "Pluto")
                 ? "Sol"
                 : planetName.substr(0, planetName.lastIndexOf(" "));
             this.goToStarsystemWithName(universe, starsystemName);
