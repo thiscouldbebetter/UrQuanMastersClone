@@ -147,6 +147,102 @@ Mauluska_Orphan_DecidedNotToFight|DoNothing
 			#(WONT_JOIN_3)|Display|#(WONT_JOIN_3)
 			|Prompt
 
+|Display|#(INIT_ALLIED_HELLO_SPACE)
+|Option|#(whats_up_space_2)|#(GENERAL_INFO_SPACE_2)
+|Option|#(give_us_info_from_space)|#(GET_INFO_FROM_SPATHIWA)
+|Option|#(give_us_resources_space)|#(GET_RESOURCES_FROM_SPATHIWA)
+|Option|#(what_do_for_fun)|#(DO_THIS_FOR_FUN)
+|Option|#(bye_ally_space)|#(GOODBYE_ALLY_SPACE)
+|Prompt
+
+	#(GENERAL_INFO_SPACE_2)|Display|#(GENERAL_INFO_SPACE_2)
+	|OptionRemove||#(whats_up_space_2)
+	|Prompt
+
+	#(GET_INFO_FROM_SPATHIWA)|Display|#(GET_INFO_FROM_SPATHIWA)
+	|OptionRemove|#(give_us_info_from_space)
+	|Prompt
+
+	#(GET_RESOURCES_FROM_SPATHIWA)|Display|#(GET_RESOURCES_FROM_SPATHIWA)
+	|OptionRemove|#(give_us_resources_space)
+	|Prompt
+
+	#(DO_THIS_FOR_FUN)|Display|#(DO_THIS_FOR_FUN)
+	|OptionRemove|#(what_do_for_fun)
+	|Prompt
+
+	#(GOODBYE_ALLY_SPACE)|Display|#(GOODBYE_ALLY_SPACE)
+	|Goto||Done
+
+|Display|#(INIT_NEUTRAL_HELLO_SPACE)
+|Option|#(look_weird)|#(YOU_LOOK_WEIRD)
+|Option|#(come_in_peace)|#(AGAINST_NATURE)
+|Option|#(prepare_to_die)
+|Option|#(part_in_peace)
+
+	#(YOU_LOOK_WEIRD)|Display|#(YOU_LOOK_WEIRD)
+	|OptionRemove|#(look_weird)
+	|Option|#(no_look_really_weird)|#(NO_YOU_LOOK_REALLY_WEIRD)
+	|Prompt
+
+		#(NO_YOU_LOOK_REALLY_WEIRD)|Display|#(NO_YOU_LOOK_REALLY_WEIRD)
+		|OptionRemove|#(no_look_really_weird)
+		|Prompt
+
+	#(AGAINST_NATURE)|Display|#(AGAINST_NATURE)
+	|Push
+	|Option|#(looking_for_a_few_good_squids)|#(URQUAN_SLAVES)
+	|Option|#(tell_us_about_you)|#(ABOUT_US)
+	|Option|#(how_about_alliance)|#(SURE)
+	|Prompt
+
+		#(URQUAN_SLAVES)|Display|#(URQUAN_SLAVES)
+		|Option|#(why_slaves)|#(UMGAH_TRICK)
+		|Prompt
+
+			#(UMGAH_TRICK)|Display|#(UMGAH_TRICK)
+			|OptionRemove|#(why_slaves)
+			|Prompt
+
+		#(ABOUT_US)|Display|#(ABOUT_US)
+		|Option|#(what_you_really_want)|#(WANT_THIS)
+		|Prompt
+
+			#(WANT_THIS)|Display|#(WANT_THIS)
+			|OptionRemove|#(what_you_really_want)
+			|Prompt
+
+		#(SURE)|Display|#(SURE)
+		|Pop
+
+
+	|Display|#(ALWAYS_PREPARED)
+	|Option|#(wanna_fight)|#(YES_WE_DO)
+	|Option|#(heard_youre_cowards)|#(DARN_TOOTIN)
+	|Option|#(attack_you_now)
+	|Prompt
+
+		#(YES_WE_DO)|Display|#(YES_WE_DO)
+		|Option|#(so_lets_fight)|#(OK_LETS_FIGHT)
+		|Prompt
+
+			#(OK_LETS_FIGHT)|Display|#(OK_LETS_FIGHT)
+			|Option|#(so_lets_fight_already)|#(DONT_REALLY_WANT_TO_FIGHT)
+			|Prompt
+
+				#(DONT_REALLY_WANT_TO_FIGHT)|Display|#(DONT_REALLY_WANT_TO_FIGHT)
+				|Prompt
+
+		#(DARN_TOOTIN)|Display|#(DARN_TOOTIN)
+		|OptionRemove|#(heard_youre_cowards)
+		|Prompt
+
+		#(YIPES)|Display|#(YIPES)
+		|Goto||Combat
+
+	|Display|#(KEEP_IT_SECRET)
+	|Goto||Done
+
 Done|DoNothing
 |VariablesExport|u.world.player.variableLookup.set($key, $value)
 |Quit
@@ -155,10 +251,8 @@ Combat|DoNothing
 |Script|throw new Error("todo");
 |Quit
 
-
+|Display|#(SUBSEQUENT_ALLIED_HELLO_SPACE)
 |Display|#(we_fight_2)
-
-
 |Display|#(you_wont_die_yet)
 |Display|#(ETERNAL_GRATITUDE)
 |Display|#(we_fight)
@@ -177,12 +271,10 @@ Combat|DoNothing
 |Display|#(HATE_YOU_FOREVER_SPACE)
 |Display|#(INIT_ANGRY_HELLO_SPACE)
 |Display|#(SUBSEQUENT_ANGRY_HELLO_SPACE)
-|Display|#(INIT_NEUTRAL_HELLO_SPACE)
+
 |Display|#(SUBSEQUENT_NEUTRAL_HELLO_SPACE)
 |Display|#(INIT_FRIENDLY_HELLO_SPACE)
 |Display|#(SUBSEQUENT_FRIENDLY_HELLO_SPACE)
-|Display|#(INIT_ALLIED_HELLO_SPACE)
-|Display|#(SUBSEQUENT_ALLIED_HELLO_SPACE)
 |Display|#(give_info_space)
 |Display|#(HERES_SOME_INFO)
 |Display|#(we_sorry_space)
@@ -191,49 +283,10 @@ Combat|DoNothing
 |Display|#(OK_FIGHT_AGAIN_SPACE)
 |Display|#(bye_angry_space)
 |Display|#(GOODBYE_ANGRY_SPACE)
-|Display|#(look_weird)
-|Display|#(YOU_LOOK_WEIRD)
-|Display|#(no_look_really_weird)
-|Display|#(NO_YOU_LOOK_REALLY_WEIRD)
-|Display|#(come_in_peace)
-|Display|#(AGAINST_NATURE)
-|Display|#(prepare_to_die)
-|Display|#(ALWAYS_PREPARED)
 |Display|#(since_friendly_give_stuff)
 |Display|#(GIVE_ADVICE)
 |Display|#(whats_up_space_1)
 |Display|#(GENERAL_INFO_SPACE_1)
 |Display|#(bye_friendly_space)
 |Display|#(GOODBYE_FRIENDLY_SPACE)
-|Display|#(looking_for_a_few_good_squids)
-|Display|#(URQUAN_SLAVES)
-|Display|#(why_slaves)
-|Display|#(UMGAH_TRICK)
-|Display|#(tell_us_about_you)
-|Display|#(ABOUT_US)
-|Display|#(what_you_really_want)
-|Display|#(WANT_THIS)
-|Display|#(how_about_alliance)
-|Display|#(SURE)
-|Display|#(part_in_peace)
-|Display|#(KEEP_IT_SECRET)
-|Display|#(heard_youre_cowards)
-|Display|#(DARN_TOOTIN)
-|Display|#(wanna_fight)
-|Display|#(YES_WE_DO)
-|Display|#(so_lets_fight)
-|Display|#(OK_LETS_FIGHT)
-|Display|#(so_lets_fight_already)
-|Display|#(DONT_REALLY_WANT_TO_FIGHT)
-|Display|#(attack_you_now)
-|Display|#(YIPES)
-|Display|#(whats_up_space_2)
-|Display|#(GENERAL_INFO_SPACE_2)
-|Display|#(give_us_info_from_space)
-|Display|#(GET_INFO_FROM_SPATHIWA)
-|Display|#(give_us_resources_space)
-|Display|#(GET_RESOURCES_FROM_SPATHIWA)
-|Display|#(what_do_for_fun)
-|Display|#(DO_THIS_FOR_FUN)
-|Display|#(bye_ally_space)
-|Display|#(GOODBYE_ALLY_SPACE)
+

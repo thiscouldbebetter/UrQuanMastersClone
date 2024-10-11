@@ -1,0 +1,131 @@
+
+name=Famorfex
+imagePortraitName=Conversation-Portrait-Amorfus
+
+|VariablesImport|u.world.player.variableLookup
+
+|Display|#(UNKNOWN_ZOMBIE_HELLO_1)
+|Display|#(UNKNOWN_ZOMBIE_HELLO_2)
+|Display|#(UNKNOWN_ZOMBIE_HELLO_3)
+|Display|#(UNKNOWN_ZOMBIE_HELLO_4)
+|Option|#(evil_blobbies)|#(YES_VERY_EVIL)
+|Option|#(we_vindicator)|#(GOOD_FOR_YOU_1)
+|Option|#(know_any_jokes)|#(JOKE_1)
+|Option|#(what_about_tpet)|#(WHAT_TPET)
+|Option|#(bye_zombie)|#(GOODBYE_ZOMBIE)
+|Prompt
+
+	#(YES_VERY_EVIL)|Display|#(YES_VERY_EVIL)
+	|OptionRemove|#(evil_blobbies)
+	|Option|#(give_up_or_die)|#(NOT_GIVE_UP)
+	|Prompt
+
+		#(NOT_GIVE_UP)|Display|#(NOT_GIVE_UP)
+		|Goto||Combat
+
+	#(GOOD_FOR_YOU_1)|Display|#(GOOD_FOR_YOU_1)
+	|OptionRemove|#(we_vindicator)
+	|Option|#(come_in_peace)|#(GOOD_FOR_YOU_2)
+	|Prompt
+
+		#(GOOD_FOR_YOU_2)|Display|#(GOOD_FOR_YOU_2)
+		|Prompt
+
+	#(JOKE_1)|Display|#(JOKE_1)
+	|Option|#(better_joke)|#(JOKE_2)
+	|Prompt
+
+		#(JOKE_2)
+		|OptionRemove|#(better_joke)
+		|Option|#(not_very_funny)|#(YES_WE_ARE)
+		|Prompt
+
+			#(YES_WE_ARE)
+			|OptionRemove|#(not_very_funny)
+			|Prompt
+
+	#(WHAT_TPET)|Display|#(WHAT_TPET)
+	|Option|#(arilou_told_us)|#(THEN_DIE)
+	|Prompt
+
+		#(THEN_DIE)|Display|#(THEN_DIE)
+		Goto||Combat
+
+	#(GOODBYE_ZOMBIE)|Display|#(GOODBYE_ZOMBIE)
+	Goto||Done
+
+Combat|DoNothing
+|Script|throw new Error("todo")
+Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+
+|Display|#(REVEALED_ZOMBIE_HELLO_1)
+|Display|#(REVEALED_ZOMBIE_HELLO_2)
+|Display|#(REVEALED_ZOMBIE_HELLO_3)
+|Display|#(REVEALED_ZOMBIE_HELLO_4)
+|Goto||Combat
+
+
+#(HWLD_PRE_ZOMBIE_HELLO_1)
+#(HWLD_PRE_ZOMBIE_HELLO_2)
+#(HWLD_PRE_ZOMBIE_HELLO_3)
+#(HWLD_PRE_ZOMBIE_HELLO_4)
+#(SPACE_PRE_ZOMBIE_HELLO_1)
+#(SPACE_PRE_ZOMBIE_HELLO_2)
+#(SPACE_PRE_ZOMBIE_HELLO_3)
+#(SPACE_PRE_ZOMBIE_HELLO_4)
+#(DESTROY_INTERFERER_1)
+#(DESTROY_INTERFERER_2)
+#(DESTROY_INTERFERER_3)
+#(DESTROY_INTERFERER_4)
+#(HOSTILE_HELLO_1)
+#(HOSTILE_HELLO_2)
+#(HOSTILE_HELLO_3)
+#(HOSTILE_HELLO_4)
+#(REWARD_AT_HOMEWORLD_1)
+#(REWARD_AT_HOMEWORLD_2)
+#(POST_ZOMBIE_HWLD_HELLO)
+#(owe_me_big_time)
+#(our_largesse)
+#(GIVE_LIFEDATA)
+#(THANKS)
+#(what_do_with_tpet)
+#(TRICK_URQUAN)
+#(any_jokes)
+#(SURE)
+#(what_before_tpet)
+#(TRKD_SPATHI_AND_ILWRATH)
+#(where_caster)
+#(SPATHI_TOOK_THEM)
+#(so_what_for_now)
+#(DO_THIS_NOW)
+#(bye_post_zombie)
+#(FUNNY_IDEA)
+#(whats_up_pre_zombie)
+#(GENERAL_INFO_PRE_ZOMBIE)
+#(evil_blobbies_give_up)
+#(NOT_EVIL_BLOBBIES)
+#(evil_blobbies_must_die)
+#(OH_NO_WE_WONT)
+#(can_we_be_friends)
+#(SURE_FRIENDS)
+#(want_to_defeat_urquan)
+#(FINE_BY_US)
+#(bye_pre_zombie)
+#(GOODBYE_PRE_ZOMBIE)
+#(threat)
+#(NO_THREAT)
+#(whats_up_zombies)
+#(GENERAL_INFO_ZOMBIE)
+#(how_goes_tpet)
+#(you_told_us)
+#(SADLY_IT_DIED)
+#(dont_believe)
+
+#(bye_unknown)
+#(GOODBYE_UNKNOWN)
+#(GOOD_FOR_YOU_1)

@@ -1,0 +1,249 @@
+name=Mauluska-Homeworld
+imagePortraitName=Conversation-Portrait-Mauluska-Homeworld
+contentTextStringName=Conversation-Mauluska-Homeworld-Content
+
+|VariablesImport|u.world.player.variableLookup
+
+|Display|#(WHAT_IS_PASSWORD)
+|Option|#(good_password)|#(YES_GOOD_PASSWORD)|todo
+|Option|#(what_do_i_get)|#(YOU_GET_TO_LIVE)
+|Prompt
+
+#(screw_password)
+#(WRONG_PASSWORD)
+#(NO_PASSWORD)
+
+	#(YOU_GET_TO_LIVE)|Display|#(YOU_GET_TO_LIVE)
+	|OptionRemove|#(what_do_i_get)
+	|Prompt
+
+	#(YES_GOOD_PASSWORD)|Display|#(YES_GOOD_PASSWORD)
+	|Push
+	|Option|#(we_come_in_peace)|#(OF_COURSE)|todo
+	|Option|#(we_come_in_peace)|#(KILLED_SPATHI)|todo
+	|Option|#(spathi_on_pluto)|#(WHERE_SPATHI)
+	|Option|#(surrender)|#(NO_SURRENDER)
+	|Option|#(bye_no_ally_offer)
+
+		#(OF_COURSE)|Display|#(OF_COURSE)
+		|OptionRemove|#(we_come_in_peace)
+		|Prompt
+
+		#(KILLED_SPATHI)|Display|#(KILLED_SPATHI)
+		|OptionRemove|#(we_come_in_peace)
+		|Option|#(misunderstanding)|#(JUST_MISUNDERSTANDING)
+		|Prompt
+
+			#(JUST_MISUNDERSTANDING)|Display|#(JUST_MISUNDERSTANDING)
+			|Goto||Mauluska-Homeworld-DecidedNotToAttack
+
+		#(WHERE_SPATHI)|Display|#(WHERE_SPATHI)
+		|OptionRemove|#(spathi_on_pluto)
+		|Option|#(killed_fwiffo|#(POOR_FWIFFO)
+		|Option|#(fwiffo_fine)|#(NOT_LIKELY)
+		|Prompt
+
+			#(POOR_FWIFFO)|Display|#(POOR_FWIFFO)
+			|Prompt
+
+			#(NOT_LIKELY)|Display|#(NOT_LIKELY)
+			|Prompt
+
+		#(NO_SURRENDER)|Display|#(NO_SURRENDER)
+		|OptionRemove|#(surrender)
+		|Prompt
+
+Mauluska-Homeworld-DecidedNotToAttack|DoNothing
+|Option|#(hand_in_friendship)|#(TOO_AFRAID)
+|Option|#(share_info)|#(NO_INFO)
+|Option|#(give_us_resources)|#(NO_RESOURCES)
+|Prompt
+
+	#(TOO_AFRAID)|Display|#(TOO_AFRAID)
+	|OptionRemove|#(hand_in_friendship)
+	|Option|#(stronger)|#(YOURE_NOT)
+
+		#(YOURE_NOT)|Display|#(YOURE_NOT)
+		|OptionRemove|#(stronger)
+		|Option|#(yes_we_are)|#(NO_YOURE_NOT)
+
+			#(NO_YOURE_NOT)|Display|#(NO_YOURE_NOT)
+			|OptionRemove|#(yew_we_are)
+			|Option|#(how_prove)|#(BETTER_IDEA)
+			|Prompt
+
+				#(BETTER_IDEA)|Display|#(BETTER_IDEA)
+				|Option|#(what_test)|#(WIPE_EVIL)
+				|Option|#(prove_strength)
+				|Prompt
+
+					#(WIPE_EVIL)|Display|#(WIPE_EVIL)
+					QuestOffer|DoNothing
+					|Push
+					|Script|throw new Error("todo")
+					|Option|#(too_dangerous)|#(WE_AGREE)
+					|Option|#(tell_evil)|#(BEFORE_ACCEPT)
+					|Option|#(why_dont_you_do_it)|#(WE_WONT_BECAUSE)
+
+						#(WE_AGREE)|Display|#(WE_AGREE)
+						|Goto||Done
+
+						#(BEFORE_ACCEPT)|Display|#(BEFORE_ACCEPT)
+						|OptionRemove|(#tell_evil)
+						|Option|#(think_more)|#(COWARD)
+						|Option|#(i_accept)
+
+							#(COWARD)|Display|#(COWARD)
+							|Goto||Done
+
+							#(AWAIT_RETURN)|Display|#(AWAIT_RETURN)
+							|Script|throw new Error("todo");
+							|Goto||Done
+
+
+						#(WE_WONT_BECAUSE)|Display|#(WE_WONT_BECAUSE)
+						|Prompt
+
+	#(NO_INFO)|Display|#(NO_INFO)
+	|OptionRemove|#(share_info)
+	|Prompt
+
+	#(NO_RESOURCES)|Display|#(NO_RESOURCES)
+	|OptionRemove|#(share_info)
+	|Prompt
+
+#(QUEST_AGAIN)|Display|#(QUEST_AGAIN)
+|Goto||Quest
+
+#(HOW_GO_EFFORTS)|Display|#(HOW_GO_EFFORTS)
+|Option|#(killed_them_all_1)|#(WILL_CHECK_1)
+|Option|#(talk_test)|#(TEST_AGAIN)
+|Option|#(bye_before_party)|#(GOODBYE_BEFORE_PARTY)
+|Prompt
+
+	#(WILL_CHECK_1)|Display|#(WILL_CHECK_1)
+	|Goto||Done
+
+	#(TEST_AGAIN)|Display|#(TEST_AGAIN)
+	|OptionRemove|#(talk_test)
+	|Prompt
+
+	#(GOODBYE_BEFORE_PARTY)|Display|#(GOODBYE_BEFORE_PARTY)
+	|Goto||Done
+
+#(YOU_LIED_1)|Display|#(YOU_LIED_1)
+|Option|#(little_mistake)|#(BIG_MISTAKE)
+|Option|#(killed_them_all_2)|#(WILL_CHECK_2)
+|Option|#(talk_test)|#(TEST_AGAIN)
+|Option|#(bye_before_party)|#(GOODBYE_BEFORE_PARTY)
+|Prompt
+
+	#(BIG_MISTAKE)|Display|#(BIG_MISTAKE)
+	|OptionRemove|#(little_mistake)
+	|Prompt
+
+	#(WILL_CHECK_2)|Display|#(WILL_CHECK_2)
+	|Prompt
+
+
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+|Quit
+
+#(we_attack_again)
+#(WE_FIGHT_AGAIN)
+#(bye_no_ally_offer)
+#(GOODBYE_NO_ALLY_OFFER)
+#(bye_angry_spathi)
+#(GOODBYE_ANGRY_SPATHI)
+#(MEAN_GUYS_RETURN)
+#(we_apologize)
+#(DONT_BELIEVE)
+#(HELLO_AGAIN)
+#(HATE_YOU_FOREVER)
+#(WHAT_IS_PASSWORD_AGAIN)
+#(we_are_vindicator)
+#(gort_merenga)
+#(guph_florp)
+#(pleeese)
+#(wagngl_fthagn)
+#(hostage)
+#(GUN_TO_HEAD)
+#(bye_ally)
+#(GOODBYE_ALLY)
+#(what_about_hierarchy)
+#(what_about_history)
+#(what_about_alliance)
+#(what_about_other)
+#(what_about_precursors)
+#(enough_info)
+#(OK_ENOUGH_INFO)
+#(ABOUT_HIERARCHY)
+#(ABOUT_HISTORY)
+#(ABOUT_ALLIANCE)
+#(ABOUT_OTHER)
+#(ABOUT_PRECURSORS)
+
+#(GOOD_START)
+#(something_fishy)
+#(NOTHING_FISHY)
+#(surrender_or_die)
+#(DEFEND_OURSELVES)
+#(WE_UNDERSTAND)
+#(prove_strength)
+#(YOUR_BEHAVIOR)
+#(talk_test)
+#(already_got_them)
+#(EARLY_BIRD_CHECK)
+#(NOT_SURPRISED)
+
+
+#(zapped_a_few)
+#(RETURN_COMPLETE)
+#(MUST_DESTROY_ALL)
+#(no_landing)
+#(saw_creatures)
+#(YOU_FORTUNATE)
+#(YOU_LIED_1)
+#(YOU_LIED_2)
+#(bye_from_party_1)
+#(bye_from_party_2)
+#(bye_from_party_3)
+#(GOODBYE_FROM_PARTY)
+#(MUST_PARTY_1)
+#(MUST_PARTY_2)
+#(MUST_PARTY_3)
+#(deals_a_deal)
+#(WAIT_A_WHILE)
+#(how_long)
+#(TEN_YEARS)
+#(reneging)
+#(ADULT_VIEW)
+#(return_beasts)
+#(WHAT_RELATIONSHIP)
+(sigh)
+#(minds_and_might)
+#(HUH)
+#(fellowship)
+#(WHAT)
+#(do_as_we_say)
+#(DEPART_FOR_EARTH)
+#(HELLO_ALLIES_1)
+#(HELLO_ALLIES_2)
+#(HELLO_ALLIES_3)
+#(whats_up)
+#(GENERAL_INFO_1)
+#(GENERAL_INFO_2)
+#(GENERAL_INFO_3)
+#(GENERAL_INFO_4)
+#(GENERAL_INFO_5)
+#(like_some_info)
+#(WHAT_ABOUT)
+
+	|Option|#(resources_please)
+	#(SORRY_NO_RESOURCES)

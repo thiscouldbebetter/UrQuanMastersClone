@@ -1,0 +1,465 @@
+name=Triunion
+imagePortraitNameConversation-Portrait-Triunion
+contentTextStringName=Conversation-Triunion-Content
+soundMusicName=Music_Faction_Triunion
+
+|VariablesImport|u.world.player.variableLookup
+
+|Display|#(WE_ARE0)
+|Display|#(WE_ARE1)
+|Display|#(WE_ARE2)
+|Display|#(WE_ARE3)
+|Display|#(WE_ARE4)
+|Display|#(WE_ARE5)
+|Display|#(WE_ARE6)
+|Display|#(WE_ARE7)
+|Display#(SCOUT_HELLO0)
+|Display#(SCOUT_HELLO1)
+|Display#(SCOUT_HELLO2)
+|Display#(SCOUT_HELLO3)
+|OptionsClear
+|Option#(which_fot)|#(HE_IS0)
+|Option|#(we_are_vindicator)|Triunion_DecidedNotToFight
+|Option|#(quiet_toadies)|#(TOLD_YOU0)
+|Option|#(all_very_interesting)|#(SEE_TOLD_YOU0)
+|Option|#(valuable_info)|#(GOODBYE0)
+|Prompt
+
+	#(HE_IS0)|Display|#(HE_IS0)
+	|Display|#(HE_IS1)
+	|Display|#(HE_IS2)
+	|Display|#(HE_IS3)
+	|Display|#(HE_IS4)
+	|Display|#(HE_IS5)
+	|Display|#(HE_IS6)
+	|Display|#(HE_IS7)
+	|OptionRemove||#(which_fot)
+	|Prompt
+
+	Triunion_DecidedNotToFight|DoNothing
+	|Display|#(WE_GLAD0)
+	|Display|#(WE_GLAD1)
+	|Display|#(WE_GLAD2)
+	|Display|#(WE_GLAD3)
+	|Display|#(WE_GLAD4)
+	|Display|#(WE_GLAD5)
+	|OptionsClear
+	|Option#(your_race)|#(YEARS_AGO0)
+	|Option}#(where_from)|#(TRAVELED_FAR0)
+	|Option|#(what_emergency)|#(UNDER_ATTACK0)
+
+		#(YEARS_AGO0)|Display|#(YEARS_AGO0)
+		|Display|#(YEARS_AGO1)
+		|Display|#(YEARS_AGO2)
+		|Display|#(YEARS_AGO3)
+		|Display|#(YEARS_AGO4)
+		|Display|#(YEARS_AGO5)
+		|Display|#(YEARS_AGO6)
+		|Display|#(YEARS_AGO7)
+		|Display|#(YEARS_AGO8)
+		|Display|#(YEARS_AGO9)
+		|Display|#(YEARS_AGO10)
+		|Display|#(YEARS_AGO11)
+		|Display|#(YEARS_AGO12)
+		|Display|#(YEARS_AGO13)
+		|OptionRemove||#(your_race)
+		|Prompt
+
+		#(TRAVELED_FAR0)|Display|#(TRAVELED_FAR0)
+		|Display|#(TRAVELED_FAR1)
+		|Display|#(TRAVELED_FAR2)
+		|Display|#(TRAVELED_FAR3)
+		|Display|#(TRAVELED_FAR4)
+		|Display|#(TRAVELED_FAR5)
+		|OptionRemove||#(where_from)
+		|Prompt
+
+		#(UNDER_ATTACK0)|Display|#(UNDER_ATTACK0)
+		|Display|#(UNDER_ATTACK1)
+		|Display|#(UNDER_ATTACK2)
+		|Display|#(UNDER_ATTACK3)
+		|Display|#(UNDER_ATTACK4)
+		|Display|#(UNDER_ATTACK5)
+		|Display|#(UNDER_ATTACK6)
+		|Display|#(UNDER_ATTACK7)
+		|Display|#(UNDER_ATTACK8)
+		|Display|#(UNDER_ATTACK9)
+		|Display|#(UNDER_ATTACK10)
+		|Display|#(UNDER_ATTACK11)
+		|OptionsClear
+		|Option|#(tough_luck)|#(NOT_HELPFUL0)
+		|Option|#(what_look_like)|#(LOOK_LIKE0)
+		|Option|#(all_very_interesting)|#(SEE_TOLD_YOU0)
+		|Option|#(valuable_info)|#(GOODBYE0)
+		|Prompt
+
+			#(NOT_HELPFUL0)|Display|#(NOT_HELPFUL0)
+			|Display|#(NOT_HELPFUL1)
+			|Display|#(NOT_HELPFUL2)
+			|Display|#(NOT_HELPFUL3)
+			|Display|#(NOT_HELPFUL4)
+			|Display|#(NOT_HELPFUL5)
+			|OptionRemove||#(tough_luck)
+			|Prompt
+
+			#(LOOK_LIKE0)|Display|#(LOOK_LIKE0)
+			|Display|#(LOOK_LIKE1)
+			|Display|#(LOOK_LIKE2)
+			|Display|#(LOOK_LIKE3)
+			|OptionRemove|#(what_look_like)
+			|Option|#(how_can_i_help)|#(EMMISSARIES0)
+			|Prompt
+
+				#(EMMISSARIES0)|Display|#(EMMISSARIES0)
+				|Display|#(EMMISSARIES1)
+				|Display|#(EMMISSARIES2)
+				|Display|#(EMMISSARIES3)
+				|Display|#(EMMISSARIES4)
+				|Display|#(EMMISSARIES5)
+				|Display|#(EMMISSARIES6)
+				|Display|#(EMMISSARIES7)
+				|Script|throw new Error("todo");
+				|Goto||Done
+
+	#(TOLD_YOU0)|Display|#(TOLD_YOU0)
+	|Display|#(TOLD_YOU1)
+	|Display|#(TOLD_YOU2)
+	|Display|#(TOLD_YOU3)
+	|Display|#(TOLD_YOU4)
+	|Display|#(TOLD_YOU5)
+	|Display|#(TOLD_YOU6)
+	|Display|#(TOLD_YOU7)
+	|OptionRemove|#(quiet_toadies)
+	|Prompt
+
+	#(SEE_TOLD_YOU0)|Display|#(SEE_TOLD_YOU0)
+	|Display|#(SEE_TOLD_YOU1)
+	|Display|#(SEE_TOLD_YOU2)
+	|Display|#(SEE_TOLD_YOU3)
+	|OptionRemove|#(all_very_interesting)
+	|Prompt
+
+	#(GOODBYE0)|Display|#(GOODBYE0)
+	|Display|#(GOODBYE1)
+	|Display|#(GOODBYE2)
+	|Display|#(GOODBYE3)
+	|Goto||Done
+
+|Display|#(NEUTRAL_HOME_HELLO_10)
+|Display|#(NEUTRAL_HOME_HELLO_11)
+|Display|#(NEUTRAL_HOME_HELLO_12)
+|Display|#(NEUTRAL_HOME_HELLO_13)
+|Option|#(whats_up_homeworld)|#(GENERAL_INFO)
+|Option|#(any_war_news)|WarNews
+|Option|#(i_want_alliance)|#(GOOD0)
+|Option|#(bye_homeworld)#(GOODBYE_HOME0)
+|Prompt
+
+	|Display|#(NEUTRAL_HOME_HELLO_20)
+	|Display|#(NEUTRAL_HOME_HELLO_21)
+	|Display|#(NEUTRAL_HOME_HELLO_22)
+	|Display|#(NEUTRAL_HOME_HELLO_23)
+
+	|Display|#(ALLIED_HOME_HELLO_10)
+	|Display|#(ALLIED_HOME_HELLO_11)
+	|Display|#(ALLIED_HOME_HELLO_12)
+	|Display|#(ALLIED_HOME_HELLO_13)
+
+	|Display|#(ALLIED_HOME_HELLO_20)
+	|Display|#(ALLIED_HOME_HELLO_21)
+	|Display|#(ALLIED_HOME_HELLO_22)
+	|Display|#(ALLIED_HOME_HELLO_23)
+	|Display|#(ALLIED_HOME_HELLO_24)
+	|Display|#(ALLIED_HOME_HELLO_25)
+	|Display|#(ALLIED_HOME_HELLO_26)
+	|Display|#(ALLIED_HOME_HELLO_27)
+
+	|Display|#(ALLIED_HOME_HELLO_30)
+	|Display|#(ALLIED_HOME_HELLO_31)
+
+	|Display|#(ALLIED_HOME_HELLO_40)
+	|Display|#(ALLIED_HOME_HELLO_41)
+
+	|Display|#(THANKS_FOR_RESCUE0)
+	|Display|#(THANKS_FOR_RESCUE1)
+	|Display|#(THANKS_FOR_RESCUE2)
+	|Display|#(THANKS_FOR_RESCUE3)
+	|Display|#(THANKS_FOR_RESCUE4)
+	|Display|#(THANKS_FOR_RESCUE5)
+	|Display|#(THANKS_FOR_RESCUE6)
+	|Display|#(THANKS_FOR_RESCUE7)
+	|Display|#(THANKS_FOR_RESCUE8)
+	|Display|#(THANKS_FOR_RESCUE9)
+	|Display|#(THANKS_FOR_RESCUE10)
+	|Display|#(THANKS_FOR_RESCUE11)
+
+
+	#(GENERAL_INFO)|DoNothing
+	|OptionRemove||#(whats_up_homeworld)
+	|Goto||#(GENERAL_INFO_10)
+
+		#(GENERAL_INFO_10)|Display|#(GENERAL_INFO_10)
+		|Display|#(GENERAL_INFO_11)
+		|Display|#(GENERAL_INFO_12)
+		|Display|#(GENERAL_INFO_13)
+		|Prompt
+
+		#(GENERAL_INFO_20)|Display#(GENERAL_INFO_20)
+		|Display#(GENERAL_INFO_21)
+		|Display#(GENERAL_INFO_22)
+		|Display#(GENERAL_INFO_23)
+		|Display#(GENERAL_INFO_24)
+		|Display#(GENERAL_INFO_25)
+		|Display#(GENERAL_INFO_26)
+		|Display#(GENERAL_INFO_27)
+		|Prompt
+
+		#(GENERAL_INFO_30)|Display|#(GENERAL_INFO_30)
+		|Display|#(GENERAL_INFO_31)
+		|Display|#(GENERAL_INFO_32)
+		|Display|#(GENERAL_INFO_33)
+		|Display|#(GENERAL_INFO_34)
+		|Display|#(GENERAL_INFO_35)
+		|Prompt
+
+		#(GENERAL_INFO_40)|Display|#(GENERAL_INFO_40)
+		|Display|#(GENERAL_INFO_41)
+		|Display|#(GENERAL_INFO_42)
+		|Display|#(GENERAL_INFO_43)
+		|Display|#(GENERAL_INFO_44)
+		|Display|#(GENERAL_INFO_45)
+		|Display|#(GENERAL_INFO_46)
+		|Display|#(GENERAL_INFO_47)
+		|Display|#(GENERAL_INFO_48)
+		|Display|#(GENERAL_INFO_49)
+		|Display|#(GENERAL_INFO_410)
+		|Display|#(GENERAL_INFO_411)
+		|Prompt
+
+	WarNews|DoNothing
+	|OptionRemove||#(any_war_news)
+	|Goto||#(NO_WAR_NEWS0)
+
+		#(NO_WAR_NEWS0)|Display|#(NO_WAR_NEWS0)
+		|Display|#(NO_WAR_NEWS1)
+		|Prompt
+
+		#(UTWIG_DELAY0)|Display|#(UTWIG_DELAY0)
+		|Display|#(UTWIG_DELAY1)
+		|Display|#(UTWIG_DELAY2)
+		|Display|#(UTWIG_DELAY3)
+		|Display|#(UTWIG_DELAY4)
+		|Display|#(UTWIG_DELAY5)
+		|Display|#(UTWIG_DELAY6)
+		|Display|#(UTWIG_DELAY7)
+		|Display|#(UTWIG_DELAY8)
+		|Display|#(UTWIG_DELAY9)
+		|Display|#(UTWIG_DELAY10)
+		|Display|#(UTWIG_DELAY11)
+		|Display|#(UTWIG_DELAY12)
+		|Display|#(UTWIG_DELAY13)
+		|Prompt
+
+		#(KOHRAH_WINNING0)|Display|#(KOHRAH_WINNING0)
+		|Display|#(KOHRAH_WINNING1)
+		|Display|#(KOHRAH_WINNING2)
+		|Display|#(KOHRAH_WINNING3)
+		|Display|#(KOHRAH_WINNING4)
+		|Display|#(KOHRAH_WINNING5)
+		|Display|#(KOHRAH_WINNING6)
+		|Display|#(KOHRAH_WINNING7)
+		|Display|#(KOHRAH_WINNING8)
+		|Display|#(KOHRAH_WINNING9)
+		|Prompt
+
+		#(URQUAN_NEARLY_GONE0)|Display|#(URQUAN_NEARLY_GONE0)
+		|Display|#(URQUAN_NEARLY_GONE1)
+		|Display|#(URQUAN_NEARLY_GONE2)
+		|Display|#(URQUAN_NEARLY_GONE3)
+		|Display|#(URQUAN_NEARLY_GONE4)
+		|Display|#(URQUAN_NEARLY_GONE5)
+		|Prompt
+
+		#(KOHRAH_FRENZY0)|Display|#(KOHRAH_FRENZY0)
+		|Display|#(KOHRAH_FRENZY1)
+		|Display|#(KOHRAH_FRENZY2)
+		|Display|#(KOHRAH_FRENZY3)
+		|Display|#(KOHRAH_FRENZY4)
+		|Display|#(KOHRAH_FRENZY5)
+		|Display|#(KOHRAH_FRENZY6)
+		|Display|#(KOHRAH_FRENZY7)
+		|Display|#(KOHRAH_FRENZY8)
+		|Display|#(KOHRAH_FRENZY9)
+		|Display|#(KOHRAH_FRENZY10)
+		|Display|#(KOHRAH_FRENZY11)
+		|Prompt
+
+	#(GOOD0)|Display|#(GOOD0)
+	|Display|#(GOOD1)
+	|Display|#(GOOD2)
+	|Display|#(GOOD3)
+	|Display|#(GOOD4)
+	|Display|#(GOOD5)
+	|Display|#(GOOD6)
+	|Display|#(GOOD7)
+	|Display|#(GOOD8)
+	|Display|#(GOOD9)
+	|OptionRemove|#(i_want_alliance)
+	|Option|#(want_specific_info)|#(WHAT_SPECIFIC_INFO0)
+	|Script|throw new Error("todo")
+	|Prompt
+
+		#(WHAT_SPECIFIC_INFO0)|Display|#(WHAT_SPECIFIC_INFO0)
+		|Display|#(WHAT_SPECIFIC_INFO1)
+		|Push
+		|Option|#(what_about_others)|#(ABOUT_OTHERS0)
+		|Option|#(what_about_zebranky)|#(ABOUT_ZEBRANKY0) // Actually "Tell me more about your people."
+		|Option|#(what_about_stinger)|#(ABOUT_STINGER0)
+		|Option|#(what_about_guy_in_back)|#(ABOUT_GUY0)
+		|Option|#(what_about_past)|#(ABOUT_PAST0)
+		|Option|#(enough_info)|#(OK_ENOUGH_INFO)
+		|Prompt
+
+			#(ABOUT_OTHERS0)|Display|#(ABOUT_OTHERS0)
+			|Display|#(ABOUT_OTHERS1)
+			|Display|#(ABOUT_OTHERS2)
+			|Display|#(ABOUT_OTHERS3)
+			|Display|#(ABOUT_OTHERS4)
+			|Display|#(ABOUT_OTHERS5)
+			|Display|#(ABOUT_OTHERS6)
+			|Display|#(ABOUT_OTHERS7)
+			|Display|#(ABOUT_OTHERS8)
+			|Display|#(ABOUT_OTHERS9)
+			|Display|#(ABOUT_OTHERS10)
+			|Display|#(ABOUT_OTHERS11)
+			|Display|#(ABOUT_OTHERS12)
+			|Display|#(ABOUT_OTHERS13)
+			|OptionRemove||#(what_about_others)
+			|Prompt
+
+			#(ABOUT_ZEBRANKY0)|Display|#(ABOUT_ZEBRANKY0)
+			|Display|#(ABOUT_ZEBRANKY1)
+			|Display|#(ABOUT_ZEBRANKY2)
+			|Display|#(ABOUT_ZEBRANKY3)
+			|Display|#(ABOUT_ZEBRANKY4)
+			|Display|#(ABOUT_ZEBRANKY5)
+			|Display|#(ABOUT_ZEBRANKY6)
+			|Display|#(ABOUT_ZEBRANKY7)
+			|OptionRemove||#(what_about_zebranky)
+			|Prompt
+
+			#(ABOUT_STINGER0)|Display|#(ABOUT_STINGER0)
+			|Display|#(ABOUT_STINGER1)
+			|Display|#(ABOUT_STINGER2)
+			|Display|#(ABOUT_STINGER3)
+			|Display|#(ABOUT_STINGER4)
+			|Display|#(ABOUT_STINGER5)
+			|OptionRemove||#(what_about_stinger)
+			|Prompt
+
+			#(ABOUT_GUY0)|Display|#(ABOUT_GUY0)
+			|Display|#(ABOUT_GUY1)
+			|OptionRemove||#(what_about_guy_in_back)
+			|Prompt
+
+			#(ABOUT_PAST0)|Display|#(ABOUT_PAST0)
+			|Display|#(ABOUT_PAST1)
+			|Display|#(ABOUT_PAST2)
+			|Display|#(ABOUT_PAST3)
+			|Display|#(ABOUT_PAST4)
+			|Display|#(ABOUT_PAST5)
+			|Display|#(ABOUT_PAST6)
+			|Display|#(ABOUT_PAST7)
+			|Display|#(ABOUT_PAST8)
+			|Display|#(ABOUT_PAST9)
+			|Display|#(ABOUT_PAST10)
+			|Display|#(ABOUT_PAST11)
+			|OptionRemove||#(what_about_past)
+			|Prompt
+
+			#(OK_ENOUGH_INFO)|Display|#(OK_ENOUGH_INFO)
+			|Pop
+
+	#(GOODBYE_HOME0)|Display|#(GOODBYE_HOME0)
+	|Display|#(GOODBYE_HOME1)
+	|Goto||Done
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+
+
+#(ALLY_WITH_US0)
+#(ALLY_WITH_US1)
+#(ALLY_WITH_US2)
+#(ALLY_WITH_US3)
+#(ALLY_WITH_US4)
+#(ALLY_WITH_US5)
+
+#(decide_later)
+
+#(PLEASE_HURRY0)
+#(PLEASE_HURRY1)
+
+
+#(sure)
+
+#(WE_ALLY0)
+#(WE_ALLY1)
+#(WE_ALLY2)
+#(WE_ALLY3)
+#(WE_ALLY4)
+#(WE_ALLY5)
+
+#(never)
+
+#(WE_ENEMIES0)
+#(WE_ENEMIES1)
+
+#(HOSTILE_HELLO_10)
+#(HOSTILE_HELLO_11)
+
+#(HOSTILE_HELLO_20)
+#(HOSTILE_HELLO_21)
+#(HOSTILE_HELLO_22)
+#(HOSTILE_HELLO_23)
+#(HOSTILE_HELLO_24)
+#(HOSTILE_HELLO_25)
+
+#(HOSTILE_HELLO_30)
+#(HOSTILE_HELLO_31)
+
+#(HOSTILE_HELLO_40)
+#(HOSTILE_HELLO_41)
+
+
+#(name_1)
+#(name_2)
+#(name_3)
+#(name_4)
+
+#(OUT_TAKES0)
+#(OUT_TAKES1)
+#(OUT_TAKES2)
+#(OUT_TAKES3)
+#(OUT_TAKES4)
+#(OUT_TAKES5)
+#(OUT_TAKES6)
+#(OUT_TAKES7)
+#(OUT_TAKES8)
+#(OUT_TAKES9)
+#(OUT_TAKES10)
+#(OUT_TAKES11)
+#(OUT_TAKES12)
+#(OUT_TAKES13)
+
+|Display|#(INIT_HOME_HELLO0)
+|Display|#(INIT_HOME_HELLO1)
+|Display|#(INIT_HOME_HELLO2)
+|Display|#(INIT_HOME_HELLO3)
+

@@ -1,0 +1,123 @@
+name=Lahkemup
+imagePortraitName=Conversation-Portrait-Lahkemup
+
+|VariablesImport|u.world.player.variableLookup
+
+|Display|#(INIT_URQUAN_WAKE_UP)
+|Option|#(where_am_i)|#(YOU_ARE_HERE)
+|Option|#(why_does_my_head_hurt)|#(HURTS_BECAUSE)
+|Option|#(what_about_2_weeks)|#(ABOUT_2_WEEKS)
+|Option|#(compulsion)|#(WHAT_COMPULSION)
+|Option|#(bye_init_hypno)
+|Prompt
+
+	#(YOU_ARE_HERE)|Display|#(YOU_ARE_HERE)
+	|OptionRemove|#(where_am_i)
+	|Prompt
+
+	#(HURTS_BECAUSE)|Display|#(HURTS_BECAUSE)
+	|OptionRemove||#(why_does_my_head_hurt)
+	|Prompt
+
+	#(ABOUT_2_WEEKS)|Display|#(ABOUT_2_WEEKS)
+	|OptionRemove||#(what_about_2_weeks)
+	|Prompt
+
+	#(WHAT_COMPULSION)|Display|#(WHAT_COMPULSION)
+	|OptionRemove||#(compulsion)
+	|Option|#(wascally_little_guy)|#(WHAT_IT_LOOK_LIKE)
+	|Option|#(alien_mind_control)|#(WHAT_FELT_LIKE)
+	|Option|#(possessed_by_devil)|#(STUPID_DEVIL)
+	|Option|#(why_explain)|#(MUST_EXPLAIN)
+
+		#(WHAT_IT_LOOK_LIKE)|Display|#(WHAT_IT_LOOK_LIKE)
+		|Option|#(terran_amphibian)
+		|Option|#(talking_pet_on_steroids)
+		|Option|#(turd_and_toad)|#(WHAT_IS_TURD_AND_TOAD)
+		|Prompt
+
+			#(WHAT_IS_TURD_AND_TOAD)|Display|#(WHAT_IS_TURD_AND_TOAD)
+
+		#(WHAT_FELT_LIKE)|Display|#(WHAT_FELT_LIKE)
+		|OptionsClear
+		|Option|#(falling_asleep)|#(SOUNDS_FAMILIAR)
+		|Option|#(someone_else_controlled)
+		|Option|#(before_coffee)|#(EXPLAIN)
+		|Prompt
+
+			#(SOUNDS_FAMILIAR)|Display|#(SOUNDS_FAMILIAR)
+			|Goto||Done
+
+			#(EXPLAIN)|Display|#(EXPLAIN)
+			|OptionRemove|#(before_coffee)
+			|Prompt
+
+		#(STUPID_DEVIL)|Display|#(STUPID_DEVIL)
+		|OptionRemove||#(possessed_by_devil)
+		|Prompt
+
+		#(BAD_NEWS)
+
+		#(MUST_EXPLAIN)|Display|#(MUST_EXPLAIN)
+		|OptionRemove||#(why_explain)
+		|Prompt
+
+	#(GOODBYE_AND_DIE_INIT_HYPNO)
+	|Goto||Combat
+
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+#(HELLO_SAMATRA)
+#(SENSE_EVIL)
+#(SUBSEQUENT_URQUAN_WAKE_UP)
+#(uh_oh)
+#(NO_UH_OH)
+#(stop_meeting)
+#(NO_STOP_MEETING)
+#(bye_sub_hypno)
+#(GOODBYE_AND_DIE_SUB_HYPNO)
+#(CAUGHT_YA)
+#(INIT_FLEE_HUMAN)
+#(SUBSEQUENT_FLEE_HUMAN)
+#(why_flee)
+#(FLEE_BECAUSE)
+#(what_happens_now)
+#(HAPPENS_NOW)
+#(what_about_you)
+#(ABOUT_US)
+#(bye_wars_over)
+#(GOODBYE_WARS_OVER)
+#(SEND_MESSAGE)
+#(INIT_HELLO)
+#(SUBSEQUENT_HELLO_1)
+#(SUBSEQUENT_HELLO_2)
+#(SUBSEQUENT_HELLO_3)
+#(SUBSEQUENT_HELLO_4)
+#(you_must_surrender)
+#(NOPE)
+#(i_surrender)
+#(DISOBEDIENCE_PUNISHED)
+#(i_wont_surrender)
+#(BAD_CHOICE)
+#(i_will_surrender)
+#(GOOD_CHOICE)
+#(key_phrase)
+#(URQUAN_STORY)
+#(like_to_leave)
+#(INDEPENDENCE_IS_BAD)
+#(whats_up_1)
+#(GENERAL_INFO_1)
+#(whats_up_2)
+#(GENERAL_INFO_2)
+#(whats_up_3)
+#(GENERAL_INFO_3)
+#(whats_up_4)
+#(GENERAL_INFO_4)
+#(OUT_TAKES)
