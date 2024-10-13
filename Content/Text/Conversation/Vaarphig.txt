@@ -1,161 +1,322 @@
-{
-    "name": "Warpig",
-    "imagePortraitName": "Conversation-Portrait-Warpig",
-    "contentTextStringName": "Conversation-Warpig-Content",
-    "talkNodes": [
+name=Warpig
+imagePortraitName=Conversation-Portrait-Vaarphig
+contentTextStringName=Conversation-Vaarphig-Content
 
-{ "defnName": "Display", "content": "#(HOSTILE_SPACE_HELLO_1)" },
-{ "defnName": "Display", "content": "#(HOSTILE_SPACE_HELLO_2)" },
-{ "defnName": "Display", "content": "#(HOSTILE_SPACE_HELLO_3)" },
-{ "defnName": "Display", "content": "#(HOSTILE_SPACE_HELLO_4)" },
-{ "defnName": "Display", "content": "#(HOSTILE_HOMEWORLD_HELLO_1)" },
-{ "defnName": "Display", "content": "#(HOSTILE_HOMEWORLD_HELLO_2)" },
-{ "defnName": "Display", "content": "#(HOSTILE_HOMEWORLD_HELLO_3)" },
-{ "defnName": "Display", "content": "#(HOSTILE_HOMEWORLD_HELLO_4)" },
-{ "defnName": "Display", "content": "#(whats_up_hostile_1)" },
-{ "defnName": "Display", "content": "#(whats_up_hostile_2)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_HOSTILE_1)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_HOSTILE_2)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_HOSTILE_3)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_HOSTILE_4)" },
-{ "defnName": "Display", "content": "#(what_about_you_1)" },
-{ "defnName": "Display", "content": "#(ABOUT_US_1)" },
-{ "defnName": "Display", "content": "#(what_about_you_2)" },
-{ "defnName": "Display", "content": "#(ABOUT_US_2)" },
-{ "defnName": "Display", "content": "#(what_about_urquan_1)" },
-{ "defnName": "Display", "content": "#(ABOUT_URQUAN_1)" },
-{ "defnName": "Display", "content": "#(what_about_urquan_2)" },
-{ "defnName": "Display", "content": "#(ABOUT_URQUAN_2)" },
-{ "defnName": "Display", "content": "#(got_idea)" },
-{ "defnName": "Display", "content": "#(GOOD_IDEA)" },
-{ "defnName": "Display", "content": "#(WE_GO_TO_IMPRESS_URQUAN_1)" },
-{ "defnName": "Display", "content": "#(WE_GO_TO_IMPRESS_URQUAN_2)" },
-{ "defnName": "Display", "content": "#(WE_IMPRESSING_URQUAN_1)" },
-{ "defnName": "Display", "content": "#(WE_IMPRESSING_URQUAN_2)" },
-{ "defnName": "Display", "content": "#(WE_IMPRESSED_URQUAN_1)" },
-{ "defnName": "Display", "content": "#(WE_IMPRESSED_URQUAN_2)" },
-{ "defnName": "Display", "content": "#(HOSTILE_HELIX_HELLO_1)" },
-{ "defnName": "Display", "content": "#(HOSTILE_HELIX_HELLO_2)" },
-{ "defnName": "Display", "content": "#(submit_1)" },
-{ "defnName": "Display", "content": "#(NO_SUBMIT_1)" },
-{ "defnName": "Display", "content": "#(submit_2)" },
-{ "defnName": "Display", "content": "#(NO_SUBMIT_2)" },
-{ "defnName": "Display", "content": "#(be_friends_1)" },
-{ "defnName": "Display", "content": "#(NO_FRIENDS_1)" },
-{ "defnName": "Display", "content": "#(be_friends_2)" },
-{ "defnName": "Display", "content": "#(NO_FRIENDS_2)" },
-{ "defnName": "Display", "content": "#(how_impressed_urquan_1)" },
-{ "defnName": "Display", "content": "#(IMPRESSED_LIKE_SO_1)" },
-{ "defnName": "Display", "content": "#(how_impressed_urquan_2)" },
-{ "defnName": "Display", "content": "#(IMPRESSED_LIKE_SO_2)" },
-{ "defnName": "Display", "content": "#(bye_hostile_1)" },
-{ "defnName": "Display", "content": "#(GOODBYE_HOSTILE_1)" },
-{ "defnName": "Display", "content": "#(bye_hostile_2)" },
-{ "defnName": "Display", "content": "#(GOODBYE_HOSTILE_2)" },
-{ "defnName": "Display", "content": "#(why_you_here_hostile)" },
-{ "defnName": "Display", "content": "#(NONE_OF_YOUR_CONCERN)" },
-{ "defnName": "Display", "content": "#(demand_to_land)" },
-{ "defnName": "Display", "content": "#(NO_DEMAND)" },
-{ "defnName": "Display", "content": "#(what_about_this_world)" },
-{ "defnName": "Display", "content": "#(BLUE_HELIX)" },
-{ "defnName": "Display", "content": "#(whats_helix_hostile)" },
-{ "defnName": "Display", "content": "#(HELIX_IS_HOSTILE)" },
-{ "defnName": "Display", "content": "#(i_need_to_land_lie)" },
-{ "defnName": "Display", "content": "#(CAUGHT_LIE)" },
-{ "defnName": "Display", "content": "#(bye_hostile_helix)" },
-{ "defnName": "Display", "content": "#(GOODBYE_HOSTILE_HELIX)" },
-{ "defnName": "Display", "content": "#(DIE_THIEF_1)" },
-{ "defnName": "Display", "content": "#(DIE_THIEF_2)" },
-{ "defnName": "Display", "content": "#(AMAZING_PERFORMANCE)" },
-{ "defnName": "Display", "content": "#(IMPRESSIVE_PERFORMANCE)" },
-{ "defnName": "Display", "content": "#(ADEQUATE_PERFORMANCE)" },
-{ "defnName": "Display", "content": "#(HELLO_POLITE_1)" },
-{ "defnName": "Display", "content": "#(HELLO_POLITE_2)" },
-{ "defnName": "Display", "content": "#(HELLO_POLITE_3)" },
-{ "defnName": "Display", "content": "#(HELLO_POLITE_4)" },
-{ "defnName": "Display", "content": "#(HELLO_RHYME_1)" },
-{ "defnName": "Display", "content": "#(HELLO_RHYME_2)" },
-{ "defnName": "Display", "content": "#(HELLO_RHYME_3)" },
-{ "defnName": "Display", "content": "#(HELLO_RHYME_4)" },
-{ "defnName": "Display", "content": "#(HELLO_PIG_LATIN_1)" },
-{ "defnName": "Display", "content": "#(HELLO_PIG_LATIN_2)" },
-{ "defnName": "Display", "content": "#(HELLO_PIG_LATIN_3)" },
-{ "defnName": "Display", "content": "#(HELLO_PIG_LATIN_4)" },
-{ "defnName": "Display", "content": "#(HELLO_LIKE_YOU_1)" },
-{ "defnName": "Display", "content": "#(HELLO_LIKE_YOU_2)" },
-{ "defnName": "Display", "content": "#(HELLO_LIKE_YOU_3)" },
-{ "defnName": "Display", "content": "#(HELLO_LIKE_YOU_4)" },
-{ "defnName": "Display", "content": "#(WELCOME_SPACE0)" },
-{ "defnName": "Display", "content": "#(WELCOME_SPACE1)" },
-{ "defnName": "Display", "content": "#(WELCOME_HOMEWORLD0)" },
-{ "defnName": "Display", "content": "#(WELCOME_HOMEWORLD1)" },
-{ "defnName": "Display", "content": "#(WELCOME_HELIX0)" },
-{ "defnName": "Display", "content": "#(WELCOME_HELIX1)" },
-{ "defnName": "Display", "content": "#(why_you_here_ally)" },
-{ "defnName": "Display", "content": "#(GUARDING_HELIX_ALLY)" },
-{ "defnName": "Display", "content": "#(whats_helix_ally)" },
-{ "defnName": "Display", "content": "#(HELIX_IS_ALLY)" },
-{ "defnName": "Display", "content": "#(may_i_land)" },
-{ "defnName": "Display", "content": "#(SURE_LAND)" },
-{ "defnName": "Display", "content": "#(whats_up_ally)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_ALLY_1)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_ALLY_2)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_ALLY_3)" },
-{ "defnName": "Display", "content": "#(GENERAL_INFO_ALLY_4)" },
-{ "defnName": "Display", "content": "#(HOW_SHOULD_WE_ACT)" },
-{ "defnName": "Display", "content": "#(friendly)" },
-{ "defnName": "Display", "content": "#(OK_FRIENDLY)" },
-{ "defnName": "Display", "content": "#(wacky)" },
-{ "defnName": "Display", "content": "#(OK_WACKY)" },
-{ "defnName": "Display", "content": "#(just_like_us)" },
-{ "defnName": "Display", "content": "#(OK_JUST_LIKE_YOU)" },
-{ "defnName": "Display", "content": "#(WORK_TO_DO)" },
-{ "defnName": "Display", "content": "#(contemplative)" },
-{ "defnName": "Display", "content": "#(OK_CONTEMPLATIVE)" },
-{ "defnName": "Display", "content": "#(how_goes_culture)" },
-{ "defnName": "Display", "content": "#(CONTEMP_GOES_1)" },
-{ "defnName": "Display", "content": "#(CONTEMP_GOES_2)" },
-{ "defnName": "Display", "content": "#(FRIENDLY_GOES_1)" },
-{ "defnName": "Display", "content": "#(FRIENDLY_GOES_2)" },
-{ "defnName": "Display", "content": "#(WACKY_GOES_1)" },
-{ "defnName": "Display", "content": "#(WACKY_GOES_2)" },
-{ "defnName": "Display", "content": "#(LIKE_YOU_GOES_1)" },
-{ "defnName": "Display", "content": "#(LIKE_YOU_GOES_2)" },
-{ "defnName": "Display", "content": "#(bye_ally)" },
-{ "defnName": "Display", "content": "#(GOODBYE_ALLY_1)" },
-{ "defnName": "Display", "content": "#(GOODBYE_ALLY_2)" },
-{ "defnName": "Display", "content": "#(GOODBYE_ALLY_3)" },
-{ "defnName": "Display", "content": "#(GOODBYE_ALLY_4)" },
-{ "defnName": "Display", "content": "#(be_polite)" },
-{ "defnName": "Display", "content": "#(OK_POLITE)" },
-{ "defnName": "Display", "content": "#(speak_pig_latin)" },
-{ "defnName": "Display", "content": "#(OK_PIG_LATIN)" },
-{ "defnName": "Display", "content": "#(use_rhymes)" },
-{ "defnName": "Display", "content": "#(OK_RHYMES)" },
-{ "defnName": "Display", "content": "#(just_the_way_we_do)" },
-{ "defnName": "Display", "content": "#(OK_WAY_YOU_DO)" },
-{ "defnName": "Display", "content": "#(WHAT_NAME_FOR_CULTURE)" },
-{ "defnName": "Display", "content": "#(alliance_name)" },
-{ "defnName": "Display", "content": "#(OK_ALLIANCE_NAME)" },
-{ "defnName": "Display", "content": "#(NAME_TAIL)" },
-{ "defnName": "Display", "content": "#(you_decide)" },
-{ "defnName": "Display", "content": "#(OK_CULTURE_20)" },
-{ "defnName": "Display", "content": "#(fat)" },
-{ "defnName": "Display", "content": "#(OK_FAT)" },
-{ "defnName": "Display", "content": "#(the_slave_empire)" },
-{ "defnName": "Display", "content": "#(OK_SLAVE)" },
-{ "defnName": "Display", "content": "#(FAT_JERKS)" },
-{ "defnName": "Display", "content": "#(CULTURE)" },
-{ "defnName": "Display", "content": "#(SLAVE_EMPIRE)" },
-{ "defnName": "Display", "content": "#(name_1)" },
-{ "defnName": "Display", "content": "#(name_2)" },
-{ "defnName": "Display", "content": "#(name_3)" },
-{ "defnName": "Display", "content": "#(name_4)" },
-{ "defnName": "Display", "content": "#(HAVING_FUN_WITH_ILWRATH_1)" },
-{ "defnName": "Display", "content": "#(HAVING_FUN_WITH_ILWRATH_2)" },
-{ "defnName": "Display", "content": "#(GO_AWAY_FIGHTING_ILWRATH_1)" },
-{ "defnName": "Display", "content": "#(GO_AWAY_FIGHTING_ILWRATH_2)" },
-{ "defnName": "Display", "content": "#(OUT_TAKES)" }
+|VariablesImport|u.world.player.variableLookup
 
-    ]
-}
+
+|JumpIfTrue|Vaarphig_HaveBeenDefeated25Times|HaveBeenDefeated25Times
+|VariableLoad|Vaarphig_ShipsDefeated|throw new Error("todo")
+
+|VariableLoad|Vaarphig_EncounterIsInSpace|throw new Error("todo")
+|JumpIfTrue|Vaarphig_EncounterIsInSpace|Space
+
+|VariableLoad|Vaarphig_EncounterIsAtHomeworld|throw new Error("todo")
+|JumpIfTrue|Vaarphig_EncounterIsAtHomeworld|Homeworld
+
+|VariableLoad|Vaarphig_EncounterIsAtShrine|throw new Error("todo")
+|JumpIfTrue|Vaarphig_EncounterIsAtShrine|Shrine
+
+
+
+Homeworld|DoNothing
+
+|VariableAdd|Vaarphig_Homeworld_Encounters
+
+|Display|#(HOSTILE_HOMEWORLD_HELLO_1)||cr.v("Vaarphig_Homeworld_Encounters") == 1
+|Display|#(HOSTILE_HOMEWORLD_HELLO_2)||cr.v("Vaarphig_Homeworld_Encounters") == 2
+|Display|#(HOSTILE_HOMEWORLD_HELLO_3)||cr.v("Vaarphig_Homeworld_Encounters") == 3
+|Display|#(HOSTILE_HOMEWORLD_HELLO_4)||cr.v("Vaarphig_Homeworld_Encounters") >= 4
+|Goto||OptionsTopLevel
+
+
+Space|DoNothing
+
+|VariableAdd|Vaarphig_Space_Encounters
+
+SpaceHostile|DoNothing
+
+|JumpIfTrue|cr.v("Vaarphig_ShipsDefeated") >= 25|#(AMAZING_PERFORMANCE)
+|Display|#(IMPRESSIVE_PERFORMANCE)|cr.v("Vaarphig_ShipsDefeated") >= 20
+|Display|#(ADEQUATE_PERFORMANCE)|cr.v("Vaarphig_ShipsDefeated") >= 10
+
+|JumpIfTrue|Vaarphig_GoingToImpressMasters|Greetings_GoingToImpressMasters
+
+|Display|#(HOSTILE_SPACE_HELLO_1)||cr.v("Vaarphig_ShipsDefeated") < 10 && cr.v("Vaarphig_Space_Encounters") == 1
+|Display|#(HOSTILE_SPACE_HELLO_2)||cr.v("Vaarphig_ShipsDefeated") < 10 && cr.v("Vaarphig_Space_Encounters") == 2
+|Display|#(HOSTILE_SPACE_HELLO_3)||cr.v("Vaarphig_ShipsDefeated") < 10 && cr.v("Vaarphig_Space_Encounters") == 3
+|Display|#(HOSTILE_SPACE_HELLO_4)||cr.v("Vaarphig_ShipsDefeated") < 10 && cr.v("Vaarphig_Space_Encounters") >= 4
+|Goto||OptionsTopLevel
+
+Greetings_GoingToImpressMasters|DoNothing
+|Display|#(WE_GO_TO_IMPRESS_URQUAN_1)||cr.v("Vaarphig_Space_Encounters") % 2 == 1
+|Display|#(WE_GO_TO_IMPRESS_URQUAN_2)||cr.v("Vaarphig_Space_Encounters") % 2 == 0
+|Goto||OptionsTopLevel
+
+OptionsTopLevel|DoNothing
+|Option|#(whats_up_hostile_1)||cr.v("Vaarphig_Space_Encounters" % 2) == 1
+|Option|#(whats_up_hostile_2)||cr.v("Vaarphig_Space_Encounters" % 2) == 0 
+|Option|#(what_about_you_1)|#(ABOUT_US_1)
+|Option|#(submit_1)|#(NO_SUBMIT_1)
+|Option|#(submit_2)|#(NO_SUBMIT_2)
+|Option|#(be_friends_1)|#(NO_FRIENDS_1)||cr.v("Vaarphig_HaveBeenAskedToBeFriendsAtLeastOnce") == false
+|Option|#(be_friends_2)|#(NO_FRIENDS_2)||cr.v("Vaarphig_HaveBeenAskedToBeFriendsAtLeastOnce")
+|Option|#(bye_hostile_1)|#(GOODBYE_HOSTILE_1)|cr.v("Vaarphig_Space_Encounters") % 2 == 1 
+|Option|#(bye_hostile_2)|#(GOODBYE_HOSTILE_2)|cr.v("Vaarphig_Space_Encounters") % 2 == 0 
+|Prompt
+
+	#(GENERAL_INFO_HOSTILE)|DoNothing
+	|VariableAdd|Vaarphig_Space_GeneralInfoQuestionsAsked
+	|Display|#(GENERAL_INFO_HOSTILE_1)||cr.v("Vaarphig_Space_GeneralInfoQuestionsAsked") % 4 == 1
+	|Display|#(GENERAL_INFO_HOSTILE_2)||cr.v("Vaarphig_Space_GeneralInfoQuestionsAsked") % 4 == 2
+	|Display|#(GENERAL_INFO_HOSTILE_3)||cr.v("Vaarphig_Space_GeneralInfoQuestionsAsked") % 4 == 3
+	|Display|#(GENERAL_INFO_HOSTILE_4)||cr.v("Vaarphig_Space_GeneralInfoQuestionsAsked") % 4 == 0
+	|Prompt
+
+	#(ABOUT_US_1)|Display|#(ABOUT_US_1)
+	|OptionRemove||#(what_about_you_1)
+	|Option|#(what_about_you_2)|#(ABOUT_US_2)
+	|Prompt
+
+		#(ABOUT_US_2)|Display|#(ABOUT_US_2)
+		|Option|#(what_about_urquan_1)|#(ABOUT_URQUAN_1)
+		|OptionRemove||#(what_about_you_2)
+		|Prompt
+
+			#(ABOUT_URQUAN_1)|Display|#(ABOUT_URQUAN_1)
+			|Option|#(what_about_urquan_2)|#(ABOUT_URQUAN_2)
+			|OptionRemove||#(what_about_urquan_1)
+			|Prompt
+
+				#(ABOUT_URQUAN_2)|Display|#(ABOUT_URQUAN_2)
+				#(got_idea)
+				|Prompt
+
+					#(GOOD_IDEA)
+					|VariableSet|Vaarphig_GoingToImpressMasters|true
+					|Script|throw new Error("todo")
+					|Goto||Done
+
+	#(NO_SUBMIT_1)|Display|#(NO_SUBMIT_1)
+	|Goto||Combat
+
+	#(NO_SUBMIT_2)|Display|#(NO_SUBMIT_2)
+	|Goto||Combat
+
+	#(NO_FRIENDS_1)|Display|#(NO_FRIENDS_1)
+	|VariableSet|Vaarphig_HaveBeenAskedToBeFriendsAtLeastOnce
+	|OptionRemove||#(be_friends_1)
+	|Option|#(be_friends_2)|#(NO_FRIENDS_2)
+	|Prompt
+
+		#(NO_FRIENDS_2)|Display|#(NO_FRIENDS_2)
+		|OptionRemove||#(be_friends_2)
+		|Prompt
+
+	#(GOODBYE_HOSTILE_1)|Display|#(GOODBYE_HOSTILE_1)
+	|Goto||Combat
+
+	#(GOODBYE_HOSTILE_2)|Display|#(GOODBYE_HOSTILE_2)
+	|Goto||Combat
+
+
+#(AMAZING_PERFORMANCE)|Display|#(AMAZING_PERFORMANCE)
+|Option|#(be_polite)|#(OK_POLITE)
+|Option|#(speak_pig_latin)|#(OK_PIG_LATIN)
+|Option|#(use_rhymes)|#(OK_RHYMES)
+|Option|#(just_the_way_we_do)|#(OK_WAY_YOU_DO)
+|Prompt
+
+	#(OK_POLITE)|Display|#(OK_POLITE)
+	|VariableSet|Vaarphig_GreetingStyle|Polite
+	|Goto||#(WHAT_NAME_FOR_CULTURE)
+
+	#(OK_PIG_LATIN)|Display|#(OK_PIG_LATIN)
+	|VariableSet|Vaarphig_GreetingStyle|PigLatin
+	|Goto||#(WHAT_NAME_FOR_CULTURE)
+
+	#(OK_RHYMES)|Display|#(OK_RHYMES)
+	|VariableSet|Vaarphig_GreetingStyle|Rhymes
+	|Goto||#(WHAT_NAME_FOR_CULTURE)
+
+	#(OK_WAY_YOU_DO)|Display|#(OK_WAY_YOU_DO)
+	|VariableSet|Vaarphig_GreetingStyle|Human
+	|Goto||#(WHAT_NAME_FOR_CULTURE)
+
+		#(WHAT_NAME_FOR_CULTURE)|Display|#(WHAT_NAME_FOR_CULTURE)
+		|OptionsClear
+		|Option|#(you_decide)|#(OK_CULTURE_20)
+		|Option|#(fat)|#(OK_FAT)
+		|Option|#(the_slave_empire)|#(OK_SLAVE)
+
+			#(OK_CULTURE_20)|Display|#(OK_CULTURE_20)
+			|VariableSet|Vaarphig_CultureName|Culture 20
+			|Goto||#(HOW_SHOULD_WE_ACT)
+
+			#(OK_FAT)
+			|VariableSet|Vaarphig_CultureName|Hefty D-Bags
+			|Goto||#(HOW_SHOULD_WE_ACT)
+
+			#(OK_SLAVE)
+			|VariableSet|Vaarphig_CultureName|Grovelling Slimes
+			|Goto||#(HOW_SHOULD_WE_ACT)
+
+				#(HOW_SHOULD_WE_ACT)|Display|#(HOW_SHOULD_WE_ACT)
+				|OptionsClear
+				|Option|#(contemplative)|#(OK_CONTEMPLATIVE)
+				|Option|#(friendly)|#(OK_FRIENDLY)
+				|Option|#(wacky)|#(OK_WACKY)
+				|Option|#(just_like_us)|#(OK_JUST_LIKE_YOU)
+				|Prompt
+
+					#(OK_CONTEMPLATIVE)|Display|#(OK_CONTEMPLATIVE)
+					|VariableSet|Vaarphig_Ethos|Contemplative
+					|Goto||#(WORK_TO_DO)
+
+					#(OK_FRIENDLY)|Display|#(OK_FRIENDLY)
+					|VariableSet|Vaarphig_Ethos|Friendly
+					|Goto||#(WORK_TO_DO)
+
+					#(OK_WACKY)|Display|#(OK_WACKY)
+					|VariableSet|Vaarphig_Ethos|Wacky
+					|Goto||#(WORK_TO_DO)
+
+					#(OK_JUST_LIKE_YOU)|Display|#(OK_JUST_LIKE_YOU)
+					|VariableSet|Vaarphig_Ethos|Human
+					|Goto||#(WORK_TO_DO)
+
+						#(WORK_TO_DO)
+						|VariableAdd|Vaarphig_Allied_Encounters
+						|Goto||AlliedTopLevelOptions
+
+Allied|DoNothing
+
+|VariableAdd|Vaarphig_Allied_Encounters
+
+Display|#(HELLO_POLITE_1)||cr.v("Vaarphig_GreetingStyle") == "Polite" && cr.v("Vaarphig_Allied_Encounters") % 4 == 1
+Display|#(HELLO_POLITE_2)||cr.v("Vaarphig_GreetingStyle") == "Polite" && cr.v("Vaarphig_Allied_Encounters") % 4 == 2
+Display|#(HELLO_POLITE_3)||cr.v("Vaarphig_GreetingStyle") == "Polite" && cr.v("Vaarphig_Allied_Encounters") % 4 == 3
+Display|#(HELLO_POLITE_4)||cr.v("Vaarphig_GreetingStyle") == "Polite" && cr.v("Vaarphig_Allied_Encounters") % 4 == 0
+
+Display|#(HELLO_RHYME_1)||cr.v("Vaarphig_GreetingStyle") == "Rhyme" && cr.v("Vaarphig_Allied_Encounters") % 4 == 1
+Display|#(HELLO_RHYME_2)||cr.v("Vaarphig_GreetingStyle") == "Rhyme" && cr.v("Vaarphig_Allied_Encounters") % 4 == 2
+Display|#(HELLO_RHYME_3)||cr.v("Vaarphig_GreetingStyle") == "Rhyme" && cr.v("Vaarphig_Allied_Encounters") % 4 == 3
+Display|#(HELLO_RHYME_4)||cr.v("Vaarphig_GreetingStyle") == "Rhyme" && cr.v("Vaarphig_Allied_Encounters") % 4 == 0
+
+Display|#(HELLO_PIG_LATIN_1)||cr.v("Vaarphig_GreetingStyle") == "PigLatin" && cr.v("Vaarphig_Allied_Encounters") % 4 == 1
+Display|#(HELLO_PIG_LATIN_2)||cr.v("Vaarphig_GreetingStyle") == "PigLatin" && cr.v("Vaarphig_Allied_Encounters") % 4 == 2
+Display|#(HELLO_PIG_LATIN_3)||cr.v("Vaarphig_GreetingStyle") == "PigLatin" && cr.v("Vaarphig_Allied_Encounters") % 4 == 3
+Display|#(HELLO_PIG_LATIN_4)||cr.v("Vaarphig_GreetingStyle") == "PigLatin" && cr.v("Vaarphig_Allied_Encounters") % 4 == 0
+
+Display|#(HELLO_LIKE_YOU_1)||cr.v("Vaarphig_GreetingStyle") == "Human" && cr.v("Vaarphig_Allied_Encounters") % 4 == 1
+Display|#(HELLO_LIKE_YOU_2)||cr.v("Vaarphig_GreetingStyle") == "Human" && cr.v("Vaarphig_Allied_Encounters") % 4 == 2
+Display|#(HELLO_LIKE_YOU_3)||cr.v("Vaarphig_GreetingStyle") == "Human" && cr.v("Vaarphig_Allied_Encounters") % 4 == 3
+Display|#(HELLO_LIKE_YOU_4)||cr.v("Vaarphig_GreetingStyle") == "Human" && cr.v("Vaarphig_Allied_Encounters") % 4 == 0
+
+AlliedTopLevelOptions|DoNothing
+
+|OptionsClear
+|Option|#(whats_up_ally)|#(GENERAL_INFO_ALLY)
+|Option|#(how_goes_culture)|#(CONTEMP_GOES)|cr.v("Vaarphig_Ethos") == "Comtemplative"
+|Option|#(how_goes_culture)|#(FRIENDLY_GOES)|cr.v("Vaarphig_Ethos") == "Friendly"
+|Option|#(how_goes_culture)|#(WACKY_GOES)|cr.v("Vaarphig_Ethos") == "Wacky"
+|Option|#(how_goes_culture)|#(LIKE_YOU_GOES)|cr.v("Vaarphig_Ethos") == "Human"
+|Option|#(bye_ally)|#(GOODBYE_ALLY)
+
+	#(GENERAL_INFO_ALLY)|DoNothing
+	|VariableAdd|Vaarphig_Allied_GeneralQuestionsAsked
+	|OptionRemove||#(whats_up_ally)
+	|Display|#(GENERAL_INFO_ALLY_1)||cr.v("Vaarphig_Allied_GeneralQuestionsAsked") % 4 == 1
+	|Display|#(GENERAL_INFO_ALLY_2)||cr.v("Vaarphig_Allied_GeneralQuestionsAsked") % 4 == 2
+	|Display|#(GENERAL_INFO_ALLY_3)||cr.v("Vaarphig_Allied_GeneralQuestionsAsked") % 4 == 3
+	|Display|#(GENERAL_INFO_ALLY_4)||cr.v("Vaarphig_Allied_GeneralQuestionsAsked") % 4 == 0
+	|Prompt
+
+	#(CONTEMP_GOES)|DoNothing
+	|VariableAdd|Vaarphig_Allied_HowGoesItQuestionsAsked
+	|Display|#(CONTEMP_GOES_1)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 1
+	|Display|#(CONTEMP_GOES_2)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 0
+
+	#(FRIENDLY_GOES)|DoNothing
+	|VariableAdd|Vaarphig_Allied_HowGoesItQuestionsAsked
+	#(FRIENDLY_GOES_1)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 1
+	#(FRIENDLY_GOES_2)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 0
+
+	#(WACKY_GOES)|DoNothing
+	|VariableAdd|Vaarphig_Allied_HowGoesItQuestionsAsked
+	#(WACKY_GOES_1)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 1
+	#(WACKY_GOES_2)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 0
+
+	#(LIKE_YOU_GOES)|DoNothing
+	|VariableAdd|Vaarphig_Allied_HowGoesItQuestionsAsked
+	#(LIKE_YOU_GOES_1)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 1
+	#(LIKE_YOU_GOES_2)||cr.v("Vaarphig_Allied_HowGoesItQuestionsAsked") % 2 == 0
+
+	#(GOODBYE_ALLY)|DoNothing
+	|VariableAdd|Vaarphig_Allied_TimesDeparted
+	|Display|#(GOODBYE_ALLY_1)||cr.v("Vaarphig_Allied_TimesDeparted") % 4 == 1
+	|Display|#(GOODBYE_ALLY_2)||cr.v("Vaarphig_Allied_TimesDeparted") % 4 == 2
+	|Display|#(GOODBYE_ALLY_3)||cr.v("Vaarphig_Allied_TimesDeparted") % 4 == 3
+	|Display|#(GOODBYE_ALLY_4)||cr.v("Vaarphig_Allied_TimesDeparted") % 4 == 0
+	|Goto||Done
+
+Combat|Script|u.world.place().encounter.fight(u)
+|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+#(WE_IMPRESSING_URQUAN_1)
+#(WE_IMPRESSING_URQUAN_2)
+#(WE_IMPRESSED_URQUAN_1)
+#(WE_IMPRESSED_URQUAN_2)
+
+#(HOSTILE_HELIX_HELLO_1)
+#(HOSTILE_HELIX_HELLO_2)
+#(how_impressed_urquan_1)
+#(IMPRESSED_LIKE_SO_1)
+#(how_impressed_urquan_2)
+#(IMPRESSED_LIKE_SO_2)
+#(why_you_here_hostile)
+#(NONE_OF_YOUR_CONCERN)
+#(demand_to_land)
+#(NO_DEMAND)
+#(what_about_this_world)
+#(BLUE_HELIX)
+#(whats_helix_hostile)
+#(HELIX_IS_HOSTILE)
+#(i_need_to_land_lie)
+#(CAUGHT_LIE)
+#(bye_hostile_helix)
+#(GOODBYE_HOSTILE_HELIX)
+#(DIE_THIEF_1)
+#(DIE_THIEF_2)
+#(WELCOME_SPACE0)
+#(WELCOME_SPACE1)
+#(WELCOME_HOMEWORLD0)
+#(WELCOME_HOMEWORLD1)
+#(WELCOME_HELIX0)
+#(WELCOME_HELIX1)
+#(why_you_here_ally)
+#(GUARDING_HELIX_ALLY)
+#(whats_helix_ally)
+#(HELIX_IS_ALLY)
+#(may_i_land)
+#(SURE_LAND)
+
+#(alliance_name)
+#(OK_ALLIANCE_NAME)
+#(NAME_TAIL)
+#(FAT_JERKS)
+#(CULTURE)
+#(SLAVE_EMPIRE)
+#(name_1)
+#(name_2)
+#(name_3)
+#(name_4)
+#(HAVING_FUN_WITH_ILWRATH_1)
+#(HAVING_FUN_WITH_ILWRATH_2)
+#(GO_AWAY_FIGHTING_ILWRATH_1)
+#(GO_AWAY_FIGHTING_ILWRATH_2)
+#(OUT_TAKES)
