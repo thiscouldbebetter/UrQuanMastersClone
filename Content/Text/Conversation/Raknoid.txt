@@ -5,6 +5,9 @@ soundMusicName=Music_Faction_EarthStation // todo
 
 |VariablesImport|u.world.player.variableLookup
 
+|VariableLoad|Raknoid_EncounterIsInSpace|throw new Error("todo")
+|JumpIfTrue|Raknoid_EncounterIsInSpace|Space
+
 |Display|#(SEND_MESSAGE)
 #(where_you_come_from)|Option|#(where_you_come_from)|#(CAME_FROM)
 |Prompt
@@ -16,14 +19,57 @@ soundMusicName=Music_Faction_EarthStation // todo
 #(be_reasonable)|Option|#(be_reasonable)|#(NOT_REASONABLE)
 |Prompt
 
-#(WHO_BLASTS_WHO)|Display|#(WHO_BLASTS_WHO)
-|Goto||Combat
+	#(WHO_BLASTS_WHO)|Display|#(WHO_BLASTS_WHO)
+	|Goto||Combat
 
-#(NO_SURRENDER)|Display|#(NO_SURRENDER)
-|Goto||Combat
+	#(NO_SURRENDER)|Display|#(NO_SURRENDER)
+	|Goto||Combat
 
-#(NOT_REASONABLE)|Display|#(NOT_REASONABLE)
-|Goto||Combat
+	#(NOT_REASONABLE)|Display|#(NOT_REASONABLE)
+	|Goto||Combat
+
+Space|DoNothing
+
+|VariableAdd|Raknoid_Space_EncountersSoFar
+
+|Display|#(INIT_HELLO_SPACE)|cr.v("Raknoid_Space_EncountersSoFar") == 1
+|Display|#(SUBSEQUENT_HELLO_SPACE_1)|cr.v("Raknoid_Space_EncountersSoFar") % 4 == 2
+|Display|#(SUBSEQUENT_HELLO_SPACE_2)|cr.v("Raknoid_Space_EncountersSoFar") % 4 == 3
+|Display|#(SUBSEQUENT_HELLO_SPACE_3)|cr.v("Raknoid_Space_EncountersSoFar") % 4 == 0
+|Display|#(SUBSEQUENT_HELLO_SPACE_4)|cr.v("Raknoid_Space_EncountersSoFar") > 4 && cr.v("Raknoid_Space_EncountersSoFar") % 4 == 1)
+
+|OptionsClear
+|Option|#(whats_up_space_1)|#(GENERAL_INFO_SPACE)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 1
+|Option|#(whats_up_space_2)|#(GENERAL_INFO_SPACE)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 2
+|Option|#(whats_up_space_3)|#(GENERAL_INFO_SPACE)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 3
+|Option|#(whats_up_space_4)|#(GENERAL_INFO_SPACE)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 4
+|Option|#(whats_up_space_5)|#(GENERAL_INFO_SPACE)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 0
+|Option|#(you_are_weak)|#(STRENGTH_NOT_ALL)
+|Option|#(slay_by_thousands)|#(NO_SLAY_BY_THOUSANDS)
+|Option|#(ease_up)|#(NO_EASE_UP)
+|Option|#(bye_space)
+|Prompt
+
+	#(GENERAL_INFO_SPACE)|DoNothing
+	|Display|#(GENERAL_INFO_SPACE_1)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 1
+	|Display|#(GENERAL_INFO_SPACE_2)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 2
+	|Display|#(GENERAL_INFO_SPACE_3)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 3
+	|Display|#(GENERAL_INFO_SPACE_4)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 4
+	|Display|#(GENERAL_INFO_SPACE_5)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 0
+	|Goto||Combat
+
+	#(STRENGTH_NOT_ALL)|Display|#(STRENGTH_NOT_ALL)
+	|Goto||Combat
+
+	#(NO_SLAY_BY_THOUSANDS)|Display|#(NO_SLAY_BY_THOUSANDS)
+	|Goto||Combat
+
+	#(NO_EASE_UP)|Display|#(NO_EASE_UP)
+	|Goto||Combat
+
+	#(GOODBYE_AND_DIE_SPACE)|Display|#(GOODBYE_AND_DIE_SPACE)
+	|Goto||Combat
+
 
 Combat|Script|u.world.place().encounter.fight(u)
 |Goto||Done
@@ -63,20 +109,6 @@ Done|DoNothing
 |Display|#(ILWRATH_BELIEVE)
 |Display|#(OK_KILL_THRADDASH)
 |Display|#(GOODBYE_GODS)
-|Display|#(INIT_HELLO_SPACE)
-|Display|#(SUBSEQUENT_HELLO_SPACE_1)
-|Display|#(SUBSEQUENT_HELLO_SPACE_2)
-|Display|#(SUBSEQUENT_HELLO_SPACE_3)
-|Display|#(SUBSEQUENT_HELLO_SPACE_4)
-|Display|#(GENERAL_INFO_SPACE_1)
-|Display|#(GENERAL_INFO_SPACE_2)
-|Display|#(GENERAL_INFO_SPACE_3)
-|Display|#(GENERAL_INFO_SPACE_4)
-|Display|#(GENERAL_INFO_SPACE_5)
-|Display|#(STRENGTH_NOT_ALL)
-|Display|#(NO_SLAY_BY_THOUSANDS)
-|Display|#(NO_EASE_UP)
-|Display|#(GOODBYE_AND_DIE_SPACE)
 |Display|#(INIT_HOME_HELLO)
 |Display|#(GOODBYE_AND_DIE_HOMEWORLD)
 |Display|#(SO_MUCH_TO_KNOW)
@@ -109,15 +141,7 @@ Done|DoNothing
 |Display|#(want_peace)
 |Display|#(want_alliance)
 |Display|#(go_kill_thraddash)
-|Display|#(whats_up_space_1)
-|Display|#(whats_up_space_2)
-|Display|#(whats_up_space_3)
-|Display|#(whats_up_space_4)
-|Display|#(whats_up_space_5)
-|Display|#(you_are_weak)
-|Display|#(slay_by_thousands)
-|Display|#(ease_up)
-|Display|#(bye_space)
+
 |Display|#(bye_homeworld)
 |Display|#(want_info_on_gods)
 |Display|#(when_start_worship)

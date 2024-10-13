@@ -1,0 +1,154 @@
+name=Konstalyxz
+imagePortraitName=Conversation-Portrait-Konstalyxz
+
+|VariablesImport|u.world.player.variableLookup
+
+|VariableLoad|Konstalyxz_HaveBeenFreedFromShield|throw new Error("todo")
+|JumpIfTrue|Konstalyxz_HaveBeenFreedFromShield|HaveBeenFreedFromShield
+
+|Display|#(WHY_YOU_HERE_1)||cr.v("Konstalyzx_EncountersSoFar") % 4 == 1
+|Display|#(WHY_YOU_HERE_2)||cr.v("Konstalyzx_EncountersSoFar") % 4 == 2
+|Display|#(WHY_YOU_HERE_3)||cr.v("Konstalyzx_EncountersSoFar") % 4 == 3
+|Display|#(WHY_YOU_HERE_4)||cr.v("Konstalyxz_EncountersSoFar") % 4 == 0
+|Option|#(need_help)#(CANT_HELP)
+|Option|#(find_out_whats_up)|#(HYBRID_PROCESS)
+|Option|#(need_advice)|#(WHAT_ADVICE)
+|Option|#(bye_shielded)|#(GOODBYE_SHIELDED)
+|Prompt
+
+	#(CANT_HELP)|Display|#(CANT_HELP)
+	|OptionRemove||#(need_help)
+	|Option|#(why_no_help)|#(LONG_TIME)
+	|Prompt
+
+		#(LONG_TIME)|Display|#(LONG_TIME)
+		|OptionRemove||#(why_no_help)
+		|Option|#(what_if_more_energy)|#(DANGER_TO_US)
+		|Prompt
+
+			#(DANGER_TO_US)|Display|#(DANGER_TO_US)
+			|OptionRemove||#(what_if_more_energy)
+			|Prompt
+
+	#(HYBRID_PROCESS)|Display|#(HYBRID_PROCESS)
+	|Prompt
+
+	#(WHAT_ADVICE)|Display|#(WHAT_ADVICE)
+	|Push
+	|Option|#(how_defeat_urquan)|#(DEFEAT_LIKE_SO)
+	|Option|#(what_about_tpet)|#(SCARY_BUT_USEFUL)|throw new Error("todo")
+	|Option|#(what_about_bomb)|#(ABOUT_BOMB)|throw new Error("todo")
+	|Option|#(what_about_sun_device)|#(ABOUT_SUN_DEVICE)|throw new Error("todo")
+	|Option|#(what_about_samatra)|#(ABOUT_SAMATRA)|throw new Error("todo")
+	|Option|#(enough_advice)|#(OK_ENOUGH_ADVICE)
+	|Prompt
+
+		#(DEFEAT_LIKE_SO)|Display|#(DEFEAT_LIKE_SO)
+		|OptionRemove||#(how_defeat_urquan)
+		|Prompt
+
+		#(SCARY_BUT_USEFUL)
+		|OptionRemove||#(what_about_tpet)
+		|Prompt
+
+		#(ABOUT_BOMB)
+		|OptionRemove||#(what_about_bomb)
+		|Prompt
+
+		#(ABOUT_SUN_DEVICE)
+		|OptionRemove||#(what_about_sun_device)
+		|Prompt
+
+		#(ABOUT_SAMATRA)
+		|OptionRemove||#(enough_advice)
+		|Prompt
+
+		#(OK_ENOUGH_ADVICE)|Display|#(OK_ENOUGH_ADVICE)
+		|Pop
+
+	#(GOODBYE_SHIELDED)|Display|#(GOODBYE_SHIELDED)
+	|Goto||Done
+
+HaveBeenFreedFromShield|DoNothing
+
+|Display|#(WE_ARE_FREE)
+|Display|#(WHO_ARE_YOU)
+|Option|#(i_am_captain)|#(WHY_HAVE_YOU_FREED_US)
+|Option|#(i_am_savior)|#(WHY_HAVE_YOU_FREED_US)
+|Option|#(i_am_silly)|#(WHY_HAVE_YOU_FREED_US)
+|Prompt
+
+	#(WHY_HAVE_YOU_FREED_US)|Display|#(WHY_HAVE_YOU_FREED_US)
+	|OptionClear
+	|Option|#(serious_1)|#(WILL_HELP_ANALYZE_LOGS)
+	|Option|#(serious_2)|#(WILL_HELP_ANALYZE_LOGS)
+	|Option|#(silly)|#(WILL_HELP_ANALYZE_LOGS)
+	|Prompt
+
+		#(WILL_HELP_ANALYZE_LOGS)|Display|#(WILL_HELP_ANALYZE_LOGS)
+		|Display|#(DONT_KNOW_ABOUT_SAMATRA)||cr.v("Kehlemal_Knowledge_WarshipLocation") == false
+		|Display|#(YOU_KNOW_SAMATRA)||cr.v("Kehlemal_Knowledge_WarshipLocation")
+		|Display|#(NEED_DISTRACTION)||cr.v("Mindomini_OnBoard") == false
+		|Display|#(HAVE_TALKING_PET)||cr.v("Mindomini_OnBoard")
+		|Display|#(NEED_WEAPON)||cr.v("Grimmotz_BombOnBoard") == false
+		|Display|#(HAVE_BOMB)||cr.v("Grimmotz_BombOnBoard")
+		|VariableLoad|ReadyForEndgame|cr.v("Kehlemal_Knowledge_WarshipLocation") && cr.v("Mindomini_OnBoard") && cr.v("Grimmotz_BombOnBoard")
+		|Display|#(RETURN_WHEN_READY)||cr.v("ReadyForEndgame") == false
+		|Display|#(YOU_ARE_READY)||cr.v("ReadyForEndgame")
+
+		|OptionsClear
+		|Option|#(further_assistance)|#(NO_FURTHER_ASSISTANCE)|cr.v("ReadyForEndgame")
+		|Option|#(tech_help)|#(USE_OUR_SHIPS_BEFORE)
+		|Option|#(where_weapon)|#(PRECURSOR_WEAPON)|cr.v("Grimmotz_BombOnBoard") == false
+		|Option|#(where_distraction)|#(PSYCHIC_WEAPONRY)|cr.v("Mindomini_OnBoard") == false
+		|Option|#(what_now)|#(WE_WILL_IMPROVE_BOMB)|cr.v("ReadyForEndgame")
+		|Prompt
+
+			#(NO_FURTHER_ASSISTANCE)|Display|#(NO_FURTHER_ASSISTANCE)
+			|OptionRemove||#(further_assistance)
+			|Prompt
+
+			#(USE_OUR_SHIPS_BEFORE)|Display|#(USE_OUR_SHIPS_BEFORE)
+			|OptionRemove||#(tech_help)
+			|Prompt
+
+			#(PRECURSOR_WEAPON)|Display|#(PRECURSOR_WEAPON)
+			|OptionRemove||#(where_weapon)
+			|Prompt
+
+			#(PSYCHIC_WEAPONRY)|Display|#(PSYCHIC_WEAPONRY)
+			|OptionRemove||#(where_distraction)
+			|Prompt
+
+			#(WE_WILL_IMPROVE_BOMB)
+			|Script|throw new Error("todo")
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+#(MODIFY_VESSEL)
+#(wont_hurt_my_ship)
+#(WILL_DESTROY_IT)
+#(bummer_about_my_ship)
+#(DEAD_SILENCE)
+#(other_assistance)
+#(USE_OUR_SHIPS_AFTER)
+#(proceed)
+#(TAKE_2_WEEKS)
+#(HELLO_AFTER_BOMB_1)
+#(HELLO_AFTER_BOMB_2)
+#(whats_up_after_bomb)
+#(GENERAL_INFO_AFTER_BOMB_1)
+#(GENERAL_INFO_AFTER_BOMB_2)
+#(what_do_after_bomb)
+#(DO_AFTER_BOMB)
+#(bye_after_bomb)
+#(GOODBYE_AFTER_BOMB)
+#(bye)
+#(GOODBYE)
+
+
+
+    ]
+}

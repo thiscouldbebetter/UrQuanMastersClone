@@ -1,0 +1,220 @@
+name=Hyphae
+imagePortraitName=Conversation-Portrait-Hyphae
+
+|VariablesImport|u.world.player.variableLookup
+|VariableSet|Hyphae_RamblesThisEncounter|0
+
+|VariableLoad|EncounterIsInSpace|throw new Error("todo")
+|JumpIfTrue|EncounterIsInSpace|EncounterIsInSpace
+
+|VariableLoad|EncounterIsAtPlanetSolarator|throw new Error("todo")
+|JumpIfTrue|EncounterIsAtPlanetSolarator|EncounterIsAtPlanetSolarator
+
+|VariableLoad|EncounterIsAtPlanetHomeworld|throw new Error("todo")
+|JumpIfTrue|EncounterIsAtPlanetHomeworld|EncounterIsAtPlanetHomeworld
+
+EncounterIsInSpace|DoNothing
+|VariableAdd|Hyphae_Space_EncountersSoFar
+|VariableAdd|Hyphae_Space_InsultsSoFar
+|Display|#(HELLO_SPACE_1)||cr.v("Hyphae_Space_EncountersSoFar") == 1
+|Display|#(HELLO_SPACE_2)||cr.v("Hyphae_Space_EncountersSoFar") == 2
+|Display|#(HELLO_SPACE_3)||cr.v("Hyphae_Space_EncountersSoFar") == 3
+|Display|#(HELLO_SPACE_4)||cr.v("Hyphae_Space_EncountersSoFar") == 4
+|Display|#(HELLO_SPACE_5)||cr.v("Hyphae_Space_EncountersSoFar") == 5
+|Display|#(HELLO_SPACE_6)||cr.v("Hyphae_Space_EncountersSoFar") == 6
+|Display|#(HELLO_SPACE_7)||cr.v("Hyphae_Space_EncountersSoFar") == 7
+|Display|#(HELLO_SPACE_8)||cr.v("Hyphae_Space_EncountersSoFar") >= 8
+|Option|#(come_in_peace)|Ramble
+|Option|#(gonna_die)|Ramble
+|Option|#(insult_1)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 1
+|Option|#(insult_2)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 2
+|Option|#(insult_3)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 3
+|Option|#(insult_4)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 4
+|Option|#(insult_5)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 5
+|Option|#(insult_6)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 6
+|Option|#(insult_7)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 7
+|Option|#(insult_8)|RemoveOptionForInsultThenRamble|cr.v("Hyphae_Space_InsultsSoFar") % 8 == 0
+|Option|#(bye_space)|#(BYE_AND_DIE_SPACE)
+|Prompt
+
+	RemoveOptionForInsultThenRamble|DoNothing
+	|OptionRemove||(#insult_1)
+	|OptionRemove||(#insult_2)
+	|OptionRemove||(#insult_3)
+	|OptionRemove||(#insult_4)
+	|OptionRemove||(#insult_5)
+	|OptionRemove||(#insult_6)
+	|OptionRemove||(#insult_7)
+	|OptionRemove||(#insult_8)
+	|Goto||Ramble
+
+	Ramble|DoNothing
+	|VariableAdd|Hyphae_RamblesSoFar
+	|VariableAdd|Hyphae_RamblesThisEncounter
+	|Display|#(RAMBLE_1)|cr.v("Hyphae_RamblesSoFar") % 32 == 1
+	|Display|#(RAMBLE_2)|cr.v("Hyphae_RamblesSoFar") % 32 == 2
+	|Display|#(RAMBLE_3)|cr.v("Hyphae_RamblesSoFar") % 32 == 3
+	|Display|#(RAMBLE_4)|cr.v("Hyphae_RamblesSoFar") % 32 == 4
+	|Display|#(RAMBLE_5)|cr.v("Hyphae_RamblesSoFar") % 32 == 5
+	|Display|#(RAMBLE_6)|cr.v("Hyphae_RamblesSoFar") % 32 == 6
+	|Display|#(RAMBLE_7)|cr.v("Hyphae_RamblesSoFar") % 32 == 7
+	|Display|#(RAMBLE_8)|cr.v("Hyphae_RamblesSoFar") % 32 == 8
+	|Display|#(RAMBLE_9)|cr.v("Hyphae_RamblesSoFar") % 32 == 9
+	|Display|#(RAMBLE_10)|cr.v("Hyphae_RamblesSoFar") % 32 == 10
+	|Display|#(RAMBLE_11)|cr.v("Hyphae_RamblesSoFar") % 32 == 11
+	|Display|#(RAMBLE_12)|cr.v("Hyphae_RamblesSoFar") % 32 == 12
+	|Display|#(RAMBLE_13)|cr.v("Hyphae_RamblesSoFar") % 32 == 13
+	|Display|#(RAMBLE_14)|cr.v("Hyphae_RamblesSoFar") % 32 == 14
+	|Display|#(RAMBLE_15)|cr.v("Hyphae_RamblesSoFar") % 32 == 15
+	|Display|#(RAMBLE_16)|cr.v("Hyphae_RamblesSoFar") % 32 == 16
+	|Display|#(RAMBLE_17)|cr.v("Hyphae_RamblesSoFar") % 32 == 17
+	|Display|#(RAMBLE_18)|cr.v("Hyphae_RamblesSoFar") % 32 == 18
+	|Display|#(RAMBLE_19)|cr.v("Hyphae_RamblesSoFar") % 32 == 19
+	|Display|#(RAMBLE_20)|cr.v("Hyphae_RamblesSoFar") % 32 == 20
+	|Display|#(RAMBLE_21)|cr.v("Hyphae_RamblesSoFar") % 32 == 21
+	|Display|#(RAMBLE_22)|cr.v("Hyphae_RamblesSoFar") % 32 == 22
+	|Display|#(RAMBLE_23)|cr.v("Hyphae_RamblesSoFar") % 32 == 23
+	|Display|#(RAMBLE_24)|cr.v("Hyphae_RamblesSoFar") % 32 == 24
+	|Display|#(RAMBLE_25)|cr.v("Hyphae_RamblesSoFar") % 32 == 25
+	|Display|#(RAMBLE_26)|cr.v("Hyphae_RamblesSoFar") % 32 == 26
+	|Display|#(RAMBLE_27)|cr.v("Hyphae_RamblesSoFar") % 32 == 27
+	|Display|#(RAMBLE_28)|cr.v("Hyphae_RamblesSoFar") % 32 == 28
+	|Display|#(RAMBLE_29)|cr.v("Hyphae_RamblesSoFar") % 32 == 29
+	|Display|#(RAMBLE_30)|cr.v("Hyphae_RamblesSoFar") % 32 == 30
+	|Display|#(RAMBLE_31)|cr.v("Hyphae_RamblesSoFar") % 32 == 31
+	|Display|#(RAMBLE_32)|cr.v("Hyphae_RamblesSoFar") % 32 == 0
+	|JumpIfTrue|EncounterIsAtPlanetHomeworld|RamblePeacefully
+	|JumpIfTrue|RamblesThisEncounter >= 3|#(BYE_AND_DIE_SPACE)
+	RamblePeacefully|Prompt
+
+	#(BYE_AND_DIE_SPACE)|Display|#(BYE_AND_DIE_SPACE)
+	|Goto||Combat
+
+EncounterIsAtPlanetSolarator|DoNothing
+|JumpIfTrue|Hyphae_PlanetSolaratorHasBeenVisited|#(HELLO_SUN_DEVICE_WORLD_2)
+
+|Display|#(HELLO_SUN_DEVICE_WORLD_1)
+|Goto||PlanetSolaratorQuestions
+
+#(HELLO_SUN_DEVICE_WORLD_2)|Display|#(HELLO_SUN_DEVICE_WORLD_2)
+|Goto||PlanetSolaratorQuestions
+
+PlanetSolaratorQuestions|DoNothing
+|Option|#(whats_up_sun_device)|#(GENERAL_INFO_SUN_DEVICE)
+|Option|#(bye_sun_device)|#(GOODBYE_SUN_DEVICE)
+|Prompt
+
+	#(GENERAL_INFO_SUN_DEVICE)|Display|#(GENERAL_INFO_SUN_DEVICE)
+	|OptionRemove||#(whats_up_sun_device)
+	|Prompt
+
+	#(GOODBYE_SUN_DEVICE)|Display|#(GOODBYE_SUN_DEVICE)
+	Goto||Done
+
+EncounterIsAtPlanetHomeworld|DoNothing
+
+|VariableAdd|Hyphae_Homeworld_VisitsSoFar
+|Display|#(HELLO_HOMEWORLD_1)||cr.v("Hyphae_Homeworld_VisitsSoFar") == 1
+|Display|#(HELLO_HOMEWORLD_2)||cr.v("Hyphae_Homeworld_VisitsSoFar") == 2
+|Display|#(HELLO_HOMEWORLD_3)||cr.v("Hyphae_Homeworld_VisitsSoFar") == 3
+|Display|#(HELLO_HOMEWORLD_4)||cr.v("Hyphae_Homeworld_VisitsSoFar") == 4
+|Display|#(HELLO_HOMEWORLD_5)||cr.v("Hyphae_Homeworld_VisitsSoFar") == 5
+|Display|#(HELLO_HOMEWORLD_6)||cr.v("Hyphae_Homeworld_VisitsSoFar") == 6
+|Display|#(HELLO_HOMEWORLD_7)||cr.v("Hyphae_Homeworld_VisitsSoFar") == 7
+|Display|#(HELLO_HOMEWORLD_8)||cr.v("Hyphae_Homeworld_VisitsSoFar") >= 8
+
+|VariableAdd|Hyphae_Homeworld_QuestionsAskedSoFar
+|Option|#(question_1)|RemoveOptionForQuestionThenRamble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 1
+|Option|#(question_2)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 2
+|Option|#(question_3)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 3
+|Option|#(question_4)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 4
+|Option|#(question_5)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 5
+|Option|#(question_6)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 6
+|Option|#(question_7)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 7
+|Option|#(question_8)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 8
+|Option|#(question_9)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 9
+|Option|#(question_10)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 10
+|Option|#(question_11)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 11
+|Option|#(question_12)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 12
+|Option|#(question_13)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 13
+|Option|#(question_14)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 14
+|Option|#(question_15)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 15
+|Option|#(question_16)|Ramble|cr.v("Hyphae_Homeworld_QuestionsAskedSoFar") % 16 == 0
+|Option|#(lets_be_friends)|RemoveOptionForLetsBeFriendsAndRamble
+|Option|#(came_to_homeworld)|RemoveOptionForCameToHomeworldAndRamble
+|Option|#(submit_to_us)|RemoveOptionForSubmitToUsAndRamble
+|Option|#(what_about_shattered)|#(ABOUT_SHATTERED)|cr.v("Hyphae_ShatteredWorldVisited")
+|Option|#(bye_homeworld)|#(BYE_AND_DIE_HOMEWORLD)
+
+	RemoveOptionForQuestionThenRamble|DoNothing
+	|OptionRemove||#(question_1)
+	|OptionRemove||#(question_2)
+	|OptionRemove||#(question_3)
+	|OptionRemove||#(question_4)
+	|OptionRemove||#(question_5)
+	|OptionRemove||#(question_6)
+	|OptionRemove||#(question_7)
+	|OptionRemove||#(question_8)
+	|OptionRemove||#(question_9)
+	|OptionRemove||#(question_10)
+	|OptionRemove||#(question_11)
+	|OptionRemove||#(question_12)
+	|OptionRemove||#(question_13)
+	|OptionRemove||#(question_14)
+	|OptionRemove||#(question_15)
+	|OptionRemove||#(question_16)
+	|Goto||Ramble
+
+	RemoveOptionForLetsBeFriendsAndRamble|DoNothing
+	|OptionRemove||#(lets_be_friends)
+	|Goto||Ramble
+
+	RemoveOptionForCameToHomeworldAndRamble|DoNothing
+	|OptionRemove||#(came_to_homeworld)
+	|Goto||Ramble
+
+	RemoveOptionForSubmitToUsAndRamble|DoNothing
+	|OptionRemove||#(submit_to_us)
+	|Goto||Ramble
+
+	#(ABOUT_SHATTERED)|Display|#(ABOUT_SHATTERED)
+	|OptionRemove|#(what_about_shattered)
+	|Script|throw new Error("todo");
+	|Prompt
+
+	#(BYE_AND_DIE_HOMEWORLD)|Display|#(BYE_AND_DIE_HOMEWORLD)
+	Goto|Combat
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+	|Option|#(like_to_land)
+		#(NEVER_LET_LAND)
+		|OptionRemove|#(like_to_land)
+		|Prompt
+
+
+#(TELL_US_ABOUT_WORLD)
+
+#(RESPONSE_1)
+#(RESPONSE_2)
+#(RESPONSE_3)
+#(clue_1)
+#(clue_2)
+#(clue_3)
+
+#(i_have_a_cunning_plan)
+#(DIE_LIAR)
+#(how_goes_implanting)
+#(UNFORSEEN_DELAYS)
+#(DIE_THIEF)
+#(DIE_THIEF_AGAIN)
+#(GOODBYE_AND_DIE)
+#(AMBUSH_TAIL)
+#(RAMBLE_TAIL)
+#(WE_GO_TO_IMPLANT)
+#(WONT_FALL_FOR_TRICK)

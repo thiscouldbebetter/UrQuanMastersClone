@@ -1,0 +1,215 @@
+name=Supian
+imagePortraitName=Conversation-Portrait-Supian
+contentTextStringName=Conversation-Supian-Content
+
+|VariablesImport|u.world.player.variableLookup
+
+|JumpIfTrue|Supian_HasStoppedFighting|HasStoppedFighting
+
+|VariableAdd|Supian_EncountersSoFar
+
+|Display|#(HOSTILE_TANAKA_1)||cr.v("Supian_EncountersSoFar") % 8 == 1
+|Display|#(HOSTILE_TANAKA_2)||cr.v("Supian_EncountersSoFar") % 8 == 2
+|Display|#(HOSTILE_TANAKA_3)||cr.v("Supian_EncountersSoFar") % 8 == 3
+|Display|#(HOSTILE_TANAKA_4)||cr.v("Supian_EncountersSoFar") % 8 == 4
+|Display|#(HOSTILE_TANAKA_5)||cr.v("Supian_EncountersSoFar") % 8 == 5
+|Display|#(HOSTILE_TANAKA_6)||cr.v("Supian_EncountersSoFar") % 8 == 6
+|Display|#(HOSTILE_TANAKA_7)||cr.v("Supian_EncountersSoFar") % 8 == 7
+|Display|#(HOSTILE_TANAKA_8)||cr.v("Supian_EncountersSoFar") % 8 == 0
+
+|Option|#(dont_attack)|#(TYPICAL_PLOY)||cr.v("Supian_EntreatiesSoFar") == 0
+|Option|#(hey_stop)|#(ONLY_STOP)||cr.v("Supian_EntreatiesSoFar") == 1
+|Option|#(look_you_are)|#(TOO_BAD)||cr.v("Supian_EntreatiesSoFar") >= 2
+
+|Option|#(no_one_insults)|#(YOU_LIMP)|cr.v("Supian_InsultsSoFar") == 0
+|Option|#(mighty_words)|#(HANG_YOUR)|cr.v("Supian_InsultsSoFar") == 1
+|Option|#(donkey_breath)||cr.v("Supian_InsultsSoFar") == 2
+
+|Option|#(dont_know)|#(NEVER)||cr.v("Supian_TimesEndOfWarInvokedSoFar") == 0
+|Script|throw new Error("todo - Concat look_0 and look_1")
+|Option|#(look_0)|#(FOR_YOU)|false
+|Option|#(look_1)|#(FOR_YOU)||cr.v("Supian_TimesEndOfWarInvokedSoFar") == 1
+
+|Option|#(dont_want_to_fight)|#(MUST_FIGHT_YOU_URQUAN)
+
+|Prompt
+
+	#(TYPICAL_PLOY)|Display|#(TYPICAL_PLOY)
+	|VariableAdd|Supian_EntreatiesSoFar
+	|Goto||Combat
+
+		#(ONLY_STOP)|Display|#(ONLY_STOP)
+		|VariableAdd|Supian_EntreatiesSoFar
+		|Goto|Combat
+
+			#(TOO_BAD)|Display|#(TOO_BAD)
+			|VariableAdd|Supian_EntreatiesSoFar
+			|Goto|Combat
+
+	#(YOU_LIMP)|Display|#(YOU_LIMP)
+	|VariableAdd|Supian_InsultsSoFar
+	|Goto||Combat
+
+		#(HANG_YOUR)|Display|#(HANG_YOUR)
+		|VariableAdd|Supian_InsultsSoFar
+		|Goto||Combat
+
+			#(DGRUNTI)|Display|#(DGRUNTI)
+			|VariableSet|Supian_HasStoppedFighting|true
+			|OptionsClear
+			|Option|#(i_am_captain)|#(SO_SORRY)
+			|Option|#(i_am_nice)|#(MUST_UNDERSTAND)
+			|Option|#(i_am_guy)|#(NICE_BUT_WHAT_IS_DONKEY)
+			|Prompt
+
+				#(SO_SORRY)|Display|#(SO_SORRY)
+				|Goto||#(IS_DEFEAT_TRUE)
+
+				#(MUST_UNDERSTAND)|Display|#(MUST_UNDERSTAND)
+				|Goto||#(IS_DEFEAT_TRUE)
+
+				#(NICE_BUT_WHAT_IS_DONKEY)|Display|#(NICE_BUT_WHAT_IS_DONKEY)
+				|Goto||#(IS_DEFEAT_TRUE)
+
+					#(IS_DEFEAT_TRUE)|Display|#(IS_DEFEAT_TRUE)
+					|OptionsClear
+					|Option|#(yes_and_no)|#(VERY_SAD_KILL_SELF)
+					|Option|#(clobbered)|#(VERY_SAD_KILL_SELF)
+					|Option|#(butt_blasted)|#(VERY_SAD_KILL_SELF)
+					|Prompt
+
+						#(VERY_SAD_KILL_SELF)|Display|#(VERY_SAD_KILL_SELF)
+						|OptionsClear
+						|Option|#(dont_do_it)|#(YES_I_DO_IT)
+						|Option|#(need_you_for_duty)|#(OK_WILL_BE_SENTRY)
+						|Option|#(go_ahead)|
+						|Prompt
+
+							#(YES_I_DO_IT)|Display|#(YES_I_DO_IT)
+							|OptionRemove||#(dont_do_it)
+							|Prompt
+
+							#(OK_WILL_BE_SENTRY)
+							|Goto||Done
+
+							#(ON_SECOND_THOUGHT)
+							|Goto||Done
+
+	#(NEVER)|Display|#(NEVER)
+	|VariableAdd|Supian_TimesEndOfWarInvokedSoFar
+	|Goto||Combat
+
+		#(FOR_YOU)|Display|#(FOR_YOU)
+		|VariableAdd|Supian_TimesEndOfWarInvokedSoFar
+		|Goto||Combat
+
+			
+
+	#(MUST_FIGHT_YOU_URQUAN)|DoNothing
+	|VariableAdd|Supian_PeacefulExitsAttemptedSoFar
+	|Display|#(MUST_FIGHT_YOU_URQUAN_1)||cr.v("Supian_PeacefulExitsAttemptedSoFar") % 4 == 1
+	|Display|#(MUST_FIGHT_YOU_URQUAN_2)||cr.v("Supian_PeacefulExitsAttemptedSoFar") % 4 == 2
+	|Display|#(MUST_FIGHT_YOU_URQUAN_3)||cr.v("Supian_PeacefulExitsAttemptedSoFar") % 4 == 3
+	|Display|#(MUST_FIGHT_YOU_URQUAN_4)||cr.v("Supian_PeacefulExitsAttemptedSoFar") % 4 == 0
+	|Goto||Combat
+
+HasStoppedFighting|DoNothing
+|Display|#(FRIENDLY_HELLO)
+
+|VariableLoad|Supian_FemalesAreOnBoard|throw new Error("todo")
+|JumpIfTrue|Supian_FemalesAreOnBoard|FemalesOnBoard
+
+|Script|throw new Error("todo - Concat report0 and report1")
+|Option|#(report0)|#(NOTHING_NEW)|false
+|Option|#(report1)|#(NOTHING_NEW)
+|Script|throw new Error("todo - Concat why_here0 and why_here1")
+|Option|#(why_here0)|#(I_GUARD)|false
+|Option|#(why_here1)|#(I_GUARD)
+|Option|#(where_world)|#(BLEW_IT_UP)
+|Script|throw new Error("todo - Concat bye0 and bye1")
+|Option|#(bye0)|#(GOODBYE)|false
+|Option|#(bye1)|#(GOODBYE)
+|Prompt
+
+	#(NOTHING_NEW)|Display|#(NOTHING_NEW)
+	|OptionRemove||#(report0)
+	|OptionRemove||#(report1)
+	|Prompt
+
+	#(I_GUARD)|Display|#(I_GUARD)
+	|OptionRemove||why_here0
+	|OptionRemove||why_here1
+	|Option|#(what_happened)|#(MET_VUX)
+	|Prompt
+
+		#(MET_VUX)|Display|#(MET_VUX)
+		|OptionRemove||#(what_happened)
+		#(glory_device)|Option|#(SWITCH_BROKE)
+		|Prompt
+
+			#(SWITCH_BROKE)|Display|#(SWITCH_BROKE)
+			|OptionRemove||#(glory_device)
+			|Prompt
+
+	#(BLEW_IT_UP)|Display|#(BLEW_IT_UP)
+	|OptionRemove||#(where_world)
+	|Option|#(how_survive)|#(NOT_HERE)
+	|Prompt
+
+		#(NOT_HERE)|Display|#(NOT_HERE)
+		|OptionRemove|#(how_survive)
+		|Prompt
+
+	#(GOODBYE)|Display|#(GOODBYE)
+	|Goto||Done
+
+FemalesOnBoard|DoNothing
+|Display|#(FRIENDLY_HELLO)
+|Option|#(important_duty)|#(WHAT_DUTY)
+|Prompt
+
+	#(WHAT_DUTY)|Display|#(WHAT_DUTY)
+	|OptionsClear
+	|Option|#(procreating_wildly)|#(SOUNDS_GREAT_BUT_HOW)
+	|Option|#(replenishing_your_species)|#(SOUNDS_GREAT_BUT_HOW)
+	|Option|#(hope_you_have)|#(SOUNDS_GREAT_BUT_HOW)
+	|Prompt
+
+		#(SOUNDS_GREAT_BUT_HOW)|Display|#(SOUNDS_GREAT_BUT_HOW)
+		|OptionsClear
+		|Option|#(females)|#(LEAPING_HAPPINESS)
+		|Option|#(nubiles)|#(LEAPING_HAPPINESS)
+		|Option|#(rat_babes)|#(LEAPING_HAPPINESS)
+		|Prompt
+
+			#(LEAPING_HAPPINESS)|Display|#(LEAPING_HAPPINESS)
+			|VariableSet|Supian_MatingIsInProgress
+			|Script|throw new Error("todo")
+			|Goto||Done
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+
+#(name_1)
+#(name_2)
+#(name_3)
+#(name_4)
+#(tanaka)
+#(katana)
+#(HOSTILE_KATANA_1)
+#(HOSTILE_KATANA_2)
+#(HOSTILE_KATANA_3)
+#(HOSTILE_KATANA_4)
+#(no_bloodshed)
+#(YES_BLOODSHED)
+#(bye)
+#(GOODBYE0)
+#(GOODBYE1)
+
+#(OUT_TAKES)

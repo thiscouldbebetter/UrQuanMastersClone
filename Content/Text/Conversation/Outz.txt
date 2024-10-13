@@ -1,0 +1,254 @@
+name=Outz
+imagePortraitName=Conversation-Portrait-Outsider
+contentTextStringName=Conversation-Outsider-Content
+
+|VariablesImport|u.world.player.variableLookup
+
+|VariableLoad|Outz_EncounterIsAtPlanetHomeworld|throw new Error("todo")
+|VariableLoad|Outz_EncounterIsAtPlanetTakchik|throw new Error("todo")
+|VariableAdd|Outz_EncountersSoFar
+|VariableLoad|Outz_AreEnemies|throw new Error("todo");
+|VariableLoad|Outz_AreAllies|throw new Error("todo");
+
+|JumpIfTrue|Outz_EncounterIsAtPlanetHomeworld|Homeworld
+|JumpIfTrue|Outz_EncounterIsAtPlanetTakchik|Takchik
+|JumpIfTrue|Outz_EncountersSoFar == 1|#(INIT_HELLO_SPACE)
+|JumpIfTrue|Outz_AreEnemies|#(ANGRY_SPACE_HELLO)
+|JumpIfTrue|Outz_AreAllies|#(ALLIED_SPACE_HELLO)
+
+#(NEUTRAL_SPACE_HELLO)|DoNothing
+|Display|#(NEUTRAL_SPACE_HELLO_1)||cr.v("Outz_EncountersSoFar") % 4 == 1
+|Display|#(NEUTRAL_SPACE_HELLO_2)||cr.v("Outz_EncountersSoFar") % 4 == 2
+|Display|#(NEUTRAL_SPACE_HELLO_3)||cr.v("Outz_EncountersSoFar") % 4 == 3
+|Display|#(NEUTRAL_SPACE_HELLO_4)||cr.v("Outz_EncountersSoFar") % 4 == 0
+
+#(INIT_HELLO_SPACE)Display|#(INIT_HELLO)
+|Option|#(who_you)|#(WE_ARE_ORZ)
+|Option|#(we_are_vindicator)|#(NICE_TO_MEET_YOU)
+|Option|#(hostile_1)|#(HOSTILITY_IS_BAD_1)
+|Option|#(bye_neutral)|#(GOODBYE_NEUTRAL)
+
+	#(WE_ARE_ORZ)|Display|#(WE_ARE_ORZ)
+	|OptionRemove||#(who_you)
+	|Prompt
+
+	#(NICE_TO_MEET_YOU)|Display|#(NICE_TO_MEET_YOU)
+	|OptionRemove||#(we_are_vindicator)
+	|Prompt
+
+	#(HOSTILITY_IS_BAD_1)|Display|#(HOSTILITY_IS_BAD_1)
+	|OptionRemove||#(hostile_1)
+	|Option|#(hostile_2)|#(HOSTILITY_IS_BAD_2)
+	|Prompt
+
+		#(HOSTILITY_IS_BAD_2)|Display|#(HOSTILITY_IS_BAD_2)
+		|Script|throw new Error("todo")
+		|Goto||Combat
+
+	#(GOODBYE_NEUTRAL)|Display|#(GOODBYE_NEUTRAL)
+	|Goto||Done
+
+#(ANGRY_SPACE_HELLO)
+|Display|#(ANGRY_SPACE_HELLO_1)||cr.v("Outz_EncountersSoFar") % 2 == 1
+|Display|#(ANGRY_SPACE_HELLO_2)||cr.v("Outz_EncountersSoFar") % 2 == 0
+
+|Option|#(whats_up_angry)|#(GENERAL_INFO_ANGRY)
+|Option|#(were_sorry)
+|Option|#(insult_1)|cr.v("Outz_InsultsSoFar") % 8 == 1
+|Option|#(insult_2)|cr.v("Outz_InsultsSoFar") % 8 == 2
+|Option|#(insult_3)|cr.v("Outz_InsultsSoFar") % 8 == 3
+|Option|#(insult_4)|cr.v("Outz_InsultsSoFar") % 8 == 4
+|Option|#(insult_5)|cr.v("Outz_InsultsSoFar") % 8 == 5
+|Option|#(insult_6)|cr.v("Outz_InsultsSoFar") % 8 == 6
+|Option|#(insult_7)|cr.v("Outz_InsultsSoFar") % 8 == 7
+|Option|#(insult_8)|cr.v("Outz_InsultsSoFar") % 8 == 0
+|Option|#(bye_angry)|#(GOODBYE_ANGRY)
+
+	#(GENERAL_INFO_ANGRY)|DoNothing
+	|OptionRemove||#(whats_up_angry)
+	|Display|#(GENERAL_INFO_ANGRY_1)||cr.v("Outz_GeneralInfosSoFar") % 2 == 1
+	|Display|#(GENERAL_INFO_ANGRY_2)||cr.v("Outz_GeneralInfosSoFar") % 2 == 0
+	|Prompt
+
+	#(APOLOGY_ACCEPTED)|Display|#(APOLOGY_ACCEPTED)
+	|Script|throw new Error("todo-alliance")
+	|Goto||Done
+
+	#(INSULTED_1)
+	#(INSULTED_2)
+	#(INSULTED_3)
+	#(INSULTED_4)
+
+	#(GOODBYE_ANGRY)|Display|#(GOODBYE_ANGRY)
+	|Goto||Done
+
+#(ALLIED_SPACE_HELLO)|DoNothing
+|Display|#(ALLIED_SPACE_HELLO_1)||cr.v("Outz_EncountersSoFar") % 4 == 1
+|Display|#(ALLIED_SPACE_HELLO_2)||cr.v("Outz_EncountersSoFar") % 4 == 2
+|Display|#(ALLIED_SPACE_HELLO_3)||cr.v("Outz_EncountersSoFar") % 4 == 3
+|Display|#(ALLIED_SPACE_HELLO_4)||cr.v("Outz_EncountersSoFar") % 4 == 0
+|Option|#(whats_up_ally)|#(GENERAL_INFO_ALLY)
+|Option|#(more_about_you)|#(ABOUT_US)
+|Option|#(about_andro_1)|#(FORGET_ANDRO_1)|cr.v("Outz_QuestionsAboutManaloguesSoFar") == 0
+|Option|#(about_andro_2)|#(FORGET_ANDRO_2)|cr.v("Outz_QuestionsAboutManaloguesSoFar") == 1
+|Option|#(about_andro_3)|#(BLEW_IT)|cr.v("Outz_QuestionsAboutManaloguesSoFar") >= 2
+
+	#(GENERAL_INFO_ALLY)|DoNothing
+	VariableAdd|Outz_GeneralInfosSoFar
+	#(GENERAL_INFO_ALLY_1)|Display||#(GENERAL_INFO_ALLY_1)||cr.v("Outz_GeneralInfosSoFar") % 4 == 1
+	#(GENERAL_INFO_ALLY_2)|Display||#(GENERAL_INFO_ALLY_2)||cr.v("Outz_GeneralInfosSoFar") % 4 == 2
+	#(GENERAL_INFO_ALLY_3)|Display||#(GENERAL_INFO_ALLY_3)||cr.v("Outz_GeneralInfosSoFar") % 4 == 3
+	#(GENERAL_INFO_ALLY_4)|Display||#(GENERAL_INFO_ALLY_4)||cr.v("Outz_GeneralInfosSoFar") % 4 == 0
+	|Prompt
+
+	#(ABOUT_US)|DoNothing
+	VariableAdd|Outz_AboutUssesSoFar
+	#(ABOUT_US_1)|Display|#(ABOUT_US_1)||cr.v("Outz_AboutUssesSoFar") % 4 == 1
+	#(ABOUT_US_2)|Display|#(ABOUT_US_2)||cr.v("Outz_AboutUssesSoFar") % 4 == 2
+	#(ABOUT_US_3)|Display|#(ABOUT_US_3)||cr.v("Outz_AboutUssesSoFar") % 4 == 3
+	#(ABOUT_US_4)|Display|#(ABOUT_US_4)||cr.v("Outz_AboutUssesSoFar") % 4 == 0
+	|Prompt
+
+	#(FORGET_ANDRO_1)|Display|#(FORGET_ANDRO_1)
+	|VariableAdd|Outz_QuestionsAboutManaloguesSoFar
+	|OptionRemove|#(about_andro_1)
+	|Option|#(about_andro_2)|#(FORGET_ANDRO_2)
+	|Prompt
+
+		#(FORGET_ANDRO_2)|Display|#(FORGET_ANDRO_2)
+		|VariableAdd|Outz_QuestionsAboutManaloguesSoFar
+		|OptionRemove|#(about_andro_2)
+		|Option|#(about_andro_3)|#(BLEW_IT)
+		|Prompt
+
+			#(BLEW_IT)|Display|#(BLEW_IT)
+			|VariableAdd|Outz_QuestionsAboutManaloguesSoFar
+			|Goto||Combat
+
+Homeworld|DoNothing
+|JumpIfTrue|Outz_EncountersSoFar == 1|#(INIT_HELLO_HOMEWORLD)
+|JumpIfTrue|Outz_AreEnemies|#(ANGRY_HOMEWORLD_HELLO)
+|JumpIfTrue|Outz_AreAllies|#(ALLIED_HOMEWORLD_HELLO)
+
+#(NEUTRAL_HOMEWORLD_HELLO)|DoNothing
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_1)||cr.v("Outz_EncountersSoFar") % 4 == 1
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_2)||cr.v("Outz_EncountersSoFar") % 4 == 2
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_3)||cr.v("Outz_EncountersSoFar") % 4 == 3
+|Display|#(NEUTRAL_HOMEWORLD_HELLO_4)||cr.v("Outz_EncountersSoFar") % 4 == 0
+|Option|#(bye_neutral)|#(GOODBYE_NEUTRAL)
+|Prompt
+
+#(INIT_HELLO_HOMEWORLD)Display|#(INIT_HELLO)
+|Option|#(who_you)|#(WE_ARE_ORZ)
+|Option|#(we_are_vindicator)|#(NICE_TO_MEET_YOU)
+|Option|#(hostile_1)|#(HOSTILITY_IS_BAD_1)
+|Option|#(bye_neutral)|#(GOODBYE_NEUTRAL)
+|Prompt
+
+#(ANGRY_HOMEWORLD_HELLO)|DoNothing
+|Display|#(ANGRY_HOMEWORLD_HELLO_1)||cr.v("Outz_EncountersSoFar") % 2 == 1
+|Display|#(ANGRY_HOMEWORLD_HELLO_2)||cr.v("Outz_EncountersSoFar") % 2 == 0
+
+#(ALLIED_HOMEWORLD_HELLO)|DoNothing
+|Display|#(ALLIED_HOMEWORLD_HELLO_1)||cr.v("Outz_EncountersSoFar") % 4 == 1
+|Display|#(ALLIED_HOMEWORLD_HELLO_2)||cr.v("Outz_EncountersSoFar") % 4 == 2
+|Display|#(ALLIED_HOMEWORLD_HELLO_3)||cr.v("Outz_EncountersSoFar") % 4 == 3
+|Display|#(ALLIED_HOMEWORLD_HELLO_4)||cr.v("Outz_EncountersSoFar") % 4 == 0
+|Prompt
+
+
+Takchik|DoNothing
+|JumpIfTrue|Outz_AreEnemies|#(ANGRY_TAALO_HELLO)
+|JumpIfTrue|Outz_AreAllies|#(FRIENDLY_ALLIED_TAALO_HELLO)
+
+#(ANGRY_TAALO_HELLO)|DoNothing
+|Display|#(ANGRY_TAALO_HELLO_1)||cr.v("Outz_EncountersSoFar") % 2 == 1
+|Display|#(ANGRY_TAALO_HELLO_2)||cr.v("Outz_EncountersSoFar") % 2 == 0
+|Script|throw new Error("todo")
+|Prompt
+
+#(FRIENDLY_ALLIED_TAALO_HELLO)|DoNothing
+|Display|#(FRIENDLY_ALLIED_TAALO_HELLO_1)||cr.v("Outz_EncountersSoFar") % 2 == 1
+|Display|#(FRIENDLY_ALLIED_TAALO_HELLO_2)||cr.v("Outz_EncountersSoFar") % 2 == 0
+|Option|#(may_we_land)|#(SURE_LAND)
+|Option|#(demand_to_land)|#(ASK_NICELY)|cr.v("Outz_AreAllies")
+|Option|#(demand_to_land)|#(NO_DEMAND)|cr.v("Outz_AreAllies") == false
+|Option|#(why_you_here)|#(WE_HERE_BECAUSE)
+|Option|#(what_is_this_place)|#(THIS_PLACE_IS)
+|Option|#(bye_taalo)|
+|Prompt
+
+	#(SURE_LAND)|Display|#(SURE_LAND)
+	|Goto|Done
+
+	#(ASK_NICELY)|Display|#(ASK_NICELY)
+	|OptionRemove||#(demand_to_land)
+	|Prompt
+
+	#(NO_DEMAND)|Display|#(NO_DEMAND)
+	|Script|throw new Error("todo")
+	|Goto||Combat
+
+	#(WE_HERE_BECAUSE)|DoNothing
+	|Display|#(ANGRY_EXPLANATION)||cr.v("Outz_AreEnemies")
+	|Display|#(FRIENDLY_EXPLANATION)||cr.v("Outz_AreEnemies") == false
+	|OptionRemove||#(why_you_here)
+	|Prompt
+
+	#(THIS_PLACE_IS)|DoNothing
+	|Display|#(ANGRY_PLACE)||cr.v("Outz_AreEnemies")
+	|Display|#(FRIENDLY_PLACE)||cr.v("Outz_AreEnemies") == false
+	|OptionRemove||#(what_is_this_place)
+	|Prompt
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+
+LeavePlanet|DoNothing
+|Script|throw new Error("todo");
+|Goto||Done
+
+EstablishOrbit|DoNothing
+|Script|throw new Error("todo");
+|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+#(where_androsyn)
+#(DISEMBLE_ABOUT_ANDROSYN)
+
+#(why_here)
+#(HERE_BECAUSE)
+#(must_know_about_androsyn)
+#(KNOW_TOO_MUCH)
+#(dont_really_care)
+#(YOU_ARE_OUR_FRIENDS)
+#(seem_like_nice_guys)
+#(ARE_NICE_WANT_ALLY)
+#(talk_about_alliance)
+#(OK_TALK_ALLIANCE)
+#(yes_alliance)
+#(GREAT)
+#(no_alliance)
+#(MAYBE_LATER)
+#(decide_later)
+#(OK_LATER)
+#(why_so_trusting)
+#(TRUSTING_BECAUSE)
+
+
+#(ALLIES_CAN_VISIT)
+#(make_alliance)
+#(CANT_ALLY_HERE)
+#(why_busy)
+#(BUSY_BECAUSE)
+#(bye_ally)
+#(GOODBYE_ALLY)
+#(FRIENDLY_TAALO_GOODBYE)
+#(ANGRY_TAALO_GOODBYE)
+#(HOSTILE_HELLO_1)
+#(HOSTILE_HELLO_2)
+#(OUT_TAKES)
+

@@ -1,0 +1,228 @@
+name=Mazonae
+imagePortraitName=Conversation-Portrait-Mazonae
+contentTextStringName=Conversation-Mazonae-Content
+
+|VariablesImport|u.world.player.variableLookup
+
+|Display|#(HELLO_BEFORE_AMBUSH_1)
+|Display|#(HELLO_BEFORE_AMBUSH_2)
+|Display|#(HELLO_BEFORE_AMBUSH_3)
+|Display|#(HELLO_BEFORE_AMBUSH_4)
+
+|Option|#(we_are_vice_squad)|#(OK_VICE)
+|Option|#(we_are_the_one_for_you_baby)|#(MAYBE_CAPTAIN)
+|Option|#(we_are_vindicator)|#(WELCOME_VINDICATOR)
+|Option|#(we_are_impressed)|#(SO_AM_I_CAPTAIN)
+
+	#(OK_VICE)|Display|#(OK_VICE)
+	|Goto||#(HOW_CAN_YOU_BE_HERE)
+
+	#(MAYBE_CAPTAIN)|Display|#(MAYBE_CAPTAIN)
+	|Goto||#(HOW_CAN_YOU_BE_HERE)
+
+	#(WELCOME_VINDICATOR)|Display|#(WELCOME_VINDICATOR)
+	|Goto||#(HOW_CAN_YOU_BE_HERE)
+
+	#(SO_AM_I_CAPTAIN)|Display|#(SO_AM_I_CAPTAIN)
+	|Goto||#(HOW_CAN_YOU_BE_HERE)
+
+	#(HOW_CAN_YOU_BE_HERE)|Display|#(HOW_CAN_YOU_BE_HERE)
+	|OptionsClear
+	|Option|#(we_here_to_help)|#(NO_NEED_HELP)
+	|Option|#(we_need_help)|#(CANT_GIVE_HELP)
+	|Option|#(i_need_you)|#(OK_NEED)
+	|Option|#(i_need_touch_o_vision)|#(TOUCH_O_VISION)
+	|Prompt
+
+		#(NO_NEED_HELP)|Display|#(NO_NEED_HELP)
+		|Goto||Questions
+
+		#(CANT_GIVE_HELP)|Display|#(CANT_GIVE_HELP)
+		|Goto||Questions
+
+		#(OK_NEED)|Display|#(OK_NEED)
+		|OptionRemove||#(i_need_you)
+		|OptionRemove||#(i_need_touch_o_vision)
+		|Prompt
+
+		#(TOUCH_O_VISION)|Display|#(TOUCH_O_VISION)
+		|OptionRemove||#(i_need_you)
+		|OptionRemove||#(i_need_touch_o_vision)
+		|Prompt
+
+		Questions|DoNothing
+		|Option|#(what_doing_here)|#(OUR_NEW_WORLD)
+		|Option|#(what_about_history)|#(BEFORE_WAR)
+		|Option|#(what_about_outfit)|#(HOPE_YOU_LIKE_IT)
+		|Option|#(know_about_deep_children)|#(WHAT_ABOUT_DEEP_CHILDREN)
+		|Option|#(bye)|#(GOODBYE)
+		|Prompt
+
+			#(OUR_NEW_WORLD)|Display|#(OUR_NEW_WORLD)
+			|OptionRemove||#(what_doing_here)
+			|Option|#(what_about_war)|#(ABOUT_WAR)
+			|Prompt
+
+				#(ABOUT_WAR)|Display|#(ABOUT_WAR)
+				|OptionRemove||#(what_about_war)
+				|Option|#(help_us)|#(WONT_HELP)
+				|Prompt
+
+					#(WONT_HELP)|Display|#(WONT_HELP)
+					|OptionRemove||#(help_us)
+					|Prompt
+
+			#(BEFORE_WAR)|Display|#(BEFORE_WAR)
+			|OptionRemove|#(what_about_history)
+			|Option|#(what_about_homeworld)|#(ABOUT_HOMEWORLD)
+			|Prompt
+
+				#(ABOUT_HOMEWORLD)|Display|#(ABOUT_HOMEWORLD)
+				|OptionRemove||#(what_about_homeworld)
+				|Option|#(what_happened)|#(DONT_KNOW_HOW)
+				|Prompt
+
+					#(DONT_KNOW_HOW)|Display|#(DONT_KNOW_HOW)
+					|OptionRemove||#(what_happened)
+					|Prompt
+
+			#(HOPE_YOU_LIKE_IT)|Display|#(HOPE_YOU_LIKE_IT)
+			|OptionRemove||#(what_about_outfit)
+			|Option|#(where_mates)|#(MATES_KILLED)
+			|Prompt
+
+				#(MATES_KILLED)|Display|#(MATES_KILLED)
+				|OptionRemove||#(where_mates)
+				|Option|#(get_lonely)|#(MAKE_OUT_ALL_RIGHT)
+				|Prompt
+
+					#(MAKE_OUT_ALL_RIGHT)|Display|#(MAKE_OUT_ALL_RIGHT)
+					|OptionRemove||#(get_lonely)
+					|Prompt
+
+			#(WHAT_ABOUT_DEEP_CHILDREN)|Display|#(WHAT_ABOUT_DEEP_CHILDREN)
+			|OptoinRemove||#(know_about_deep_children)
+			|Option|#(mycons_involved)|#(WHAT_PROOF)
+			|Prompt
+
+				#(WHAT_PROOF)|Display|#(WHAT_PROOF)
+				|OptionRemove||#(mycons_involved)
+				|Option|#(have_no_proof)|#(NEED_PROOF)|throw new Error("todo")
+				|Option|#(have_proof)|#(SEE_PROOF)|throw new Error("todo")
+				|Prompt
+
+					#(NEED_PROOF)|Display|#(NEED_PROOF)
+					|OptionRemove||#(have_no_proof)
+					|Prompt
+
+					#(SEE_PROOF)
+					|OptionRemove||#(have_proof)
+					|Option|#(look_at_egg_sacks)|#(HORRIBLE_TRUTH)
+					|Prompt
+
+						#(HORRIBLE_TRUTH)|Display|#(HORRIBLE_TRUTH)
+						|OptionsClear
+						|Option|#(whats_next_step)|#(OPEN_VAULT)
+						|Option|#(what_do_i_get_for_this)|#(GRATITUDE)
+						|Prompt
+
+							#(OPEN_VAULT)|Display|#(OPEN_VAULT)
+							|OptionsClear
+							|Option|#(where_is_it)|#(DONT_KNOW_WHERE)
+							|Prompt
+
+								#(DONT_KNOW_WHERE)|Display|#(DONT_KNOW_WHERE)
+								|Display|#(GIVE_SHUTTLE)
+								|Script|throw new Error("todo")
+								|Option|#(im_on_my_way)|#(GOOD_LUCK)
+								|Option|#(doing_this_for_you)|#(GOOD_LUCK)
+								|Option|#(if_i_die)|#(GOOD_LUCK)
+								|Prompt
+
+									#(GOOD_LUCK)|Display|#(GOOD_LUCK)
+									|Goto||Done
+
+							#(GRATITUDE)|Display|#(GRATITUDE)
+							|OptionRemove||#(what_do_i_get_for_this)
+							|Option|#(not_sure)|#(PLEASE)
+							|Prompt
+
+								#(PLEASE)|Display|#(PLEASE)
+								|OptionRemove||#(not_sure)
+								|Prompt
+
+
+			#(GOODBYE)|Display|#(GOODBYE)
+			|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+
+
+
+
+#(MUST_ACT)
+#(been_there)
+#(GREAT)
+#(OK_FOUND_VAULT)
+#(what_now)
+#(HERES_THE_PLAN)
+#(whats_my_reward)
+#(HERES_REWARD)
+#(bye_after_vault)
+#(GOODBYE_AFTER_VAULT)
+#(HELLO_AFTER_AMBUSH_1)
+#(HELLO_AFTER_AMBUSH_2)
+#(HELLO_AFTER_AMBUSH_3)
+#(HELLO_AFTER_AMBUSH_4)
+#(what_now_after_ambush)
+#(DO_THIS_AFTER_AMBUSH)
+#(what_about_you)
+#(ABOUT_ME)
+#(whats_up_after_ambush)
+#(GENERAL_INFO_AFTER_AMBUSH_1)
+#(GENERAL_INFO_AFTER_AMBUSH_2)
+#(GENERAL_INFO_AFTER_AMBUSH_3)
+#(GENERAL_INFO_AFTER_AMBUSH_4)
+#(bye_after_ambush)
+#(GOODBYE_AFTER_AMBUSH)
+#(FOUND_VAULT_YET_1)
+#(FOUND_VAULT_YET_2)
+#(vault_hint)
+#(OK_HINT)
+#(found_vault)
+#(bye_before_vault)
+#(GOODBYE_BEFORE_VAULT)
+#(READY_FOR_AMBUSH)
+#(repeat_plan)
+#(OK_REPEAT_PLAN)
+#(bye_before_ambush)
+#(GOODBYE_BEFORE_AMBUSH)
+#(what_about_us)
+#(ABOUT_US)
+#(MORE_COMFORTABLE)
+#(in_the_spirit)
+#(OK_SPIRIT)
+#(what_in_mind)
+#(SOMETHING_LIKE_THIS)
+#(hands_off)
+#(OK_WONT_USE_HANDS)
+#(why_lights_off)
+#(LIGHTS_OFF_BECAUSE)
+#(evil_monster)
+#(NOT_EVIL_MONSTER)
+#(disease)
+#(JUST_RELAX)
+#(what_happens_if_i_touch_this)
+#(THIS_HAPPENS)
+#(are_you_sure_this_is_ok)
+#(YES_SURE)
+#(boy_they_never_taught)
+#(THEN_LET_ME_TEACH)
+#(not_much_more_to_say)
+#(THEN_STOP_TALKING)
+#(LATER)
+#(SEX_GOODBYE)
+#(OUT_TAKES)

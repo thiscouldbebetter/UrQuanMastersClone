@@ -1,0 +1,155 @@
+name=Raptodactyl
+imagePortraitName=Conversation-Portrait-Raptor
+contentTextStringName=Conversation-Raptor-Content
+
+|VariablesImport|u.world.player.variableLookup
+
+|VariableLoad|Raptodactyl_EncounterIsAtPlanetHomeworld|throw new Error("todo")
+
+|JumpIfTrue|Raptodactyl_EncounterIsAtPlanetHomeworld|Homeworld
+
+Space|DoNothing
+
+|VariableAdd|Raptodactyl_Space_EncountersSoFar
+
+|Display|#(SPACE_HELLO_1)||cr.v("Raptodactyl_Space_EncountersSoFar") % 4 == 1
+|Display|#(SPACE_HELLO_2)||cr.v("Raptodactyl_Space_EncountersSoFar") % 4 == 2
+|Display|#(SPACE_HELLO_3)||cr.v("Raptodactyl_Space_EncountersSoFar") % 4 == 3
+|Display|#(SPACE_HELLO_4)||cr.v("Raptodactyl_Space_EncountersSoFar") % 4 == 0
+
+|Option|#(whats_up_space_1)|#(GENERAL_INFO_SPACE_1)|cr.v("Raptodactyl_Space_GeneralInfoQueriesSoFar") % 4 == 1
+|Option|#(whats_up_space_2)|#(GENERAL_INFO_SPACE_2)|cr.v("Raptodactyl_Space_GeneralInfoQueriesSoFar") % 4 == 2
+|Option|#(whats_up_space_3)|#(GENERAL_INFO_SPACE_3)|cr.v("Raptodactyl_Space_GeneralInfoQueriesSoFar") % 4 == 3
+|Option|#(whats_up_space_4)|#(GENERAL_INFO_SPACE_4)|cr.v("Raptodactyl_Space_GeneralInfoQueriesSoFar") % 4 == 0
+|Option|#(at_least_help_us_space)|#(SORRY_CANNOT)
+|Option|#(i_demand_you_ally_space)|#(WE_CANNOT_1)
+|Option|#(shofixti_alive_1)|#(SEND_HIM_OVER_1)|cr.v("Supian_MatingIsInProgress")
+|Option|#(bye_space)|Space_AttemptToLeave
+|Prompt
+
+	#(GENERAL_INFO_SPACE_1)|Display|#(GENERAL_INFO_SPACE_1)
+	|VariableAdd|Raptodactyl_Space_GeneralInfoQueriesSoFar
+	|OptionRemove||#(whats_up_space_1)
+	|Prompt
+
+	#(GENERAL_INFO_SPACE_2)|Display|#(GENERAL_INFO_SPACE_2)
+	|VariableAdd|Raptodactyl_Space_GeneralInfoQueriesSoFar
+	|OptionRemove||#(whats_up_space_2)
+	|Prompt
+
+	#(GENERAL_INFO_SPACE_3)|Display|#(GENERAL_INFO_SPACE_3)
+	|VariableAdd|Raptodactyl_Space_GeneralInfoQueriesSoFar
+	|OptionRemove||#(whats_up_space_3)
+	|Prompt
+
+	#(GENERAL_INFO_SPACE_4)|Display|#(GENERAL_INFO_SPACE_4)
+	|VariableAdd|Raptodactyl_Space_GeneralInfoQueriesSoFar
+	|OptionRemove||#(whats_up_space_4)
+	|Prompt
+
+	#(SORRY_CANNOT)|Display|#(SORRY_CANNOT)
+	|OptionRemove||#(at_least_help_us_space)
+	|Option|#(dishonor)|#(HERES_A_HINT)
+	|Prompt
+
+		#(HERES_A_HINT)|Display|#(HERES_A_HINT)
+		|OptionRemove||#(dishonor)
+		|Prompt
+
+	#(WE_CANNOT_1)|Display|#(WE_CANNOT_1)
+	|OptionRemove||#(i_demand_you_ally_space)
+	|Option|#(obligation)|#(WE_CANNOT_2)
+	|Prompt
+
+		#(WE_CANNOT_2)|Display|#(WE_CANNOT_2)
+		|Goto||Done
+
+	#(SEND_HIM_OVER_1)|Display|#(SEND_HIM_OVER_1)
+	|OptionsClear
+	|Option|#(not_here)|#(JUST_A_TRICK_1)
+	|Option|#(not_send)
+	|Option|#(shofixti_alive_2)||todo
+	|Prompt
+
+		#(JUST_A_TRICK_1)|Display|#(JUST_A_TRICK_1)
+		|Goto||Combat
+
+		#(SEND_HIM_OVER_2)
+		#(JUST_A_TRICK_2)
+		#(ok_send)
+		#(WE_REVOLT)
+
+	Space_AttemptToLeave|DoNothing
+	|JumpIfTrue|Raptodactyl_Space_EncountersSoFar > 1|#(GOODBYE_AND_DIE_SPACE)
+	|Display|#(GO_IN_PEACE)
+	|Goto||Done
+
+	#(GOODBYE_AND_DIE_SPACE)|Display|#(GOODBYE_AND_DIE_SPACE)
+	|Goto||Combat
+
+Homeworld|DoNothing
+
+|VariableAdd|Raptodactyl_Homeworld_EncountersSoFar
+
+|Display|#(HOMEWORLD_HELLO_1)|cr.v("Raptodactyl_Homeworld_EncountersSoFar") == 1
+|Display|#(HOMEWORLD_HELLO_2)|cr.v("Raptodactyl_Homeworld_EncountersSoFar") >= 2
+
+|Option|#(whats_up_homeworld)|#(GENERAL_INFO_HOMEWORLD)
+|Option|#(at_least_help_us_homeworld)|#(NO_HELP_ENEMY)
+|Option|#(give_info)|#(NO_INFO_FOR_ENEMY)
+|Option|#(i_demand_you_ally_homeworld)|#(ENEMY_MUST_DIE)
+|Option|#(bye_homeworld)|#(GOODBYE_AND_DIE_HOMEWORLD)
+|Prompt
+
+	#(GENERAL_INFO_HOMEWORLD|DoNothing
+	#(GENERAL_INFO_HOMEWORLD_1)|Display|#(GENERAL_INFO_HOMEWORLD_1)|cr.v("Raptodactyl_Homeworld_GeneralInfoQueriesSoFar") == 1
+	#(GENERAL_INFO_HOMEWORLD_2)|Display|#(GENERAL_INFO_HOMEWORLD_2)|cr.v("Raptodactyl_Homeworld_GeneralInfoQueriesSoFar") >= 2
+
+	#(NO_HELP_ENEMY)|Display|#(NO_HELP_ENEMY)
+	|OptionRemove||#(at_least_help_us_homeworld)
+	|Prompt
+
+	#(NO_INFO_FOR_ENEMY)|Display|#(NO_INFO_FOR_ENEMY)
+	|OptionRemove||#(give_info)
+	|Prompt
+
+	#(ENEMY_MUST_DIE)|Display|#(ENEMY_MUST_DIE)
+	|OptionRemove||#(i_demand_you_ally_homeworld)
+	|Goto||Combat
+
+	#(GOODBYE_AND_DIE_HOMEWORLD)|Display|#(GOODBYE_AND_DIE_HOMEWORLD)
+	|OptionRemove||#(bye_homeworld)
+	|Goto||Combat
+
+Combat|DoNothing
+|Script|throw new Error("todo");
+|Goto||Done
+
+Done|DoNothing
+|VariablesExport|u.world.player.variableLookup.set($key, $value)
+|Quit
+
+
+
+#(what_about_pkunk_royalist)
+#(PKUNK_ABSORBED_ROYALIST)
+#(HATE_PKUNK_ROYALIST)
+#(what_about_pkunk_space)
+#(PKUNK_ABSORBED_SPACE)
+#(HATE_PKUNK_SPACE)
+#(ROYALIST_SPACE_HELLO_1)
+#(ROYALIST_SPACE_HELLO_2)
+#(ROYALIST_HOMEWORLD_HELLO_1)
+#(ROYALIST_HOMEWORLD_HELLO_2)
+#(how_is_rebellion)
+#(ROYALIST_REBELLION_1)
+#(ROYALIST_REBELLION_2)
+#(sorry_about_revolution)
+#(ALL_YOUR_FAULT)
+#(bye_royalist)
+#(GOODBYE_AND_DIE_ROYALIST)
+#(name_1)
+#(name_2)
+#(name_3)
+#(name_4)
+#(OUT_TAKES)
