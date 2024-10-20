@@ -5,7 +5,7 @@ soundMusicName=Music_Faction_EarthStation // todo
 
 |VariablesImport|u.world.player.variableLookup
 
-|VariableLoad|Raknoid_EncounterIsInSpace|throw new Error("todo")
+|VariableLoad|Raknoid_EncounterIsInSpace|universe.world.place().encounter.planet.name != "Earth Station"
 |JumpIfTrue|Raknoid_EncounterIsInSpace|Space
 
 |Display|#(SEND_MESSAGE)
@@ -32,11 +32,11 @@ Space|DoNothing
 
 |VariableAdd|Raknoid_Space_EncountersSoFar
 
-|Display|#(INIT_HELLO_SPACE)|cr.v("Raknoid_Space_EncountersSoFar") == 1
-|Display|#(SUBSEQUENT_HELLO_SPACE_1)|cr.v("Raknoid_Space_EncountersSoFar") % 4 == 2
-|Display|#(SUBSEQUENT_HELLO_SPACE_2)|cr.v("Raknoid_Space_EncountersSoFar") % 4 == 3
-|Display|#(SUBSEQUENT_HELLO_SPACE_3)|cr.v("Raknoid_Space_EncountersSoFar") % 4 == 0
-|Display|#(SUBSEQUENT_HELLO_SPACE_4)|cr.v("Raknoid_Space_EncountersSoFar") > 4 && cr.v("Raknoid_Space_EncountersSoFar") % 4 == 1)
+|Display|#(INIT_HELLO_SPACE)||cr.v("Raknoid_Space_EncountersSoFar") == 1
+|Display|#(SUBSEQUENT_HELLO_SPACE_1)||cr.v("Raknoid_Space_EncountersSoFar") % 4 == 2
+|Display|#(SUBSEQUENT_HELLO_SPACE_2)||cr.v("Raknoid_Space_EncountersSoFar") % 4 == 3
+|Display|#(SUBSEQUENT_HELLO_SPACE_3)||cr.v("Raknoid_Space_EncountersSoFar") % 4 == 0
+|Display|#(SUBSEQUENT_HELLO_SPACE_4)||cr.v("Raknoid_Space_EncountersSoFar") > 4 && cr.v("Raknoid_Space_EncountersSoFar") % 4 == 1
 
 |OptionsClear
 |Option|#(whats_up_space_1)|#(GENERAL_INFO_SPACE)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 1
@@ -47,15 +47,15 @@ Space|DoNothing
 |Option|#(you_are_weak)|#(STRENGTH_NOT_ALL)
 |Option|#(slay_by_thousands)|#(NO_SLAY_BY_THOUSANDS)
 |Option|#(ease_up)|#(NO_EASE_UP)
-|Option|#(bye_space)
+|Option|#(bye_space)|#(GOODBYE_AND_DIE_SPACE)
 |Prompt
 
 	#(GENERAL_INFO_SPACE)|DoNothing
-	|Display|#(GENERAL_INFO_SPACE_1)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 1
-	|Display|#(GENERAL_INFO_SPACE_2)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 2
-	|Display|#(GENERAL_INFO_SPACE_3)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 3
-	|Display|#(GENERAL_INFO_SPACE_4)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 4
-	|Display|#(GENERAL_INFO_SPACE_5)|cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 0
+	|Display|#(GENERAL_INFO_SPACE_1)||cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 1
+	|Display|#(GENERAL_INFO_SPACE_2)||cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 2
+	|Display|#(GENERAL_INFO_SPACE_3)||cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 3
+	|Display|#(GENERAL_INFO_SPACE_4)||cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 4
+	|Display|#(GENERAL_INFO_SPACE_5)||cr.v("Raknoid_Space_GeneralInfoQuestionsSoFar") % 5 == 0
 	|Goto||Combat
 
 	#(STRENGTH_NOT_ALL)|Display|#(STRENGTH_NOT_ALL)

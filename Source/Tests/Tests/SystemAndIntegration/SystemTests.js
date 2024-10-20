@@ -629,7 +629,8 @@ class SystemTests extends TestFixture {
         this.moveToEntityWithNameAndWait(universe, "Pluto");
         this.moveToEntityWithNameAndWait(universe, Planet.name);
         this.landOnPlanetSurface(universe, world, place());
-        this.moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, "MauluskaOrphan");
+        this.moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, "MauluskaOrphan");
+        // todo
         callback();
     }
     // Helper methods.
@@ -1017,6 +1018,12 @@ class SystemTests extends TestFixture {
         this.moveToEntityWithNameAndWait(universe, shipGroupBelongingToFaction.name);
     }
     moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, energySourceName) {
+        this.moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, energySourceName);
+        // ...and then return to the ship automatically.
+        var world = universe.world;
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+    }
+    moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, energySourceName) {
         var world = universe.world;
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
         // Go to the energy source.
@@ -1024,8 +1031,6 @@ class SystemTests extends TestFixture {
         // The lander should display a report message, which must be acknowledged...
         this.acknowledgeMessage(universe);
         universe.updateForTimerTick();
-        // ...and then return to the ship automatically.
-        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
     }
     returnToOrbit(universe, world, place) {
         var placeSurface = place;

@@ -51,7 +51,7 @@ class Game {
             //ts(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
             ts(conversation + "Mauluska", conversationDirectory + "Mauluska.txt"),
             ts(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-            ts(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.json"),
+            ts(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.txt"),
             ts(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
             ts(conversation + "Muunfaz", conversationDirectory + "Muunfaz.txt"),
             ts(conversation + "Muunfaz" + content, contentPathPrefixComms + "pkunk/pkunk.txt"),

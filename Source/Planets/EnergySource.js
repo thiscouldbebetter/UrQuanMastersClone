@@ -134,12 +134,17 @@ class EnergySource_Instances {
         var acknowledgeReport = (uwpe) => {
             var place = uwpe.place;
             var entityPlayer = place.entityByName(Player.name);
-            var lander = Lander.fromEntity(entityPlayer);
-            var entityEnergySource = place.entityByName(textMauluskaOrphan);
-            lander.itemHolderDevices.itemEntityPickUpFromPlace(entityEnergySource, place);
+            // var lander = Lander.fromEntity(entityPlayer);
+            // var entityEnergySource = place.entityByName(textMauluskaOrphan);
+            // todo - Remove the ship from the planet surface.
             place.exit(uwpe);
             var world = uwpe.world;
-            var factionMauluska = world.factionByName(textMauluskaOrphan);
+            const textMauluska = "Mauluska";
+            var factionMauluska = world.factionByName(textMauluska);
+            uwpe
+                .placeSet(place.placePlanetOrbit)
+                .entitySet(entityPlayer);
+            // .entity2Set(entityEnergySource); // This makes the talking fail.
             var encounter = factionMauluska.toEncounter(uwpe);
             var placeEncounter = encounter.toPlace();
             world.placeNextSet(placeEncounter);

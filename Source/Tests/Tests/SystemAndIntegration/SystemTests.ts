@@ -963,7 +963,9 @@ class SystemTests extends TestFixture
 		this.moveToEntityWithNameAndWait(universe, "Pluto");
 		this.moveToEntityWithNameAndWait(universe, Planet.name);
 		this.landOnPlanetSurface(universe, world, place() );
-		this.moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, "MauluskaOrphan");
+		this.moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, "MauluskaOrphan");
+
+		// todo
 
 		callback();
 	}
@@ -1563,6 +1565,17 @@ class SystemTests extends TestFixture
 		universe: Universe, energySourceName: string
 	): void
 	{
+		this.moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, energySourceName);
+		// ...and then return to the ship automatically.
+		var world = universe.world;
+		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
+	}
+
+	moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage
+	(
+		universe: Universe, energySourceName: string
+	): void
+	{
 		var world = universe.world;
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetSurface.name, world);
@@ -1574,9 +1587,6 @@ class SystemTests extends TestFixture
 		this.acknowledgeMessage(universe);
 
 		universe.updateForTimerTick();
-
-		// ...and then return to the ship automatically.
-		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
 	}
 
 	returnToOrbit(universe: Universe, world: World, place: Place)
