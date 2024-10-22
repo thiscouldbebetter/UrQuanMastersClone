@@ -35,6 +35,44 @@ class SystemTests extends TestFixture
 
 	playFromStart_UniverseInitialized(callback: () => void, universe: Universe): void
 	{
+		var methodsToRun =
+		[
+			this.playFromStart_1_GoToEarthVicinityAndTalkToGuardDrone,
+			this.playFromStart_2_GoToEarthStationAndAcceptSupplyMission,
+			this.playFromStart_3_RetrieveRadioactives,
+			this.playFromStart_4_InvestigateMoonbase,
+			this.playFromStart_5_DestroyRaknoidStraggler,
+			this.playFromStart_6_GetDownToBusinessWithStation,
+			this.playFromStart_7_GoToHyperspaceThenTalkToAndFightProbe,
+			this.playFromStart_8_MeetMerchants,
+			this.playFromStart_9_GatherLifeformDataAndSellIt,
+			this.playFromStart_10_SellGatheredLifeformData,
+			this.playFromStart_11_VisitRainbowWorldsAndPickUpHyperwaveCaster,
+			this.playFromStart_12_TalkToTwygganAndGetExtramatic,
+			this.playFromStart_13_PickUpFreakyBeast,
+			this.playFromStart_14_TalkToTempestrialsAndGetProbeDestructCode,
+			this.playFromStart_15_PickUpWarpPodFromCrashedShackler,
+			this.playFromStart_16_EnterParaspaceTalkToEllfynAndGetProjector,
+			this.playFromStart_17_BuyFuelFromMurchSellAtStationAndBuyModules,
+			this.playFromStart_18_MeetMuunfazAndGetShipsThenSellThemAtStation,
+			this.playFromStart_19_FindMauluskaOrphanAndHireThem
+			// todo - More steps.
+		];
+
+		methodsToRun.forEach
+		(
+			x =>
+			{
+				console.log(x.name);
+				x.call(this, universe);
+			}
+		);
+
+		callback();
+	}
+
+	playFromStart_1_GoToEarthVicinityAndTalkToGuardDrone(universe: Universe): void
+	{
 		Assert.isNotNull(universe);
 
 		var world = universe.world as WorldExtended;
@@ -48,7 +86,7 @@ class SystemTests extends TestFixture
 
 		this.waitForTicks(universe, 5);
 
-		var planetEarthName = "Earth";
+		const planetEarthName = "Earth";
 		var planetEarth = place().entityByName(planetEarthName);
 		Assert.isNotNull(planetEarth);
 
@@ -69,7 +107,7 @@ class SystemTests extends TestFixture
 
 		// Verify that a guard drone is present.
 
-		var guardDroneName = "LahkemupGuardDrone";
+		const guardDroneName = "LahkemupGuardDrone";
 		var guardDrone = place().entityByName(guardDroneName);
 		Assert.isNotNull(guardDrone);
 
@@ -103,11 +141,16 @@ class SystemTests extends TestFixture
 		this.waitForTicks(universe, 1000);
 		guardDrone = place().entityByName(guardDroneName);
 		Assert.isNull(guardDrone);
+	}
+
+	playFromStart_2_GoToEarthStationAndAcceptSupplyMission(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Move the player to the station.
 
-		var stationName = "Earth Station";
-		var station = place().entityByName(stationName);
+		const stationName = "Earth Station";
+		var station = world.place().entityByName(stationName);
 		Assert.isNotNull(station);
 
 		this.moveToEntityWithNameAndWait(universe, stationName);
@@ -144,14 +187,15 @@ class SystemTests extends TestFixture
 
 		this.moveToEntityWithNameAndWait(universe, "Venus");
 		this.leavePlanetVicinityAndWait(universe);
+		const planetEarthName = "Earth";
 		this.moveToEntityWithNameAndWait(universe, planetEarthName);
 		this.moveToEntityWithNameAndWait(universe, stationName);
 
 		// Talk to the station, and verify that the option to transfer radioactives isn't available.
 
-		var placeEncounter = place() as PlaceEncounter;
-		station = placeEncounter.entityByName(stationName);
-		talker = station.talker();
+		var placeEncounter = world.place() as PlaceEncounter;
+		var station = placeEncounter.entityByName(stationName);
+		var talker = station.talker();
 		var conversationRun = talker.conversationRun;
 		conversationRun.nextUntilPrompt(universe);
 		var optionsAvailable = conversationRun.optionsAvailable();
@@ -167,6 +211,11 @@ class SystemTests extends TestFixture
 				"#(well_go_get_them_now2)"
 			]
 		);
+	}
+
+	playFromStart_3_RetrieveRadioactives(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Exit the planet vicinity again.
 
@@ -195,7 +244,7 @@ class SystemTests extends TestFixture
 
 		// Land on the planet.
 
-		this.landOnPlanetSurface(universe, world, place() );
+		this.landOnPlanetSurface(universe, world, world.place() );
 
 		// Pick up enough resources to be sure to get the radioactives.
 
@@ -207,7 +256,7 @@ class SystemTests extends TestFixture
 
 		// Launch and return to the ship in orbit.
 
-		this.returnToOrbit(universe, world, place() );
+		this.returnToOrbit(universe, world, world.place() );
 
 		// Verify that the cargo holds now contains some radioactives.
 
@@ -225,17 +274,19 @@ class SystemTests extends TestFixture
 		this.leavePlanetVicinityAndWait(universe);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceStarsystem.name, world);
 
+		const planetEarthName = "Earth";
 		this.moveToEntityWithNameAndWait(universe, planetEarthName);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
 
+		const stationName = "Earth Station";
 		this.moveToEntityWithNameAndWait(universe, stationName);
 		this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
 
 		// Talk to the station commander.
 
-		var placeEncounter = place() as PlaceEncounter;
-		station = placeEncounter.entityByName(stationName);
-		talker = station.talker();
+		var placeEncounter = world.place() as PlaceEncounter;
+		var station = placeEncounter.entityByName(stationName);
+		var talker = station.talker();
 
 		var radioactivesHeldBefore =
 			flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
@@ -255,6 +306,17 @@ class SystemTests extends TestFixture
 			flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
 		var radioactivesTransferred = radioactivesHeldBefore - radioactivesHeldAfter;
 		Assert.areNumbersEqual(1, radioactivesTransferred);
+	}
+
+	playFromStart_4_InvestigateMoonbase(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
+
+		var placeEncounter = world.place() as PlaceEncounter;
+		const stationName = "Earth Station";
+		var station = placeEncounter.entityByName(stationName);
+		var talker = station.talker();
+
 
 		this.talkToTalker
 		(
@@ -295,7 +357,7 @@ class SystemTests extends TestFixture
 
 		// Land on the moon.
 
-		this.landOnPlanetSurface(universe, world, place() );
+		this.landOnPlanetSurface(universe, world, world.place() );
 		this.moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, "AbandonedMoonbase");
 
 		// Leave lunar orbit.
@@ -307,7 +369,8 @@ class SystemTests extends TestFixture
 
 		// Verify that the guard drone doesn't spontaneously reappear.
 
-		var guardDrone = place().entityByName(guardDroneName);
+		const guardDroneName = "LahkemupGuardDrone";
+		var guardDrone = world.place().entityByName(guardDroneName);
 		Assert.isNull(guardDrone);
 
 		// Return to the station.
@@ -317,14 +380,14 @@ class SystemTests extends TestFixture
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
 		// Make sure that the station encounter's placeToReturnTo is right.
-		var placeEncounterStation = place() as PlaceEncounter;
+		var placeEncounterStation = world.place() as PlaceEncounter;
 		var placeToReturnToAfterStation = placeEncounterStation.encounter.placeToReturnTo;
 		Assert.areStringsEqual(PlacePlanetVicinity.name, placeToReturnToAfterStation.constructor.name);
 
 		// Talk to the commander again.
 
-		station = placeEncounter.entityByName(stationName);
-		talker = station.talker();
+		var station = placeEncounter.entityByName(stationName);
+		var talker = station.talker();
 		this.talkToTalker
 		(
 			universe, talker,
@@ -334,17 +397,27 @@ class SystemTests extends TestFixture
 				// "Well, I'll be--INCOMING HOSTILE SHIP!  They're jamming our signal!"
 			]
 		);
+	}
+
+	playFromStart_5_DestroyRaknoidStraggler(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Make sure that the hostile encounter's placeToReturnTo is right.
-		var placeEncounterHostile = place() as PlaceEncounter;
-		var placeToReturnToAfterHostileEncounter = placeEncounterHostile.encounter.placeToReturnTo;
-		Assert.areStringsEqual(placeEncounterStation.name, placeToReturnToAfterHostileEncounter.name);
+		var placeEncounterHostile = world.place() as PlaceEncounter;
+		var placeToReturnToAfterHostileEncounter =
+			placeEncounterHostile.encounter.placeToReturnTo;
+		Assert.areStringsEqual
+		(
+			"PlaceEncounterTerran", // placeEncounterStation.name,
+			placeToReturnToAfterHostileEncounter.name
+		);
 
 		// Now you're talking to the hostile ship.
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
-		placeEncounter = place() as PlaceEncounter;
+		var placeEncounter = world.place() as PlaceEncounter;
 		var encounter = placeEncounter.encounter;
 		var factionHostileName = "Raknoid";
 		Assert.areStringsEqual(factionHostileName, encounter.factionName);
@@ -365,6 +438,7 @@ class SystemTests extends TestFixture
 			]
 		);
 
+		var flagship = world.player.flagship;
 		Assert.areNumbersEqual(0, flagship.resourceCredits);
 
 		this.cheatToWinCombat(universe);
@@ -375,17 +449,24 @@ class SystemTests extends TestFixture
 		var hostileShipSalvageValue = factionHostile.shipDefn(world).salvageValue;
 		Assert.areNumbersEqual(hostileShipSalvageValue, flagship.resourceCredits);
 		//universe.updateForTimerTick();
+	}
+
+	playFromStart_6_GetDownToBusinessWithStation(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Verify that we've returned to the original encounter,
 		// and that, when it's over, it's set to return to the planet vicinity,
 		// rather than to, say, the hostile encounter.
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
-		encounter = (place() as PlaceEncounter).encounter;
+		var encounter = (world.place() as PlaceEncounter).encounter;
 		var placeToReturnToTypeName = encounter.placeToReturnTo.constructor.name;
 		Assert.areStringsEqual(PlacePlanetVicinity.name, placeToReturnToTypeName);
 
-		talker = station.talker();
+		var stationName = "Earth Station";
+		var station = world.place().entityByName(stationName);
+		var talker = station.talker();
 		this.talkToTalker
 		(
 			universe, talker,
@@ -405,13 +486,14 @@ class SystemTests extends TestFixture
 
 		// Now we can get down to business.
 
-		placeEncounter = place() as PlaceEncounter;
-		encounter = placeEncounter.encounter;
+		var placeEncounter = world.place() as PlaceEncounter;
+		var encounter = placeEncounter.encounter;
 		var faction = encounter.faction(world);
 		Assert.areStringsEqual("Conversation-Terran-Business", faction.conversationDefnName);
 
-		talker = encounter.entityOther.talker();
+		var talker = encounter.entityOther.talker();
 
+		var flagship = world.player.flagship;
 		var resourceCreditsBefore = flagship.resourceCredits;
 
 		this.talkToTalker
@@ -436,6 +518,11 @@ class SystemTests extends TestFixture
 				"#(goodbye_commander)"
 			]
 		);
+	}
+
+	playFromStart_7_GoToHyperspaceThenTalkToAndFightProbe(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Verify that we've returned to the world.
 
@@ -457,7 +544,7 @@ class SystemTests extends TestFixture
 		// Verify that a probe is present.
 
 		const shipGroupNameProbe = "Tempestrial Ship Group X"
-		var entityProbe = place().entityByName(shipGroupNameProbe);
+		var entityProbe = world.place().entityByName(shipGroupNameProbe);
 		Assert.isNotNull(entityProbe);
 
 		var hyperspace = world.hyperspace;
@@ -469,7 +556,7 @@ class SystemTests extends TestFixture
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
-		var placeEncounter = place() as PlaceEncounter;
+		var placeEncounter = world.place() as PlaceEncounter;
 		placeEncounter.encounter.talk(universe);
 
 		universe.updateForTimerTick();
@@ -478,7 +565,7 @@ class SystemTests extends TestFixture
 
 		var encounter = placeEncounter.encounter;
 		var entityOther = encounter.entityOther;
-		talker = entityOther.talker();
+		var talker = entityOther.talker();
 		this.talkToTalker
 		(
 			universe, talker,
@@ -488,6 +575,8 @@ class SystemTests extends TestFixture
 		// The probe attacks.
 
 		// Make a record of how much money we had before blowing up a ship and salvaging the wreckage.
+
+		var flagship = world.player.flagship;
 
 		var creditBefore = flagship.resourceCredits;
 
@@ -503,9 +592,14 @@ class SystemTests extends TestFixture
 		// Verify that we're back in hyperspace, and the probe is no longer present.
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-		var entityProbe = place().entityByName(shipGroupNameProbe);
+		var entityProbe = world.place().entityByName(shipGroupNameProbe);
 		Assert.isNull(entityProbe);
 		Assert.isEmpty(hyperspace.shipGroups);
+	}
+
+	playFromStart_8_MeetMerchants(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Go to the Alpha Centauri starsystem, the nearest supergiant to Sol.
 
@@ -515,7 +609,7 @@ class SystemTests extends TestFixture
 
 		// Look for a trader ship, in the main starsystem and in each planet vicinity.
 
-		var placeStarsystem = place() as PlaceStarsystem;
+		var placeStarsystem = world.place() as PlaceStarsystem;
 		var starsystem = placeStarsystem.starsystem;
 		var factionMerchantsName = world.factionByName("Murch").name;
 
@@ -544,15 +638,21 @@ class SystemTests extends TestFixture
 				// "Goodbye."
 			]
 		);
+	}
+	
+	playFromStart_9_GatherLifeformDataAndSellIt(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Go gather some lifeforms to sell.
 
 		this.goToSurfaceOfPlanetWithName(universe, "Delta Centauri II-a"); // 186 biodata units, hazard level 5/8.
-		var placePlanetSurface = place() as PlacePlanetSurface;
+		var placePlanetSurface = world.place() as PlacePlanetSurface;
 		var entitiesOnPlanet = placePlanetSurface.entitiesAll();
 		var entitiesLifeforms = entitiesOnPlanet.filter(x => x.name.startsWith(Lifeform.name) );
 		Assert.isTrue(entitiesLifeforms.length > 0);
 
+		var flagship = world.player.flagship;
 		var flagshipItemHolderLifeforms = flagship.itemHolderLifeforms;
 		var biodataBeforeGatheringLifeforms =
 			flagshipItemHolderLifeforms.encumbranceOfAllItems(world);
@@ -660,17 +760,24 @@ class SystemTests extends TestFixture
 		Assert.isTrue(biodataGathered > 0);
 
 		// Return to orbit, and verify that the biodata was offloaded from the lander.
-		this.returnToOrbit(universe, world, place() );
+		this.returnToOrbit(universe, world, world.place() );
 
 		var biodataAfterGatheringLifeforms =
 			flagshipItemHolderLifeforms.encumbranceOfAllItems(world);
 		Assert.isTrue(biodataAfterGatheringLifeforms > biodataBeforeGatheringLifeforms);
+	}
+
+	playFromStart_10_SellGatheredLifeformData(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Go to another supergiant starsystem containing the merchants,
 		// then find the merchants and engage with them.
 
 		var starsystemToGoToName = "Zeeman";
 		this.goToStarsystemWithName(universe, starsystemToGoToName);
+		var starsystem = world.hyperspace.starsystemByName(starsystemToGoToName);
+		var factionMerchantsName = world.factionByName("Murch").name;
 		this.moveToShipGroupBelongingToFactionIfAny(universe, world, starsystem, factionMerchantsName);
 		this.talkToTalker2
 		(
@@ -697,6 +804,11 @@ class SystemTests extends TestFixture
 				// "Goodbye."
 			]
 		);
+	}
+
+	playFromStart_11_VisitRainbowWorldsAndPickUpHyperwaveCaster(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Go to a system containing a rainbow world,
 		// in order to have some more info to sell to the traders.
@@ -710,6 +822,7 @@ class SystemTests extends TestFixture
 		var deviceTtorstingCasterName = "TtorstingCaster";
 		var planetWithTtorstingCaster = "Arcturus I-a";
 		this.goToSurfaceOfPlanetWithName(universe, planetWithTtorstingCaster);
+		var placePlanetSurface = world.place() as PlacePlanetSurface;
 		this.assertPlaceCurrentIsOfTypeForWorld(placePlanetSurface.name, world);
 		this.moveToEntityWithNameAndWait(universe, deviceTtorstingCasterName);
 		this.acknowledgeMessage(universe);
@@ -717,6 +830,7 @@ class SystemTests extends TestFixture
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
 
 		// Check to see that the caster is now on board the flagship.
+		var flagship = world.player.flagship;
 		var itemHolderDevices = flagship.itemHolderDevices;
 		Assert.isNotEmpty(itemHolderDevices.items);
 
@@ -736,12 +850,17 @@ class SystemTests extends TestFixture
 		starsystemWithRainbowWorldName = "Gamma Aquarii";
 		this.goToRainbowWorldInStarsystemWithName(starsystemWithRainbowWorldName, universe);
 		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
+	}
+
+	playFromStart_12_TalkToTwygganAndGetExtramatic(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Go to Beta Librae I and talk to the Twyggan.
 		this.goToOrbitOfPlanetWithName(universe, "Beta Librae I");
 
 		// Verify that an encounter is initiated, rather than a normal orbit.
-		Assert.isTrue(place().constructor.name != PlacePlanetOrbit.name);
+		Assert.isTrue(world.place().constructor.name != PlacePlanetOrbit.name);
 
 		this.talkToTalker2
 		(
@@ -784,7 +903,10 @@ class SystemTests extends TestFixture
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
 
 		// todo - Check that the Extramatic is now on board.
+	}
 
+	playFromStart_13_PickUpFreakyBeast(universe: Universe): void
+	{
 		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// Go to Delta Lyncis I and capture the Freaky Beast.
@@ -793,7 +915,10 @@ class SystemTests extends TestFixture
 		this.stunAllLifeformsOnPlanetSurfaceCollectBiodataAndLeave(universe);
 
 		// todo - Verify that the Freaky Beast is now on board.
+	}
 
+	playFromStart_14_TalkToTempestrialsAndGetProbeDestructCode(universe: Universe): void
+	{
 		// Go to Epsilon Draconis I and log a rainbow world.
 		this.goToOrbitOfPlanetWithName(universe, "Epsilon Draconis I");
 
@@ -802,7 +927,10 @@ class SystemTests extends TestFixture
 
 		// todo - Talk to the Tempestrials.
 		// todo - Verify that the probe destruct code is now known.
+	}
 
+	playFromStart_15_PickUpWarpPodFromCrashedShackler(universe: Universe): void
+	{
 		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		// Go to Beta Pegasi and log another rainbow world.
@@ -816,6 +944,11 @@ class SystemTests extends TestFixture
 		this.moveToEnergySourceOnPlanetSurfaceAcknowledgeMessageAndLeave(universe, "CrashedShackler");
 
 		// todo - Verify that the crashed shackler is on board.
+	}
+
+	playFromStart_16_EnterParaspaceTalkToEllfynAndGetProjector(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		// Proceed to the paraspace portal.
 		// todo - Advance time to the 17th of the month.
@@ -823,7 +956,7 @@ class SystemTests extends TestFixture
 		this.goToHyperspace(universe);
 		this.moveToEntityWithNameAndWait(universe, "UNKNOWN");
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-		var placeHyperspace = place() as PlaceHyperspace;
+		var placeHyperspace = world.place() as PlaceHyperspace;
 		var spaceOccupied = placeHyperspace.hyperspace;
 		Assert.areStringsEqual("Paraspace", spaceOccupied.name);
 
@@ -834,7 +967,7 @@ class SystemTests extends TestFixture
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
-		var talker = (place() as PlaceEncounter).encounter.entityOther.talker();
+		var talker = (world.place() as PlaceEncounter).encounter.entityOther.talker();
 		this.talkToTalker
 		(
 			universe,
@@ -855,11 +988,12 @@ class SystemTests extends TestFixture
 		// Check to see that we're back in paraspace.
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-		var placeHyperspace = place() as PlaceHyperspace;
+		var placeHyperspace = world.place() as PlaceHyperspace;
 		var spaceOccupied = placeHyperspace.hyperspace;
 		Assert.areStringsEqual("Paraspace", spaceOccupied.name);
 
 		// Check to see that the portal projector is now on board the flagship.
+		var flagship = world.player.flagship;
 		var itemHolderDevices = flagship.itemHolderDevices;
 		var devicePortalProjectorName = "ParaspacePortalProjector";
 		Assert.isTrue(itemHolderDevices.hasItemWithDefnName(devicePortalProjectorName) );
@@ -867,17 +1001,22 @@ class SystemTests extends TestFixture
 		// Leave paraspace by the portal that lets out nearest to Earth.
 		this.moveToEntityAtPosAndWait(universe, Coords.fromXY(5060, 4740) );
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceHyperspace.name, world);
-		var placeHyperspace = place() as PlaceHyperspace;
+		var placeHyperspace = world.place() as PlaceHyperspace;
 		var spaceOccupied = placeHyperspace.hyperspace;
 		Assert.areStringsEqual("Hyperspace", spaceOccupied.name);
 		var playerPos = placeHyperspace.player().locatable().pos();
 		var posExpected = Coords.fromXY(1910,  962);
 		Assert.isTrue(playerPos.equals(posExpected) );
+	}
+
+	playFromStart_17_BuyFuelFromMurchSellAtStationAndBuyModules(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		this.callMerchantsAndWaitForContact(universe);
-		placeEncounter = world.place() as PlaceEncounter;
-		encounter = placeEncounter.encounter;
-		talker = encounter.entityOther.talker();
+		var placeEncounter = world.place() as PlaceEncounter;
+		var encounter = placeEncounter.encounter;
+		var talker = encounter.entityOther.talker();
 
 		this.talkToTalker
 		(
@@ -906,6 +1045,9 @@ class SystemTests extends TestFixture
 
 		this.goToEarthStationDocks(universe);
 		var placeStationDock = world.place() as PlaceStationDock;
+
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
+
 		placeStationDock.componentBuildThruster(uwpe);
 		placeStationDock.componentBuildTurningJets(uwpe);
 		placeStationDock.componentBuildWithName(uwpe, "Crew Habitat");
@@ -916,11 +1058,16 @@ class SystemTests extends TestFixture
 		// todo - Verify speed, turn rate, crew, cargo, and fuel capacity has increased.
 
 		this.leaveStation(universe);
+	}
+
+	playFromStart_18_MeetMuunfazAndGetShipsThenSellThemAtStation(universe: Universe): void
+	{
+		var world = universe.world as WorldExtended;
 
 		this.goToHyperspaceCallMerchantsSellAnythingOfValueAndBuyFuel(universe);
 
 		this.goToOrbitOfPlanetWithName(universe, "Gamma Krueger I");
-		Assert.isFalse(place().constructor.name == PlacePlanetOrbit.name);
+		Assert.isFalse(world.place().constructor.name == PlacePlanetOrbit.name);
 
 		this.talkToTalker2
 		(
@@ -936,19 +1083,21 @@ class SystemTests extends TestFixture
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
 
+		var player = world.player;
+		var flagship = player.flagship;
 		var playerHasTranslucentOblong =
 			flagship.itemHolderDevices.hasItemWithDefnName("TranslucentOblong");
 		Assert.isTrue(playerHasTranslucentOblong);
 
 		const shipDefnNameFireblossom = "Fireblossom";
 		var muunfazShipCount =
-			world.player.shipGroup.ships.filter(x => x.defnName == shipDefnNameFireblossom).length
+			player.shipGroup.ships.filter(x => x.defnName == shipDefnNameFireblossom).length;
 		Assert.areNumbersEqual(4, muunfazShipCount);
 
 		// Go back to Earth Station and sell the ships.
 
 		this.goToEarthStationDocks(universe);
-		placeStationDock = world.place() as PlaceStationDock;
+		var placeStationDock = world.place() as PlaceStationDock;
 		for (var i = 0; i < muunfazShipCount; i++)
 		{
 			placeStationDock
@@ -957,17 +1106,18 @@ class SystemTests extends TestFixture
 		}
 
 		this.leaveStation(universe);
+	}
+
+	playFromStart_19_FindMauluskaOrphanAndHireThem(universe: Universe): void
+	{
+		var world = universe.world;
 
 		// Go to Pluto and locate the Mauluska orphan hiding there.
 		this.leavePlanetVicinityAndWait(universe);
 		this.moveToEntityWithNameAndWait(universe, "Pluto");
 		this.moveToEntityWithNameAndWait(universe, Planet.name);
-		this.landOnPlanetSurface(universe, world, place() );
+		this.landOnPlanetSurface(universe, world, world.place() );
 		this.moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, "MauluskaOrphan");
-
-		// todo
-
-		callback();
 	}
 
 	// Helper methods.
