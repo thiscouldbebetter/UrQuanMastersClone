@@ -36,8 +36,45 @@ class SystemTests extends TestFixture {
             this.playFromStart_16_EnterParaspaceTalkToEllfynAndGetProjector,
             this.playFromStart_17_BuyFuelFromMurchSellAtStationAndBuyModules,
             this.playFromStart_18_MeetMuunfazAndGetShipsThenSellThemAtStation,
-            this.playFromStart_19_FindMauluskaOrphanAndHireThem
+            this.playFromStart_19_FindMauluskaOrphanAndHireThem,
             // todo - More steps.
+            this.playFromStart_20_MeetWithTriunionEnvoys,
+            this.playFromStart_21_GoToMauluskaHeadquartersAndMeetHindership,
+            this.playFromStart_22_RemovePredatorsFromMauluskaHomeworld,
+            this.playFromStart_23_EstablishAllianceWithMauluska,
+            this.playFromStart_24_MeetTheFamorfexAndDontMentionMindomini,
+            this.playFromStart_25_MeetWithTriunionAtHomeworldAndEstablishAlliance,
+            this.playFromStart_26_MeetTheVaarphigAndSendToFightKehlemal,
+            this.playFromStart_27_MeetTheOutzAndEstablishAlliance,
+            this.playFromStart_28_PickUpTelepathicShieldFromOutzTerritory,
+            this.playFromStart_29_MeetTheMazonaeAtStationAndLearnHomeworldLocation,
+            this.playFromStart_30_MeetTheUgglegrujAndLearnLocationOfPervertLeader,
+            this.playFromStart_31_MeetTheRaptodactylsAndRetreat,
+            this.playFromStart_32_MeetTheSupialSurvivorAndAvoidKillingHim,
+            this.playFromStart_33_TradeFreakyBeastForSupialFemales,
+            this.playFromStart_34_TakeSupialFemalesBackToSurvivor,
+            this.playFromStart_35_MeetTheHyphaeAndLearnFormerHomeworldLocation,
+            this.playFromStart_36_GoToMazonaeFormerHomeworldAndFindVulcogenicSpores,
+            this.playFromStart_37_TakeVulcogenicSporesBackToMazonaeAsEvidence,
+            this.playFromStart_38_LocateMazonaeFleetInColdStorage,
+            this.playFromStart_39_LureHyphaeIntoTrapSetByMazonae,
+            this.playFromStart_40_StealSolaratorFromVacatedHyphaeTerritory,
+            this.playFromStart_41_ManipulateRaknoidIntoAttackingVaarphig,
+            this.playFromStart_42_UseSolaratorToUnshieldXtalixHomeworld,
+            this.playFromStart_43_InvestigateMauluskaDisappearanceAndGetFamorfexCaster,
+            this.playFromStart_44_ReturnToEarthStationCheckUpdatesAndHireSupial,
+            this.playFromStart_45_ShowSupialToRaptodactylAndSparkCivilWar,
+            this.playFromStart_46_MeetTheDaaskappAndTradeTtorstingCasterForOrb,
+            this.playFromStart_47_StealSpiralFromVaarphig,
+            this.playFromStart_48_RepairExtramaticWithSpareParts,
+            this.playFromStart_49_MeetGrimmotzAndGiveThemRepairedExtramatic,
+            this.playFromStart_50_ClaimBombFromGrimmotzTerritory,
+            this.playFromStart_51_ReturnToFamorfexThenDefeatAndAbductMindomini,
+            this.playFromStart_52_ReturnToEarthAndConvertFlagshipToCarryBomb,
+            this.playFromStart_53_GoToLocationOfForerunnerBattlesystem,
+            this.playFromStart_54_DestroyTheFleetsAroundForerunnerBattlesystem,
+            this.playFromStart_55_DestroyTheShieldAroundForerunnerBattlesystem,
+            this.playFromStart_56_DestroyTheForerunnerBattlesystem
         ];
         methodsToRun.forEach(x => {
             console.log(x.name);
@@ -733,6 +770,117 @@ class SystemTests extends TestFixture {
         this.moveToEntityWithNameAndWait(universe, Planet.name);
         this.landOnPlanetSurface(universe, world, world.place());
         this.moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, "MauluskaOrphan");
+    }
+    playFromStart_20_MeetWithTriunionEnvoys(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_21_GoToMauluskaHeadquartersAndMeetHindership(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_22_RemovePredatorsFromMauluskaHomeworld(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_23_EstablishAllianceWithMauluska(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_24_MeetTheFamorfexAndDontMentionMindomini(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_25_MeetWithTriunionAtHomeworldAndEstablishAlliance(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_26_MeetTheVaarphigAndSendToFightKehlemal(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_27_MeetTheOutzAndEstablishAlliance(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_28_PickUpTelepathicShieldFromOutzTerritory(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_29_MeetTheMazonaeAtStationAndLearnHomeworldLocation(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_30_MeetTheUgglegrujAndLearnLocationOfPervertLeader(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_31_MeetTheRaptodactylsAndRetreat(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_32_MeetTheSupialSurvivorAndAvoidKillingHim(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_33_TradeFreakyBeastForSupialFemales(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_34_TakeSupialFemalesBackToSurvivor(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_35_MeetTheHyphaeAndLearnFormerHomeworldLocation(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_36_GoToMazonaeFormerHomeworldAndFindVulcogenicSpores(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_37_TakeVulcogenicSporesBackToMazonaeAsEvidence(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_38_LocateMazonaeFleetInColdStorage(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_39_LureHyphaeIntoTrapSetByMazonae(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_40_StealSolaratorFromVacatedHyphaeTerritory(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_41_ManipulateRaknoidIntoAttackingVaarphig(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_42_UseSolaratorToUnshieldXtalixHomeworld(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_43_InvestigateMauluskaDisappearanceAndGetFamorfexCaster(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_44_ReturnToEarthStationCheckUpdatesAndHireSupial(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_45_ShowSupialToRaptodactylAndSparkCivilWar(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_46_MeetTheDaaskappAndTradeTtorstingCasterForOrb(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_47_StealSpiralFromVaarphig(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_48_RepairExtramaticWithSpareParts(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_49_MeetGrimmotzAndGiveThemRepairedExtramatic(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_50_ClaimBombFromGrimmotzTerritory(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_51_ReturnToFamorfexThenDefeatAndAbductMindomini(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_52_ReturnToEarthAndConvertFlagshipToCarryBomb(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_53_GoToLocationOfForerunnerBattlesystem(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_54_DestroyTheFleetsAroundForerunnerBattlesystem(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_55_DestroyTheShieldAroundForerunnerBattlesystem(universe) {
+        throw new Error("todo");
+    }
+    playFromStart_56_DestroyTheForerunnerBattlesystem(universe) {
+        throw new Error("todo");
     }
     // Helper methods.
     acknowledgeMessage(universe) {
