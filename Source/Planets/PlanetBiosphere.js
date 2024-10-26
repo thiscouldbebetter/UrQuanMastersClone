@@ -13,7 +13,7 @@ class PlanetBiosphere {
             var speciesCountsByCode = new Map(speciesCountsAsString
                 .split("+")
                 .map(x => [
-                x.substr(x.length - 2), // speciesCode
+                x.substr(x.length - 2),
                 parseInt(x.substr(0, x.length - 2)) // count
             ]));
             biosphere = new PlanetBiosphere(speciesCountsByCode);

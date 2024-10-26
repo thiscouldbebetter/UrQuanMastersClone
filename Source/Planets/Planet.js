@@ -171,7 +171,7 @@ class Planet {
         var returnValue = new Entity(this.name, [
             Collidable.fromCollider(collider),
             Drawable.fromVisual(visual),
-            this, // planet
+            this,
             Locatable.fromPos(pos),
         ]);
         return returnValue;

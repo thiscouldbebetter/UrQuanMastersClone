@@ -1155,11 +1155,39 @@ class SystemTests extends TestFixture
 		this.moveToEntityWithNameAndWait(universe, Planet.name);
 		this.landOnPlanetSurface(universe, world, world.place() );
 		this.moveToEnergySourceOnPlanetSurfaceAndAcknowledgeMessage(universe, "MauluskaOrphan");
+
+		this.talkToTalker2
+		(
+			universe,
+			[
+				"todo"
+			]
+		);
 	}
 
 	playFromStart_20_MeetWithTriunionEnvoys(universe: Universe): void
 	{
-		throw new Error("todo");
+		var world = universe.world as WorldExtended;
+		var place = world.place() as PlaceStarsystem;
+		var starsystem = place.starsystem;
+
+		this.goToStarsystemWithName(universe, "Rigel");
+		var factionTriunionName =
+			world.factionByName("Triunion").name;
+		this.moveToShipGroupBelongingToFactionIfAny
+		(
+			universe, world, starsystem, factionTriunionName
+		);
+
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+
+		this.talkToTalker2
+		(
+			universe,
+			[
+				"todo"
+			]
+		);
 	}
 
 	playFromStart_21_GoToMauluskaHeadquartersAndMeetHindership(universe: Universe): void

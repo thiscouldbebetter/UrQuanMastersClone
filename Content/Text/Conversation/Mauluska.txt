@@ -37,7 +37,7 @@ contentTextStringName=Conversation-Mauluska-Content
 	#(ARE_YOU_SURE)|Display|#(ARE_YOU_SURE)
 	|Goto||Mauluska_Orphan_DecidedNotToFight
 
-	|Display|#(OK_WONT)
+	#(OK_WONT)|Display|#(OK_WONT)
 	|Goto||Mauluska_Orphan_DecidedNotToFight
 
 	#(OK_WE_FIGHT_AT_PLUTO)|Display|#(OK_WE_FIGHT_AT_PLUTO)
@@ -45,20 +45,20 @@ contentTextStringName=Conversation-Mauluska-Content
 
 Mauluska_Orphan_DecidedNotToFight|DoNothing
 |OptionsClear
-|Option|#(what_doing_on_pluto_1)|#(ABOUT_20_YEARS_AGO)
+#(what_doing_on_pluto_1)|Option|#(what_doing_on_pluto_1)|#(ABOUT_20_YEARS_AGO)
 |Option|#(where_are_urquan)|#(URQUAN_LEFT)
 #(join_us_1)|Option|#(join_us)|#(WONT_JOIN_1)
 |Option|#(changed_mind)|#(OK_WE_FIGHT_AT_PLUTO)
 |Prompt
 
 	#(ABOUT_20_YEARS_AGO)|Display|#(ABOUT_20_YEARS_AGO)
-	|OptionRemove||(what_doing_on_pluto_1)
-	|Option|#(what_doing_on_pluto_2)|#(WHEN_URQUAN_ARRIVED)
+	|OptionRemove||#(what_doing_on_pluto_1)
+	(what_doing_on_pluto_2)|Option|#(what_doing_on_pluto_2)|#(WHEN_URQUAN_ARRIVED)
 	|Prompt
 
 		#(WHEN_URQUAN_ARRIVED)|Display|#(WHEN_URQUAN_ARRIVED)
 		|OptionRemove||(what_doing_on_pluto_2)
-		|Option|#(what_doing_on_pluto_3)|#(STATIONED_ON_EARTH_MOON)
+		(what_doing_on_pluto_3)|Option|#(what_doing_on_pluto_3)|#(STATIONED_ON_EARTH_MOON)
 		|Prompt
 
 			#(STATIONED_ON_EARTH_MOON)|Display|#(STATIONED_ON_EARTH_MOON)
@@ -69,27 +69,27 @@ Mauluska_Orphan_DecidedNotToFight|DoNothing
 
 				#(ABOUT_ILWRATH)|Display|#(ABOUT_ILWRATH)
 				|OptionRemove||#(what_about_ilwrath)
-				|Option|#(when_ilwrath)
+				|Option|#(when_ilwrath)|#(THEN_ILWRATH)
 				|Prompt
 
-					|Display|#(THEN_ILWRATH)
+					#(THEN_ILWRATH)|Display|#(THEN_ILWRATH)
 					|OptionRemove||#(when_ilwrath)
 					|Prompt
 
 				#(SET_UP_BASE)|Display|#(SET_UP_BASE)
 				|OptionRemove||#(what_about_moonbase)
-				|Option|#(what_about_other_spathi)
+				|Option|#(what_about_other_spathi)|#(SPATHI_ARE)
 				|Prompt
 
-					|Display|#(SPATHI_ARE)
-					||OptionRemove||#(what_about_other_spathi)
+					#(SPATHI_ARE)|Display|#(SPATHI_ARE)
+					|OptionRemove||#(what_about_other_spathi)
 					|Option|#(how_many_crew)|#(THOUSANDS)
 					|Option|#(what_enemy)|#(ENEMY_IS)
 					|Prompt
 
 						#(THOUSANDS)|Display|#(THOUSANDS)
 						|OptionRemove||#(how_many_crew)
-						|Option|#(really_thousands)
+						|Option|#(really_thousands)|#(JUST_ME)
 						|Prompt
 
 							#(JUST_ME)|Display|#(JUST_ME)
@@ -177,8 +177,8 @@ Mauluska_Orphan_DecidedNotToFight|DoNothing
 |Display|#(INIT_NEUTRAL_HELLO_SPACE)
 |Option|#(look_weird)|#(YOU_LOOK_WEIRD)
 |Option|#(come_in_peace)|#(AGAINST_NATURE)
-|Option|#(prepare_to_die)
-|Option|#(part_in_peace)
+|Option|#(prepare_to_die)|#(ALWAYS_PREPARED)
+|Option|#(part_in_peace)|#(KEEP_IT_SECRET)
 
 	#(YOU_LOOK_WEIRD)|Display|#(YOU_LOOK_WEIRD)
 	|OptionRemove|#(look_weird)
@@ -216,10 +216,10 @@ Mauluska_Orphan_DecidedNotToFight|DoNothing
 		|Pop
 
 
-	|Display|#(ALWAYS_PREPARED)
+	#(ALWAYS_PREPARED)|Display|#(ALWAYS_PREPARED)
 	|Option|#(wanna_fight)|#(YES_WE_DO)
 	|Option|#(heard_youre_cowards)|#(DARN_TOOTIN)
-	|Option|#(attack_you_now)
+	|Option|#(attack_you_now)|#(YIPES)
 	|Prompt
 
 		#(YES_WE_DO)|Display|#(YES_WE_DO)
@@ -240,7 +240,7 @@ Mauluska_Orphan_DecidedNotToFight|DoNothing
 		#(YIPES)|Display|#(YIPES)
 		|Goto||Combat
 
-	|Display|#(KEEP_IT_SECRET)
+	#(KEEP_IT_SECRET)|Display|#(KEEP_IT_SECRET)
 	|Goto||Done
 
 Done|DoNothing
