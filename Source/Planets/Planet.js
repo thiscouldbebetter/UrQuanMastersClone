@@ -1,15 +1,15 @@
 "use strict";
 class Planet {
-    constructor(name, defnName, radiusOuter, posAsPolar, factionName, characteristics) {
+    constructor(name, defnName, radiusOuter, offsetFromPrimaryAsPolar, factionName, characteristics) {
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
-        this.posAsPolar = posAsPolar;
+        this.offsetFromPrimaryAsPolar = offsetFromPrimaryAsPolar;
         this.factionName = factionName;
         this.characteristics = characteristics;
     }
-    static from6(name, defnName, radiusOuter, posAsPolar, sizeSurface, satellites) {
-        return new Planet(name, defnName, radiusOuter, posAsPolar, null, // factionName,
+    static from6(name, defnName, radiusOuter, offsetFromPrimaryAsPolar, sizeSurface, satellites) {
+        return new Planet(name, defnName, radiusOuter, offsetFromPrimaryAsPolar, null, // factionName,
         PlanetCharacteristics.fromSizeSurfaceAndSatellites(sizeSurface, satellites));
     }
     static activityDefnGravitate() {
@@ -118,27 +118,42 @@ class Planet {
     sizeSurface() {
         return (this.isStation() ? Coords.zeroes() : this.characteristics.sizeSurface);
     }
-    toEntityForPlanetVicinity(world, isPrimary, primaryPos, entityDimension) {
+    toEntityForPlanetVicinity(world, isPrimary, vicinityCenterPos, orbitColor, entityDimension) {
         var globeRadius = entityDimension;
         var orbitMultiplier = 4; // hack
         var collider = Sphere.fromRadius(globeRadius);
         var collidable = Collidable.fromCollider(collider);
         var planetDefn = this.defn();
-        var globeVisual = planetDefn.visualVicinity;
-        var orbitRadius = this.posAsPolar.radius * orbitMultiplier;
-        var orbitColor = this.orbitColor();
-        var orbitVisual = new VisualAnchor(VisualCircle.fromRadiusAndColorBorder(orbitRadius, orbitColor), posWithinVicinity, null // ?
-        );
-        var visual = new VisualGroup([
-            orbitVisual,
-            globeVisual,
-        ]);
-        var drawable = Drawable.fromVisual(visual);
-        var posWithinVicinity = primaryPos.clone();
-        if (isPrimary == false) {
-            var offsetFromPrimary = Polar.fromAzimuthInTurnsAndRadius(this.posAsPolar.azimuthInTurns + .5, orbitRadius).wrap().toCoords(Coords.create());
+        var globeVisual;
+        var posWithinVicinity = vicinityCenterPos.clone();
+        var orbitRadius;
+        var orbitCenterPos;
+        if (isPrimary) {
+            globeVisual = planetDefn.visualVicinityPrimary;
+            orbitRadius =
+                this.offsetFromPrimaryAsPolar.radius * orbitMultiplier;
+            var offsetToOrbitCenter = this.offsetFromPrimaryAsPolar
+                .toCoords(Coords.create())
+                .invert()
+                .multiplyScalar(orbitMultiplier);
+            orbitCenterPos =
+                offsetToOrbitCenter.add(vicinityCenterPos);
+        }
+        else {
+            globeVisual = planetDefn.visualVicinitySatellite;
+            orbitRadius =
+                this.offsetFromPrimaryAsPolar.radius * orbitMultiplier;
+            orbitCenterPos = vicinityCenterPos;
+            var offsetFromPrimary = Polar.fromAzimuthInTurnsAndRadius(this.offsetFromPrimaryAsPolar.azimuthInTurns + .5, orbitRadius).wrap().toCoords(Coords.create());
             posWithinVicinity.add(offsetFromPrimary);
         }
+        var orbitVisualPath = VisualCircle.fromRadiusAndColorBorder(orbitRadius, orbitColor);
+        var orbitVisual = VisualAnchor.fromChildAndPosToAnchorAt(orbitVisualPath, orbitCenterPos);
+        var visual = new VisualGroup([
+            orbitVisual,
+            globeVisual
+        ]);
+        var drawable = Drawable.fromVisual(visual);
         var locatable = Locatable.fromPos(posWithinVicinity);
         var entityName = isPrimary ? Planet.name : this.name;
         var entity = new Entity(entityName, [
@@ -159,11 +174,11 @@ class Planet {
         return entity;
     }
     toEntityForStarsystem(world, primary, primaryPos) {
-        var pos = primaryPos.clone().add(this.posAsPolar.toCoords(Coords.create()));
+        var pos = primaryPos.clone().add(this.offsetFromPrimaryAsPolar.toCoords(Coords.create()));
         var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
         var planetDefn = this.defn();
         var visual = new VisualGroup([
-            new VisualAnchor(new VisualCircle(this.posAsPolar.radius, null, orbitColor, null), primaryPos, null // ?
+            new VisualAnchor(new VisualCircle(this.offsetFromPrimaryAsPolar.radius, null, orbitColor, null), primaryPos, null // ?
             ),
             planetDefn.visualStarsystem
         ]);
@@ -171,7 +186,7 @@ class Planet {
         var returnValue = new Entity(this.name, [
             Collidable.fromCollider(collider),
             Drawable.fromVisual(visual),
-            this,
+            this, // planet
             Locatable.fromPos(pos),
         ]);
         return returnValue;
@@ -185,7 +200,7 @@ class Planet {
         return this._place;
     }
     pos() {
-        return this.posAsPolar.toCoords(Coords.create());
+        return this.offsetFromPrimaryAsPolar.toCoords(Coords.create());
     }
     // Clonable.
     clone() { throw new Error("todo"); }

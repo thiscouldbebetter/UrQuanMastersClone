@@ -4,7 +4,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	name: string;
 	defnName: string;
 	radiusOuter: number;
-	posAsPolar: Polar;
+	offsetFromPrimaryAsPolar: Polar;
 	factionName: string;
 	characteristics: PlanetCharacteristics;
 
@@ -15,7 +15,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		name: string,
 		defnName: string,
 		radiusOuter: number,
-		posAsPolar: Polar,
+		offsetFromPrimaryAsPolar: Polar,
 		factionName: string,
 		characteristics: PlanetCharacteristics
 	)
@@ -23,7 +23,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		this.name = name;
 		this.defnName = defnName;
 		this.radiusOuter = radiusOuter;
-		this.posAsPolar = posAsPolar;
+		this.offsetFromPrimaryAsPolar = offsetFromPrimaryAsPolar;
 		this.factionName = factionName;
 		this.characteristics = characteristics;
 	}
@@ -33,7 +33,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 		name: string,
 		defnName: string,
 		radiusOuter: number,
-		posAsPolar: Polar,
+		offsetFromPrimaryAsPolar: Polar,
 		sizeSurface: Coords,
 		satellites: Planet[]
 	): Planet
@@ -43,7 +43,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			name,
 			defnName,
 			radiusOuter,
-			posAsPolar,
+			offsetFromPrimaryAsPolar,
 			null, // factionName,
 			PlanetCharacteristics.fromSizeSurfaceAndSatellites
 			(
@@ -222,7 +222,11 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 	toEntityForPlanetVicinity
 	(
-		world: WorldExtended, isPrimary: boolean, primaryPos: Coords, entityDimension: number
+		world: WorldExtended,
+		isPrimary: boolean,
+		vicinityCenterPos: Coords,
+		orbitColor: Color,
+		entityDimension: number
 	): Entity
 	{
 		var globeRadius = entityDimension;
@@ -232,36 +236,63 @@ class Planet implements EntityProperty<Planet>, Satellite
 		var collidable = Collidable.fromCollider(collider);
 
 		var planetDefn = this.defn();
-		var globeVisual = planetDefn.visualVicinity;
 
-		var orbitRadius = this.posAsPolar.radius * orbitMultiplier;
-		var orbitColor = this.orbitColor();
-		var orbitVisual = new VisualAnchor
-		(
-			VisualCircle.fromRadiusAndColorBorder(orbitRadius, orbitColor),
-			posWithinVicinity,
-			null // ?
-		);
+		var globeVisual: VisualBase;
 
-		var visual = new VisualGroup
-		([
-			orbitVisual,
-			globeVisual,
-		]);
-		var drawable = Drawable.fromVisual(visual);
+		var posWithinVicinity = vicinityCenterPos.clone();
 
-		var posWithinVicinity = primaryPos.clone();
-		if (isPrimary == false)
+		var orbitRadius: number;
+		var orbitCenterPos: Coords;
+
+		if (isPrimary)
 		{
+			globeVisual = planetDefn.visualVicinityPrimary;
+
+			orbitRadius =
+				this.offsetFromPrimaryAsPolar.radius * orbitMultiplier;
+
+			var offsetToOrbitCenter =
+				this.offsetFromPrimaryAsPolar
+					.toCoords(Coords.create() )
+					.invert()
+					.multiplyScalar(orbitMultiplier);
+
+			orbitCenterPos =
+				offsetToOrbitCenter.add(vicinityCenterPos);
+		}
+		else
+		{
+			globeVisual = planetDefn.visualVicinitySatellite;
+
+			orbitRadius =
+				this.offsetFromPrimaryAsPolar.radius * orbitMultiplier;
+
+			orbitCenterPos = vicinityCenterPos;
+
 			var offsetFromPrimary = Polar.fromAzimuthInTurnsAndRadius
 			(
-				this.posAsPolar.azimuthInTurns + .5,
+				this.offsetFromPrimaryAsPolar.azimuthInTurns + .5,
 				orbitRadius
 			).wrap().toCoords(Coords.create());
 
 			posWithinVicinity.add(offsetFromPrimary);
 		}
 
+		var orbitVisualPath =
+			VisualCircle.fromRadiusAndColorBorder(orbitRadius, orbitColor);
+
+		var orbitVisual = VisualAnchor.fromChildAndPosToAnchorAt
+		(
+			orbitVisualPath,
+			orbitCenterPos
+		);
+
+		var visual = new VisualGroup
+		([
+			orbitVisual,
+			globeVisual
+		]);
+		var drawable = Drawable.fromVisual(visual);
 
 		var locatable = Locatable.fromPos(posWithinVicinity);
 
@@ -297,7 +328,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	{
 		var pos = primaryPos.clone().add
 		(
-			this.posAsPolar.toCoords(Coords.create())
+			this.offsetFromPrimaryAsPolar.toCoords(Coords.create())
 		);
 
 		var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
@@ -309,7 +340,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			(
 				new VisualCircle
 				(
-					this.posAsPolar.radius, null, orbitColor, null
+					this.offsetFromPrimaryAsPolar.radius, null, orbitColor, null
 				),
 				primaryPos,
 				null // ?
@@ -351,7 +382,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 	pos(): Coords
 	{
-		return this.posAsPolar.toCoords(Coords.create() );
+		return this.offsetFromPrimaryAsPolar.toCoords(Coords.create() );
 	}
 
 	// Clonable.

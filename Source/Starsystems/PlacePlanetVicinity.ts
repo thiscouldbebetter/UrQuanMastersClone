@@ -57,8 +57,12 @@ class PlacePlanetVicinity extends PlaceBase
 		var planetPos = sizeHalf.clone();
 
 		const isPrimaryTrue = true;
+		var orbitColor = this.planet.orbitColor();
 		var planetEntity =
-			this.planet.toEntityForPlanetVicinity(world, isPrimaryTrue, planetPos, entityDimension);
+			this.planet.toEntityForPlanetVicinity
+			(
+				world, isPrimaryTrue, planetPos, orbitColor, entityDimension
+			);
 
 		entities.push(planetEntity);
 
@@ -71,7 +75,10 @@ class PlacePlanetVicinity extends PlaceBase
 
 			const isPrimaryFalse = false;
 			var satelliteEntity =
-				satellite.toEntityForPlanetVicinity(world, isPrimaryFalse, planetPos, entityDimension);
+				satellite.toEntityForPlanetVicinity
+				(
+					world, isPrimaryFalse, planetPos, orbitColor, entityDimension / 2
+				);
 
 			entities.push(satelliteEntity);
 		}
@@ -328,7 +335,7 @@ class PlacePlanetVicinity extends PlaceBase
 		var planet = this.planet;
 		var posNext =
 			planet
-				.posAsPolar
+				.offsetFromPrimaryAsPolar
 				.toCoords(Coords.create())
 				.add
 				(

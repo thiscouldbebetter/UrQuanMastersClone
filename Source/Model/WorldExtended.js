@@ -166,20 +166,20 @@ class WorldExtended extends World {
             new LinkPortal(paraspaceLinkPortalName, Coords.fromXY(6134, 5900), // pos
             Encounter.name + "-" + ellfyn.name, null // destinationPos
             ),
-            lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712)),
-            lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607, 151)),
-            lp(Coords.fromXY(4660, 5140), Coords.fromXY(2302, 3988)),
-            lp(Coords.fromXY(4680, 4640), Coords.fromXY(9211, 6104)),
-            lp(Coords.fromXY(4760, 4580), Coords.fromXY(4091, 7748)),
-            lp(Coords.fromXY(4760, 4960), Coords.fromXY(6117, 4131)),
-            lp(Coords.fromXY(4880, 5380), Coords.fromXY(9735, 3153)),
-            lp(Coords.fromXY(4920, 4920), Coords.fromXY(50, 1647)),
-            lp(Coords.fromXY(5020, 4600), Coords.fromXY(3184, 4906)),
-            lp(Coords.fromXY(5060, 4740), Coords.fromXY(1910, 962)),
-            lp(Coords.fromXY(5160, 4660), Coords.fromXY(5673, 1207)),
-            lp(Coords.fromXY(5200, 5140), Coords.fromXY(103, 9404)),
-            lp(Coords.fromXY(5200, 5400), Coords.fromXY(5850, 6213)),
-            lp(Coords.fromXY(5300, 5280), Coords.fromXY(7752, 8906)),
+            lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712)), // Lyncis (Freaky Beast)
+            lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607, 151)), // Trianguli (SE)
+            lp(Coords.fromXY(4660, 5140), Coords.fromXY(2302, 3988)), // Gruis (Mauluska) 
+            lp(Coords.fromXY(4680, 4640), Coords.fromXY(9211, 6104)), // Arcturus (Ttorsting)
+            lp(Coords.fromXY(4760, 4580), Coords.fromXY(4091, 7748)), // Monocerotis (Lahk-Emup NW)
+            lp(Coords.fromXY(4760, 4960), Coords.fromXY(6117, 4131)), // Camelopardalis (Lahk-Emup S)
+            lp(Coords.fromXY(4880, 5380), Coords.fromXY(9735, 3153)), // Persei (Daaskap) 
+            lp(Coords.fromXY(4920, 4920), Coords.fromXY(50, 1647)), // Mizar (Raknoid)
+            lp(Coords.fromXY(5020, 4600), Coords.fromXY(3184, 4906)), // Capricorni (Triunion)
+            lp(Coords.fromXY(5060, 4740), Coords.fromXY(1910, 962)), // Lyrae (Sol)
+            lp(Coords.fromXY(5160, 4660), Coords.fromXY(5673, 1207)), // Sculptoris (Hyphae)
+            lp(Coords.fromXY(5200, 5140), Coords.fromXY(103, 9404)), // Corvi (Tempestrials)
+            lp(Coords.fromXY(5200, 5400), Coords.fromXY(5850, 6213)), // Crateris (Lahk-Emup Center)
+            lp(Coords.fromXY(5300, 5280), Coords.fromXY(7752, 8906)), // Librae (Twyggan)
             lp(Coords.fromXY(5440, 5320), Coords.fromXY(368, 6332)), // Circini (Elfynn)
         ];
         var paraspace = Hyperspace.fromNameSizeAndLinkPortals(paraspaceName, paraspaceSize, paraspaceLinkPortals).pixelsTraversablePerFuelUnitSet(Number.POSITIVE_INFINITY);

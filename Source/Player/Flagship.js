@@ -121,7 +121,15 @@ class Flagship {
         return this._componentsWeapon;
     }
     crewCurrentOverMax() {
-        return this.crew + "/" + this._crewMax;
+        return this.crew + "/" + this.crewMax();
+    }
+    crewMax() {
+        if (this._crewMax == null) {
+            this._crewMax = 0;
+            var componentsCrew = this.componentsCrew();
+            componentsCrew.forEach(x => x.applyToFlagship(this));
+        }
+        return this._crewMax;
     }
     deviceWithNameUse(deviceName, uwpe) {
         var itemToUse = this.itemHolderDevices.itemByDefnName(deviceName);

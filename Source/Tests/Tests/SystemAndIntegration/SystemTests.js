@@ -308,7 +308,7 @@ class SystemTests extends TestFixture {
         talker.talk(uwpe);
         this.talkToTalker(universe, talker, [
             // "A human in an alien vessel!"
-            "#(where_you_come_from)",
+            "#(where_you_come_from)", // "Where did you come from?"
             // "From fighting in such-and-such star cluster."
             "#(be_reasonable)"
             // "We aren't reasonable, though." [Attacks.]
@@ -336,9 +336,9 @@ class SystemTests extends TestFixture {
         var talker = station.talker();
         this.talkToTalker(universe, talker, [
             // "You won!  We're in.  What now?"
-            "#(annihilate_those_monsters)",
+            "#(annihilate_those_monsters)", // But actually [sensible plan].
             // "Sounds like a sensible plan.  What do we call our alliance?"
-            "#(name_1)",
+            "#(name_1)", // "The New Alliance of Free Stars!"
             // "Great.  Give us two weeks."
             null // "[Wait two weeks...]"
         ]);
@@ -426,15 +426,15 @@ class SystemTests extends TestFixture {
         // Talk to the traders.
         this.talkToTalker2(universe, [
             // "Hello!  We knew of you before your arrival."
-            "#(how_know)",
+            "#(how_know)", // "How did you know about us before meeting us?"
             // "We have mysterious sources."
-            "#(get_on_with_business)",
+            "#(get_on_with_business)", // "Shall we begin trading now?"
             // "Sure."
-            "#(why_turned_purple)",
+            "#(why_turned_purple)", // "Why did your bridge turn purple?"
             // "A good question with an unaffordably expensive answer."
-            "#(sell)",
+            "#(sell)", // "I have some things I would like to sell."
             // "Unfortunately, you have nothing we wish to buy."
-            "#(buy)",
+            "#(buy)", // "Okay, then, I'd like to buy something."
             // "You don't have any credit.  We buy the following info..."
             "#(be_leaving_now)"
             // "Goodbye."
@@ -529,17 +529,17 @@ class SystemTests extends TestFixture {
         this.moveToShipGroupBelongingToFactionIfAny(universe, world, starsystem, factionMerchantsName);
         this.talkToTalker2(universe, [
             // "Hello.  Shall we get down to business?"
-            "#(sell)",
+            "#(sell)", // I have some items I'd like to sell.
             // "What would you like to sell?"
-            "#(sell_life_data)",
+            "#(sell_life_data)", // "Biodata."
             // "We'll buy your biodata for this amount."
             "#(whats_my_credit)",
             // "Your credit is this."
-            "#(buy)",
+            "#(buy)", // "I'd like to buy something."
             // "What would you like to buy?"
-            "#(buy_fuel)",
+            "#(buy_fuel)", // "Fuel."
             // "How much fuel?"
-            "#(fill_me_up)",
+            "#(fill_me_up)", // "Fill me up."
             // "Fuel transferred." 
             // (And it's assumed you don't want any more fuel.)
             // "What else would you like to buy?"
@@ -592,31 +592,31 @@ class SystemTests extends TestFixture {
         Assert.isTrue(world.place().constructor.name != PlacePlanetOrbit.name);
         this.talkToTalker2(universe, [
             // "Hello, traveller."
-            "#(i_am)",
+            "#(i_am)", // "Hello.  My name is..."
             // "Our name is the Twyggan."
-            "#(my_ship)",
+            "#(my_ship)", // "My ship is the..."
             // "Our ship is the...
-            "#(from_alliance)",
+            "#(from_alliance)", // "We're from Earth."
             // "We're also from Earth."
-            "#(are_you_copying)",
+            "#(are_you_copying)", // "Hey?  Are you just copying me?"
             // "Well, yes.  But our planet's name also happens to means 'Dirt'."
-            "#(why_copy)",
+            "#(why_copy)", // "Why were you copying me?"
             // "It's our nature."
             "#(tell_us_of_your_species)",
             // "We're symbotic plants."
-            "#(plants_arent_intelligent)",
+            "#(plants_arent_intelligent)", // "Plants can't evolve intelligence!"
             // "We agree.  We suspect divine intervention."
-            "#(anyone_around_here)",
+            "#(anyone_around_here)", // "What's this neighborhood like?"
             // "Our neighbors are the Grimmotz."
             "#(what_relation_to_utwig)",
             // "They're our allies, usually, though they're not really up to it right now."
             "#(whats_wrong_with_utwig)",
             // "They broke their Extramatic."
-            "#(whats_ultron)",
+            "#(whats_ultron)", // "What's that?"
             // "Some kind of ancient gewgaw.  They gave it to us.  Here, take it."
             "#(what_do_i_do_now)",
             // "Fix it, of course."
-            "#(where_get_repairs)",
+            "#(where_get_repairs)", // "Where can I find the parts.
             // "There's an ancient rhyme that says where..."
             "#(bye_neutral)" // Oh, okay, I'll try.  Bye, I guess."
             // "Goodbye."
@@ -667,11 +667,11 @@ class SystemTests extends TestFixture {
         var talker = world.place().encounter.entityOther.talker();
         this.talkToTalker(universe, talker, [
             // "Hello, and welcome back."
-            "#(confused_by_hello)",
+            "#(confused_by_hello)", // "Have we met?"
             // "Oh, not personally, but our species have a history.
-            "#(what_give_me)",
+            "#(what_give_me)", // "You said you could offer us someting?"
             // "Yes, we can convert a warp outrigger into a portal projector."
-            "#(got_it)",
+            "#(got_it)", // "It just so happens I have one of those."
             // "Aren't you clever.  Here, we'll build it... done."
             "#(bye_friendly_homeworld)", // Great.  See ya."
             // "See ya."
@@ -704,15 +704,15 @@ class SystemTests extends TestFixture {
         var talker = encounter.entityOther.talker();
         this.talkToTalker(universe, talker, [
             // "Hello.  Buying or selling?"
-            "#(buy)",
+            "#(buy)", // "Buying."
             // "Buying what?"
-            "#(buy_technology)",
+            "#(buy_technology)", // "Technology."
             // "Okay, we're currently offering this tech."
             "#(buy_new_tech)",
             // "Sold.  Our next tech is this."
-            "#(no_buy_new_tech)",
+            "#(no_buy_new_tech)", // "I don't want to buy that one.
             // "What else would you like to buy?"
-            "#(done_buying)",
+            "#(done_buying)", // "Nothing."
             // "Anything else?"
             "#(be_leaving_now)",
             // "Bye."
@@ -1048,7 +1048,7 @@ class SystemTests extends TestFixture {
             // Sell it.
             this.talkToTalker(universe, talker, [
                 // "Hello.  Buying or selling."
-                "#(sell)",
+                "#(sell)", // "Selling."
                 // "Selling what?"
                 "#(sell_rainbow_locations)", // "Rainbow world locations."
                 // "You know where 1 is, worth 500."
@@ -1064,11 +1064,11 @@ class SystemTests extends TestFixture {
         // todo - Sell any lifeform data as well.
         // Now buy more fuel and then end the conversation.
         this.talkToTalker(universe, talker, [
-            "#(buy)",
+            "#(buy)", // "I'd like to buy something."
             // "What would you like to buy?"
-            "#(buy_fuel)",
+            "#(buy_fuel)", // "Fuel."
             // "How much?"
-            "#(fill_me_up)",
+            "#(fill_me_up)", // "Fill me up."
             // "What else would you like to buy?"
             "#(done_buying)",
             // "Anything else?"
@@ -1084,7 +1084,7 @@ class SystemTests extends TestFixture {
         }
         this.moveToEntityWithNameAndWait(universe, planetName);
         var placeTypesExpectedNames = [
-            PlacePlanetOrbit.name,
+            PlacePlanetOrbit.name, // Colliding with most planets will take you to orbit,
             PlaceEncounter.name, // but some special planets will instead initiate an encounter.
         ];
         var world = universe.world;

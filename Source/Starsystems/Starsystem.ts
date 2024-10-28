@@ -146,7 +146,7 @@ class Starsystem implements EntityProperty<Starsystem>
 		// Put a station in orbit around the Earth.
 
 		var stationPosAsPolar =
-			Polar.fromAzimuthInTurnsAndRadius(.5, moon.posAsPolar.radius / 2);
+			Polar.fromAzimuthInTurnsAndRadius(.5, moon.offsetFromPrimaryAsPolar.radius / 2);
 
 		var station = new Planet
 		(

@@ -44,7 +44,7 @@ class PlaceCombat extends PlaceBase {
     }
     constructor_PlanetEntityBuild(planet) {
         var planetDefn = planet.defn();
-        var visual = planetDefn.visualVicinity;
+        var visual = planetDefn.visualVicinityPrimary;
         var radius = visual.radius;
         var activity = new Activity(Planet.activityDefnGravitate().name, null);
         var actor = new Actor(activity);

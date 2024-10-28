@@ -44,7 +44,7 @@ class PlaceStation extends PlaceBase
 		var size = placePrev.size();
 		var planet = placePrev.planet;
 		var station = place.station;
-		var playerPosNext = station.posAsPolar.toCoords
+		var playerPosNext = station.offsetFromPrimaryAsPolar.toCoords
 		(
 			Coords.create()
 		).add

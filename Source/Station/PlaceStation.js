@@ -21,7 +21,7 @@ class PlaceStation extends PlaceBase {
         var size = placePrev.size();
         var planet = placePrev.planet;
         var station = place.station;
-        var playerPosNext = station.posAsPolar.toCoords(Coords.create()).add(size.clone().half()).add(Coords.fromXY(3, 0).multiplyScalar(10));
+        var playerPosNext = station.offsetFromPrimaryAsPolar.toCoords(Coords.create()).add(size.clone().half()).add(Coords.fromXY(3, 0).multiplyScalar(10));
         var playerLocNext = Disposition.fromPos(playerPosNext);
         var placeNext = new PlacePlanetVicinity(world, planet, playerLocNext, placePrev.placeStarsystem);
         world.placeNextSet(placeNext);

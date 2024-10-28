@@ -71,7 +71,7 @@ class Starsystem {
         var moon = planetEarth.satelliteGetAtIndex(0);
         moon.name = "Moon";
         // Put a station in orbit around the Earth.
-        var stationPosAsPolar = Polar.fromAzimuthInTurnsAndRadius(.5, moon.posAsPolar.radius / 2);
+        var stationPosAsPolar = Polar.fromAzimuthInTurnsAndRadius(.5, moon.offsetFromPrimaryAsPolar.radius / 2);
         var station = new Planet("Earth Station", "Station", // defnName
         radiusBase, stationPosAsPolar, "Terran", // factionName
         null // characteristics

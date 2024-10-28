@@ -41,7 +41,7 @@ class EnergySource {
         var returnValue = new Entity(this.name, [
             collidable,
             drawable,
-            this,
+            this, // energySource
             item,
             locatable,
             mappable

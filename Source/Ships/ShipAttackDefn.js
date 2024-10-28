@@ -63,7 +63,7 @@ class ShipAttackDefn {
             var visualWrapped = drawable.visual;
             visualWrapped.child = attackDefn.visualImpact;
             var entityImpact = new Entity("Impact", [
-                new Ephemeral(10, null),
+                new Ephemeral(10, null), // hack
                 entityProjectile.locatable(),
                 entityProjectile.drawable()
             ]);

@@ -23,14 +23,15 @@ class PlacePlanetVicinity extends PlaceBase {
         var sizeHalf = this.size().clone().half();
         var planetPos = sizeHalf.clone();
         const isPrimaryTrue = true;
-        var planetEntity = this.planet.toEntityForPlanetVicinity(world, isPrimaryTrue, planetPos, entityDimension);
+        var orbitColor = this.planet.orbitColor();
+        var planetEntity = this.planet.toEntityForPlanetVicinity(world, isPrimaryTrue, planetPos, orbitColor, entityDimension);
         entities.push(planetEntity);
         // satellites
         var satellites = planet.satellitesGet();
         for (var i = 0; i < satellites.length; i++) {
             var satellite = satellites[i];
             const isPrimaryFalse = false;
-            var satelliteEntity = satellite.toEntityForPlanetVicinity(world, isPrimaryFalse, planetPos, entityDimension);
+            var satelliteEntity = satellite.toEntityForPlanetVicinity(world, isPrimaryFalse, planetPos, orbitColor, entityDimension / 2);
             entities.push(satelliteEntity);
         }
         if (playerLoc != null) {
@@ -170,7 +171,7 @@ class PlacePlanetVicinity extends PlaceBase {
         var starsystem = placeStarsystem.starsystem;
         var planet = this.planet;
         var posNext = planet
-            .posAsPolar
+            .offsetFromPrimaryAsPolar
             .toCoords(Coords.create())
             .add(starsystem.sizeInner.clone().half());
         var dispositionNext = new Disposition(posNext, entityPlayer.locatable().loc.orientation.clone(), null);

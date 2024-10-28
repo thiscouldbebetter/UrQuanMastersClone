@@ -10,6 +10,8 @@ To play the game, open the file Source/_SpaceAdventureSequelClone.html in a web 
 that runs JavaScript.  To allow reading files from the filesystem, it may be necessary
 to host the game in a web server, or alternatively to customize the web browser configuration.
 For example, Google Chrome should be started with the "--allow-file-access-from-files" command-line option.
+A script named UrQuanMastersClone-RunInChrome.bat is included to run the Chrome web browser
+from a local file with the necessary setting.
 
 To minimize the possibility of legal entanglements, it was initially decided that this repository
 would not contain any actual content files from the original game, nor any other third-party
