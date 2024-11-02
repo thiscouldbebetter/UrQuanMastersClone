@@ -1160,7 +1160,33 @@ class SystemTests extends TestFixture
 		(
 			universe,
 			[
-				"todo"
+				// "Sorry about killing some of your lander crew!"
+				"#(identify)", // "Identify yourself!"
+				// "I'm Captain Such-and-Such."
+				"#(youre_forgiven)",
+				// "Thanks!"
+				"#(what_doing_on_pluto_1)",
+				// [Long story...]
+				"#(what_doing_on_pluto_2)",
+				// [Longer story...]
+				"#(what_doing_on_pluto_3)",
+				// [...story concludes.]
+				"#(what_about_ilwrath)",
+				// "They left us."
+				"#(when_ilwrath)", // "When will they be back."
+				// "Probably never."
+				"#(what_about_moonbase)",
+				// "It's a fake."
+				"#(what_about_other_spathi)",
+				// "They left too, a few at a time."
+				"#(how_many_crew)", // "How many on your ship?"
+				// "Lots!"
+				"#(really_thousands)", // "Really?",
+				// "Well, no, it's just me."
+				"#(full_of_monsters)", // "Sounds scary."
+				// "It is."
+				"#(join_us)", // "You should join our fleet."
+				// "Yes, please."
 			]
 		);
 	}
@@ -1168,15 +1194,14 @@ class SystemTests extends TestFixture
 	playFromStart_20_MeetWithTriunionEnvoys(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var place = world.place() as PlaceStarsystem;
-		var starsystem = place.starsystem;
 
-		this.goToStarsystemWithName(universe, "Rigel");
+		var starsystemForRendezvous = world.hyperspace.starsystemByName("Rigel");
+		this.goToStarsystemWithName(universe, starsystemForRendezvous.name);
 		var factionTriunionName =
 			world.factionByName("Triunion").name;
 		this.moveToShipGroupBelongingToFactionIfAny
 		(
-			universe, world, starsystem, factionTriunionName
+			universe, world, starsystemForRendezvous, factionTriunionName
 		);
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);

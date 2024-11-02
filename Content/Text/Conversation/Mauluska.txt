@@ -53,16 +53,16 @@ Mauluska_Orphan_DecidedNotToFight|DoNothing
 
 	#(ABOUT_20_YEARS_AGO)|Display|#(ABOUT_20_YEARS_AGO)
 	|OptionRemove||#(what_doing_on_pluto_1)
-	(what_doing_on_pluto_2)|Option|#(what_doing_on_pluto_2)|#(WHEN_URQUAN_ARRIVED)
+	#(what_doing_on_pluto_2)|Option|#(what_doing_on_pluto_2)|#(WHEN_URQUAN_ARRIVED)
 	|Prompt
 
 		#(WHEN_URQUAN_ARRIVED)|Display|#(WHEN_URQUAN_ARRIVED)
-		|OptionRemove||(what_doing_on_pluto_2)
-		(what_doing_on_pluto_3)|Option|#(what_doing_on_pluto_3)|#(STATIONED_ON_EARTH_MOON)
+		|OptionRemove||#(what_doing_on_pluto_2)
+		#(what_doing_on_pluto_3)|Option|#(what_doing_on_pluto_3)|#(STATIONED_ON_EARTH_MOON)
 		|Prompt
 
 			#(STATIONED_ON_EARTH_MOON)|Display|#(STATIONED_ON_EARTH_MOON)
-			|OptionRemove||(what_doing_on_pluto_3)
+			|OptionRemove||#(what_doing_on_pluto_3)
 			|Option|#(what_about_ilwrath)|#(ABOUT_ILWRATH)
 			|Option|#(what_about_moonbase)|#(SET_UP_BASE)
 			|Prompt
@@ -105,15 +105,16 @@ Mauluska_Orphan_DecidedNotToFight|DoNothing
 								|Prompt
 
 									#(WILL_JOIN)|Display|#(WILL_JOIN)
-									|Script|throw new Error("todo")
+									|Script|u.world.player.shipAdd(Ship.fromDefnName('Scuttler').crewSet(1) )
 									|Goto||Done
 
 						#(ENEMY_IS)|Display|#(ENEMY_IS)
 						|OptionRemove||#(what_enemy)
-						|Option|#(why_you_here)|#(DREW_SHORT_STRAW)
+						#(why_you_here)|Option|#(why_you_here)|#(DREW_SHORT_STRAW)
 						|Prompt
 
 							#(DREW_SHORT_STRAW)|Display|#(DREW_SHORT_STRAW)
+							|OptionRemove||#(why_you_here)
 							|Prompt
 
 	#(URQUAN_LEFT)|Display|#(URQUAN_LEFT)

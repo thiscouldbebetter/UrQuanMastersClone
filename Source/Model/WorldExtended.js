@@ -34,38 +34,30 @@ class WorldExtended extends World {
             ShipGroupBase.activityDefnLeave(),
             Lifeform.activityDefnMoveToRandomPosition()
         ];
-        var actions = Ship.actions();
-        var actionsCombat = Combat.actions();
-        var actionToInputsMappings = Ship.actionToInputsMappings();
-        var entityPropertyNamesToProcess = [
-            Actor.name,
-            Damager.name,
-            Ephemeral.name,
-            Killable.name,
-            Playable.name,
-            CollisionTrackerBase.name,
-            Locatable.name,
-            Constrainable.name,
-            Collidable.name,
-            Boundable.name,
-            GameClock.name,
-            //Drawable.name,
-            //Camera.name
-        ];
-        var placeDefns = [
-            PlaceDefn.from5(PlaceCombat.name, "Music_Combat", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
-            PlaceDefn.from5(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, [] // propertyNamesToProcess
-            ),
-            PlaceDefn.from5(PlaceHyperspace.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
-            PlaceDefn.from5(PlaceHyperspaceMap.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlacePlanetOrbit.name, "Music_Planet", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlacePlanetSurface.name, "Music_Planet", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
-            PlaceDefn.from5(PlacePlanetVicinity.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlaceStarsystem.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlaceStation.name, "Music_Music", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-        ];
+        var placeDefns = WorldExtended.create_PlaceDefns();
         var hyperspaceSize = Coords.fromXY(1, 1).multiplyScalar(10000);
         // special
+        var factions = WorldExtended.create_Factions(hyperspaceSize);
+        var shipDefns = ShipDefn.Instances(universe)._All;
+        var energySources = EnergySource.Instances()._All;
+        var itemDefns = WorldExtended.create_ItemDefns();
+        var lifeformDefns = LifeformDefn.Instances()._All;
+        var resourceDefns = ResourceDefn.Instances()._All;
+        var defn = new WorldDefnExtended(activityDefns, energySources, factions, itemDefns, lifeformDefns, placeDefns, resourceDefns, shipDefns);
+        var mediaLibrary = universe.mediaLibrary;
+        var starsAndPlanetsAsStringCsvCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
+        var starsystemSizeInner = Coords.fromXY(1, 1).multiplyScalar(300);
+        var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, starsystemSizeInner, factions, energySources, starsAndPlanetsAsStringCsvCompressed);
+        var paraspace = WorldExtended.create_Paraspace(hyperspace, factions);
+        WorldExtended.create_StarsystemDetails(universe, hyperspace, factions);
+        var starsystemStart = hyperspace.starsystemByName("Sol");
+        var player = WorldExtended.create_Player(starsystemStart);
+        var shipDefns = ShipDefn.Instances(universe)._All;
+        var returnValue = new WorldExtended("World-" + nowAsString, now, // dateCreated
+        defn, new Date(Date.UTC(2155, 1, 17, 9, 27, 22)), hyperspace, paraspace, factions, shipDefns, player, starsystemStart);
+        return returnValue;
+    }
+    static create_Factions(hyperspaceSize) {
         var textConversation = "Conversation-";
         var textLahkemupGuardDrone = "LahkemupGuardDrone";
         var lahkemupGuardDrone = new Faction(textLahkemupGuardDrone, null, // nameOriginal
@@ -139,21 +131,18 @@ class WorldExtended extends World {
             ugglegruj,
             vaarphig
         ];
-        var shipDefns = ShipDefn.Instances(universe)._All;
-        var energySources = EnergySource.Instances()._All;
+        return factions;
+    }
+    static create_ItemDefns() {
         var itemDefns = [
             ItemDefn.fromNameAndUse("HummingSpiral", WorldDefnExtended.itemDefn_HummingSpiral_Use),
             ItemDefn.fromNameAndUse("ParaspacePortalProjector", WorldDefnExtended.itemDefn_ParaspacePortalProjector_Use),
             ItemDefn.fromNameAndUse("ShimmeringHemitrope", WorldDefnExtended.itemDefn_ShimmeringHemitrope_Use),
             ItemDefn.fromNameAndUse("TranslucentOblong", WorldDefnExtended.itemDefn_TranslucentOblong_Use),
         ];
-        var lifeformDefns = LifeformDefn.Instances()._All;
-        var resourceDefns = ResourceDefn.Instances()._All;
-        var defn = new WorldDefnExtended(activityDefns, energySources, factions, itemDefns, lifeformDefns, placeDefns, resourceDefns, shipDefns);
-        var mediaLibrary = universe.mediaLibrary;
-        var starsAndPlanetsAsStringCsvCompressed = mediaLibrary.textStringGetByName("StarsAndPlanets").value;
-        var starsystemSizeInner = Coords.fromXY(1, 1).multiplyScalar(300);
-        var hyperspace = Hyperspace.fromFileContentsAsString(hyperspaceSize, starsystemSizeInner, factions, energySources, starsAndPlanetsAsStringCsvCompressed);
+        return itemDefns;
+    }
+    static create_Paraspace(hyperspace, factions) {
         // Create paraspace.
         const hyperspaceName = "Hyperspace";
         const paraspaceName = "Paraspace";
@@ -161,10 +150,11 @@ class WorldExtended extends World {
         let lp = (fromPos, toPos) => {
             return new LinkPortal(paraspaceLinkPortalName, fromPos, hyperspaceName, toPos);
         };
-        var paraspaceSize = hyperspaceSize.clone();
+        var paraspaceSize = hyperspace.size.clone();
+        var factionEllfyn = factions.find(x => x.name == "Ellfyn");
         var paraspaceLinkPortals = [
             new LinkPortal(paraspaceLinkPortalName, Coords.fromXY(6134, 5900), // pos
-            Encounter.name + "-" + ellfyn.name, null // destinationPos
+            Encounter.name + "-" + factionEllfyn.name, null // destinationPos
             ),
             lp(Coords.fromXY(4480, 5040), Coords.fromXY(5658, 9712)), // Lyncis (Freaky Beast)
             lp(Coords.fromXY(4580, 4920), Coords.fromXY(8607, 151)), // Trianguli (SE)
@@ -189,20 +179,44 @@ class WorldExtended extends World {
         var linkPortal = new LinkPortal(paraspaceLinkPortalName, paraspacePortalPos, paraspaceName, Coords.fromXY(5000, 5000) // destinationPos
         );
         hyperspace.linkPortalAdd(linkPortal);
-        var starsystemStart = hyperspace.starsystemByName("Sol");
-        starsystemStart.solarSystem(universe);
-        var starsystems = hyperspace.starsystems;
-        var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);
-        starsystemsSupergiant.forEach(starsystem => {
-            var shipGroup = new ShipGroupFinite(murch.name + " " + "Ship Group", murch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), null, // shipsMax
-            [
-                new Ship(murch.shipDefnName)
-            ]);
-            starsystem.shipGroupAdd(shipGroup);
-        });
+        return paraspace;
+    }
+    static create_PlaceDefns() {
+        var entityPropertyNamesToProcess = [
+            Actor.name,
+            Damager.name,
+            Ephemeral.name,
+            Killable.name,
+            Playable.name,
+            CollisionTrackerBase.name,
+            Locatable.name,
+            Constrainable.name,
+            Collidable.name,
+            Boundable.name,
+            GameClock.name,
+            //Drawable.name,
+            //Camera.name
+        ];
+        var actions = Ship.actions();
+        var actionsCombat = Combat.actions();
+        var actionToInputsMappings = Ship.actionToInputsMappings();
+        var placeDefns = [
+            PlaceDefn.from5(PlaceCombat.name, "Music_Combat", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
+            PlaceDefn.from5(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, [] // propertyNamesToProcess
+            ),
+            PlaceDefn.from5(PlaceHyperspace.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
+            PlaceDefn.from5(PlaceHyperspaceMap.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlacePlanetOrbit.name, "Music_Planet", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlacePlanetSurface.name, "Music_Planet", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
+            PlaceDefn.from5(PlacePlanetVicinity.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceStarsystem.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.from5(PlaceStation.name, "Music_Music", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+        ];
+        return placeDefns;
+    }
+    static create_Player(starsystemStart) {
         var playerShipDefnName = "Flagship";
         var playerShip = new Ship(playerShipDefnName);
-        var shipDefns = ShipDefn.Instances(universe)._All;
         var playerShips = [
             playerShip,
             new Ship("Broadsider")
@@ -233,10 +247,28 @@ class WorldExtended extends World {
         //var factionNamesAll = factions.elementProperties("name");
         var player = new Player("Player", playerFlagship, playerShipGroup, null // diplomaticRelationships
         );
-        var shipDefns = ShipDefn.Instances(universe)._All;
-        var returnValue = new WorldExtended("World-" + nowAsString, now, // dateCreated
-        defn, new Date(Date.UTC(2155, 1, 17, 9, 27, 22)), hyperspace, paraspace, factions, shipDefns, player, starsystemStart);
-        return returnValue;
+        return player;
+    }
+    static create_StarsystemDetails(universe, hyperspace, factions) {
+        var starsystemStart = hyperspace.starsystemByName("Sol");
+        starsystemStart.solarSystem(universe);
+        var starsystems = hyperspace.starsystems;
+        var starsystemsSupergiant = starsystems.filter(x => x.starSizeIndex == 2);
+        var factionMurch = factions.find(x => x.name == "Murch");
+        starsystemsSupergiant.forEach(starsystem => {
+            var shipGroup = new ShipGroupFinite(factionMurch.name + " " + "Ship Group", factionMurch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), null, // shipsMax
+            [
+                new Ship(factionMurch.shipDefnName)
+            ]);
+            starsystem.shipGroupAdd(shipGroup);
+        });
+        var starsystemForTriunionEnvoys = hyperspace.starsystemByName("Rigel");
+        var factionTriunion = factions.find(x => x.name == "Triunion");
+        var shipGroupTriunion = new ShipGroupFinite(factionTriunion.name + " " + "Ship Group", factionTriunion.name, Coords.random(universe.randomizer).multiply(starsystemForTriunionEnvoys.sizeInner), null, // shipsMax
+        [
+            new Ship(factionMurch.shipDefnName)
+        ]);
+        starsystemForTriunionEnvoys.shipGroupAdd(shipGroupTriunion);
     }
     // instance methods
     defnExtended() {
