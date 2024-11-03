@@ -808,11 +808,24 @@ class SystemTests extends TestFixture {
         this.moveToShipGroupBelongingToFactionIfAny(universe, world, starsystemForRendezvous, factionTriunionName);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         this.talkToTalker2(universe, [
-            "todo"
+            // "Hello!"
+            "#(we_are_vindicator)",
+            // "We need your help."
+            "#(what_emergency)",
+            // "We're under attack."
+            "#(what_look_like)", // "What do they look like?"
+            // "They look like this."
+            "#(how_can_i_help)"
+            // "Talk to our homeworld."
         ]);
     }
     playFromStart_21_GoToMauluskaHeadquartersAndMeetHindership(universe) {
-        throw new Error("todo");
+        var world = universe.world;
+        this.goToOrbitOfPlanetWithName(universe, "Epsilon Gruis I-a");
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        this.talkToTalker2(universe, [
+        // "What's the password?"
+        ]);
     }
     playFromStart_22_RemovePredatorsFromMauluskaHomeworld(universe) {
         throw new Error("todo");

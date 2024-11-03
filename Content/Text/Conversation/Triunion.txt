@@ -18,7 +18,7 @@ soundMusicName=Music_Faction_Triunion
 |Display|#(SCOUT_HELLO2)
 |Display|#(SCOUT_HELLO3)
 |OptionsClear
-|Option#(which_fot)|#(HE_IS0)
+|Option|#(which_fot)|#(HE_IS0)
 |Option|#(we_are_vindicator)|Triunion_DecidedNotToFight
 |Option|#(quiet_toadies)|#(TOLD_YOU0)
 |Option|#(all_very_interesting)|#(SEE_TOLD_YOU0)
@@ -26,15 +26,15 @@ soundMusicName=Music_Faction_Triunion
 |Prompt
 
 	#(HE_IS0)|Display|#(HE_IS0)
-	|Display|#(HE_IS1)
-	|Display|#(HE_IS2)
-	|Display|#(HE_IS3)
-	|Display|#(HE_IS4)
-	|Display|#(HE_IS5)
-	|Display|#(HE_IS6)
-	|Display|#(HE_IS7)
-	|OptionRemove||#(which_fot)
-	|Prompt
+		|Display|#(HE_IS1)
+		|Display|#(HE_IS2)
+		|Display|#(HE_IS3)
+		|Display|#(HE_IS4)
+		|Display|#(HE_IS5)
+		|Display|#(HE_IS6)
+		|Display|#(HE_IS7)
+		|OptionRemove||#(which_fot)
+		|Prompt
 
 	Triunion_DecidedNotToFight|DoNothing
 	|Display|#(WE_GLAD0)
@@ -44,82 +44,82 @@ soundMusicName=Music_Faction_Triunion
 	|Display|#(WE_GLAD4)
 	|Display|#(WE_GLAD5)
 	|OptionsClear
-	|Option#(your_race)|#(YEARS_AGO0)
-	|Option}#(where_from)|#(TRAVELED_FAR0)
+	|Option|#(your_race)|#(YEARS_AGO0)
+	|Option|#(where_from)|#(TRAVELED_FAR0)
 	|Option|#(what_emergency)|#(UNDER_ATTACK0)
 
 		#(YEARS_AGO0)|Display|#(YEARS_AGO0)
-		|Display|#(YEARS_AGO1)
-		|Display|#(YEARS_AGO2)
-		|Display|#(YEARS_AGO3)
-		|Display|#(YEARS_AGO4)
-		|Display|#(YEARS_AGO5)
-		|Display|#(YEARS_AGO6)
-		|Display|#(YEARS_AGO7)
-		|Display|#(YEARS_AGO8)
-		|Display|#(YEARS_AGO9)
-		|Display|#(YEARS_AGO10)
-		|Display|#(YEARS_AGO11)
-		|Display|#(YEARS_AGO12)
-		|Display|#(YEARS_AGO13)
-		|OptionRemove||#(your_race)
-		|Prompt
+			|Display|#(YEARS_AGO1)
+			|Display|#(YEARS_AGO2)
+			|Display|#(YEARS_AGO3)
+			|Display|#(YEARS_AGO4)
+			|Display|#(YEARS_AGO5)
+			|Display|#(YEARS_AGO6)
+			|Display|#(YEARS_AGO7)
+			|Display|#(YEARS_AGO8)
+			|Display|#(YEARS_AGO9)
+			|Display|#(YEARS_AGO10)
+			|Display|#(YEARS_AGO11)
+			|Display|#(YEARS_AGO12)
+			|Display|#(YEARS_AGO13)
+			|OptionRemove||#(your_race)
+			|Prompt
 
 		#(TRAVELED_FAR0)|Display|#(TRAVELED_FAR0)
-		|Display|#(TRAVELED_FAR1)
-		|Display|#(TRAVELED_FAR2)
-		|Display|#(TRAVELED_FAR3)
-		|Display|#(TRAVELED_FAR4)
-		|Display|#(TRAVELED_FAR5)
-		|OptionRemove||#(where_from)
-		|Prompt
+			|Display|#(TRAVELED_FAR1)
+			|Display|#(TRAVELED_FAR2)
+			|Display|#(TRAVELED_FAR3)
+			|Display|#(TRAVELED_FAR4)
+			|Display|#(TRAVELED_FAR5)
+			|OptionRemove||#(where_from)
+			|Prompt
 
 		#(UNDER_ATTACK0)|Display|#(UNDER_ATTACK0)
-		|Display|#(UNDER_ATTACK1)
-		|Display|#(UNDER_ATTACK2)
-		|Display|#(UNDER_ATTACK3)
-		|Display|#(UNDER_ATTACK4)
-		|Display|#(UNDER_ATTACK5)
-		|Display|#(UNDER_ATTACK6)
-		|Display|#(UNDER_ATTACK7)
-		|Display|#(UNDER_ATTACK8)
-		|Display|#(UNDER_ATTACK9)
-		|Display|#(UNDER_ATTACK10)
-		|Display|#(UNDER_ATTACK11)
-		|OptionsClear
-		|Option|#(tough_luck)|#(NOT_HELPFUL0)
-		|Option|#(what_look_like)|#(LOOK_LIKE0)
-		|Option|#(all_very_interesting)|#(SEE_TOLD_YOU0)
-		|Option|#(valuable_info)|#(GOODBYE0)
-		|Prompt
-
-			#(NOT_HELPFUL0)|Display|#(NOT_HELPFUL0)
-			|Display|#(NOT_HELPFUL1)
-			|Display|#(NOT_HELPFUL2)
-			|Display|#(NOT_HELPFUL3)
-			|Display|#(NOT_HELPFUL4)
-			|Display|#(NOT_HELPFUL5)
-			|OptionRemove||#(tough_luck)
+			|Display|#(UNDER_ATTACK1)
+			|Display|#(UNDER_ATTACK2)
+			|Display|#(UNDER_ATTACK3)
+			|Display|#(UNDER_ATTACK4)
+			|Display|#(UNDER_ATTACK5)
+			|Display|#(UNDER_ATTACK6)
+			|Display|#(UNDER_ATTACK7)
+			|Display|#(UNDER_ATTACK8)
+			|Display|#(UNDER_ATTACK9)
+			|Display|#(UNDER_ATTACK10)
+			|Display|#(UNDER_ATTACK11)
+			|OptionsClear
+			|Option|#(tough_luck)|#(NOT_HELPFUL0)
+			|Option|#(what_look_like)|#(LOOK_LIKE0)
+			|Option|#(all_very_interesting)|#(SEE_TOLD_YOU0)
+			|Option|#(valuable_info)|#(GOODBYE0)
 			|Prompt
 
-			#(LOOK_LIKE0)|Display|#(LOOK_LIKE0)
-			|Display|#(LOOK_LIKE1)
-			|Display|#(LOOK_LIKE2)
-			|Display|#(LOOK_LIKE3)
-			|OptionRemove|#(what_look_like)
-			|Option|#(how_can_i_help)|#(EMMISSARIES0)
-			|Prompt
+				#(NOT_HELPFUL0)|Display|#(NOT_HELPFUL0)
+				|Display|#(NOT_HELPFUL1)
+				|Display|#(NOT_HELPFUL2)
+				|Display|#(NOT_HELPFUL3)
+				|Display|#(NOT_HELPFUL4)
+				|Display|#(NOT_HELPFUL5)
+				|OptionRemove||#(tough_luck)
+				|Prompt
 
-				#(EMMISSARIES0)|Display|#(EMMISSARIES0)
-				|Display|#(EMMISSARIES1)
-				|Display|#(EMMISSARIES2)
-				|Display|#(EMMISSARIES3)
-				|Display|#(EMMISSARIES4)
-				|Display|#(EMMISSARIES5)
-				|Display|#(EMMISSARIES6)
-				|Display|#(EMMISSARIES7)
-				|Script|throw new Error("todo");
-				|Goto||Done
+				#(LOOK_LIKE0)|Display|#(LOOK_LIKE0)
+				|Display|#(LOOK_LIKE1)
+				|Display|#(LOOK_LIKE2)
+				|Display|#(LOOK_LIKE3)
+				|OptionRemove|#(what_look_like)
+				|Option|#(how_can_i_help)|#(EMMISSARIES0)
+				|Prompt
+
+					#(EMMISSARIES0)|Display|#(EMMISSARIES0)
+					|Display|#(EMMISSARIES1)
+					|Display|#(EMMISSARIES2)
+					|Display|#(EMMISSARIES3)
+					|Display|#(EMMISSARIES4)
+					|Display|#(EMMISSARIES5)
+					|Display|#(EMMISSARIES6)
+					|Display|#(EMMISSARIES7)
+					//|Script|throw new Error("todo");
+					|Goto||Done
 
 	#(TOLD_YOU0)|Display|#(TOLD_YOU0)
 	|Display|#(TOLD_YOU1)
@@ -152,7 +152,7 @@ soundMusicName=Music_Faction_Triunion
 |Option|#(whats_up_homeworld)|#(GENERAL_INFO)
 |Option|#(any_war_news)|WarNews
 |Option|#(i_want_alliance)|#(GOOD0)
-|Option|#(bye_homeworld)#(GOODBYE_HOME0)
+|Option|#(bye_homeworld)|#(GOODBYE_HOME0)
 |Prompt
 
 	|Display|#(NEUTRAL_HOME_HELLO_20)
@@ -204,14 +204,14 @@ soundMusicName=Music_Faction_Triunion
 		|Display|#(GENERAL_INFO_13)
 		|Prompt
 
-		#(GENERAL_INFO_20)|Display#(GENERAL_INFO_20)
-		|Display#(GENERAL_INFO_21)
-		|Display#(GENERAL_INFO_22)
-		|Display#(GENERAL_INFO_23)
-		|Display#(GENERAL_INFO_24)
-		|Display#(GENERAL_INFO_25)
-		|Display#(GENERAL_INFO_26)
-		|Display#(GENERAL_INFO_27)
+		#(GENERAL_INFO_20)|Display|#(GENERAL_INFO_20)
+		|Display|#(GENERAL_INFO_21)
+		|Display|#(GENERAL_INFO_22)
+		|Display|#(GENERAL_INFO_23)
+		|Display|#(GENERAL_INFO_24)
+		|Display|#(GENERAL_INFO_25)
+		|Display|#(GENERAL_INFO_26)
+		|Display|#(GENERAL_INFO_27)
 		|Prompt
 
 		#(GENERAL_INFO_30)|Display|#(GENERAL_INFO_30)
@@ -313,7 +313,7 @@ soundMusicName=Music_Faction_Triunion
 		|Display|#(WHAT_SPECIFIC_INFO1)
 		|Push
 		|Option|#(what_about_others)|#(ABOUT_OTHERS0)
-		|Option|#(what_about_zebranky)|#(ABOUT_ZEBRANKY0) // Actually "Tell me more about your people."
+		|Option|#(what_about_zebranky)|#(ABOUT_ZEBRANKY0)// Actually "Tell me more about your people."
 		|Option|#(what_about_stinger)|#(ABOUT_STINGER0)
 		|Option|#(what_about_guy_in_back)|#(ABOUT_GUY0)
 		|Option|#(what_about_past)|#(ABOUT_PAST0)

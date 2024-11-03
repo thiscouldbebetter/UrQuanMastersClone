@@ -4,26 +4,43 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 
 |VariablesImport|u.world.player.variableLookup
 
-|Display|#(WHAT_IS_PASSWORD)
-|Option|#(good_password)|#(YES_GOOD_PASSWORD)|todo
-|Option|#(what_do_i_get)|#(YOU_GET_TO_LIVE)
+|JumpIfTrue|Mauluska_PasswordHasBeenGiven|PasswordHasBeenGiven
+
+|VariableSet|Mauluska_PasswordIsKnown|true//todo
+
+|Display|#(WHAT_IS_PASSWORD)||cr.v("Mauluska_TimesGreetedWithoutPassword") < 2
+|Display|#(WHAT_IS_PASSWORD_AGAIN)||cr.v("Mauluska_TimesGreetedWithoutPassword") >= 2
+|Option|#(we_are_vindicator)|#(NO_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") == false
+|Option|#(gort_merenga)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
+|Option|#(guph_florp)||#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
+|Option|#(wagngl_fthagn)||#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
+|Option|#(pleeese)||#(WRONG_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown")
+|Option|#(screw_password)|#(NO_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown")
+|Option|#(good_password)|#(YES_GOOD_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
+|Option|#(what_do_i_get)|#(YOU_GET_TO_LIVE)|cr.v("Mauluska_PasswordIsKnown")
 |Prompt
 
-#(screw_password)
-#(WRONG_PASSWORD)
-#(NO_PASSWORD)
+	#(WRONG_PASSWORD)|Display|#(WRONG_PASSWORD)
+	|VariableAdd|Mauluska_TimesGreetedWithoutPassword
+	|Goto||Combat
+
+	#(NO_PASSWORD)|Display|#(NO_PASSWORD)
+	|VariableAdd|Mauluska_TimesGreetedWithoutPassword
+	|Goto||Combat
 
 	#(YOU_GET_TO_LIVE)|Display|#(YOU_GET_TO_LIVE)
 	|OptionRemove|#(what_do_i_get)
 	|Prompt
 
 	#(YES_GOOD_PASSWORD)|Display|#(YES_GOOD_PASSWORD)
+	|VarableSet|Mauluska_PasswordHasBeenGiven|true
 	|Push
-	|Option|#(we_come_in_peace)|#(OF_COURSE)|todo
-	|Option|#(we_come_in_peace)|#(KILLED_SPATHI)|todo
+	PasswordHasBeenGiven|DoNothing
+	|Option|#(we_come_in_peace)|#(OF_COURSE)
+	|Option|#(we_come_in_peace)|#(KILLED_SPATHI)
 	|Option|#(spathi_on_pluto)|#(WHERE_SPATHI)
 	|Option|#(surrender)|#(NO_SURRENDER)
-	|Option|#(bye_no_ally_offer)
+	|Option|#(bye_no_ally_offer)|#(GOODBYE_NO_ALLY_OFFER)
 
 		#(OF_COURSE)|Display|#(OF_COURSE)
 		|OptionRemove|#(we_come_in_peace)
@@ -39,9 +56,13 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 
 		#(WHERE_SPATHI)|Display|#(WHERE_SPATHI)
 		|OptionRemove|#(spathi_on_pluto)
+		|Option|#(hostage)|#(GUN_TO_HEAD)
 		|Option|#(killed_fwiffo|#(POOR_FWIFFO)
 		|Option|#(fwiffo_fine)|#(NOT_LIKELY)
 		|Prompt
+
+			#(GUN_TO_HEAD)|Display|#(GUN_TO_HEAD)
+			|Prompt
 
 			#(POOR_FWIFFO)|Display|#(POOR_FWIFFO)
 			|Prompt
@@ -52,6 +73,9 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 		#(NO_SURRENDER)|Display|#(NO_SURRENDER)
 		|OptionRemove|#(surrender)
 		|Prompt
+
+		#(GOODBYE_NO_ALLY_OFFER)|Display|#(GOODBYE_NO_ALLY_OFFER)
+		|Goto||Done
 
 Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 |Option|#(hand_in_friendship)|#(TOO_AFRAID)
@@ -146,19 +170,17 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 	|Prompt
 
 
+Combat|DoNothing
+|Script|throw new Error("todo");
+|Quit
 
 Done|DoNothing
 |VariablesExport|u.world.player.variableLookup.set($key, $value)
 |Quit
 
-Combat|DoNothing
-|Script|throw new Error("todo");
-|Quit
 
 #(we_attack_again)
 #(WE_FIGHT_AGAIN)
-#(bye_no_ally_offer)
-#(GOODBYE_NO_ALLY_OFFER)
 #(bye_angry_spathi)
 #(GOODBYE_ANGRY_SPATHI)
 #(MEAN_GUYS_RETURN)
@@ -166,14 +188,6 @@ Combat|DoNothing
 #(DONT_BELIEVE)
 #(HELLO_AGAIN)
 #(HATE_YOU_FOREVER)
-#(WHAT_IS_PASSWORD_AGAIN)
-#(we_are_vindicator)
-#(gort_merenga)
-#(guph_florp)
-#(pleeese)
-#(wagngl_fthagn)
-#(hostage)
-#(GUN_TO_HEAD)
 #(bye_ally)
 #(GOODBYE_ALLY)
 #(what_about_hierarchy)
