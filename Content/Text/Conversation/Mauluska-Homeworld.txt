@@ -4,18 +4,22 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 
 |VariablesImport|u.world.player.variableLookup
 
+|JumpIfTrue|Mauluka_Quest_HasBeenAccepted|#(QUEST_AGAIN)
+
+|JumpIfTrue|Mauluka_Quest_HasBeenRefused|#(HOW_GO_EFFORTS)
+
 |JumpIfTrue|Mauluska_PasswordHasBeenGiven|PasswordHasBeenGiven
 
 |VariableSet|Mauluska_PasswordIsKnown|true//todo
 
 |Display|#(WHAT_IS_PASSWORD)||cr.v("Mauluska_TimesGreetedWithoutPassword") < 2
 |Display|#(WHAT_IS_PASSWORD_AGAIN)||cr.v("Mauluska_TimesGreetedWithoutPassword") >= 2
-|Option|#(we_are_vindicator)|#(NO_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") == false
-|Option|#(gort_merenga)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
-|Option|#(guph_florp)||#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
-|Option|#(wagngl_fthagn)||#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
-|Option|#(pleeese)||#(WRONG_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown")
-|Option|#(screw_password)|#(NO_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown")
+|Option|#(we_are_vindicator)|#(NO_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(gort_merenga)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(guph_florp)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(wagngl_fthagn)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(pleeese)|#(WRONG_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(screw_password)|#(NO_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown") != true
 |Option|#(good_password)|#(YES_GOOD_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
 |Option|#(what_do_i_get)|#(YOU_GET_TO_LIVE)|cr.v("Mauluska_PasswordIsKnown")
 |Prompt
@@ -33,18 +37,18 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 	|Prompt
 
 	#(YES_GOOD_PASSWORD)|Display|#(YES_GOOD_PASSWORD)
-	|VarableSet|Mauluska_PasswordHasBeenGiven|true
+	|VariableSet|Mauluska_PasswordHasBeenGiven|true
 	|Push
 	PasswordHasBeenGiven|DoNothing
-	|Option|#(we_come_in_peace)|#(OF_COURSE)
-	|Option|#(we_come_in_peace)|#(KILLED_SPATHI)
+	|Option|#(we_come_in_peace)|#(OF_COURSE)|cr.v("Mauluska_HasBeenKilled")
+	|Option|#(we_come_in_peace)|#(KILLED_SPATHI)|cr.v("Mauluska_HasBeenKilled") != true
 	|Option|#(spathi_on_pluto)|#(WHERE_SPATHI)
 	|Option|#(surrender)|#(NO_SURRENDER)
 	|Option|#(bye_no_ally_offer)|#(GOODBYE_NO_ALLY_OFFER)
+	|Prompt
 
 		#(OF_COURSE)|Display|#(OF_COURSE)
-		|OptionRemove|#(we_come_in_peace)
-		|Prompt
+		|Goto||Mauluska-Homeworld-DecidedNotToAttack
 
 		#(KILLED_SPATHI)|Display|#(KILLED_SPATHI)
 		|OptionRemove|#(we_come_in_peace)
@@ -56,18 +60,21 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 
 		#(WHERE_SPATHI)|Display|#(WHERE_SPATHI)
 		|OptionRemove|#(spathi_on_pluto)
-		|Option|#(hostage)|#(GUN_TO_HEAD)
-		|Option|#(killed_fwiffo|#(POOR_FWIFFO)
-		|Option|#(fwiffo_fine)|#(NOT_LIKELY)
+		|Option|#(hostage)|#(GUN_TO_HEAD)|u.world.player.shipGroup.shipWithDefnNameIsPresent("Scuttler")
+		|Option|#(killed_fwiffo)|#(POOR_FWIFFO)|u.world.player.shipGroup.shipWithDefnNameIsPresent("Scuttler") == false
+		|Option|#(fwiffo_fine)|#(NOT_LIKELY)|u.world.player.shipGroup.shipWithDefnNameIsPresent("Scuttler") == false
 		|Prompt
 
 			#(GUN_TO_HEAD)|Display|#(GUN_TO_HEAD)
+			|OptionRemove||#(hostage)
 			|Prompt
 
 			#(POOR_FWIFFO)|Display|#(POOR_FWIFFO)
+			|OptionRemove||#(killed_fwiffo)
 			|Prompt
 
 			#(NOT_LIKELY)|Display|#(NOT_LIKELY)
+			|OptionRemove||#(fwiffo_fine)
 			|Prompt
 
 		#(NO_SURRENDER)|Display|#(NO_SURRENDER)
@@ -78,13 +85,14 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 		|Goto||Done
 
 Mauluska-Homeworld-DecidedNotToAttack|DoNothing
+|OptionsClear
 |Option|#(hand_in_friendship)|#(TOO_AFRAID)
 |Option|#(share_info)|#(NO_INFO)
 |Option|#(give_us_resources)|#(NO_RESOURCES)
 |Prompt
 
 	#(TOO_AFRAID)|Display|#(TOO_AFRAID)
-	|OptionRemove|#(hand_in_friendship)
+	|OptionRemove||#(hand_in_friendship)
 	|Option|#(stronger)|#(YOURE_NOT)
 
 		#(YOURE_NOT)|Display|#(YOURE_NOT)
@@ -92,41 +100,46 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 		|Option|#(yes_we_are)|#(NO_YOURE_NOT)
 
 			#(NO_YOURE_NOT)|Display|#(NO_YOURE_NOT)
-			|OptionRemove|#(yew_we_are)
+			|OptionRemove|#(yes_we_are)
 			|Option|#(how_prove)|#(BETTER_IDEA)
 			|Prompt
 
 				#(BETTER_IDEA)|Display|#(BETTER_IDEA)
 				|Option|#(what_test)|#(WIPE_EVIL)
-				|Option|#(prove_strength)
+				|Option|#(prove_strength)|#(YOUR_BEHAVIOR)
+				|Option|#(why_dont_you_do_it)|#(WE_WONT_BECAUSE)
 				|Prompt
 
 					#(WIPE_EVIL)|Display|#(WIPE_EVIL)
 					QuestOffer|DoNothing
 					|Push
-					|Script|throw new Error("todo")
 					|Option|#(too_dangerous)|#(WE_AGREE)
 					|Option|#(tell_evil)|#(BEFORE_ACCEPT)
-					|Option|#(why_dont_you_do_it)|#(WE_WONT_BECAUSE)
+					|Prompt
 
 						#(WE_AGREE)|Display|#(WE_AGREE)
+						|VariableSet|Mauluska_Quest_HasBeenRefused|true
 						|Goto||Done
 
 						#(BEFORE_ACCEPT)|Display|#(BEFORE_ACCEPT)
 						|OptionRemove|(#tell_evil)
 						|Option|#(think_more)|#(COWARD)
-						|Option|#(i_accept)
+						|Option|#(i_accept)|#(AWAIT_RETURN)
 
 							#(COWARD)|Display|#(COWARD)
 							|Goto||Done
 
 							#(AWAIT_RETURN)|Display|#(AWAIT_RETURN)
+							|VariableSet|Mauluska_Quest_HasBeenAccepted|true
 							|Script|throw new Error("todo");
 							|Goto||Done
 
-
 						#(WE_WONT_BECAUSE)|Display|#(WE_WONT_BECAUSE)
 						|Prompt
+
+					#(YOUR_BEHAVIOR)|Display|#(YOUR_BEHAVIOR)
+					|OptionRemove||#(prove_strength)
+					|Prompt
 
 	#(NO_INFO)|Display|#(NO_INFO)
 	|OptionRemove|#(share_info)
@@ -137,7 +150,9 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 	|Prompt
 
 #(QUEST_AGAIN)|Display|#(QUEST_AGAIN)
-|Goto||Quest
+|OptionsClear
+|Option|#(why_dont_you_do_it)|#(WE_WONT_BECAUSE)
+|Goto||QuestOffer
 
 #(HOW_GO_EFFORTS)|Display|#(HOW_GO_EFFORTS)
 |Option|#(killed_them_all_1)|#(WILL_CHECK_1)
@@ -179,85 +194,81 @@ Done|DoNothing
 |Quit
 
 
-#(we_attack_again)
-#(WE_FIGHT_AGAIN)
-#(bye_angry_spathi)
-#(GOODBYE_ANGRY_SPATHI)
-#(MEAN_GUYS_RETURN)
-#(we_apologize)
-#(DONT_BELIEVE)
-#(HELLO_AGAIN)
-#(HATE_YOU_FOREVER)
-#(bye_ally)
-#(GOODBYE_ALLY)
-#(what_about_hierarchy)
-#(what_about_history)
-#(what_about_alliance)
-#(what_about_other)
-#(what_about_precursors)
-#(enough_info)
-#(OK_ENOUGH_INFO)
-#(ABOUT_HIERARCHY)
-#(ABOUT_HISTORY)
-#(ABOUT_ALLIANCE)
-#(ABOUT_OTHER)
-#(ABOUT_PRECURSORS)
-
-#(GOOD_START)
-#(something_fishy)
-#(NOTHING_FISHY)
-#(surrender_or_die)
-#(DEFEND_OURSELVES)
-#(WE_UNDERSTAND)
-#(prove_strength)
-#(YOUR_BEHAVIOR)
-#(talk_test)
-#(already_got_them)
-#(EARLY_BIRD_CHECK)
-#(NOT_SURPRISED)
-
-
-#(zapped_a_few)
-#(RETURN_COMPLETE)
-#(MUST_DESTROY_ALL)
-#(no_landing)
-#(saw_creatures)
-#(YOU_FORTUNATE)
-#(YOU_LIED_1)
-#(YOU_LIED_2)
-#(bye_from_party_1)
-#(bye_from_party_2)
-#(bye_from_party_3)
-#(GOODBYE_FROM_PARTY)
-#(MUST_PARTY_1)
-#(MUST_PARTY_2)
-#(MUST_PARTY_3)
-#(deals_a_deal)
-#(WAIT_A_WHILE)
-#(how_long)
-#(TEN_YEARS)
-#(reneging)
-#(ADULT_VIEW)
-#(return_beasts)
-#(WHAT_RELATIONSHIP)
-(sigh)
-#(minds_and_might)
-#(HUH)
-#(fellowship)
-#(WHAT)
-#(do_as_we_say)
-#(DEPART_FOR_EARTH)
-#(HELLO_ALLIES_1)
-#(HELLO_ALLIES_2)
-#(HELLO_ALLIES_3)
-#(whats_up)
-#(GENERAL_INFO_1)
-#(GENERAL_INFO_2)
-#(GENERAL_INFO_3)
-#(GENERAL_INFO_4)
-#(GENERAL_INFO_5)
-#(like_some_info)
-#(WHAT_ABOUT)
-
-	|Option|#(resources_please)
-	#(SORRY_NO_RESOURCES)
+//#(we_attack_again)
+//#(WE_FIGHT_AGAIN)
+//#(bye_angry_spathi)
+//#(GOODBYE_ANGRY_SPATHI)
+//#(MEAN_GUYS_RETURN)
+//#(we_apologize)
+//#(DONT_BELIEVE)
+//#(HELLO_AGAIN)
+//#(HATE_YOU_FOREVER)
+//#(bye_ally)
+//#(GOODBYE_ALLY)
+//#(what_about_hierarchy)
+//#(what_about_history)
+//#(what_about_alliance)
+//#(what_about_other)
+//#(what_about_precursors)
+//#(enough_info)
+//#(OK_ENOUGH_INFO)
+//#(ABOUT_HIERARCHY)
+//#(ABOUT_HISTORY)
+//#(ABOUT_ALLIANCE)
+//#(ABOUT_OTHER)
+//#(ABOUT_PRECURSORS)
+//#(GOOD_START)
+//#(something_fishy)
+//#(NOTHING_FISHY)
+//#(surrender_or_die)
+//#(DEFEND_OURSELVES)
+//#(WE_UNDERSTAND)
+//#(prove_strength)
+//
+//#(talk_test)
+//#(already_got_them)
+//#(EARLY_BIRD_CHECK)
+//#(NOT_SURPRISED)
+//#(zapped_a_few)
+//#(RETURN_COMPLETE)
+//#(MUST_DESTROY_ALL)
+//#(no_landing)
+//#(saw_creatures)
+//#(YOU_FORTUNATE)
+//#(YOU_LIED_1)
+//#(YOU_LIED_2)
+//#(bye_from_party_1)
+//#(bye_from_party_2)
+//#(bye_from_party_3)
+//#(GOODBYE_FROM_PARTY)
+//#(MUST_PARTY_1)
+//#(MUST_PARTY_2)
+//#(MUST_PARTY_3)
+//#(deals_a_deal)
+//#(WAIT_A_WHILE)
+//#(how_long)
+//#(TEN_YEARS)
+//#(reneging)
+//#(ADULT_VIEW)
+//#(return_beasts)
+//#(WHAT_RELATIONSHIP)
+//#(sigh)
+//#(minds_and_might)
+//#(HUH)
+//#(fellowship)
+//#(WHAT)
+//#(do_as_we_say)
+//#(DEPART_FOR_EARTH)
+//#(HELLO_ALLIES_1)
+//#(HELLO_ALLIES_2)
+//#(HELLO_ALLIES_3)
+//#(whats_up)
+//#(GENERAL_INFO_1)
+//#(GENERAL_INFO_2)
+//#(GENERAL_INFO_3)
+//#(GENERAL_INFO_4)
+//#(GENERAL_INFO_5)
+//#(like_some_info)
+//#(WHAT_ABOUT)
+//#(resources_please)
+//#(SORRY_NO_RESOURCES)

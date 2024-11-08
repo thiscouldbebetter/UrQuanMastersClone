@@ -91,14 +91,15 @@ class WorldExtended extends World {
         var lahkemup = f("Lahkemup", "Urquan", c.Green, soi(590, 590, .25), hostile, "Shackler");
         var konstalyxz = f("Konstalyxz", "Chmmr", null, null, neutral, "Gravitar");
         var mauluska = f("Mauluska", "Spathi", c.Brown, soi(241.6, 368.7, .12), neutral, "Scuttler");
+        var mauluskaHomeworld = f("Mauluska-Homeworld", "SafeOnes", c.Brown, soi(241.6, 368.7, .12), neutral, "Scuttler");
         var muunfaz = f("Muunfaz", "Pkunk", c.Cyan, soi(52.2, 52.5, .1), neutral, "Fireblossom");
         var mazonae = f("Mazonae", "Syreen", null, null, neutral, "Elysian");
         var murch = f("Murch", "Melnorme", null, null, neutral, "Indemnity");
         var outz = f("Outz", "Orz", c.Purple, soi(371.3, 253.7, .1), neutral, "Wingshadow");
         var raknoid = f("Raknoid", "Ilwrath", c.Purple, soi(22.9, 366.6, .15), hostile, "Infernus");
         var raptodact = f("Raptodact", "Yehat", c.Violet, soi(492.3, 29.4, .1), neutral, "Aegis");
-        //var raptorRebel 	= f("RaptorRebel", 	"Yehat", 	c("Mauve"), soi(492.3, 29.4, .1), 	neutral, "Aegis");
-        //var raptorRoyalist= f("RaptorRoyalist","Yehat", 	c("Violet"),soi(492.3, 29.4, .1), 	neutral, "Aegis");
+        //var raptorRebel 		= f("RaptorRebel", 	"Yehat", 	c("Mauve"), soi(492.3, 29.4, .1), 	neutral, "Aegis");
+        //var raptorRoyalist	= f("RaptorRoyalist","Yehat", 	c("Violet"),soi(492.3, 29.4, .1), 	neutral, "Aegis");
         var supian = f("Supian", "Shofixti", null, null, hostile, "Starbright");
         var terran = f("Terran", "Earthling", null, null, neutral, "Broadsider");
         var tempestrial = f("Tempestrial", "Slylandro", null, soi(500, 500, 1000), hostile, "Tumbler");
@@ -117,6 +118,7 @@ class WorldExtended extends World {
             lahkemup,
             lahkemupGuardDrone,
             mauluska,
+            mauluskaHomeworld,
             muunfaz,
             mazonae,
             murch,

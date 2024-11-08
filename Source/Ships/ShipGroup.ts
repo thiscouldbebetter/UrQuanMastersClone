@@ -485,6 +485,11 @@ class ShipGroupFinite extends ShipGroupBase
 		return this.shipSelected;
 	}
 
+	shipWithDefnNameIsPresent(shipDefnName: string): boolean
+	{
+		return (this.shipsWithDefnName(shipDefnName).length > 0);
+	}
+
 	shipsCount(): number
 	{
 		return this.ships.length;
@@ -498,6 +503,11 @@ class ShipGroupFinite extends ShipGroupBase
 	shipsLost(): Ship[]
 	{
 		return this._shipsLost;
+	}
+
+	shipsWithDefnName(shipDefnName: string): Ship[]
+	{
+		return this.ships.filter(x => x.defnName == shipDefnName);
 	}
 
 	toEntity(world: WorldExtended, place: Place): Entity

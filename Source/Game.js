@@ -51,8 +51,8 @@ class Game {
             //ts(conversation + "LahkemupGuardDrone" + content, conversationDirectory + "LahkemupGuardDrone-Content.txt"),
             ts(conversation + "Mauluska", conversationDirectory + "Mauluska.txt"),
             ts(conversation + "Mauluska" + content, contentPathPrefixComms + "spathi/spathi.txt"),
-            ts(conversation + "MauluskaOrphan", conversationDirectory + "Mauluska-Orphan.txt"),
-            ts(conversation + "MauluskaOrphan" + content, contentPathPrefixComms + "spathi/spathi.txt"),
+            ts(conversation + "Mauluska-Homeworld", conversationDirectory + "Mauluska-Homeworld.txt"),
+            ts(conversation + "Mauluska-Homeworld" + content, contentPathPrefixComms + "safeones/safeones.txt"),
             ts(conversation + "Muunfaz", conversationDirectory + "Muunfaz.txt"),
             ts(conversation + "Muunfaz" + content, contentPathPrefixComms + "pkunk/pkunk.txt"),
             ts(conversation + "Mazonae", conversationPlaceholderPath),
@@ -239,28 +239,6 @@ class Game {
         }
         else if (debuggingModeName.startsWith("Talk")) {
             var factionName = debuggingModeName.split("_")[1];
-            /*
-            if (factionName == "MauluskaOrphan")
-            {
-                this.debug_Talk_MauluskaOrphan(universe);
-            }
-            else if (factionName == "Murch")
-            {
-                this.debug_Talk_Murch(universe);
-            }
-            else if (factionName == "Tempestrial")
-            {
-                this.debug_Talk_Tempestrial(universe);
-            }
-            else if (factionName == "Triunion")
-            {
-                this.debug_Talk_Triunion(universe);
-            }
-            else
-            {
-                throw new Error("Unrecognized debugging mode: " + debuggingModeName);
-            }
-            */
             var faction = world.faction(factionName);
             var talker = faction.toTalker();
             var entityPlayer = new Entity("Player", []);
@@ -284,14 +262,6 @@ class Game {
         );
         var shipDefnInstances = ShipDefn.Instances(universe);
         var shipDefnsByName = shipDefnInstances._AllByName;
-        /*
-        var playerShipDefns =
-        [
-            shipDefnsAll["Fireblossom"],
-            shipDefnsAll["Efflorescence"],
-            shipDefnsAll["Scuttler"],
-        ];
-        */
         var playerShipDefns = shipDefnInstances._All;
         var enemyShipDefns = [
             shipDefnsByName.get("Kickback"),

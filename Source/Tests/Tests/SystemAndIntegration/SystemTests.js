@@ -824,7 +824,34 @@ class SystemTests extends TestFixture {
         this.goToOrbitOfPlanetWithName(universe, "Epsilon Gruis I-a");
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         this.talkToTalker2(universe, [
-        // "What's the password?"
+            // "What's the password?"
+            "#(what_do_i_get)", // "What do I get if I tell you?"
+            // "You get to live a little longer."
+            "#(good_password)", // "Password is this."
+            // "Right.  How do you know this?"
+            "#(spathi_on_pluto)", // "We met one of you on Pluto."
+            // "Where is he now?"
+            "#(hostage)", // "He's right here.  He'll vouch for us."
+            // "Doubtless under duress."
+            "#(share_info)", // "Share some info with us?"
+            // "No."
+            "#(give_us_resources)", // "Give us resources?"
+            // "No."
+            "#(hand_in_friendship)", // "Join us!"
+            // "We're too afraid of our masters."
+            "#(stronger)", // "We're stronger than they are."
+            // "No you're not!"
+            "#(yes_we_are)", // "Are too.  Check out this ship!"
+            // "It's nice, but it's just one.  They've got thousands."
+            "#(how_prove)", // "How can I prove myself?"
+            // "Maybe some sort of test."
+            "#(what_test)", // "What kind of test?"
+            // "Remove the creatures from the surface of our world."
+            "#(why_dont_you_do_it)",
+            // "They'd eat us if we tried."
+            "#(tell_evil)", // "Tell us more about them."
+            // "Here's the history."
+            "#(i_accept)" // "I'll do it!"
         ]);
     }
     playFromStart_22_RemovePredatorsFromMauluskaHomeworld(universe) {

@@ -5,6 +5,7 @@ contentTextStringName=Conversation-Mauluska-Content
 |VariablesImport|u.world.player.variableLookup
 
 |Display|#(SORRY_ABOUT_THAT)
+|VariableSet|Mauluska_PasswordIsKnown|true
 |Option|#(identify)|#(I_FWIFFO)
 |Option|#(hi_there)|#(ARE_YOU_SURE)
 |Option|#(dont_kill)|#(OK_WONT)
