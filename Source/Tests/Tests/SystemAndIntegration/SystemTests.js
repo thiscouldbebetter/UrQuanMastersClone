@@ -833,6 +833,8 @@ class SystemTests extends TestFixture {
             // "Where is he now?"
             "#(hostage)", // "He's right here.  He'll vouch for us."
             // "Doubtless under duress."
+            "#(we_come_in_peace)",
+            // "No doubt."
             "#(share_info)", // "Share some info with us?"
             // "No."
             "#(give_us_resources)", // "Give us resources?"
