@@ -107,7 +107,6 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 				#(BETTER_IDEA)|Display|#(BETTER_IDEA)
 				|Option|#(what_test)|#(WIPE_EVIL)
 				|Option|#(prove_strength)|#(YOUR_BEHAVIOR)
-				|Option|#(why_dont_you_do_it)|#(WE_WONT_BECAUSE)
 				|Prompt
 
 					#(WIPE_EVIL)|Display|#(WIPE_EVIL)
@@ -115,6 +114,7 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 					|Push
 					|Option|#(too_dangerous)|#(WE_AGREE)
 					|Option|#(tell_evil)|#(BEFORE_ACCEPT)
+					|Option|#(why_dont_you_do_it)|#(WE_WONT_BECAUSE)
 					|Prompt
 
 						#(WE_AGREE)|Display|#(WE_AGREE)

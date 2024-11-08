@@ -855,12 +855,24 @@ class SystemTests extends TestFixture {
             // "Here's the history."
             "#(i_accept)" // "I'll do it!"
         ]);
+        // Verify that you aren't allowed to orbit the planet, at least not yet.
+        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+        // todo - Go back immediately and admit you haven't been to their homeworld.
+        // todo - Then go back again and claim that you've eliminated the threat.
+        // todo - Then go back once again and get yelled at for lying.
     }
     playFromStart_22_RemovePredatorsFromMauluskaHomeworld(universe) {
-        throw new Error("todo");
+        this.goToSurfaceOfPlanetWithName(universe, "Epsilon Gruis I");
+        this.stunAllLifeformsOnPlanetSurfaceCollectBiodataAndLeave(universe);
+        this.leavePlanetOrbitAndWait(universe);
     }
     playFromStart_23_EstablishAllianceWithMauluska(universe) {
-        throw new Error("todo");
+        var world = universe.world;
+        this.goToOrbitOfPlanetWithName(universe, "Epsilon Gruis I-a");
+        this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+        this.talkToTalker2(universe, [
+            "todo"
+        ]);
     }
     playFromStart_24_MeetTheFamorfexAndDontMentionMindomini(universe) {
         throw new Error("todo");
@@ -972,9 +984,12 @@ class SystemTests extends TestFixture {
         this.waitForTicks(universe, 5);
     }
     assertPlaceCurrentIsOfTypeForWorld(placeTypeNameExpected, world) {
+        return this.assertPlaceCurrentIsOfTypesForWorld([placeTypeNameExpected], world);
+    }
+    assertPlaceCurrentIsOfTypesForWorld(placeTypeNamesExpected, world) {
         var place = world.placeCurrent;
         var placeTypeName = place.constructor.name;
-        Assert.areStringsEqual(placeTypeNameExpected, placeTypeName);
+        Assert.isTrue(placeTypeNamesExpected.indexOf(placeTypeName) >= 0);
     }
     assertVenueCurrentIsOfTypeForUniverse(venueTypeNameExpected, universe) {
         var venue = universe.venueCurrent();
@@ -1180,9 +1195,19 @@ class SystemTests extends TestFixture {
     goToStarsystemWithName(universe, starsystemName) {
         var world = universe.world;
         var placeStart = world.place();
-        var placeDestinationName = PlaceStarsystem.name + ":" + starsystemName;
-        if (placeStart.name == placeDestinationName) {
-            // Do nothing.
+        var placeStartTypeName = placeStart.constructor.name;
+        var starsystemStart = placeStartTypeName == PlacePlanetSurface.name
+            ? placeStart.starsystem()
+            : placeStartTypeName == PlacePlanetOrbit.name
+                ? placeStart.starsystem()
+                : placeStartTypeName == PlacePlanetVicinity.name
+                    ? placeStart.starsystem()
+                    : placeStartTypeName == PlaceStarsystem.name
+                        ? placeStart.starsystem
+                        : null;
+        //if (placeStart.name == placeDestinationName)
+        if (starsystemStart != null && starsystemStart.name == starsystemName) {
+            starsystemActual = starsystemStart;
         }
         else {
             this.goToHyperspace(universe);
@@ -1199,9 +1224,22 @@ class SystemTests extends TestFixture {
     goToVicinityOfPlanetWithName(universe, planetName) {
         var world = universe.world;
         var place = world.place();
-        var destinationPlaceName = PlacePlanetVicinity.name + ":" + planetName;
-        if (place.name == destinationPlaceName) {
-            // Do nothing.
+        var placeTypeName = place.constructor.name;
+        if (placeTypeName == PlacePlanetVicinity.name) {
+            var placePlanetVicinity = place;
+            var planet = placePlanetVicinity.planet;
+            if (planet.name == planetName) {
+                // Do nothing.
+            }
+            else if (planetName.startsWith(planet.name)) {
+                // The destination is a moon in the same system.
+                this.moveToEntityWithNameAndWait(universe, planetName);
+            }
+            else {
+                this.leavePlanetVicinityAndWait(universe);
+                this.goToStarsystemWithName(universe, placePlanetVicinity.starsystem().name);
+                this.goToVicinityOfPlanetWithName(universe, planetName);
+            }
         }
         else {
             if (planetName.indexOf("-") >= 0) {
@@ -1216,7 +1254,7 @@ class SystemTests extends TestFixture {
             this.goToStarsystemWithName(universe, starsystemName);
             this.moveToEntityWithNameAndWait(universe, planetName);
         }
-        this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, universe.world);
+        this.assertPlaceCurrentIsOfTypesForWorld([PlacePlanetVicinity.name, PlaceEncounter.name], world);
     }
     landOnPlanetSurface(universe, world, place) {
         var placeOrbit = place;

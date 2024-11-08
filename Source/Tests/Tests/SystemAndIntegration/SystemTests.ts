@@ -1267,16 +1267,35 @@ class SystemTests extends TestFixture
 				"#(i_accept)" // "I'll do it!"
 			]
 		);
+
+		// Verify that you aren't allowed to orbit the planet, at least not yet.
+		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
+
+		// todo - Go back immediately and admit you haven't been to their homeworld.
+		// todo - Then go back again and claim that you've eliminated the threat.
+		// todo - Then go back once again and get yelled at for lying.
 	}
 
 	playFromStart_22_RemovePredatorsFromMauluskaHomeworld(universe: Universe): void
 	{
-		throw new Error("todo");
+		this.goToSurfaceOfPlanetWithName(universe, "Epsilon Gruis I");
+		this.stunAllLifeformsOnPlanetSurfaceCollectBiodataAndLeave(universe);
+		this.leavePlanetOrbitAndWait(universe);
 	}
 
 	playFromStart_23_EstablishAllianceWithMauluska(universe: Universe): void
 	{
-		throw new Error("todo");
+		var world = universe.world as WorldExtended;
+		this.goToOrbitOfPlanetWithName(universe, "Epsilon Gruis I-a");
+		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
+
+		this.talkToTalker2
+		(
+			universe,
+			[
+				"todo"
+			]
+		);
 	}
 
 	playFromStart_24_MeetTheFamorfexAndDontMentionMindomini(universe: Universe): void
@@ -1462,9 +1481,20 @@ class SystemTests extends TestFixture
 		placeTypeNameExpected: string, world: World
 	): void
 	{
+		return this.assertPlaceCurrentIsOfTypesForWorld
+		(
+			[ placeTypeNameExpected ], world
+		);
+	}
+
+	assertPlaceCurrentIsOfTypesForWorld
+	(
+		placeTypeNamesExpected: string[], world: World
+	): void
+	{
 		var place = world.placeCurrent;
 		var placeTypeName = place.constructor.name;
-		Assert.areStringsEqual(placeTypeNameExpected, placeTypeName);
+		Assert.isTrue(placeTypeNamesExpected.indexOf(placeTypeName) >= 0);
 	}
 
 	assertVenueCurrentIsOfTypeForUniverse
@@ -1788,12 +1818,22 @@ class SystemTests extends TestFixture
 	{
 		var world = universe.world;
 		var placeStart = world.place();
-		var placeDestinationName =
-			PlaceStarsystem.name + ":" + starsystemName;
+		var placeStartTypeName = placeStart.constructor.name;
+		var starsystemStart =
+			placeStartTypeName == PlacePlanetSurface.name
+			? (placeStart as PlacePlanetSurface).starsystem()
+			: placeStartTypeName == PlacePlanetOrbit.name
+			? (placeStart as PlacePlanetOrbit).starsystem()
+			: placeStartTypeName == PlacePlanetVicinity.name
+			? (placeStart as PlacePlanetVicinity).starsystem()
+			: placeStartTypeName == PlaceStarsystem.name
+			? (placeStart as PlaceStarsystem).starsystem
+			: null;
 
-		if (placeStart.name == placeDestinationName)
+		//if (placeStart.name == placeDestinationName)
+		if (starsystemStart != null && starsystemStart.name == starsystemName)
 		{
-			// Do nothing.
+			starsystemActual = starsystemStart;
 		}
 		else
 		{
@@ -1815,10 +1855,27 @@ class SystemTests extends TestFixture
 	{
 		var world = universe.world;
 		var place = world.place();
-		var destinationPlaceName = PlacePlanetVicinity.name + ":" + planetName;
-		if (place.name == destinationPlaceName)
+		var placeTypeName = place.constructor.name;
+
+		if (placeTypeName == PlacePlanetVicinity.name)
 		{
-			// Do nothing.
+			var placePlanetVicinity = place as PlacePlanetVicinity;
+			var planet = placePlanetVicinity.planet;
+			if (planet.name == planetName)
+			{
+				// Do nothing.
+			}
+			else if (planetName.startsWith(planet.name) )
+			{
+				// The destination is a moon in the same system.
+				this.moveToEntityWithNameAndWait(universe, planetName);
+			}
+			else
+			{
+				this.leavePlanetVicinityAndWait(universe);
+				this.goToStarsystemWithName(universe, placePlanetVicinity.starsystem().name);
+				this.goToVicinityOfPlanetWithName(universe, planetName);
+			}
 		}
 		else
 		{
@@ -1841,7 +1898,10 @@ class SystemTests extends TestFixture
 			this.moveToEntityWithNameAndWait(universe, planetName);
 		}
 
-		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, universe.world);
+		this.assertPlaceCurrentIsOfTypesForWorld
+		(
+			[ PlacePlanetVicinity.name, PlaceEncounter.name ], world
+		);
 	}
 
 	landOnPlanetSurface(universe: Universe, world: World, place: Place): void
