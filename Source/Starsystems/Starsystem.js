@@ -21,6 +21,9 @@ class Starsystem {
         this.planets.push(planet);
         return this;
     }
+    planetByName(name) {
+        return this.planets.find(x => x.name == name);
+    }
     planetClosestTo(posToCheck) {
         var planetClosestSoFar = this.planets[0];
         var planetClosestSoFarDistance = this._displacement

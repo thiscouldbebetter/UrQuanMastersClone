@@ -676,9 +676,25 @@ class WorldExtended extends World
 		return returnPlace;
 	}
 
+	planetByName(planetName: string): Planet
+	{
+		var planetNameParts = planetName.split(" ");
+		var starsystemName =
+			planetNameParts[0] + " " + planetNameParts[1];
+		var starsystem =
+			this.starsystemByName(starsystemName);
+		var planet = starsystem.planetByName(planetName);
+		return planet;
+	}
+
 	shipDefnByName(shipDefnName: string): ShipDefn
 	{
 		return this.shipDefnsByName.get(shipDefnName);
+	}
+
+	starsystemByName(name: string)
+	{
+		return this.hyperspace.starsystemByName(name);
 	}
 
 	// World overrides.

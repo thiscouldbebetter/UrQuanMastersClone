@@ -64,6 +64,11 @@ class Starsystem implements EntityProperty<Starsystem>
 		return this;
 	}
 
+	planetByName(name: string): Planet
+	{
+		return this.planets.find(x => x.name == name);
+	}
+
 	planetClosestTo(posToCheck: Coords): Planet
 	{
 		var planetClosestSoFar = this.planets[0];

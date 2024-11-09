@@ -4,9 +4,11 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 
 |VariablesImport|u.world.player.variableLookup
 
-|JumpIfTrue|Mauluka_Quest_HasBeenAccepted|#(QUEST_AGAIN)
+|JumpIfTrue|Mauluka_Quest_HasBeenCompleted|#(QUEST_AGAIN)
 
-|JumpIfTrue|Mauluka_Quest_HasBeenRefused|#(HOW_GO_EFFORTS)
+|JumpIfTrue|Mauluka_Quest_HasBeenRefused|#(QUEST_AGAIN)
+
+|JumpIfTrue|Mauluka_Quest_HasBeenAccepted|#(HOW_GO_EFFORTS)
 
 |JumpIfTrue|Mauluska_PasswordHasBeenGiven|PasswordHasBeenGiven
 
@@ -161,6 +163,8 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 |Prompt
 
 	#(WILL_CHECK_1)|Display|#(WILL_CHECK_1)
+	|VariableAdd|Mauluska_Quest_TimesReported_Complete
+	|VariableSet|Mauluska_Quest_HasBeenCompleted|u.world.planetByName("Epsilon Gruis I").lifeforms(u.randomizer).length == 0
 	|Goto||Done
 
 	#(TEST_AGAIN)|Display|#(TEST_AGAIN)
