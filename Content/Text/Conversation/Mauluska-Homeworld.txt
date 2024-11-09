@@ -14,16 +14,16 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 
 |VariableSet|Mauluska_PasswordIsKnown|true//todo
 
-|Display|#(WHAT_IS_PASSWORD)||cr.v("Mauluska_TimesGreetedWithoutPassword") < 2
-|Display|#(WHAT_IS_PASSWORD_AGAIN)||cr.v("Mauluska_TimesGreetedWithoutPassword") >= 2
-|Option|#(we_are_vindicator)|#(NO_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
-|Option|#(gort_merenga)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
-|Option|#(guph_florp)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
-|Option|#(wagngl_fthagn)|#(WRONG_PASSWORD)|cr.v("Mauluska_PasswordIsKnown") != true
-|Option|#(pleeese)|#(WRONG_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown") != true
-|Option|#(screw_password)|#(NO_PASSWORD)|!cr.v("Mauluska_PasswordIsKnown") != true
-|Option|#(good_password)|#(YES_GOOD_PASSWORD)|cr.v("Mauluska_PasswordIsKnown")
-|Option|#(what_do_i_get)|#(YOU_GET_TO_LIVE)|cr.v("Mauluska_PasswordIsKnown")
+|Display|#(WHAT_IS_PASSWORD)||u.v().cr.v("Mauluska_TimesGreetedWithoutPassword") < 2
+|Display|#(WHAT_IS_PASSWORD_AGAIN)||u.v().cr.v("Mauluska_TimesGreetedWithoutPassword") >= 2
+|Option|#(we_are_vindicator)|#(NO_PASSWORD)|u.v().cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(gort_merenga)|#(WRONG_PASSWORD)|u.v().cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(guph_florp)|#(WRONG_PASSWORD)|u.v().cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(wagngl_fthagn)|#(WRONG_PASSWORD)|u.v().cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(pleeese)|#(WRONG_PASSWORD)|!u.v().cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(screw_password)|#(NO_PASSWORD)|!u.v().cr.v("Mauluska_PasswordIsKnown") != true
+|Option|#(good_password)|#(YES_GOOD_PASSWORD)|u.v().cr.v("Mauluska_PasswordIsKnown")
+|Option|#(what_do_i_get)|#(YOU_GET_TO_LIVE)|u.v().cr.v("Mauluska_PasswordIsKnown")
 |Prompt
 
 	#(WRONG_PASSWORD)|Display|#(WRONG_PASSWORD)
@@ -42,8 +42,8 @@ contentTextStringName=Conversation-Mauluska-Homeworld-Content
 	|VariableSet|Mauluska_PasswordHasBeenGiven|true
 	|Push
 	PasswordHasBeenGiven|DoNothing
-	|Option|#(we_come_in_peace)|#(OF_COURSE)|cr.v("Mauluska_HasBeenKilled")
-	|Option|#(we_come_in_peace)|#(KILLED_SPATHI)|cr.v("Mauluska_HasBeenKilled") != true
+	|Option|#(we_come_in_peace)|#(OF_COURSE)|u.v().cr.v("Mauluska_HasBeenKilled")
+	|Option|#(we_come_in_peace)|#(KILLED_SPATHI)|u.v().cr.v("Mauluska_HasBeenKilled") != true
 	|Option|#(spathi_on_pluto)|#(WHERE_SPATHI)
 	|Option|#(surrender)|#(NO_SURRENDER)
 	|Option|#(bye_no_ally_offer)|#(GOODBYE_NO_ALLY_OFFER)
@@ -127,6 +127,7 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 						|OptionRemove|(#tell_evil)
 						|Option|#(think_more)|#(COWARD)
 						|Option|#(i_accept)|#(AWAIT_RETURN)
+						|Prompt
 
 							#(COWARD)|Display|#(COWARD)
 							|Goto||Done

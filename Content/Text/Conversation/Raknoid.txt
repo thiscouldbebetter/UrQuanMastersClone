@@ -5,7 +5,7 @@ soundMusicName=Music_Faction_EarthStation // todo
 
 |VariablesImport|u.world.player.variableLookup
 
-|VariableLoad|Raknoid_EncounterIsInSpace|universe.world.place().encounter.planet.name != "Earth Station"
+|VariableLoad|Raknoid_EncounterIsInSpace|u.world.place().encounter.planet.name != "Earth Station"
 |JumpIfTrue|Raknoid_EncounterIsInSpace|Space
 
 |Display|#(SEND_MESSAGE)
