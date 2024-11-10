@@ -1,5 +1,5 @@
 name=Triunion
-imagePortraitNameConversation-Portrait-Triunion
+imagePortraitName=Conversation-Portrait-Triunion
 contentTextStringName=Conversation-Triunion-Content
 soundMusicName=Music_Faction_Triunion
 

@@ -134,7 +134,6 @@ Mauluska-Homeworld-DecidedNotToAttack|DoNothing
 
 							#(AWAIT_RETURN)|Display|#(AWAIT_RETURN)
 							|VariableSet|Mauluska_Quest_HasBeenAccepted|true
-							|Script|throw new Error("todo");
 							|Goto||Done
 
 						#(WE_WONT_BECAUSE)|Display|#(WE_WONT_BECAUSE)

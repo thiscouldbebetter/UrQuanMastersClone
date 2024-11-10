@@ -112,7 +112,7 @@ class SystemTests extends TestFixture {
         // and initiate a conversation.
         // Note that sometimes this fails, for currently unknown reasons.
         this.waitForTicks(universe, 1000);
-        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Leave the conversation.
         var talker = place().encounter.entityOther.talker();
@@ -136,7 +136,7 @@ class SystemTests extends TestFixture {
         Assert.isNotNull(station);
         this.moveToEntityWithNameAndWait(universe, stationName);
         // Talk to the station.
-        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
         talker = station.talker();
         this.talkToTalker(universe, talker, [
             // "Are you the resupply ship?" 
@@ -211,7 +211,7 @@ class SystemTests extends TestFixture {
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         const stationName = "Earth Station";
         this.moveToEntityWithNameAndWait(universe, stationName);
-        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
         // Talk to the station commander.
         var placeEncounter = world.place();
         var station = placeEncounter.entityByName(stationName);
@@ -274,7 +274,7 @@ class SystemTests extends TestFixture {
         Assert.isNull(guardDrone);
         // Return to the station.
         this.moveToEntityWithNameAndWait(universe, stationName);
-        this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+        this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Make sure that the station encounter's placeToReturnTo is right.
         var placeEncounterStation = world.place();
@@ -1438,6 +1438,7 @@ class SystemTests extends TestFixture {
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
     }
     talkToTalker(universe, talker, optionsToSelect) {
+        this.waitUntilVenueCurrentIsConversation(universe);
         var conversationRun = talker.conversationRun;
         conversationRun.nextUntilPrompt(universe);
         for (var i = 0; i < optionsToSelect.length; i++) {
@@ -1468,6 +1469,11 @@ class SystemTests extends TestFixture {
         for (var i = 0; i < ticksToWait; i++) {
             universe.updateForTimerTick();
             universe.timerHelper.ticksSoFar++; // hack
+        }
+    }
+    waitUntilVenueCurrentIsConversation(universe) {
+        while (universe.venue().constructor.name != VenueConversationRun.name) {
+            this.waitForTicks(universe, 1);
         }
     }
 }

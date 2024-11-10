@@ -153,7 +153,7 @@ class SystemTests extends TestFixture
 		// Note that sometimes this fails, for currently unknown reasons.
 
 		this.waitForTicks(universe, 1000);
-		this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+		this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
 		// Leave the conversation.
@@ -194,7 +194,7 @@ class SystemTests extends TestFixture
 
 		// Talk to the station.
 
-		this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+		this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
 
 		talker = station.talker();
 		this.talkToTalker
@@ -317,7 +317,7 @@ class SystemTests extends TestFixture
 
 		const stationName = "Earth Station";
 		this.moveToEntityWithNameAndWait(universe, stationName);
-		this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+		this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
 
 		// Talk to the station commander.
 
@@ -413,7 +413,7 @@ class SystemTests extends TestFixture
 		// Return to the station.
 
 		this.moveToEntityWithNameAndWait(universe, stationName);
-		this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
+		this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
 		// Make sure that the station encounter's placeToReturnTo is right.
@@ -2184,6 +2184,8 @@ class SystemTests extends TestFixture
 
 	talkToTalker(universe: Universe, talker: Talker, optionsToSelect: string[] ): void
 	{
+		this.waitUntilVenueCurrentIsConversation(universe);
+
 		var conversationRun = talker.conversationRun;
 		conversationRun.nextUntilPrompt(universe);
 
@@ -2230,5 +2232,11 @@ class SystemTests extends TestFixture
 		}
 	}
 
-
+	waitUntilVenueCurrentIsConversation(universe: Universe): void
+	{
+		while (universe.venue().constructor.name != VenueConversationRun.name)
+		{
+			this.waitForTicks(universe, 1);
+		}
+	}
 }

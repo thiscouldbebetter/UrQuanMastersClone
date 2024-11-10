@@ -148,14 +148,17 @@ class Game
 			// conversation 
 			new i2("Conversation", imageDirectory + "Conversation.png"),
 
-			new i2(conversationPortrait + "Ellfyn", importDirectoryPath + "comm/arilou/arilou-000.png"),
-			new i2(conversationPortrait + "Lahkemup", importDirectoryPath + "comm/urquan/urquan-000.png"),
-			new i2(conversationPortrait + "Mauluska", importDirectoryPath + "comm/spathi/spathi-000.png"),
-			new i2(conversationPortrait + "Murch", importDirectoryPath + "comm/melnorme/melnorme-000.png"),
-			new i2(conversationPortrait + "Raknoid", importDirectoryPath + "comm/ilwrath/ilwrath-000.png"),
-			new i2(conversationPortrait + "Tempestrial", importDirectoryPath + "comm/probe/probe-000.png"),
-			new i2(conversationPortrait + "Terran", importDirectoryPath + "comm/commander/commander-000.png"),
-			new i2(conversationPortrait + "Triunion", importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
+			new i2(conversationPortrait + "Ellfyn", 			importDirectoryPath + "comm/arilou/arilou-000.png"),
+			new i2(conversationPortrait + "Lahkemup", 			importDirectoryPath + "comm/urquan/urquan-000.png"),
+			new i2(conversationPortrait + "Mauluska", 			importDirectoryPath + "comm/spathi/spathi-000.png"),
+			new i2(conversationPortrait + "Mauluska-Homeworld", importDirectoryPath + "comm/safeones/safeones-000.png"),
+			new i2(conversationPortrait + "Muunfaz", 			importDirectoryPath + "comm/pkunk/pkunk-000.png"),
+			new i2(conversationPortrait + "Murch", 				importDirectoryPath + "comm/melnorme/melnorme-000.png"),
+			new i2(conversationPortrait + "Raknoid", 			importDirectoryPath + "comm/ilwrath/ilwrath-000.png"),
+			new i2(conversationPortrait + "Tempestrial", 		importDirectoryPath + "comm/probe/probe-000.png"),
+			new i2(conversationPortrait + "Terran", 			importDirectoryPath + "comm/commander/commander-000.png"),
+			new i2(conversationPortrait + "Triunion", 			importDirectoryPath + "comm/zoqfotpik/zoqfotpik-000.png"),
+			new i2(conversationPortrait + "Twyggan", 			importDirectoryPath + "comm/supox/supox-000.png"),
 
 			// opening
 			new i2("Titles_Opening", imageDirectory + "Titles/Opening.png"),
@@ -276,7 +279,7 @@ class Game
 		var universe = Universe.create
 		(
 			"SpaceAdventureClone",
-			"0.0.0-20240901",
+			"0.0.0-20241110",
 			timerHelper,
 			display,
 			new SoundHelperLive(),
