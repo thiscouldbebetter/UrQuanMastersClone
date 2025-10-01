@@ -207,7 +207,7 @@ class WorldExtended extends World
 
 		var soi = (centerX: number, centerY: number, radius: number) =>
 		{
-			var sphere = new Sphere
+			var sphere = Sphere.fromCenterAndRadius
 			(
 				Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10),
 				radius * hyperspaceSize.x
@@ -410,7 +410,7 @@ class WorldExtended extends World
 
 		var placeDefns = 
 		[
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlaceCombat.name,
 				"Music_Combat",
@@ -419,7 +419,7 @@ class WorldExtended extends World
 				entityPropertyNamesToProcess.slice(0).concat([Ship.name])
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlaceEncounter.name,
 				"Music_Encounter",
@@ -428,7 +428,7 @@ class WorldExtended extends World
 				[] // propertyNamesToProcess
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlaceHyperspace.name,
 				"Music_Hyperspace",
@@ -437,7 +437,7 @@ class WorldExtended extends World
 				entityPropertyNamesToProcess.slice(0).concat( [ Fuelable.name ] )
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlaceHyperspaceMap.name,
 				"Music_Hyperspace",
@@ -446,7 +446,7 @@ class WorldExtended extends World
 				entityPropertyNamesToProcess
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlacePlanetOrbit.name,
 				"Music_Planet",
@@ -455,7 +455,7 @@ class WorldExtended extends World
 				entityPropertyNamesToProcess
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlacePlanetSurface.name,
 				"Music_Planet",
@@ -464,7 +464,7 @@ class WorldExtended extends World
 				entityPropertyNamesToProcess.slice(0).concat( [ EntityGenerator.name ] )
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlacePlanetVicinity.name,
 				"Music_Starsystem",
@@ -473,7 +473,7 @@ class WorldExtended extends World
 				entityPropertyNamesToProcess
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlaceStarsystem.name,
 				"Music_Starsystem",
@@ -482,7 +482,7 @@ class WorldExtended extends World
 				entityPropertyNamesToProcess
 			),
 
-			PlaceDefn.from5
+			PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames
 			(
 				PlaceStation.name,
 				"Music_Music",

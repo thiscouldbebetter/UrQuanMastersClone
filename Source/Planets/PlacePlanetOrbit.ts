@@ -189,7 +189,7 @@ class PlacePlanetOrbit extends PlaceBase
 			var contactMappable = Mappable.fromEntity(contact);
 			if (contactMappable != null)
 			{
-				var contactLocatable = contact.locatable();
+				var contactLocatable = Locatable.of(contact);
 				var contactLoc = contactLocatable.loc;
 				var contactPos = contactLoc.pos;
 				contactPosSaved.overwriteWith(contactPos);
@@ -305,7 +305,7 @@ class PlacePlanetOrbit extends PlaceBase
 			containerMapSize.y
 		);
 
-		var containerInfo = ControlContainer.from4
+		var containerInfo = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerInfo",
 			Coords.fromXY
@@ -316,7 +316,7 @@ class PlacePlanetOrbit extends PlaceBase
 			containerInfoSize,
 			// children
 			[
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y),
 					labelSize,
@@ -324,7 +324,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 2),
 					labelSize,
@@ -337,7 +337,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 3),
 					labelSize,
@@ -345,7 +345,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 4),
 					labelSize,
@@ -353,7 +353,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 5),
 					labelSize,
@@ -366,7 +366,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 6),
 					labelSize,
@@ -374,7 +374,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 7),
 					labelSize,
@@ -382,7 +382,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 8),
 					labelSize,
@@ -390,7 +390,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 9),
 					labelSize,
@@ -398,7 +398,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 10),
 					labelSize,
@@ -418,7 +418,7 @@ class PlacePlanetOrbit extends PlaceBase
 			visualPlanetFromOrbit
 		]);
 
-		var containerGlobe = ControlContainer.from4
+		var containerGlobe = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerGlobe",
 			Coords.fromXY
@@ -429,12 +429,12 @@ class PlacePlanetOrbit extends PlaceBase
 			containerInfoSize,
 			// children
 			[
-				ControlVisual.from4
+				ControlVisual.fromNamePosSizeAndVisual
 				(
 					"visualGlobe",
 					Coords.fromXY(0, 0),
 					containerInfoSize,
-					DataBinding.fromContext<VisualBase>
+					DataBinding.fromContext<Visual>
 					(
 						visualGlobe
 					)
@@ -447,7 +447,7 @@ class PlacePlanetOrbit extends PlaceBase
 		var canLandAsBinding =
 			DataBinding.fromBooleanWithContext(this.planet.defn().canLand, null);
 
-		var containerRight = ControlContainer.from4
+		var containerRight = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerRight",
 			Coords.fromXY
@@ -479,7 +479,7 @@ class PlacePlanetOrbit extends PlaceBase
 					fontShort
 				),
 
-				ControlContainer.from4
+				ControlContainer.fromNamePosSizeAndChildren
 				(
 					"containerScan",
 					Coords.fromXY
@@ -492,7 +492,7 @@ class PlacePlanetOrbit extends PlaceBase
 					),
 					containerScanSize,
 					[
-						ControlButton.from8
+						ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 						(
 							"buttonScanMineral",
 							Coords.fromXY
@@ -508,7 +508,7 @@ class PlacePlanetOrbit extends PlaceBase
 							() => placePlanetOrbit.scanMinerals(universe)
 						),
 
-						ControlButton.from8
+						ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 						(
 							"buttonScanLife",
 							Coords.fromXY
@@ -524,7 +524,7 @@ class PlacePlanetOrbit extends PlaceBase
 							() => placePlanetOrbit.scanLife(universe)
 						),
 
-						ControlButton.from8
+						ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 						(
 							"buttonScanEnergy",
 							Coords.fromXY
@@ -542,7 +542,7 @@ class PlacePlanetOrbit extends PlaceBase
 					]
 				),
 
-				ControlButton.from8
+				ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 				(
 					"buttonLand",
 					Coords.fromXY
@@ -560,7 +560,7 @@ class PlacePlanetOrbit extends PlaceBase
 			]
 		);
 
-		var controlRoot = ControlContainer.from4
+		var controlRoot = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerPlanetOrbit",
 			Coords.fromXY(0, 0), // pos
@@ -581,7 +581,7 @@ class PlacePlanetOrbit extends PlaceBase
 
 				containerGlobe,
 
-				ControlContainer.from4
+				ControlContainer.fromNamePosSizeAndChildren
 				(
 					"containerMap",
 					Coords.fromXY
@@ -592,12 +592,12 @@ class PlacePlanetOrbit extends PlaceBase
 					containerMapSize,
 					// children
 					[
-						ControlVisual.from4
+						ControlVisual.fromNamePosSizeAndVisual
 						(
 							"visualSurface",
 							Coords.Instances().Zeroes,
 							containerMapSize,
-							DataBinding.fromContext<VisualBase>
+							DataBinding.fromContext<Visual>
 							(
 								new VisualImageScaled
 								(
@@ -611,7 +611,7 @@ class PlacePlanetOrbit extends PlaceBase
 
 				containerRight,
 
-				ControlButton.from8
+				ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 				(
 					"buttonBack",
 					marginSize,

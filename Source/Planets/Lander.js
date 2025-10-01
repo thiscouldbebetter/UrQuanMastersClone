@@ -1,6 +1,7 @@
 "use strict";
-class Lander {
+class Lander extends EntityPropertyBase {
     constructor(itemHolderCargo, itemHolderDevices, itemHolderLifeforms, killableCrew) {
+        super();
         this.itemHolderCargo =
             itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
         this.itemHolderDevices =
@@ -25,11 +26,4 @@ class Lander {
     lifeformsCurrentOverMax(world) {
         return this.itemHolderLifeforms.encumbranceOfAllItemsOverMax(world);
     }
-    // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
-    propertyName() { return Lander.name; }
-    updateForTimerTick(uwpe) { }
-    // Equatable.
-    equals(other) { return false; }
 }

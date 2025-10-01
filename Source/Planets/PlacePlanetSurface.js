@@ -75,7 +75,7 @@ class PlacePlanetSurface extends PlaceBase {
         var hazardVisualNames = ["Lightning", "Earthquake", "Hotspot"];
         var imagesPerVisual = 12;
         // hack
-        var collider = Box.fromSize(Coords.ones().multiplyScalar(10));
+        var collider = BoxAxisAligned.fromSize(Coords.ones().multiplyScalar(10));
         for (var i = 0; i < hazardTypeNames.length; i++) {
             var hazardLevel = hazardLevels[i];
             if (hazardLevel > 1) {
@@ -102,10 +102,11 @@ class PlacePlanetSurface extends PlaceBase {
                     ephemeral,
                     Locatable.create()
                 ]);
-                var generatorHazard = new EntityGenerator(entityHazard, new RangeExtent(5, 10), // ticksPerGenerationAsRange
-                new RangeExtent(0, 10), // entitiesPerGenerationAsRange
-                1000, // entitiesGeneratedMax
-                new RangeExtent(0, 0));
+                var generatorHazard = EntityGenerator.fromNameEntityTicksBatchMaxesAndPosBox("HazardGenerator", entityHazard, 10, // ticksPerGeneration
+                1, // entitiesPerGeneration
+                null, // entitiesToGenerateMaxAllTime
+                null, // entitiesToGenerateMaxAllTime
+                BoxAxisAligned.fromSize(this.size()));
                 entities.push(generatorHazard.toEntity());
             }
         }
@@ -117,17 +118,17 @@ class PlacePlanetSurface extends PlaceBase {
         var playerActivityDefnName = Player.activityDefn().name;
         var playerActivity = new Activity(playerActivityDefnName, null);
         var playerActor = new Actor(playerActivity);
-        var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
+        var playerCollider = Sphere.fromRadius(entityDimension / 2);
         var playerCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
         null, // ticks
+        null, // ?
         playerCollider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.playerCollide);
         var playerBoundable = Boundable.fromCollidable(playerCollidable);
-        var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
         var constraintFriction = new Constraint_FrictionXY(0.1, null);
         var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
         var playerConstrainable = new Constrainable([
-            constraintFriction, constraintSpeedMax, constraintWrapXTrimY
+            constraintFriction, constraintWrapXTrimY
         ]);
         var colors = Color.Instances();
         var playerColor = colors.Gray;
@@ -135,13 +136,13 @@ class PlacePlanetSurface extends PlaceBase {
         playerVisual = new VisualWrapped(this.size(), playerVisual);
         var playerDrawable = Drawable.fromVisual(playerVisual);
         var crewAvailableForLander = 12; // todo
-        var playerKillable = new Killable(crewAvailableForLander, null, this.playerDie);
+        var playerKillable = Killable.fromIntegrityMaxAndDie(crewAvailableForLander, this.playerDie);
         var playerLander = Lander.fromKillableCrew(playerKillable);
         var playerPos = this.size().clone().half(); // todo
         var playerLoc = Disposition.fromPos(playerPos);
         var playerLocatable = new Locatable(playerLoc);
         var playerMappable = new Mappable(playerVisual);
-        var playerMovable = Movable.default();
+        var playerMovable = Movable.fromSpeedMax(10);
         var playerPlayable = new Playable();
         var playerShipLander = new Ship("Lander");
         var playerEntity = new Entity("Player", [
@@ -201,7 +202,7 @@ class PlacePlanetSurface extends PlaceBase {
         var entityOther = uwpe.entity2;
         var lander = Lander.fromEntity(entityPlayer);
         var entityOtherName = entityOther.name;
-        var entityOtherItem = entityOther.item();
+        var entityOtherItem = Item.of(entityOther);
         if (entityOtherItem != null) {
             var itemHolder = null;
             if (entityOtherName.startsWith(Resource.name)) {
@@ -228,9 +229,9 @@ class PlacePlanetSurface extends PlaceBase {
             }
         }
         else if (entityOtherName.startsWith(Lifeform.name)) {
-            var lifeformDamager = entityOther.damager();
+            var lifeformDamager = Damager.of(entityOther);
             var damage = lifeformDamager.damageToApply(universe);
-            var playerKillable = entityPlayer.killable();
+            var playerKillable = Killable.of(entityPlayer);
             playerKillable.damageApply(uwpe.entitiesSwap(), damage);
             uwpe.entitiesSwap();
         }
@@ -250,7 +251,7 @@ class PlacePlanetSurface extends PlaceBase {
     draw(universe, world) {
         var display = universe.display;
         var player = this.entityByName(Player.name);
-        var playerLoc = player.locatable().loc;
+        var playerLoc = Locatable.of(player).loc;
         var camera = this._camera;
         var planetSize = this.planet.sizeSurface();
         camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(Coords.fromXY(0, camera.viewSizeHalf.y), Coords.fromXY(planetSize.x, planetSize.y - camera.viewSizeHalf.y));
@@ -272,7 +273,7 @@ class PlacePlanetSurface extends PlaceBase {
             var contact = scanContacts[i];
             var contactMappable = Mappable.fromEntity(contact);
             if (contactMappable != null) {
-                var contactPos = contact.locatable().loc.pos;
+                var contactPos = Locatable.of(contact).loc.pos;
                 contactPosSaved.overwriteWith(contactPos);
                 var drawPos = this._drawPos
                     .overwriteWith(contactPos)
@@ -302,24 +303,24 @@ class PlacePlanetSurface extends PlaceBase {
         var minimapSize = Coords.fromXY(1, .5).multiplyScalar(childControlWidth);
         var containerLanderSize = Coords.fromXY(1, 2).multiplyScalar(childControlWidth);
         var lander = Lander.fromEntity(entityPlayer); // todo
-        var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), // hack - pos
+        var containerSidebar = ControlContainer.fromNamePosSizeAndChildren("containerSidebar", Coords.fromXY(300, 0), // hack - pos
         containerSidebarSize, 
         // children
         [
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Map:"), font),
-            ControlContainer.from4("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Map:"), font),
+            ControlContainer.fromNamePosSizeAndChildren("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
             minimapSize, [
-                ControlVisual.from4("visualMap", Coords.fromXY(0, 0), minimapSize, DataBinding.fromContext(VisualRectangle.fromSizeAndColorFill(minimapSize, Color.Instances().Gray)))
+                ControlVisual.fromNamePosSizeAndVisual("visualMap", Coords.fromXY(0, 0), minimapSize, DataBinding.fromContext(VisualRectangle.fromSizeAndColorFill(minimapSize, Color.Instances().Gray)))
             ]),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, DataBinding.fromContext("Lander:"), font),
-            ControlContainer.from4("containerLander", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 2 + minimapSize.y), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y), labelSize, DataBinding.fromContext("Lander:"), font),
+            ControlContainer.fromNamePosSizeAndChildren("containerLander", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 2 + minimapSize.y), // pos
             containerLanderSize, [
-                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Crew:"), font),
-                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, marginSize.y), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.crewCurrentOverMax()), font),
-                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2), labelSize, DataBinding.fromContext("Cargo:"), font),
-                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, marginSize.y * 2), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.cargoCurrentOverMax(world)), font),
-                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3), labelSize, DataBinding.fromContext("Biodata:"), font),
-                ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, marginSize.y * 3), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.lifeformsCurrentOverMax(world)), font),
+                ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Crew:"), font),
+                ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 5, marginSize.y), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.crewCurrentOverMax()), font),
+                ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 2), labelSize, DataBinding.fromContext("Cargo:"), font),
+                ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 5, marginSize.y * 2), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.cargoCurrentOverMax(world)), font),
+                ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 3), labelSize, DataBinding.fromContext("Biodata:"), font),
+                ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 5, marginSize.y * 3), labelSize, DataBinding.fromContextAndGet(lander, (c) => c.lifeformsCurrentOverMax(world)), font),
             ] // children
             ),
             ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 2 + minimapSize.y + containerLanderSize.y), // pos

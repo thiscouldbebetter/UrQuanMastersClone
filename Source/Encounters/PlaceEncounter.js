@@ -48,7 +48,7 @@ class PlaceEncounter extends PlaceBase {
                     choiceNames.push("Fight");
                     choiceActions.push(() => this.encounter.fight(universe));
                 }
-                var controlRoot = universe.controlBuilder.choice5(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), choiceNames, choiceActions);
+                var controlRoot = universe.controlBuilder.choiceUniverseSizeMessageOptionNamesAndFunctions(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), choiceNames, choiceActions);
                 this.venueControls = VenueControls.fromControl(controlRoot);
             }
         }

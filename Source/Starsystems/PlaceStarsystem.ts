@@ -55,7 +55,7 @@ class PlaceStarsystem extends PlaceBase
 		// sun
 
 		var sunEntity = this.constructor_SunEntityBuild(entityDimension);
-		var sunPos = sunEntity.locatable().loc.pos;
+		var sunPos = Locatable.of(sunEntity).loc.pos;
 
 		entities.push(sunEntity);
 
@@ -78,7 +78,7 @@ class PlaceStarsystem extends PlaceBase
 			{
 				var entityForPlanetDeparted =
 					entities.find(x => Planet.fromEntity(x) == planetDeparted);
-				var playerCollidable = playerEntity.collidable();
+				var playerCollidable = Collidable.of(playerEntity);
 				playerCollidable.entityAlreadyCollidedWithAddIfNotPresent(entityForPlanetDeparted);
 			}
 
@@ -115,7 +115,7 @@ class PlaceStarsystem extends PlaceBase
 				(
 					new ShapeInverse
 					(
-						new Box(Coords.create(), this.size() )
+						BoxAxisAligned.fromSize(this.size() )
 					)
 				)
 			]
@@ -124,7 +124,7 @@ class PlaceStarsystem extends PlaceBase
 
 		// Sidebar.
 
-		var containerSidebar = ControlContainer.from4
+		var containerSidebar = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerSidebar",
 			Coords.fromXY(300, 0), // todo
@@ -149,21 +149,20 @@ class PlaceStarsystem extends PlaceBase
 		var actor = new Actor(activity);
 
 		var collider = Sphere.fromRadius(entityDimension / 2);
-		var collidable = Collidable.from3
+		var collidable = Collidable.fromColliderPropertyNamesAndCollide
 		(
 			collider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
 			this.playerCollide
 		);
 
-		var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
-		var constrainable = new Constrainable([constraintSpeedMax])
+		var constrainable = Constrainable.create()
 
 		var itemHolder = ItemHolder.create();
 
 		var locatable = new Locatable(playerLoc);
 
-		var movable = Movable.default();
+		var movable = Movable.fromSpeedMax(1);
 
 		var playable = new Playable();
 
@@ -174,7 +173,7 @@ class PlaceStarsystem extends PlaceBase
 		var visual = shipDefn.visual;
 		var drawable = Drawable.fromVisual(visual);
 
-		var playerEntity = new Entity
+		var playerEntity = Entity.fromNameAndProperties
 		(
 			Player.name,
 			[
@@ -203,11 +202,11 @@ class PlaceStarsystem extends PlaceBase
 
 		var sunRadius = entityDimension * 1.5;
 
-		var sunCollider = new Sphere(Coords.create(), sunRadius);
+		var sunCollider = Sphere.fromRadius(sunRadius);
 		var sunCollidable = new Collidable
 		(
 			false, // canCollideAgainWithoutSeparating
-			null, sunCollider, [ Collidable.name ], null
+			null, null, sunCollider, [ Collidable.name ], null
 		);
 
 		var sunColor = this.starsystem.starColor;
@@ -295,16 +294,16 @@ class PlaceStarsystem extends PlaceBase
 		var entityOther = uwpe.entity2;
 		var entityOtherPlanet = Planet.fromEntity(entityOther);
 
-		entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityOther);
+		Collidable.of(entityPlayer).entityAlreadyCollidedWithAddIfNotPresent(entityOther);
 
 		var planet = entityOtherPlanet;
 		var sizeNext = place.size().clone();
-		var playerOrientation = entityPlayer.locatable().loc.orientation;
+		var playerOrientation = Locatable.of(entityPlayer).loc.orientation;
 		var heading = playerOrientation.forward.headingInTurns();
 		var playerPosNext =
 			Polar.fromAzimuthInTurnsAndRadius(heading + .5, .4 * sizeNext.y)
 			.wrap()
-			.toCoords(Coords.create() )
+			.toCoords()
 			.add(sizeNext.clone().half() );
 
 		var playerLocNext = new Disposition(playerPosNext, playerOrientation, null);
@@ -324,8 +323,8 @@ class PlaceStarsystem extends PlaceBase
 		var entityOther = uwpe.entity2;
 		var shipGroup = ShipGroupBase.fromEntity(entityOther);
 
-		entityOther.collidable().ticksUntilCanCollide = 100; // hack
-		var playerPos = entityPlayer.locatable().loc.pos;
+		Collidable.of(entityOther).ticksUntilCanCollide = 100; // hack
+		var playerPos = Locatable.of(entityPlayer).loc.pos;
 		var encounter = new Encounter
 		(
 			place.starsystem.planetClosestTo(playerPos),
@@ -347,7 +346,7 @@ class PlaceStarsystem extends PlaceBase
 		var entityPlayer = uwpe.entity;
 
 		var hyperspace = world.hyperspace;
-		var playerLoc = entityPlayer.locatable().loc;
+		var playerLoc = Locatable.of(entityPlayer).loc;
 		var playerPosNext = place.starsystem.posInHyperspace.clone();
 		var playerDisposition = new Disposition
 		(
@@ -374,14 +373,14 @@ class PlaceStarsystem extends PlaceBase
 		var display = universe.display;
 
 		var colors = Color.Instances();
-		display.drawBackground(colors.Black, colors.Gray);
+		display.drawBackgroundWithColorsBackAndBorder(colors.Black, colors.Gray);
 
 		var player = this.entityByName(Player.name);
 		if (player == null)
 		{
 			return; // hack
 		}
-		var playerLoc = player.locatable().loc;
+		var playerLoc = Locatable.of(player).loc;
 
 		var camera = this._camera;
 		camera.loc.pos.overwriteWith
@@ -402,6 +401,8 @@ class PlaceStarsystem extends PlaceBase
 	{
 		var universe = uwpe.universe;
 		var soundHelper = universe.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Starsystem");
+		var mediaLibrary = universe.mediaLibrary;
+		var sound = mediaLibrary.soundGetByName("Music_Starsystem");
+		soundHelper.soundPlaybackCreateFromSound(sound);
 	}
 }

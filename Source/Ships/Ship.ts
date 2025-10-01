@@ -1,5 +1,5 @@
 
-class Ship implements EntityProperty<Ship>
+class Ship extends EntityPropertyBase<Ship>
 {
 	name: string;
 	defnName: string;
@@ -10,6 +10,8 @@ class Ship implements EntityProperty<Ship>
 
 	constructor(defnName: string)
 	{
+		super();
+
 		this.defnName = defnName;
 
 		this.name =
@@ -77,7 +79,7 @@ class Ship implements EntityProperty<Ship>
 				if (ship.energy >= attackDefn.energyToUse)
 				{
 					ship.energy -= attackDefn.energyToUse;
-					attackDefn.activate(universe, world, place, actor);
+					attackDefn.activate2(universe, world, place, actor);
 				}
 			}
 		);
@@ -267,11 +269,11 @@ class Ship implements EntityProperty<Ship>
 		}
 
 		var visualToRecycle =
-			entityShipToDie.drawable().visual as VisualWrapped;
+			Drawable.of(entityShipToDie).visual as VisualWrapped;
 		visualToRecycle.child =
 			VisualCircle.fromRadiusAndColorFill(32, Color.Instances().Red);
 
-		entityShipToDie.locatable().loc.vel.clear();
+		Locatable.of(entityShipToDie).loc.vel.clear();
 
 		var entityExplosion = new Entity
 		(
@@ -279,7 +281,7 @@ class Ship implements EntityProperty<Ship>
 			[
 				new Ephemeral(64, place.roundOver),
 				Drawable.fromVisual(visualToRecycle),
-				entityShipToDie.locatable(),
+				Locatable.of(entityShipToDie),
 			]
 		);
 
@@ -316,10 +318,11 @@ class Ship implements EntityProperty<Ship>
 		var actor = Actor.default();
 
 		var entityDimension = 32; // todo
-		var shipCollider = new Sphere(Coords.zeroes(), entityDimension / 2);
+		var shipCollider = Sphere.fromRadius(entityDimension / 2);
 		var collidable = new Collidable
 		(
 			false, // canCollideAgainWithoutSeparating
+			false, // exemptFromEffectsOfOther
 			null, // ticks
 			shipCollider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
@@ -327,10 +330,8 @@ class Ship implements EntityProperty<Ship>
 		);
 
 		var constraintWrapToRange = new Constraint_WrapToPlaceSize();
-		var constraintSpeedMax = new Constraint_SpeedMaxXY(5); // An absolute upper limit.
 		var constrainable = new Constrainable
 		([
-			constraintSpeedMax,
 			constraintWrapToRange
 		]);
 
@@ -344,15 +345,15 @@ class Ship implements EntityProperty<Ship>
 
 		var itemHolder = ItemHolder.create();
 
-		var killable = new Killable(this.crew, null, this.die);
+		var killable = Killable.fromIntegrityMaxAndDie(this.crew, this.die);
 
 		var shipPos = Coords.create();
 		var shipLoc = Disposition.fromPos(shipPos);
 		var locatable = new Locatable(shipLoc);
 
-		var movable = Movable.default();
+		var movable = Movable.fromSpeedMax(5);
 
-		var shipEntityProperties = new Array<EntityPropertyBase>
+		var shipEntityProperties = new Array<EntityProperty>
 		(
 			actor,
 			collidable,
@@ -430,7 +431,7 @@ class Ship implements EntityProperty<Ship>
 		);
 		var world = uwpe.world as WorldExtended;
 		var shipDefn = ship.defn(world);
-		var shipLoc = entity.locatable().loc;
+		var shipLoc = Locatable.of(entity).loc;
 		var shipForward = shipLoc.orientation.forward;
 		shipLoc.accel.overwriteWith(shipForward).multiplyScalar
 		(
@@ -450,7 +451,7 @@ class Ship implements EntityProperty<Ship>
 	): void
 	{
 		var entity = uwpe.entity;
-		var entityLoc = entity.locatable().loc;
+		var entityLoc = Locatable.of(entity).loc;
 		var entityOrientation = entityLoc.orientation;
 		var entityForward = entityOrientation.forward;
 		var entityShip = Ship.fromEntity(entity);
@@ -463,16 +464,12 @@ class Ship implements EntityProperty<Ship>
 		var world = uwpe.world as WorldExtended;
 		var shipDefn = ship.defn(world);
 		var turnsPerTick = shipDefn.turnsPerTick(uwpe);
-		var entityForwardNew = Ship._polar.fromCoords
-		(
-			entityForward
-		).addToAzimuthInTurns
-		(
-			turnsPerTick * direction
-		).wrap().toCoords
-		(
-			entityForward
-		);
+		var entityForwardNew =
+			Ship._polar
+				.fromCoords(entityForward)
+				.addToAzimuthInTurns(turnsPerTick * direction)
+				.wrap()
+				.overwriteCoords(entityForward);
 		entityOrientation.forwardSet(entityForwardNew);
 	}
 
@@ -531,7 +528,7 @@ class Ship implements EntityProperty<Ship>
 
 		var childControls =
 		[
-			ControlLabel.from4Uncentered
+			ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY
 				(
@@ -543,7 +540,7 @@ class Ship implements EntityProperty<Ship>
 				fontShort
 			),
 
-			ControlLabel.from4Uncentered
+			ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY
 				(
@@ -555,7 +552,7 @@ class Ship implements EntityProperty<Ship>
 				fontShort
 			),
 
-			ControlLabel.from4Uncentered
+			ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY
 				(
@@ -570,7 +567,7 @@ class Ship implements EntityProperty<Ship>
 				fontShort
 			),
 
-			ControlLabel.from4Uncentered
+			ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
 				labelSizeShort,
@@ -578,7 +575,7 @@ class Ship implements EntityProperty<Ship>
 				fontShort
 			),
 
-			ControlLabel.from4Uncentered
+			ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY
 				(
@@ -595,7 +592,7 @@ class Ship implements EntityProperty<Ship>
 			),
 		];
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerShip",
 			Coords.fromXY

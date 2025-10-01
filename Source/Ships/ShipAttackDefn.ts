@@ -1,5 +1,5 @@
 
-class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
+class ShipAttackDefn extends EntityPropertyBase<ShipAttackDefn>
 {
 	name: string;
 	energyToUse: number;
@@ -9,8 +9,8 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 	ticksToLive: number;
 	diesOnImpact: boolean;
 	damage: number;
-	visualProjectile: VisualBase;
-	visualImpact: VisualBase;
+	visualProjectile: Visual;
+	visualImpact: Visual;
 	effectWhenInvoked: any;
 	perform: (u: Universe, w: World, p: Place, e: Entity) => void;
 	effectOnImpact: (u: Universe, w: World, p: Place, e: Entity) => void;
@@ -27,13 +27,15 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		ticksToLive: number,
 		diesOnImpact: boolean,
 		damage: number,
-		visualProjectile: VisualBase,
-		visualImpact: VisualBase,
+		visualProjectile: Visual,
+		visualImpact: Visual,
 		effectWhenInvoked: any,
 		perform: (u: Universe, w: World, p: Place, e: Entity) => void,
 		effectOnImpact: (u: Universe, w: World, p: Place, e: Entity) => void
 	)
 	{
+		super();
+
 		this.name = name;
 		this.energyToUse = energyToUse;
 		this.projectileRadius = projectileRadius;
@@ -56,32 +58,33 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		return entity.propertyByName(ShipAttackDefn.name) as ShipAttackDefn;
 	}
 
-	activate(universe: Universe, world: World, place: Place, actor: Entity): void
+	activate2(universe: Universe, world: World, place: Place, actor: Entity): void
 	{
 		var attackDefn = this;
 
 		var projectileCollider =
-			new Sphere(Coords.create(), attackDefn.projectileRadius);
+			Sphere.fromRadius(attackDefn.projectileRadius);
 		var projectileCollidable = new Collidable
 		(
 			false, // canCollideAgainWithoutSeparating
+			null, // ?
 			null, // ticks
 			projectileCollider,
 			[ Killable.name ],
 			this.projectileCollide
 		);
 
-		var actorVisual = actor.drawable().visual as VisualWrapped;
-		var projectileVisual = new VisualWrapped
+		var actorVisual = Drawable.of(actor).visual as VisualWrapped2;
+		var projectileVisual = new VisualWrapped2
 		(
 			actorVisual.sizeToWrapTo,
 			attackDefn.visualProjectile,
 		);
 		var projectileDrawable = Drawable.fromVisual(projectileVisual);
 
-		var projectileKillable = new Killable(1, null, null);
+		var projectileKillable = Killable.fromIntegrityMax(1);
 
-		var actorLoc = actor.locatable().loc;
+		var actorLoc = Locatable.of(actor).loc;
 		var actorOrientation = actorLoc.orientation;
 		var actorForward = actorOrientation.forward;
 		var projectileDirectionAsPolar = Polar.create().fromCoords(actorForward);
@@ -89,8 +92,8 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 		projectileDirectionAsPolar.azimuthInTurns =
 			NumberHelper.wrapToRangeMinMax(projectileDirectionAsPolar.azimuthInTurns, 0, 1);
 		var projectileDirection =
-			projectileDirectionAsPolar.toCoords(Coords.create());
-		var actorRadius = (actor.collidable().collider as Sphere).radius;
+			projectileDirectionAsPolar.toCoords();
+		var actorRadius = (Collidable.of(actor).collider as Sphere).radius();
 		var actorPos = actorLoc.pos;
 		var projectilePos = actorPos.clone().add
 		(
@@ -105,7 +108,7 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 
 		var projectileMovable = Movable.default();
 
-		var projectileEntityProperties = new Array<EntityPropertyBase>
+		var projectileEntityProperties = new Array<EntityProperty>
 		(
 			this,
 			projectileCollidable,
@@ -141,10 +144,10 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 
 		if (attackDefn.diesOnImpact)
 		{
-			var killable = entityProjectile.killable();
+			var killable = Killable.of(entityProjectile);
 			killable.kill();
 
-			var drawable = entityProjectile.drawable();
+			var drawable = Drawable.of(entityProjectile);
 			var visualWrapped = drawable.visual as VisualWrapped;
 			visualWrapped.child = attackDefn.visualImpact;
 
@@ -153,15 +156,15 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 				"Impact",
 				[
 					new Ephemeral(10, null), // hack
-					entityProjectile.locatable(),
-					entityProjectile.drawable()
+					Locatable.of(entityProjectile),
+					Drawable.of(entityProjectile)
 				]
 			);
 
 			place.entityToSpawnAdd(entityImpact);
 		}
 
-		var entityOtherKillable = entityOther.killable();
+		var entityOtherKillable = Killable.of(entityOther);
 		if (entityOtherKillable != null)
 		{
 			var projectileDamagePerHit = attackDefn.damage;
@@ -173,20 +176,4 @@ class ShipAttackDefn implements EntityProperty<ShipAttackDefn>
 			}
 		}
 	}
-
-	// Clonable.
-
-	clone(): ShipAttackDefn { throw new Error("todo"); }
-	overwriteWith(other: ShipAttackDefn): ShipAttackDefn { throw new Error("todo"); }
-
-	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return ShipAttackDefn.name; }
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
-
-	// Equatable.
-
-	equals(other: ShipAttackDefn): boolean { return false; } 
 }

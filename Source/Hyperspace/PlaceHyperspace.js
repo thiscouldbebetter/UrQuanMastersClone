@@ -35,7 +35,7 @@ class PlaceHyperspace extends PlaceBase {
             if (starsystemDeparted != null) {
                 var entities = this.entitiesToSpawn; // hack
                 var entityForStarsystemDeparted = entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
-                playerEntity.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityForStarsystemDeparted);
+                Collidable.of(playerEntity).entityAlreadyCollidedWithAddIfNotPresent(entityForStarsystemDeparted);
             }
             entities.push(playerEntity);
         }
@@ -74,8 +74,8 @@ class PlaceHyperspace extends PlaceBase {
     }
     constructor_PlayerEntityBuild(world, entityDimension, loc) {
         var actor = Actor.fromActivityDefn(Player.activityDefn());
-        var collider = new Sphere(Coords.create(), entityDimension / 2);
-        var collidable = Collidable.from3(collider, [Collidable.name], // entityPropertyNamesToCollideWith
+        var collider = Sphere.fromRadius(entityDimension / 2);
+        var collidable = Collidable.fromColliderPropertyNamesAndCollide(collider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.playerCollide);
         var boundable = Boundable.fromCollidable(collidable);
         var shipGroup = world.player.shipGroup;
@@ -94,7 +94,7 @@ class PlaceHyperspace extends PlaceBase {
         var locatable = new Locatable(loc);
         var movable = Movable.default();
         var playable = new Playable();
-        var playerEntity = new Entity(Player.name, [
+        var playerEntity = Entity.fromNameAndProperties(Player.name, [
             actor,
             boundable,
             collidable,
@@ -147,12 +147,12 @@ class PlaceHyperspace extends PlaceBase {
         for (var i = 0; i < numberOfStars; i++) {
             var starsystem = starsystems[i];
             var starPos = starsystem.posInHyperspace;
-            var starCollider = new Sphere(Coords.create(), starRadius);
+            var starCollider = Sphere.fromRadius(starRadius);
             var starColor = starsystem.starColor;
             var starSizeIndex = starsystem.starSizeIndex;
             var starVisual = starVisualsForSizesByColorName.get(starColor.name)[starSizeIndex];
             var starEntity = new Entity(starsystem.name, [
-                new Boundable(Box.fromSize(starSize)),
+                new Boundable(BoxAxisAligned.fromSize(starSize)),
                 Collidable.fromCollider(starCollider),
                 Drawable.fromVisual(starVisual),
                 new Locatable(Disposition.fromPos(starPos)),
@@ -223,18 +223,18 @@ class PlaceHyperspace extends PlaceBase {
         var entityOtherLinkPortal = LinkPortal.fromEntity(entityOther);
         if (entityOtherStarsystem != null) {
             var starsystem = entityOtherStarsystem;
-            var playerLoc = entityPlayer.locatable().loc;
+            var playerLoc = Locatable.of(entityPlayer).loc;
             var playerOrientation = playerLoc.orientation;
             var playerPosNextAsPolar = Polar.create().fromCoords(playerOrientation.forward).addToAzimuthInTurns(.5).wrap();
             playerPosNextAsPolar.radius = starsystem.sizeInner.x * .45;
-            var playerPosNext = playerPosNextAsPolar.toCoords(Coords.create()).add(starsystem.sizeInner.clone().half());
+            var playerPosNext = playerPosNextAsPolar.toCoords().add(starsystem.sizeInner.clone().half());
             var placeNext = starsystem.toPlace(world, Disposition.fromPosAndOrientation(playerPosNext, playerOrientation.clone()), null // planet
             );
             world.placeNextSet(placeNext);
         }
         else if (entityOtherShipGroup != null) {
             var shipGroupOther = entityOtherShipGroup;
-            var playerPos = entityPlayer.locatable().loc.pos;
+            var playerPos = Locatable.of(entityPlayer).loc.pos;
             var starsystemClosest = place.hyperspace.starsystemClosestTo(playerPos);
             var planetClosest = starsystemClosest.planetRandom(universe);
             var encounter = new Encounter(planetClosest, shipGroupOther.factionName, entityPlayer, entityOther, place, playerPos);
@@ -258,14 +258,14 @@ class PlaceHyperspace extends PlaceBase {
     // controls
     toControlSidebar(universe) {
         var world = universe.world;
-        var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), Coords.fromXY(100, 300), [world.player.toControlSidebar(world)]);
+        var containerSidebar = ControlContainer.fromNamePosSizeAndChildren("containerSidebar", Coords.fromXY(300, 0), Coords.fromXY(100, 300), [world.player.toControlSidebar(world)]);
         var marginWidth = 8;
         var size = Coords.fromXY(1, 1).multiplyScalar(containerSidebar.size.x - marginWidth * 2);
         var display = universe.display;
         this.displaySensors = new Display2D([size], display.fontNameAndHeight, Color.Instances().Yellow, Color.Instances().GreenDark, true // isInvisible
         );
         var imageSensors = this.displaySensors.initialize(null).toImage("Sensors");
-        var controlVisualSensors = ControlVisual.from4("controlVisualSensors", Coords.fromXY(8, 152), // pos
+        var controlVisualSensors = ControlVisual.fromNamePosSizeAndVisual("controlVisualSensors", Coords.fromXY(8, 152), // pos
         size, DataBinding.fromContext(new VisualImageImmediate(imageSensors, null)));
         containerSidebar.children.push(controlVisualSensors);
         return containerSidebar;
@@ -274,9 +274,9 @@ class PlaceHyperspace extends PlaceBase {
     draw(universe, world) {
         var display = universe.display;
         var colors = Color.Instances();
-        display.drawBackground(colors.Gray, colors.Black);
+        display.drawBackgroundWithColorsBackAndBorder(colors.Gray, colors.Black);
         var player = this.entityByName(Player.name);
-        var playerLoc = player.locatable().loc;
+        var playerLoc = Locatable.of(player).loc;
         var camera = this._camera;
         camera.loc.pos.overwriteWith(playerLoc.pos).trimToRangeMinMax(camera.viewSizeHalf, this.size().clone().subtract(camera.viewSizeHalf));
         super.draw(universe, world, display);
@@ -285,7 +285,7 @@ class PlaceHyperspace extends PlaceBase {
     }
     draw_Sensors() {
         this.displaySensors.clear();
-        this.displaySensors.drawBackground(null, null);
+        this.displaySensors.drawBackground();
         var sensorRange = this._camera.viewSize.clone().double();
         var controlSize = this.displaySensors.sizeInPixels;
         var controlSizeHalf = controlSize.clone().half();

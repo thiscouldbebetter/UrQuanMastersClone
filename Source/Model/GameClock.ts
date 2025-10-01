@@ -1,10 +1,12 @@
 
-class GameClock implements EntityProperty<GameClock>
+class GameClock extends EntityPropertyBase<GameClock>
 {
 	gameSecondsPerRealSecond: number;
 
 	constructor(gameSecondsPerRealSecond: number)
 	{
+		super();
+
 		this.gameSecondsPerRealSecond = gameSecondsPerRealSecond;
 	}
 

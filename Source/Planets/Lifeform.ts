@@ -1,11 +1,13 @@
 
-class Lifeform implements EntityProperty<Lifeform>
+class Lifeform extends EntityPropertyBase<Lifeform>
 {
 	defnName: string;
 	pos: Coords;
 
 	constructor(defnName: string, pos: Coords)
 	{
+		super();
+
 		this.defnName = defnName;
 		this.pos = pos;
 	}
@@ -26,7 +28,7 @@ class Lifeform implements EntityProperty<Lifeform>
 		var lifeformDefn = lifeform.defn(world);
 		var lifeformValue = lifeformDefn.value;
 
-		var entityPos = entity.locatable().loc.pos;
+		var entityPos = Locatable.of(entity).loc.pos;
 
 		var resource = new Resource
 		(
@@ -35,7 +37,7 @@ class Lifeform implements EntityProperty<Lifeform>
 			entityPos
 		);
 
-		var radius = (entity.collidable().collider as Sphere).radius;
+		var radius = (Collidable.of(entity).collider as Sphere).radius();
 		var entityResource =
 			resource.toEntity(world, place, radius);
 		place.entityToSpawnAdd(entityResource);
@@ -59,27 +61,26 @@ class Lifeform implements EntityProperty<Lifeform>
 
 		var lifeformRadius = 5;
 
-		var lifeformCollider = new Sphere(Coords.create(), lifeformRadius);
+		var lifeformCollider = Sphere.fromRadius(lifeformRadius);
 		var lifeformCollidable = Collidable.fromCollider(lifeformCollider);
 		lifeformCollidable.canCollideAgainWithoutSeparating = true;
 
 		var lifeformDamager = Damager.default();
 
-		var lifeformVisual: VisualBase = lifeformDefn.visual;
+		var lifeformVisual: Visual = lifeformDefn.visual;
 		lifeformVisual = new VisualWrapped(planet.sizeSurface(), lifeformVisual);
 		var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
 
-		var lifeformKillable = new Killable
+		var lifeformKillable = Killable.fromIntegrityMaxAndDie
 		(
 			lifeformDefn.durability,
-			null, // ?
 			this.die
 		);
 
 		var lifeformLocatable = Locatable.fromPos(this.pos);
 
 		var colorGreen = Color.Instances().Green;
-		var visualScanContact: VisualBase = new VisualRectangle
+		var visualScanContact: Visual = new VisualRectangle
 		(
 			Coords.ones().multiplyScalar(lifeformRadius), colorGreen, null, null
 		);
@@ -115,7 +116,7 @@ class Lifeform implements EntityProperty<Lifeform>
 
 		var lifeformMovable = Movable.fromSpeedMax(lifeformDefn.speed / 4);
 
-		var returnValue = new Entity
+		var returnValue = Entity.fromNameAndProperties
 		(
 			"Lifeform" + this.defnName + Math.random(),
 			[
@@ -150,8 +151,8 @@ class Lifeform implements EntityProperty<Lifeform>
 				}
 				else
 				{
-					var targetPos = entityTarget.locatable().loc.pos;
-					var actorLoc = entityActor.locatable().loc;
+					var targetPos = Locatable.of(entityTarget).loc.pos;
+					var actorLoc = Locatable.of(entityActor).loc;
 					var actorPos = actorLoc.pos;
 					var displacementToTarget = targetPos.clone().subtract(actorPos);
 					var distanceToTarget = displacementToTarget.magnitude();
@@ -162,23 +163,17 @@ class Lifeform implements EntityProperty<Lifeform>
 					}
 					else
 					{
-						var distancePerTick = entityActor.movable().speedMax(uwpe);
+						var distancePerTick = Movable.of(entityActor).speedMax(uwpe);
 						if (distanceToTarget < distancePerTick)
 						{
 							actorPos.overwriteWith(targetPos);
 						}
 						else
 						{
-							actorLoc.vel.overwriteWith
-							(
-								displacementToTarget
-							).divideScalar
-							(
-								distanceToTarget
-							).multiplyScalar
-							(
-								distancePerTick
-							);
+							actorLoc.vel
+								.overwriteWith(displacementToTarget)
+								.divideScalar(distanceToTarget)
+								.multiplyScalar(distancePerTick);
 						}
 					}
 				}
@@ -202,13 +197,13 @@ class Lifeform implements EntityProperty<Lifeform>
 				}
 				else
 				{
-					var targetPos = entityTarget.locatable().loc.pos;
-					var actorLoc = entityActor.locatable().loc;
+					var targetPos = Locatable.of(entityTarget).loc.pos;
+					var actorLoc = Locatable.of(entityActor).loc;
 					var actorPos = actorLoc.pos;
 					var displacementToTarget = targetPos.clone().subtract(actorPos);
 					var distanceToTarget = displacementToTarget.magnitude();
 					var detectionDistanceMax = 150; // todo
-					var distancePerTick = entityActor.movable().speedMax(uwpe);
+					var distancePerTick = Movable.of(entityActor).speedMax(uwpe);
 					if (distanceToTarget > detectionDistanceMax)
 					{
 						Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
@@ -255,7 +250,7 @@ class Lifeform implements EntityProperty<Lifeform>
 	): void
 	{
 		var entityActor = uwpe.entity;
-		var actor = entityActor.actor();
+		var actor = Actor.of(entityActor);
 		var activity = actor.activity;
 		var entityTarget = activity.targetEntity();
 		if (entityTarget == null)
@@ -270,12 +265,12 @@ class Lifeform implements EntityProperty<Lifeform>
 			entityTarget = Locatable.fromPos(targetPos).toEntity();
 			activity.targetEntitySet(entityTarget);
 		}
-		var targetPos = entityTarget.locatable().loc.pos;
-		var actorLoc = entityActor.locatable().loc;
+		var targetPos = Locatable.of(entityTarget).loc.pos;
+		var actorLoc = Locatable.of(entityActor).loc;
 		var actorPos = actorLoc.pos;
 		var displacementToTarget = targetPos.clone().subtract(actorPos);
 		var distanceToTarget = displacementToTarget.magnitude();
-		var distancePerTick = entityActor.movable().speedMax(uwpe);
+		var distancePerTick = Movable.of(entityActor).speedMax(uwpe);
 		if (distanceToTarget < distancePerTick)
 		{
 			activity.targetEntityClear();

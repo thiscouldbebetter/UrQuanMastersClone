@@ -1,5 +1,5 @@
 
-class Lander implements EntityPropertyBase
+class Lander extends EntityPropertyBase<Lander>
 {
 	itemHolderCargo: ItemHolder;
 	itemHolderDevices: ItemHolder;
@@ -14,6 +14,8 @@ class Lander implements EntityPropertyBase
 		killableCrew: Killable
 	)
 	{
+		super();
+
 		this.itemHolderCargo =
 			itemHolderCargo || ItemHolder.fromEncumbranceMax(50);
 		this.itemHolderDevices =
@@ -48,15 +50,4 @@ class Lander implements EntityPropertyBase
 	{
 		return this.itemHolderLifeforms.encumbranceOfAllItemsOverMax(world);
 	}
-
-	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return Lander.name; }
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
-
-	// Equatable.
-
-	equals(other: Lander) { return false; }
 }

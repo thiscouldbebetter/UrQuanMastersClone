@@ -1,6 +1,7 @@
 "use strict";
-class VisualWrapped {
+class VisualWrapped2 extends VisualBase {
     constructor(sizeToWrapTo, child) {
+        super();
         this.sizeToWrapTo = sizeToWrapTo;
         this.child = child;
         this._offset = Coords.create();
@@ -8,7 +9,7 @@ class VisualWrapped {
         this._tilePos = Coords.create();
     }
     clone() {
-        return new VisualWrapped(this.sizeToWrapTo.clone(), this.child.clone());
+        return new VisualWrapped2(this.sizeToWrapTo.clone(), this.child.clone());
     }
     overwriteWith(otherAsVisual) {
         var other = otherAsVisual;
@@ -23,7 +24,7 @@ class VisualWrapped {
     // Visual.
     draw(uwpe, display) {
         var entity = uwpe.entity;
-        var drawablePos = entity.locatable().loc.pos;
+        var drawablePos = Locatable.of(entity).loc.pos;
         this._posSaved.overwriteWith(drawablePos);
         var tilePos = this._tilePos;
         for (var y = -1; y <= 1; y++) {
@@ -36,4 +37,6 @@ class VisualWrapped {
             }
         }
     }
+    initialize() { }
+    initializeIsComplete() { return true; }
 }

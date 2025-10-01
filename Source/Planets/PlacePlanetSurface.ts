@@ -160,7 +160,7 @@ class PlacePlanetSurface extends PlaceBase
 		var imagesPerVisual = 12;
 
 		// hack
-		var collider = Box.fromSize
+		var collider = BoxAxisAligned.fromSize
 		(
 			Coords.ones().multiplyScalar(10)
 		);
@@ -217,13 +217,15 @@ class PlacePlanetSurface extends PlaceBase
 					]
 				);
 
-				var generatorHazard = new EntityGenerator
+				var generatorHazard = EntityGenerator.fromNameEntityTicksBatchMaxesAndPosBox
 				(
+					"HazardGenerator",
 					entityHazard,
-					new RangeExtent(5, 10), // ticksPerGenerationAsRange
-					new RangeExtent(0, 10), // entitiesPerGenerationAsRange
-					1000, // entitiesGeneratedMax
-					new RangeExtent(0, 0),
+					10, // ticksPerGeneration
+					1, // entitiesPerGeneration
+					null, // entitiesToGenerateMaxAllTime
+					null, // entitiesToGenerateMaxAllTime
+					BoxAxisAligned.fromSize(this.size() )
 				);
 				entities.push(generatorHazard.toEntity());
 			}
@@ -242,11 +244,12 @@ class PlacePlanetSurface extends PlaceBase
 		var playerActivity = new Activity(playerActivityDefnName, null);
 		var playerActor = new Actor(playerActivity);
 
-		var playerCollider = new Sphere(Coords.create(), entityDimension / 2);
+		var playerCollider = Sphere.fromRadius(entityDimension / 2);
 		var playerCollidable = new Collidable
 		(
 			false, // canCollideAgainWithoutSeparating
 			null, // ticks
+			null, // ?
 			playerCollider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
 			this.playerCollide
@@ -254,18 +257,17 @@ class PlacePlanetSurface extends PlaceBase
 
 		var playerBoundable = Boundable.fromCollidable(playerCollidable);
 
-		var constraintSpeedMax = new Constraint_SpeedMaxXY(10);
 		var constraintFriction = new Constraint_FrictionXY(0.1, null);
 		var constraintWrapXTrimY = new Constraint_WrapToPlaceSizeXTrimY();
 
 		var playerConstrainable = new Constrainable
 		([
-			constraintFriction, constraintSpeedMax, constraintWrapXTrimY
+			constraintFriction, constraintWrapXTrimY
 		]);
 
 		var colors = Color.Instances();
 		var playerColor = colors.Gray;
-		var playerVisual: VisualBase = ShipDefn.visual
+		var playerVisual: Visual = ShipDefn.visual
 		(
 			entityDimension, playerColor, colors.Black
 		);
@@ -273,9 +275,9 @@ class PlacePlanetSurface extends PlaceBase
 		var playerDrawable = Drawable.fromVisual(playerVisual);
 
 		var crewAvailableForLander = 12; // todo
-		var playerKillable = new Killable
+		var playerKillable = Killable.fromIntegrityMaxAndDie
 		(
-			crewAvailableForLander, null, this.playerDie
+			crewAvailableForLander, this.playerDie
 		);
 
 		var playerLander = Lander.fromKillableCrew(playerKillable);
@@ -286,7 +288,7 @@ class PlacePlanetSurface extends PlaceBase
 
 		var playerMappable = new Mappable(playerVisual);
 
-		var playerMovable = Movable.default();
+		var playerMovable = Movable.fromSpeedMax(10);
 
 		var playerPlayable = new Playable();
 
@@ -375,7 +377,7 @@ class PlacePlanetSurface extends PlaceBase
 		var lander = Lander.fromEntity(entityPlayer);
 
 		var entityOtherName = entityOther.name;
-		var entityOtherItem = entityOther.item();
+		var entityOtherItem = Item.of(entityOther);
 
 		if (entityOtherItem != null)
 		{
@@ -413,9 +415,9 @@ class PlacePlanetSurface extends PlaceBase
 		}
 		else if (entityOtherName.startsWith(Lifeform.name) )
 		{
-			var lifeformDamager = entityOther.damager();
+			var lifeformDamager = Damager.of(entityOther);
 			var damage = lifeformDamager.damageToApply(universe);
-			var playerKillable = entityPlayer.killable();
+			var playerKillable = Killable.of(entityPlayer);
 			playerKillable.damageApply(uwpe.entitiesSwap(), damage);
 			uwpe.entitiesSwap();
 		}
@@ -447,7 +449,7 @@ class PlacePlanetSurface extends PlaceBase
 		var display = universe.display;
 
 		var player = this.entityByName(Player.name);
-		var playerLoc = player.locatable().loc;
+		var playerLoc = Locatable.of(player).loc;
 
 		var camera = this._camera;
 		var planetSize = this.planet.sizeSurface();
@@ -493,7 +495,7 @@ class PlacePlanetSurface extends PlaceBase
 
 			if (contactMappable != null)
 			{
-				var contactPos = contact.locatable().loc.pos;
+				var contactPos = Locatable.of(contact).loc.pos;
 				contactPosSaved.overwriteWith(contactPos);
 
 				var drawPos =
@@ -533,14 +535,14 @@ class PlacePlanetSurface extends PlaceBase
 
 		var lander = Lander.fromEntity(entityPlayer); // todo
 
-		var containerSidebar = ControlContainer.from4
+		var containerSidebar = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerSidebar",
 			Coords.fromXY(300, 0), // hack - pos
 			containerSidebarSize,
 			// children
 			[
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, marginSize.y),
 					labelSize,
@@ -548,18 +550,18 @@ class PlacePlanetSurface extends PlaceBase
 					font
 				),
 
-				ControlContainer.from4
+				ControlContainer.fromNamePosSizeAndChildren
 				(
 					"containerMap",
 					Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), // pos
 					minimapSize,
 					[
-						ControlVisual.from4
+						ControlVisual.fromNamePosSizeAndVisual
 						(
 							"visualMap",
 							Coords.fromXY(0, 0),
 							minimapSize,
-							DataBinding.fromContext<VisualBase>
+							DataBinding.fromContext<Visual>
 							(
 								VisualRectangle.fromSizeAndColorFill
 								(
@@ -570,7 +572,7 @@ class PlacePlanetSurface extends PlaceBase
 					]
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + minimapSize.y),
 					labelSize,
@@ -578,7 +580,7 @@ class PlacePlanetSurface extends PlaceBase
 					font
 				),
 
-				ControlContainer.from4
+				ControlContainer.fromNamePosSizeAndChildren
 				(
 					"containerLander",
 					Coords.fromXY
@@ -588,7 +590,7 @@ class PlacePlanetSurface extends PlaceBase
 					), // pos
 					containerLanderSize,
 					[
-						ControlLabel.from4Uncentered
+						ControlLabel.fromPosSizeTextFontUncentered
 						(
 							Coords.fromXY(marginSize.x, marginSize.y),
 							labelSize,
@@ -596,7 +598,7 @@ class PlacePlanetSurface extends PlaceBase
 							font
 						),
 
-						ControlLabel.from4Uncentered
+						ControlLabel.fromPosSizeTextFontUncentered
 						(
 							Coords.fromXY(marginSize.x * 5, marginSize.y),
 							labelSize,
@@ -607,7 +609,7 @@ class PlacePlanetSurface extends PlaceBase
 							font
 						),
 
-						ControlLabel.from4Uncentered
+						ControlLabel.fromPosSizeTextFontUncentered
 						(
 							Coords.fromXY(marginSize.x, marginSize.y * 2),
 							labelSize,
@@ -615,7 +617,7 @@ class PlacePlanetSurface extends PlaceBase
 							font
 						),
 
-						ControlLabel.from4Uncentered
+						ControlLabel.fromPosSizeTextFontUncentered
 						(
 							Coords.fromXY(marginSize.x * 5, marginSize.y * 2),
 							labelSize,
@@ -626,7 +628,7 @@ class PlacePlanetSurface extends PlaceBase
 							font
 						),
 
-						ControlLabel.from4Uncentered
+						ControlLabel.fromPosSizeTextFontUncentered
 						(
 							Coords.fromXY(marginSize.x, marginSize.y * 3),
 							labelSize,
@@ -634,7 +636,7 @@ class PlacePlanetSurface extends PlaceBase
 							font
 						),
 
-						ControlLabel.from4Uncentered
+						ControlLabel.fromPosSizeTextFontUncentered
 						(
 							Coords.fromXY(marginSize.x * 5, marginSize.y * 3),
 							labelSize,

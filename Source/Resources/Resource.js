@@ -1,6 +1,7 @@
 "use strict";
-class Resource {
+class Resource extends EntityPropertyBase {
     constructor(defnName, quantity, pos) {
+        super();
         this.defnName = defnName;
         this.quantity = quantity || 0;
         this.pos = pos;
@@ -16,7 +17,7 @@ class Resource {
         var resourceQuantity = resource.quantity;
         var resourceDefnName = resource.defnName;
         var resourceRadius = resourceRadiusBase * Math.sqrt(resourceQuantity);
-        var resourceCollider = new Sphere(Coords.zeroes(), resourceRadius);
+        var resourceCollider = Sphere.fromRadius(resourceRadius);
         var resourceCollidable = Collidable.fromCollider(resourceCollider);
         var resourceDefn = ResourceDefn.byName(resourceDefnName);
         var resourceItem = this.toItem();
@@ -26,7 +27,7 @@ class Resource {
             new ValueBreak(1, Color.Instances().Black)
         ], null);
         var resourceVisual = new VisualCircleGradient(resourceRadius, resourceGradient, null);
-        var camera = place.camera();
+        var camera = Camera.entityFromPlace(place);
         if (camera != null) {
             resourceVisual = new VisualWrapped(place.planet.sizeSurface(), resourceVisual);
         }
@@ -53,7 +54,7 @@ class Resource {
             return isVisible;
         }, visualScanContact);
         var resourceMappable = new Mappable(visualScanContact);
-        var resourceEntity = new Entity(Resource.name + Math.random(), [
+        var resourceEntity = Entity.fromNameAndProperties(Resource.name + Math.random(), [
             resource,
             resourceCollidable,
             resourceDrawable,

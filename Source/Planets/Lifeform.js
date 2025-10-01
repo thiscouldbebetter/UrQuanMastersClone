@@ -1,6 +1,7 @@
 "use strict";
-class Lifeform {
+class Lifeform extends EntityPropertyBase {
     constructor(defnName, pos) {
+        super();
         this.defnName = defnName;
         this.pos = pos;
     }
@@ -15,9 +16,9 @@ class Lifeform {
         var lifeform = Lifeform.fromEntity(entity);
         var lifeformDefn = lifeform.defn(world);
         var lifeformValue = lifeformDefn.value;
-        var entityPos = entity.locatable().loc.pos;
+        var entityPos = Locatable.of(entity).loc.pos;
         var resource = new Resource(resourceDefns.Biodata.name, lifeformValue, entityPos);
-        var radius = entity.collidable().collider.radius;
+        var radius = Collidable.of(entity).collider.radius();
         var entityResource = resource.toEntity(world, place, radius);
         place.entityToSpawnAdd(entityResource);
     }
@@ -29,15 +30,14 @@ class Lifeform {
         var lifeformActivity = new Activity(lifeformDefn.activityDefnName, null);
         var lifeformActor = new Actor(lifeformActivity);
         var lifeformRadius = 5;
-        var lifeformCollider = new Sphere(Coords.create(), lifeformRadius);
+        var lifeformCollider = Sphere.fromRadius(lifeformRadius);
         var lifeformCollidable = Collidable.fromCollider(lifeformCollider);
         lifeformCollidable.canCollideAgainWithoutSeparating = true;
         var lifeformDamager = Damager.default();
         var lifeformVisual = lifeformDefn.visual;
         lifeformVisual = new VisualWrapped(planet.sizeSurface(), lifeformVisual);
         var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
-        var lifeformKillable = new Killable(lifeformDefn.durability, null, // ?
-        this.die);
+        var lifeformKillable = Killable.fromIntegrityMaxAndDie(lifeformDefn.durability, this.die);
         var lifeformLocatable = Locatable.fromPos(this.pos);
         var colorGreen = Color.Instances().Green;
         var visualScanContact = new VisualRectangle(Coords.ones().multiplyScalar(lifeformRadius), colorGreen, null, null);
@@ -61,7 +61,7 @@ class Lifeform {
         }, visualScanContact);
         var lifeformMappable = new Mappable(visualScanContact);
         var lifeformMovable = Movable.fromSpeedMax(lifeformDefn.speed / 4);
-        var returnValue = new Entity("Lifeform" + this.defnName + Math.random(), [
+        var returnValue = Entity.fromNameAndProperties("Lifeform" + this.defnName + Math.random(), [
             this,
             lifeformActor,
             lifeformCollidable,
@@ -83,8 +83,8 @@ class Lifeform {
                 Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
             }
             else {
-                var targetPos = entityTarget.locatable().loc.pos;
-                var actorLoc = entityActor.locatable().loc;
+                var targetPos = Locatable.of(entityTarget).loc.pos;
+                var actorLoc = Locatable.of(entityActor).loc;
                 var actorPos = actorLoc.pos;
                 var displacementToTarget = targetPos.clone().subtract(actorPos);
                 var distanceToTarget = displacementToTarget.magnitude();
@@ -93,12 +93,15 @@ class Lifeform {
                     Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
                 }
                 else {
-                    var distancePerTick = entityActor.movable().speedMax(uwpe);
+                    var distancePerTick = Movable.of(entityActor).speedMax(uwpe);
                     if (distanceToTarget < distancePerTick) {
                         actorPos.overwriteWith(targetPos);
                     }
                     else {
-                        actorLoc.vel.overwriteWith(displacementToTarget).divideScalar(distanceToTarget).multiplyScalar(distancePerTick);
+                        actorLoc.vel
+                            .overwriteWith(displacementToTarget)
+                            .divideScalar(distanceToTarget)
+                            .multiplyScalar(distancePerTick);
                     }
                 }
             }
@@ -113,13 +116,13 @@ class Lifeform {
                 Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
             }
             else {
-                var targetPos = entityTarget.locatable().loc.pos;
-                var actorLoc = entityActor.locatable().loc;
+                var targetPos = Locatable.of(entityTarget).loc.pos;
+                var actorLoc = Locatable.of(entityActor).loc;
                 var actorPos = actorLoc.pos;
                 var displacementToTarget = targetPos.clone().subtract(actorPos);
                 var distanceToTarget = displacementToTarget.magnitude();
                 var detectionDistanceMax = 150; // todo
-                var distancePerTick = entityActor.movable().speedMax(uwpe);
+                var distancePerTick = Movable.of(entityActor).speedMax(uwpe);
                 if (distanceToTarget > detectionDistanceMax) {
                     Lifeform.activityDefnMoveToRandomPosition_Perform(uwpe);
                 }
@@ -137,7 +140,7 @@ class Lifeform {
     }
     static activityDefnMoveToRandomPosition_Perform(uwpe) {
         var entityActor = uwpe.entity;
-        var actor = entityActor.actor();
+        var actor = Actor.of(entityActor);
         var activity = actor.activity;
         var entityTarget = activity.targetEntity();
         if (entityTarget == null) {
@@ -145,12 +148,12 @@ class Lifeform {
             entityTarget = Locatable.fromPos(targetPos).toEntity();
             activity.targetEntitySet(entityTarget);
         }
-        var targetPos = entityTarget.locatable().loc.pos;
-        var actorLoc = entityActor.locatable().loc;
+        var targetPos = Locatable.of(entityTarget).loc.pos;
+        var actorLoc = Locatable.of(entityActor).loc;
         var actorPos = actorLoc.pos;
         var displacementToTarget = targetPos.clone().subtract(actorPos);
         var distanceToTarget = displacementToTarget.magnitude();
-        var distancePerTick = entityActor.movable().speedMax(uwpe);
+        var distancePerTick = Movable.of(entityActor).speedMax(uwpe);
         if (distanceToTarget < distancePerTick) {
             activity.targetEntityClear();
         }

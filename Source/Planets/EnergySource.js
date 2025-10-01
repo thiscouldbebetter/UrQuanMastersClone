@@ -1,6 +1,7 @@
 "use strict";
-class EnergySource {
+class EnergySource extends EntityPropertyBase {
     constructor(name, pos, visual, itemDefn, collideWithLander) {
+        super();
         this.name = name;
         this.pos = pos;
         this.visual = visual;
@@ -24,7 +25,7 @@ class EnergySource {
     }
     toEntity(world, planet) {
         var dimension = 5;
-        var collider = new Sphere(Coords.create(), dimension);
+        var collider = Sphere.fromRadius(dimension);
         var collidable = Collidable.fromCollider(collider);
         var visualDetailed = new VisualWrapped(planet.sizeSurface(), this.visual);
         var drawable = Drawable.fromVisual(visualDetailed);
@@ -183,9 +184,13 @@ class EnergySource_Instances {
             var placeHyperspace = place;
             var factionMurch = world.factionByName("Murch");
             var shipGroupDistance = 20; // hack
-            var shipGroupDisplacement = Polar.random2D().radiusSet(shipGroupDistance).toCoords(Coords.create());
-            var player = placeHyperspace.player();
-            var playerPos = player.locatable().pos();
+            var randomizer = uwpe.universe.randomizer;
+            var shipGroupDisplacement = Polar
+                .random2D(randomizer)
+                .radiusSet(shipGroupDistance)
+                .toCoords();
+            var player = Playable.entityFromPlace(placeHyperspace);
+            var playerPos = Locatable.of(player).pos();
             var shipGroupPos = shipGroupDisplacement.add(playerPos);
             var shipGroupMurch = factionMurch.shipGroupGenerateAtPos(shipGroupPos);
             placeHyperspace.shipGroupAdd(shipGroupMurch, world);

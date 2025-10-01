@@ -110,7 +110,7 @@ class ShipDefn_Instances {
         20, // damage
         VisualCircle.fromRadiusAndColorFill(2, colors.Yellow), // visualProjectile
         new VisualGroup([
-            new VisualSound("Sound", null),
+            VisualSound.fromSoundName("Sound"),
             VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
@@ -137,7 +137,7 @@ class ShipDefn_Instances {
                     + StringHelper.padStart("" + imageIndex, 2, "0")
                     + ".png";
                 var imageForHeading = new Image2(imageName, imagePath);
-                imageForHeading.load(() => {
+                imageForHeading.load(UniverseWorldPlaceEntities.fromUniverse(universe), () => {
                     // todo
                 });
                 imagesForHeadings.push(imageForHeading);
@@ -327,17 +327,17 @@ class ShipDefn_Instances {
         0, // damage
         new VisualCircle(3, colors.GreenDark, colors.Green, null), // visualProjectile
         new VisualGroup([
-            new VisualSound("Sound", null),
+            VisualSound.fromSoundName("Sound"),
             VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity
          {
-            var actorLoc = actor.locatable().loc;
+            var actorLoc = Locatable.of(actor).loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.targetEntity().name;
+            var targetEntityName = Actor.of(actor).activity.targetEntity().name;
             var target = place.entityByName(targetEntityName);
-            var targetPos = target.locatable().loc.pos;
+            var targetPos = Locatable.of(target).loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
             var directionToMove = displacementToTarget.normalize();
             actorPos.add(directionToMove);
@@ -380,9 +380,9 @@ class ShipDefn_Instances {
             var place = placeAsPlace;
             var ships = place.entitiesShips();
             var target = ships[1 - ships.indexOf(actor)];
-            var actorLoc = actor.locatable().loc;
+            var actorLoc = Locatable.of(actor).loc;
             var actorPos = actorLoc.pos;
-            var targetLoc = target.locatable().loc;
+            var targetLoc = Locatable.of(target).loc;
             var targetPos = targetLoc.pos;
             var displacement = targetPos.clone().subtract(actorPos);
             var direction = displacement.normalize();
@@ -500,7 +500,7 @@ class ShipDefn_Instances {
         var shipPustuleSpecialRetrodrive = new ShipSpecialDefn("Retrodrive", 1, // energyToUse
         (universe, world, place, actor) => // effect
          {
-            var actorLoc = actor.locatable().loc;
+            var actorLoc = Locatable.of(actor).loc;
             var actorPos = actorLoc.pos;
             var thrust = 10;
             var direction = actorLoc.orientation.forward.clone();
@@ -527,17 +527,17 @@ class ShipDefn_Instances {
         0, // damage
         new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
         new VisualGroup([
-            new VisualSound("Sound", null),
+            VisualSound.fromSoundName("Sound"),
             VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity
          {
-            var actorLoc = actor.locatable().loc;
+            var actorLoc = Locatable.of(actor).loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.targetEntity().name;
+            var targetEntityName = Actor.of(actor).activity.targetEntity().name;
             var target = place.entityByName(targetEntityName);
-            var targetPos = target.locatable().loc.pos;
+            var targetPos = Locatable.of(target).loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
             var directionToMove = displacementToTarget.normalize();
             actorPos.add(directionToMove);
@@ -562,17 +562,17 @@ class ShipDefn_Instances {
         0, // damage
         new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
         new VisualGroup([
-            new VisualSound("Sound", null),
+            VisualSound.fromSoundName("Sound"),
             VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity
          {
-            var actorLoc = actor.locatable().loc;
+            var actorLoc = Locatable.of(actor).loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.targetEntity().name;
+            var targetEntityName = Actor.of(actor).activity.targetEntity().name;
             var target = place.entityByName(targetEntityName);
-            var targetPos = target.locatable().loc.pos;
+            var targetPos = Locatable.of(target).loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
             var directionToMove = displacementToTarget.normalize();
             actorPos.add(directionToMove);
@@ -614,17 +614,17 @@ class ShipDefn_Instances {
         0, // damage
         new VisualCircle(5, colors.White, colors.Cyan, null), // visualProjectile
         new VisualGroup([
-            new VisualSound("Sound", null),
+            VisualSound.fromSoundName("Sound"),
             VisualCircle.fromRadiusAndColorFill(6, colors.Red)
         ]), // visualImpact
         (universe, world, place, actor) => { }, // effectWhenInvoked
         (universe, world, place, actor) => // activity
          {
-            var actorLoc = actor.locatable().loc;
+            var actorLoc = Locatable.of(actor).loc;
             var actorPos = actorLoc.pos;
-            var targetEntityName = actor.actor().activity.targetEntity().name;
+            var targetEntityName = Actor.of(actor).activity.targetEntity().name;
             var target = place.entityByName(targetEntityName);
-            var targetPos = target.locatable().loc.pos;
+            var targetPos = Locatable.of(target).loc.pos;
             var displacementToTarget = targetPos.clone().subtract(actorPos);
             var directionToMove = displacementToTarget.normalize();
             actorPos.add(directionToMove);

@@ -2,11 +2,7 @@
 class SoundHelperMock {
     audioContext() { return null; }
     controlSelectOptionsVolume() { return null; }
-    initialize(sounds) { }
-    reset() { }
-    soundForMusicPause(universe) { }
-    soundWithNamePlayAsEffect(universe, soundName) { }
-    soundWithNamePlayAsMusic(universe, soundName) { }
-    soundWithNameStop(soundName) { }
-    soundsAllStop(universe) { }
+    soundPlaybackCreateFromSound(sound) { return null; }
+    soundPlaybackRegister(soundPlayback) { }
+    soundPlaybacksAllStop(universe) { }
 }

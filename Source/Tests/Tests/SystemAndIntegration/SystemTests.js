@@ -115,7 +115,8 @@ class SystemTests extends TestFixture {
         this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
         // Leave the conversation.
-        var talker = place().encounter.entityOther.talker();
+        var talkerEntity = place().encounter.entityOther;
+        var talker = Talker.of(talkerEntity);
         this.talkToTalker(universe, talker, [
             "SayNothing" // It's a recording.
         ]);
@@ -137,7 +138,7 @@ class SystemTests extends TestFixture {
         this.moveToEntityWithNameAndWait(universe, stationName);
         // Talk to the station.
         this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
-        talker = station.talker();
+        talker = Talker.of(station);
         this.talkToTalker(universe, talker, [
             // "Are you the resupply ship?" 
             "#(no_but_well_help)",
@@ -160,7 +161,7 @@ class SystemTests extends TestFixture {
         // Talk to the station, and verify that the option to transfer radioactives isn't available.
         var placeEncounter = world.place();
         var station = placeEncounter.entityByName(stationName);
-        var talker = station.talker();
+        var talker = Talker.of(station);
         var conversationRun = talker.conversationRun;
         conversationRun.nextUntilPrompt(universe);
         var optionsAvailable = conversationRun.optionsAvailable();
@@ -215,7 +216,7 @@ class SystemTests extends TestFixture {
         // Talk to the station commander.
         var placeEncounter = world.place();
         var station = placeEncounter.entityByName(stationName);
-        var talker = station.talker();
+        var talker = Talker.of(station);
         var radioactivesHeldBefore = flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
         this.talkToTalker(universe, talker, [
             // "Do you have the radioactives?"
@@ -232,7 +233,7 @@ class SystemTests extends TestFixture {
         var placeEncounter = world.place();
         const stationName = "Earth Station";
         var station = placeEncounter.entityByName(stationName);
-        var talker = station.talker();
+        var talker = Talker.of(station);
         this.talkToTalker(universe, talker, [
             // "Our sensors are coming online... WHO ARE YOU?!"
             "#(we_are_vindicator)",
@@ -282,7 +283,7 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeToReturnToAfterStation.constructor.name);
         // Talk to the commander again.
         var station = placeEncounter.entityByName(stationName);
-        var talker = station.talker();
+        var talker = Talker.of(station);
         this.talkToTalker(universe, talker, [
             // "Did you handle the base?",
             "#(base_was_abandoned)"
@@ -303,7 +304,7 @@ class SystemTests extends TestFixture {
         var factionHostileName = "Raknoid";
         Assert.areStringsEqual(factionHostileName, encounter.factionName);
         var entityHostile = encounter.entityOther;
-        var talker = entityHostile.talker();
+        var talker = Talker.of(entityHostile);
         var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
         talker.talk(uwpe);
         this.talkToTalker(universe, talker, [
@@ -333,7 +334,7 @@ class SystemTests extends TestFixture {
         Assert.areStringsEqual(PlacePlanetVicinity.name, placeToReturnToTypeName);
         var stationName = "Earth Station";
         var station = world.place().entityByName(stationName);
-        var talker = station.talker();
+        var talker = Talker.of(station);
         this.talkToTalker(universe, talker, [
             // "You won!  We're in.  What now?"
             "#(annihilate_those_monsters)", // But actually [sensible plan].
@@ -349,7 +350,7 @@ class SystemTests extends TestFixture {
         var encounter = placeEncounter.encounter;
         var faction = encounter.faction(world);
         Assert.areStringsEqual("Conversation-Terran-Business", faction.conversationDefnName);
-        var talker = encounter.entityOther.talker();
+        var talker = Talker.of(encounter.entityOther);
         var flagship = world.player.flagship;
         var resourceCreditsBefore = flagship.resourceCredits;
         this.talkToTalker(universe, talker, [
@@ -393,7 +394,7 @@ class SystemTests extends TestFixture {
         // Talk to the probe.
         var encounter = placeEncounter.encounter;
         var entityOther = encounter.entityOther;
-        var talker = entityOther.talker();
+        var talker = Talker.of(entityOther);
         this.talkToTalker(universe, talker, [null] // Doesn't matter what you say.
         );
         // The probe attacks.
@@ -458,7 +459,7 @@ class SystemTests extends TestFixture {
         // and then record the crew count
         // and contents of the cargo hold before touching any lifeforms.
         var entityLander = entitiesOnPlanet.find(x => x.name == Player.name);
-        var entityLanderKillable = entityLander.killable();
+        var entityLanderKillable = Killable.of(entityLander);
         entityLanderKillable.deathIsIgnoredSet(true); // Cheat!
         var lander = Lander.fromEntity(entityLander);
         var landerItemHolderLifeforms = lander.itemHolderLifeforms;
@@ -488,7 +489,7 @@ class SystemTests extends TestFixture {
         // Cheat: kill (well, stun) them all!
         for (var i = 0; i < entitiesLifeforms.length; i++) {
             var entity = entitiesLifeforms[i];
-            entity.killable().kill();
+            Killable.of(entity).kill();
         }
         this.waitForTicks(universe, 10);
         // Verify that the conscious lifeforms have been replaced with biodata resources.
@@ -664,7 +665,8 @@ class SystemTests extends TestFixture {
         // and trade the warp outrigger for a portal projector.
         this.moveToEntityAtPosAndWait(universe, Coords.fromXY(6134, 5900));
         this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
-        var talker = world.place().encounter.entityOther.talker();
+        var talkerEntity = world.place().encounter.entityOther;
+        var talker = Talker.of(talkerEntity);
         this.talkToTalker(universe, talker, [
             // "Hello, and welcome back."
             "#(confused_by_hello)", // "Have we met?"
@@ -692,7 +694,8 @@ class SystemTests extends TestFixture {
         var placeHyperspace = world.place();
         var spaceOccupied = placeHyperspace.hyperspace;
         Assert.areStringsEqual("Hyperspace", spaceOccupied.name);
-        var playerPos = placeHyperspace.player().locatable().pos();
+        var player = Playable.entityFromPlace(placeHyperspace);
+        var playerPos = Locatable.of(player).pos();
         var posExpected = Coords.fromXY(1910, 962);
         Assert.isTrue(playerPos.equals(posExpected));
     }
@@ -701,7 +704,7 @@ class SystemTests extends TestFixture {
         this.callMerchantsAndWaitForContact(universe);
         var placeEncounter = world.place();
         var encounter = placeEncounter.encounter;
-        var talker = encounter.entityOther.talker();
+        var talker = Talker.of(encounter.entityOther);
         this.talkToTalker(universe, talker, [
             // "Hello.  Buying or selling?"
             "#(buy)", // "Buying."
@@ -1008,8 +1011,8 @@ class SystemTests extends TestFixture {
         Assert.isTrue(fuelBoughtFromMurch > 0);
         // hack - In case we're on top of Sol, move over and then back.
         var placeHyperspace = world.place();
-        var playerEntity = placeHyperspace.player();
-        playerEntity.locatable().pos().add(Coords.fromXY(50, 0));
+        var playerEntity = Playable.entityFromPlace(placeHyperspace);
+        Locatable.of(playerEntity).pos().add(Coords.fromXY(50, 0));
         this.waitForTicks(universe, 1);
         this.goToEarthStationDocks(universe);
         var placeStationDock = world.place();
@@ -1055,7 +1058,7 @@ class SystemTests extends TestFixture {
         this.waitForTicks(universe, 100);
         var shipEnemy = combat.shipsFighting[1];
         var shipEnemyAsEntity = placeCombat.entityByName(shipEnemy.name);
-        shipEnemyAsEntity.killable().kill();
+        Killable.of(shipEnemyAsEntity).kill();
         this.waitForTicks(universe, 100);
         // Verify that we're seeing a post-battle debriefing screen.
         this.assertVenueCurrentIsOfTypeForUniverse(VenueControls.name, universe);
@@ -1122,7 +1125,7 @@ class SystemTests extends TestFixture {
         this.callMerchantsAndWaitForContact(universe);
         var placeEncounter = world.place();
         var encounter = placeEncounter.encounter;
-        var talker = encounter.entityOther.talker();
+        var talker = Talker.of(encounter.entityOther);
         var rainbowWorldLocationsKnownButUnsoldCount = player.rainbowWorldLocationsKnownButUnsoldCount();
         if (rainbowWorldLocationsKnownButUnsoldCount > 0) {
             // Record how many infoCredits the player had before the sale.
@@ -1284,7 +1287,7 @@ class SystemTests extends TestFixture {
     leavePlanetVicinityOrStarsystem(universe) {
         var place = universe.world.placeCurrent;
         var player = place.entityByName(Player.name);
-        var playerPos = player.locatable().loc.pos;
+        var playerPos = Locatable.of(player).loc.pos;
         var placeSize = place.size();
         playerPos.overwriteWith(placeSize).double();
     }
@@ -1312,9 +1315,9 @@ class SystemTests extends TestFixture {
     }
     moveToEntityAndWait(universe, targetEntity) {
         var place = universe.world.place();
-        var targetPos = targetEntity.locatable().loc.pos;
+        var targetPos = Locatable.of(targetEntity).loc.pos;
         var entityPlayer = place.entityByName(Player.name);
-        let playerPos = entityPlayer.locatable().loc.pos;
+        let playerPos = Locatable.of(entityPlayer).loc.pos;
         var placeTypeName = place.constructor.name;
         if (placeTypeName == PlaceHyperspace.name) {
             // These measurements are in pixels.
@@ -1347,8 +1350,8 @@ class SystemTests extends TestFixture {
     moveToEntityAtPosAndWait(universe, targetEntityPos) {
         var place = universe.world.place();
         var placeEntities = place.entitiesAll();
-        var placeEntitiesLocatable = placeEntities.filter(x => x.locatable() != null);
-        var targetEntity = placeEntitiesLocatable.find(x => x.locatable().pos().equals(targetEntityPos));
+        var placeEntitiesLocatable = placeEntities.filter(x => Locatable.of(x) != null);
+        var targetEntity = placeEntitiesLocatable.find(x => Locatable.of(x).pos().equals(targetEntityPos));
         this.moveToEntityAndWait(universe, targetEntity);
     }
     moveToEntityWithNameAndWait(universe, targetEntityName) {
@@ -1413,7 +1416,7 @@ class SystemTests extends TestFixture {
         var entitiesLifeforms = entitiesOnPlanet.filter(x => x.name.startsWith(Lifeform.name));
         for (var i = 0; i < entitiesLifeforms.length; i++) {
             var entity = entitiesLifeforms[i];
-            entity.killable().kill();
+            Killable.of(entity).kill();
         }
         var resourceDefns = ResourceDefn.Instances();
         var resourceDefnBiodata = resourceDefns.Biodata;
@@ -1462,7 +1465,7 @@ class SystemTests extends TestFixture {
         universe.updateForTimerTick();
         var encounter = placeEncounter.encounter;
         var entityOther = encounter.entityOther;
-        var talker = entityOther.talker();
+        var talker = Talker.of(entityOther);
         this.talkToTalker(universe, talker, optionsToSelect);
     }
     waitForTicks(universe, ticksToWait) {

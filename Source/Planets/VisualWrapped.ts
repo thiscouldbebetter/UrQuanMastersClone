@@ -1,15 +1,17 @@
 
-class VisualWrapped implements VisualBase
+class VisualWrapped2 extends VisualBase<VisualWrapped2>
 {
 	sizeToWrapTo: Coords;
-	child: VisualBase;
+	child: Visual;
 
 	_offset: Coords;
 	_posSaved: Coords;
 	_tilePos: Coords;
 
-	constructor(sizeToWrapTo: Coords, child: VisualBase)
+	constructor(sizeToWrapTo: Coords, child: Visual)
 	{
+		super();
+
 		this.sizeToWrapTo = sizeToWrapTo;
 		this.child = child;
 
@@ -18,14 +20,14 @@ class VisualWrapped implements VisualBase
 		this._tilePos = Coords.create();
 	}
 
-	clone(): VisualBase
+	clone(): VisualWrapped2
 	{
-		return new VisualWrapped(this.sizeToWrapTo.clone(), this.child.clone());
+		return new VisualWrapped2(this.sizeToWrapTo.clone(), this.child.clone());
 	}
 
-	overwriteWith(otherAsVisual: VisualBase): VisualBase
+	overwriteWith(otherAsVisual: Visual): VisualWrapped2
 	{
-		var other = otherAsVisual as VisualWrapped;
+		var other = otherAsVisual as VisualWrapped2;
 		this.sizeToWrapTo.overwriteWith(other.sizeToWrapTo);
 		this.child.overwriteWith(other.child);
 		return this;
@@ -33,18 +35,18 @@ class VisualWrapped implements VisualBase
 
 	// Transformable.
 
-	transform(t: TransformBase): VisualBase
+	transform(t: TransformBase): VisualWrapped2
 	{
 		return this; // todo
 	}
 
 	// Visual.
 
-	draw(uwpe: UniverseWorldPlaceEntities, display: Display)
+	draw(uwpe: UniverseWorldPlaceEntities, display: Display): void
 	{
 		var entity = uwpe.entity;
 
-		var drawablePos = entity.locatable().loc.pos;
+		var drawablePos = Locatable.of(entity).loc.pos;
 		this._posSaved.overwriteWith(drawablePos);
 
 		var tilePos = this._tilePos;
@@ -73,4 +75,7 @@ class VisualWrapped implements VisualBase
 			}
 		}
 	}
+
+	initialize(): void {}
+	initializeIsComplete(): boolean { return true; }
 }

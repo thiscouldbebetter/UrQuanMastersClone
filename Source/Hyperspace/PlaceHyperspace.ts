@@ -89,7 +89,7 @@ class PlaceHyperspace extends PlaceBase
 				var entities = this.entitiesToSpawn; // hack
 				var entityForStarsystemDeparted =
 					entities.find(x => Starsystem.fromEntity(x) == starsystemDeparted);
-				playerEntity.collidable().entityAlreadyCollidedWithAddIfNotPresent
+				Collidable.of(playerEntity).entityAlreadyCollidedWithAddIfNotPresent
 				(
 					entityForStarsystemDeparted
 				);
@@ -158,8 +158,8 @@ class PlaceHyperspace extends PlaceBase
 	{
 		var actor = Actor.fromActivityDefn(Player.activityDefn() );
 
-		var collider = new Sphere(Coords.create(), entityDimension / 2);
-		var collidable = Collidable.from3
+		var collider = Sphere.fromRadius(entityDimension / 2);
+		var collidable = Collidable.fromColliderPropertyNamesAndCollide
 		(
 			collider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
@@ -193,7 +193,7 @@ class PlaceHyperspace extends PlaceBase
 
 		var playable = new Playable();
 
-		var playerEntity = new Entity
+		var playerEntity = Entity.fromNameAndProperties
 		(
 			Player.name,
 			[
@@ -277,7 +277,7 @@ class PlaceHyperspace extends PlaceBase
 			var starsystem = starsystems[i];
 			var starPos = starsystem.posInHyperspace;
 
-			var starCollider = new Sphere(Coords.create(), starRadius);
+			var starCollider = Sphere.fromRadius(starRadius);
 
 			var starColor = starsystem.starColor;
 			var starSizeIndex = starsystem.starSizeIndex;
@@ -288,7 +288,7 @@ class PlaceHyperspace extends PlaceBase
 			(
 				starsystem.name,
 				[
-					new Boundable(Box.fromSize(starSize) ),
+					new Boundable(BoxAxisAligned.fromSize(starSize) ),
 					Collidable.fromCollider(starCollider),
 					Drawable.fromVisual(starVisual),
 					new Locatable(Disposition.fromPos(starPos) ),
@@ -412,14 +412,14 @@ class PlaceHyperspace extends PlaceBase
 		if (entityOtherStarsystem != null)
 		{
 			var starsystem = entityOtherStarsystem;
-			var playerLoc = entityPlayer.locatable().loc;
+			var playerLoc = Locatable.of(entityPlayer).loc;
 			var playerOrientation = playerLoc.orientation;
 			var playerPosNextAsPolar = Polar.create().fromCoords
 			(
 				playerOrientation.forward
 			).addToAzimuthInTurns(.5).wrap();
 			playerPosNextAsPolar.radius = starsystem.sizeInner.x * .45;
-			var playerPosNext = playerPosNextAsPolar.toCoords(Coords.create()).add
+			var playerPosNext = playerPosNextAsPolar.toCoords().add
 			(
 				starsystem.sizeInner.clone().half()
 			);
@@ -440,7 +440,7 @@ class PlaceHyperspace extends PlaceBase
 		else if (entityOtherShipGroup != null)
 		{
 			var shipGroupOther = entityOtherShipGroup;
-			var playerPos = entityPlayer.locatable().loc.pos;
+			var playerPos = Locatable.of(entityPlayer).loc.pos;
 			var starsystemClosest = place.hyperspace.starsystemClosestTo(playerPos);
 			var planetClosest = starsystemClosest.planetRandom(universe);
 			var encounter = new Encounter
@@ -484,7 +484,7 @@ class PlaceHyperspace extends PlaceBase
 	toControlSidebar(universe: Universe)
 	{
 		var world = universe.world as WorldExtended;
-		var containerSidebar = ControlContainer.from4
+		var containerSidebar = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerSidebar",
 			Coords.fromXY(300, 0),
@@ -510,12 +510,12 @@ class PlaceHyperspace extends PlaceBase
 
 		var imageSensors = this.displaySensors.initialize(null).toImage("Sensors");
 
-		var controlVisualSensors = ControlVisual.from4
+		var controlVisualSensors = ControlVisual.fromNamePosSizeAndVisual
 		(
 			"controlVisualSensors",
 			Coords.fromXY(8, 152), // pos
 			size,
-			DataBinding.fromContext<VisualBase>
+			DataBinding.fromContext<Visual>
 			(
 				new VisualImageImmediate(imageSensors, null)
 			)
@@ -533,10 +533,10 @@ class PlaceHyperspace extends PlaceBase
 		var display = universe.display;
 
 		var colors = Color.Instances();
-		display.drawBackground(colors.Gray, colors.Black);
+		display.drawBackgroundWithColorsBackAndBorder(colors.Gray, colors.Black);
 
 		var player = this.entityByName(Player.name);
-		var playerLoc = player.locatable().loc;
+		var playerLoc = Locatable.of(player).loc;
 
 		var camera = this._camera;
 		camera.loc.pos.overwriteWith
@@ -558,7 +558,7 @@ class PlaceHyperspace extends PlaceBase
 	draw_Sensors(): void
 	{
 		this.displaySensors.clear();
-		this.displaySensors.drawBackground(null, null);
+		this.displaySensors.drawBackground();
 
 		var sensorRange = this._camera.viewSize.clone().double();
 		var controlSize = this.displaySensors.sizeInPixels;

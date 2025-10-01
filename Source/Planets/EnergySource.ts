@@ -1,9 +1,9 @@
 
-class EnergySource implements EntityProperty<EnergySource>
+class EnergySource extends EntityPropertyBase<EnergySource>
 {
 	name: string;
 	pos: Coords;
-	visual: VisualBase;
+	visual: Visual;
 	itemDefn: ItemDefn;
 	_collideWithLander: (uwpe: UniverseWorldPlaceEntities) => void;
 
@@ -11,11 +11,13 @@ class EnergySource implements EntityProperty<EnergySource>
 	(
 		name: string,
 		pos: Coords,
-		visual: VisualBase,
+		visual: Visual,
 		itemDefn: ItemDefn,
 		collideWithLander: (uwpe: UniverseWorldPlaceEntities) => void
 	)
 	{
+		super();
+
 		this.name = name;
 		this.pos = pos;
 		this.visual = visual;
@@ -52,7 +54,7 @@ class EnergySource implements EntityProperty<EnergySource>
 	{
 		var dimension = 5;
 
-		var collider = new Sphere(Coords.create(), dimension);
+		var collider = Sphere.fromRadius(dimension);
 		var collidable = Collidable.fromCollider(collider);
 
 		var visualDetailed = new VisualWrapped(planet.sizeSurface(), this.visual);
@@ -62,7 +64,7 @@ class EnergySource implements EntityProperty<EnergySource>
 
 		var locatable = Locatable.fromPos(this.pos);
 
-		var visualScanContact: VisualBase =
+		var visualScanContact: Visual =
 			VisualPolygon.fromVerticesAndColorFill
 			(
 				[
@@ -343,10 +345,14 @@ class EnergySource_Instances
 			var placeHyperspace = place as PlaceHyperspace;
 			var factionMurch = world.factionByName("Murch");
 			var shipGroupDistance = 20; // hack
+			var randomizer = uwpe.universe.randomizer;
 			var shipGroupDisplacement =
-				Polar.random2D().radiusSet(shipGroupDistance).toCoords(Coords.create());
-			var player = placeHyperspace.player();
-			var playerPos = player.locatable().pos();
+				Polar
+					.random2D(randomizer)
+					.radiusSet(shipGroupDistance)
+					.toCoords();
+			var player = Playable.entityFromPlace(placeHyperspace);
+			var playerPos = Locatable.of(player).pos();
 			var shipGroupPos = shipGroupDisplacement.add(playerPos);
 			var shipGroupMurch = factionMurch.shipGroupGenerateAtPos(shipGroupPos);
 			placeHyperspace.shipGroupAdd(shipGroupMurch, world);

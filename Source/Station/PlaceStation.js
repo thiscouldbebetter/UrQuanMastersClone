@@ -21,7 +21,10 @@ class PlaceStation extends PlaceBase {
         var size = placePrev.size();
         var planet = placePrev.planet;
         var station = place.station;
-        var playerPosNext = station.offsetFromPrimaryAsPolar.toCoords(Coords.create()).add(size.clone().half()).add(Coords.fromXY(3, 0).multiplyScalar(10));
+        var playerPosNext = station.offsetFromPrimaryAsPolar
+            .toCoords()
+            .add(size.clone().half())
+            .add(Coords.fromXY(3, 0).multiplyScalar(10));
         var playerLocNext = Disposition.fromPos(playerPosNext);
         var placeNext = new PlacePlanetVicinity(world, planet, playerLocNext, placePrev.placeStarsystem);
         world.placeNextSet(placeNext);
@@ -38,7 +41,7 @@ class PlaceStation extends PlaceBase {
             universe.venueNextSet(new VenueWorld(world));
         };
         var stationEntity = placeStation.entityByName(Planet.name);
-        var talker = stationEntity.talker();
+        var talker = Talker.of(stationEntity);
         talker.conversationDefnName = conversationResourceName;
         talker.quit = conversationQuit;
         var uwpe = new UniverseWorldPlaceEntities(universe, world, this, stationEntity, null);
@@ -56,7 +59,7 @@ class PlaceStation extends PlaceBase {
         if (this.venueControls == null) {
             var messageToShow = "[Station]";
             var placeStation = this;
-            var controlRoot = universe.controlBuilder.choice5(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), ["Talk", "Dock", "Leave",], [
+            var controlRoot = universe.controlBuilder.choiceUniverseSizeMessageOptionNamesAndFunctions(universe, universe.display.sizeInPixels.clone(), DataBinding.fromContext(messageToShow), ["Talk", "Dock", "Leave",], [
                 () => // talk
                  {
                     placeStation.talk(universe);
@@ -77,7 +80,7 @@ class PlaceStation extends PlaceBase {
     returnToPlace(world) {
         var placeNext = this.placeToReturnTo;
         var playerFromPlaceNext = placeNext.entityByName(Player.name);
-        var playerLoc = playerFromPlaceNext.locatable().loc;
+        var playerLoc = Locatable.of(playerFromPlaceNext).loc;
         playerLoc.pos.overwriteWith(this.posToReturnTo);
         playerLoc.vel.clear();
         world.placeNextSet(placeNext);

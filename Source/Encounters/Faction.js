@@ -1,6 +1,7 @@
 "use strict";
-class Faction {
+class Faction extends EntityPropertyBase {
     constructor(name, nameOriginal, color, talksImmediately, conversationDefnName, territory, shipDefnName, diplomaticRelationshipTypeWithPlayerDefault, shipGroupActivity) {
+        super();
         this.name = name;
         this.nameOriginal = nameOriginal;
         this.color = color;

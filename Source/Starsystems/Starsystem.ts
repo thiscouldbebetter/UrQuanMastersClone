@@ -1,5 +1,5 @@
 
-class Starsystem implements EntityProperty<Starsystem>
+class Starsystem extends EntityPropertyBase<Starsystem>
 {
 	name: string;
 	starSizeIndex: number;
@@ -26,6 +26,8 @@ class Starsystem implements EntityProperty<Starsystem>
 		shipGroups: ShipGroup[]
 	)
 	{
+		super();
+
 		this.name = name;
 		this.starSizeIndex = starSizeIndex;
 		this.starColor = starColor;

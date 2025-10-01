@@ -158,7 +158,8 @@ class SystemTests extends TestFixture
 
 		// Leave the conversation.
 
-		var talker = (place() as PlaceEncounter).encounter.entityOther.talker();
+		var talkerEntity = (place() as PlaceEncounter).encounter.entityOther;
+		var talker = Talker.of(talkerEntity);
 		this.talkToTalker
 		(
 			universe,
@@ -196,7 +197,7 @@ class SystemTests extends TestFixture
 
 		this.assertVenueCurrentIsOfTypeForUniverse(VenueConversationRun.name, universe);
 
-		talker = station.talker();
+		talker = Talker.of(station);
 		this.talkToTalker
 		(
 			universe,
@@ -232,7 +233,7 @@ class SystemTests extends TestFixture
 
 		var placeEncounter = world.place() as PlaceEncounter;
 		var station = placeEncounter.entityByName(stationName);
-		var talker = station.talker();
+		var talker = Talker.of(station);
 		var conversationRun = talker.conversationRun;
 		conversationRun.nextUntilPrompt(universe);
 		var optionsAvailable = conversationRun.optionsAvailable();
@@ -323,7 +324,7 @@ class SystemTests extends TestFixture
 
 		var placeEncounter = world.place() as PlaceEncounter;
 		var station = placeEncounter.entityByName(stationName);
-		var talker = station.talker();
+		var talker = Talker.of(station);
 
 		var radioactivesHeldBefore =
 			flagshipItemHolderCargo.itemByDefnName(itemDefnNameRadioactives).quantity;
@@ -352,8 +353,7 @@ class SystemTests extends TestFixture
 		var placeEncounter = world.place() as PlaceEncounter;
 		const stationName = "Earth Station";
 		var station = placeEncounter.entityByName(stationName);
-		var talker = station.talker();
-
+		var talker = Talker.of(station);
 
 		this.talkToTalker
 		(
@@ -424,7 +424,7 @@ class SystemTests extends TestFixture
 		// Talk to the commander again.
 
 		var station = placeEncounter.entityByName(stationName);
-		var talker = station.talker();
+		var talker = Talker.of(station);
 		this.talkToTalker
 		(
 			universe, talker,
@@ -460,7 +460,7 @@ class SystemTests extends TestFixture
 		Assert.areStringsEqual(factionHostileName, encounter.factionName);
 
 		var entityHostile = encounter.entityOther;
-		var talker = entityHostile.talker();
+		var talker = Talker.of(entityHostile);
 		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
 		talker.talk(uwpe);
 		this.talkToTalker
@@ -503,7 +503,7 @@ class SystemTests extends TestFixture
 
 		var stationName = "Earth Station";
 		var station = world.place().entityByName(stationName);
-		var talker = station.talker();
+		var talker = Talker.of(station);
 		this.talkToTalker
 		(
 			universe, talker,
@@ -528,7 +528,7 @@ class SystemTests extends TestFixture
 		var faction = encounter.faction(world);
 		Assert.areStringsEqual("Conversation-Terran-Business", faction.conversationDefnName);
 
-		var talker = encounter.entityOther.talker();
+		var talker = Talker.of(encounter.entityOther);
 
 		var flagship = world.player.flagship;
 		var resourceCreditsBefore = flagship.resourceCredits;
@@ -602,7 +602,7 @@ class SystemTests extends TestFixture
 
 		var encounter = placeEncounter.encounter;
 		var entityOther = encounter.entityOther;
-		var talker = entityOther.talker();
+		var talker = Talker.of(entityOther);
 		this.talkToTalker
 		(
 			universe, talker,
@@ -703,7 +703,7 @@ class SystemTests extends TestFixture
 		// and contents of the cargo hold before touching any lifeforms.
 
 		var entityLander = entitiesOnPlanet.find(x => x.name == Player.name);
-		var entityLanderKillable = entityLander.killable();
+		var entityLanderKillable = Killable.of(entityLander);
 		entityLanderKillable.deathIsIgnoredSet(true); // Cheat!
 		var lander = Lander.fromEntity(entityLander);
 		var landerItemHolderLifeforms = lander.itemHolderLifeforms;
@@ -757,7 +757,7 @@ class SystemTests extends TestFixture
 		for (var i = 0; i < entitiesLifeforms.length; i++)
 		{
 			var entity = entitiesLifeforms[i];
-			entity.killable().kill();
+			Killable.of(entity).kill();
 		}
 
 		this.waitForTicks(universe, 10);
@@ -1004,7 +1004,8 @@ class SystemTests extends TestFixture
 
 		this.assertPlaceCurrentIsOfTypeForWorld(PlaceEncounter.name, world);
 
-		var talker = (world.place() as PlaceEncounter).encounter.entityOther.talker();
+		var talkerEntity = (world.place() as PlaceEncounter).encounter.entityOther;
+		var talker = Talker.of(talkerEntity);
 		this.talkToTalker
 		(
 			universe,
@@ -1041,7 +1042,8 @@ class SystemTests extends TestFixture
 		var placeHyperspace = world.place() as PlaceHyperspace;
 		var spaceOccupied = placeHyperspace.hyperspace;
 		Assert.areStringsEqual("Hyperspace", spaceOccupied.name);
-		var playerPos = placeHyperspace.player().locatable().pos();
+		var player = Playable.entityFromPlace(placeHyperspace);
+		var playerPos = Locatable.of(player).pos();
 		var posExpected = Coords.fromXY(1910,  962);
 		Assert.isTrue(playerPos.equals(posExpected) );
 	}
@@ -1053,7 +1055,7 @@ class SystemTests extends TestFixture
 		this.callMerchantsAndWaitForContact(universe);
 		var placeEncounter = world.place() as PlaceEncounter;
 		var encounter = placeEncounter.encounter;
-		var talker = encounter.entityOther.talker();
+		var talker = Talker.of(encounter.entityOther);
 
 		this.talkToTalker
 		(
@@ -1523,8 +1525,8 @@ class SystemTests extends TestFixture
 
 		// hack - In case we're on top of Sol, move over and then back.
 		var placeHyperspace = world.place() as PlaceHyperspace;
-		var playerEntity = placeHyperspace.player();
-		playerEntity.locatable().pos().add(Coords.fromXY(50, 0));
+		var playerEntity = Playable.entityFromPlace(placeHyperspace);
+		Locatable.of(playerEntity).pos().add(Coords.fromXY(50, 0));
 		this.waitForTicks(universe, 1);
 
 		this.goToEarthStationDocks(universe);
@@ -1589,7 +1591,7 @@ class SystemTests extends TestFixture
 
 		var shipEnemy = combat.shipsFighting[1];
 		var shipEnemyAsEntity =  placeCombat.entityByName(shipEnemy.name);
-		shipEnemyAsEntity.killable().kill();
+		Killable.of(shipEnemyAsEntity).kill();
 
 		this.waitForTicks(universe, 100);
 
@@ -1697,7 +1699,7 @@ class SystemTests extends TestFixture
 
 		var placeEncounter = world.place() as PlaceEncounter;
 		var encounter = placeEncounter.encounter;
-		var talker = encounter.entityOther.talker();
+		var talker = Talker.of(encounter.entityOther);
 
 		var rainbowWorldLocationsKnownButUnsoldCount =
 			player.rainbowWorldLocationsKnownButUnsoldCount();
@@ -1943,7 +1945,7 @@ class SystemTests extends TestFixture
 		var place = universe.world.placeCurrent;
 
 		var player = place.entityByName(Player.name);
-		var playerPos = player.locatable().loc.pos;
+		var playerPos = Locatable.of(player).loc.pos;
 		var placeSize = place.size();
 		playerPos.overwriteWith(placeSize).double();
 	}
@@ -1981,10 +1983,10 @@ class SystemTests extends TestFixture
 	{
 		var place = universe.world.place();
 
-		var targetPos = targetEntity.locatable().loc.pos;
+		var targetPos = Locatable.of(targetEntity).loc.pos;
 
 		var entityPlayer = place.entityByName(Player.name);
-		let playerPos = entityPlayer.locatable().loc.pos;
+		let playerPos = Locatable.of(entityPlayer).loc.pos;
 
 		var placeTypeName = place.constructor.name;
 
@@ -2031,9 +2033,9 @@ class SystemTests extends TestFixture
 		var place = universe.world.place();
 		var placeEntities = place.entitiesAll();
 		var placeEntitiesLocatable =
-			placeEntities.filter(x => x.locatable() != null);
+			placeEntities.filter(x => Locatable.of(x) != null);
 		var targetEntity =
-			placeEntitiesLocatable.find(x => x.locatable().pos().equals(targetEntityPos) );
+			placeEntitiesLocatable.find(x => Locatable.of(x).pos().equals(targetEntityPos) );
 		this.moveToEntityAndWait(universe, targetEntity);
 	}
 
@@ -2148,7 +2150,7 @@ class SystemTests extends TestFixture
 		for (var i = 0; i < entitiesLifeforms.length; i++)
 		{
 			var entity = entitiesLifeforms[i];
-			entity.killable().kill();
+			Killable.of(entity).kill();
 		}
 
 		var resourceDefns = ResourceDefn.Instances();
@@ -2219,7 +2221,7 @@ class SystemTests extends TestFixture
 
 		var encounter = placeEncounter.encounter;
 		var entityOther = encounter.entityOther;
-		var talker = entityOther.talker();
+		var talker = Talker.of(entityOther);
 		this.talkToTalker(universe, talker, optionsToSelect);
 	}
 

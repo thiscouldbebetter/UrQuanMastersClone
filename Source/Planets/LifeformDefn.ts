@@ -9,7 +9,7 @@ class LifeformDefn
 	speed: number;
 	damagePerAttack: number;
 	value: number;
-	visual: VisualBase;
+	visual: Visual;
 	activityDefnName: string;
 
 	constructor
@@ -22,7 +22,7 @@ class LifeformDefn
 		speed: number,
 		damagePerAttack: number,
 		value: number,
-		visual: VisualBase,
+		visual: Visual,
 		activityDefnName: string
 	)
 	{
