@@ -16,8 +16,8 @@ class Game {
         var ts = (a, b) => new TextString(a, b);
         var sounds = [
             new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
+            new SoundFromFile("Effects_Producer", audioDirectory + "Effects/Sound.wav"),
             new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
-            new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
             //new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
             sffm("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
             sffm("Music_Combat", importDirectoryPath + "battle/battle.mod"),
@@ -215,7 +215,7 @@ class Game {
         inputs.Enter, inputs.Escape, slidesAsVenues, (u) => { u.venueTransitionTo(venueAfterSlideshow); });
         universe.venueTransitionTo(venueSlideshow);
         var universeDebugOrStart;
-        if (universe.debugSettings.placeToStartAtName != null) {
+        if (universe.debugSettings.placeToStartAtName() != null) {
             // todo
             universeDebugOrStart = () => this.debug(universe);
         }

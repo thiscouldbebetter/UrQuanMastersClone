@@ -59,13 +59,7 @@
   },
 	"exclude":
 	[
-		//"Framework/Source/_BuildRecord.ts",
-		//"Framework/Source/Configuration.ts",
 		"Framework/Source/Main.ts",
-		"Framework/Source/Media/Audio/MusicTracker/Source/_Imports.ts",
-		"Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/WavFileViewer/Source/_Imports.ts",
-		"Framework/Source/Media/Audio/SoundEffectSynthesizer/Source/_Imports.ts",
-		"Framework/Source/Media/Audio/SoundEffectSynthesizer/Source/WavFileViewer/",
 		"Framework/Source/Demo/",
 		"Framework/Stub/",
 		"Framework/Source/Tests/"

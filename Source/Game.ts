@@ -35,9 +35,10 @@ class Game
 		var sounds =
 		[
 			new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
+			new SoundFromFile("Effects_Producer", audioDirectory + "Effects/Sound.wav"),
 
 			new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
-			new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
+
 			//new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
 			sffm("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
 
@@ -353,7 +354,7 @@ class Game
 		universe.venueTransitionTo(venueSlideshow);
 
 		var universeDebugOrStart;
-		if (universe.debugSettings.placeToStartAtName != null)
+		if (universe.debugSettings.placeToStartAtName() != null)
 		{
 			// todo
 			universeDebugOrStart = () => this.debug(universe);
