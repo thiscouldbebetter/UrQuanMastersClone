@@ -14,7 +14,7 @@ class ShipDefn
 	_energyMaxGet: (uwpe: UniverseWorldPlaceEntities) => number;
 	costToBuild: number;
 	salvageValue: number;
-	visual: VisualBase;
+	visual: Visual;
 	attackDefn: ShipAttackDefn;
 	specialDefn: ShipSpecialDefn;
 
@@ -43,7 +43,7 @@ class ShipDefn
 		energyMaxGet: (uwpe: UniverseWorldPlaceEntities) => number,
 		costToBuild: number,
 		salvageValue: number,
-		visual: VisualBase,
+		visual: Visual,
 		attackDefn: ShipAttackDefn,
 		specialDefn: ShipSpecialDefn
 	)
@@ -89,7 +89,7 @@ class ShipDefn
 		energyMax: number,
 		costToBuild: number,
 		salvageValue: number,
-		visual: VisualBase,
+		visual: Visual,
 		attackDefn: ShipAttackDefn,
 		specialDefn: ShipSpecialDefn
 	)
@@ -276,7 +276,7 @@ class ShipDefn_Instances
 			VisualCircle.fromRadiusAndColorFill(2, colors.Yellow ), // visualProjectile
 			new VisualGroup
 			([
-				new VisualSound("Sound", null),
+				VisualSound.fromSoundName("Sound"),
 				VisualCircle.fromRadiusAndColorFill(6, colors.Red )
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
@@ -304,7 +304,7 @@ class ShipDefn_Instances
 		) =>
 		{
 			var imagesForHeadings = new Array<Image2>();
-			var visualsForHeadings = new Array<VisualBase>();
+			var visualsForHeadings = new Array<Visual>();
 
 			for (var i = 0; i < headingCount; i++)
 			{
@@ -324,6 +324,7 @@ class ShipDefn_Instances
 				);
 				imageForHeading.load
 				(
+					UniverseWorldPlaceEntities.fromUniverse(universe),
 					() =>
 					{
 						// todo
@@ -588,17 +589,17 @@ class ShipDefn_Instances
 			), // visualProjectile
 			new VisualGroup
 			([
-				new VisualSound("Sound", null),
+				VisualSound.fromSoundName("Sound"),
 				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity
 			{
-				var actorLoc = actor.locatable().loc;
+				var actorLoc = Locatable.of(actor).loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.targetEntity().name;
+				var targetEntityName = Actor.of(actor).activity.targetEntity().name;
 				var target = place.entityByName(targetEntityName);
-				var targetPos = target.locatable().loc.pos;
+				var targetPos = Locatable.of(target).loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
@@ -663,9 +664,9 @@ class ShipDefn_Instances
 				var place = placeAsPlace as PlaceCombat;
 				var ships = place.entitiesShips();
 				var target = ships[1 - ships.indexOf(actor)];
-				var actorLoc = actor.locatable().loc;
+				var actorLoc = Locatable.of(actor).loc;
 				var actorPos = actorLoc.pos;
-				var targetLoc = target.locatable().loc;
+				var targetLoc = Locatable.of(target).loc;
 				var targetPos = targetLoc.pos;
 				var displacement = targetPos.clone().subtract(actorPos);
 				var direction = displacement.normalize();
@@ -726,7 +727,7 @@ class ShipDefn_Instances
 				var returnValue =
 				(
 					isCloaked ? shipInfernusVisualCloaked : shipInfernusVisualBase
-				) as VisualBase;
+				) as Visual;
 				return returnValue;
 			}
 		);
@@ -829,7 +830,7 @@ class ShipDefn_Instances
 			1, // energyToUse
 			(universe: Universe, world: World, place: Place, actor: Entity) => // effect
 			{
-				var actorLoc = actor.locatable().loc;
+				var actorLoc = Locatable.of(actor).loc;
 				var actorPos = actorLoc.pos;
 				var thrust = 10;
 				var direction = actorLoc.orientation.forward.clone();
@@ -865,17 +866,17 @@ class ShipDefn_Instances
 			new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
 			new VisualGroup
 			([
-				new VisualSound("Sound", null),
+				VisualSound.fromSoundName("Sound"),
 				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity
 			{
-				var actorLoc = actor.locatable().loc;
+				var actorLoc = Locatable.of(actor).loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.targetEntity().name;
+				var targetEntityName = Actor.of(actor).activity.targetEntity().name;
 				var target = place.entityByName(targetEntityName);
-				var targetPos = target.locatable().loc.pos;
+				var targetPos = Locatable.of(target).loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
@@ -910,17 +911,17 @@ class ShipDefn_Instances
 			new VisualCircle(3, colors.Red, colors.RedDark, null), // visualProjectile
 			new VisualGroup
 			([
-				new VisualSound("Sound", null),
+				VisualSound.fromSoundName("Sound"),
 				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity
 			{
-				var actorLoc = actor.locatable().loc;
+				var actorLoc = Locatable.of(actor).loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.targetEntity().name;
+				var targetEntityName = Actor.of(actor).activity.targetEntity().name;
 				var target = place.entityByName(targetEntityName);
-				var targetPos = target.locatable().loc.pos;
+				var targetPos = Locatable.of(target).loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);
@@ -981,17 +982,17 @@ class ShipDefn_Instances
 			new VisualCircle(5, colors.White, colors.Cyan, null), // visualProjectile
 			new VisualGroup
 			([
-				new VisualSound("Sound", null),
+				VisualSound.fromSoundName("Sound"),
 				VisualCircle.fromRadiusAndColorFill(6, colors.Red)
 			]), // visualImpact
 			(universe: Universe, world: World, place: Place, actor: Entity) => {}, // effectWhenInvoked
 			(universe: Universe, world: World, place: Place, actor: Entity) => // activity
 			{
-				var actorLoc = actor.locatable().loc;
+				var actorLoc = Locatable.of(actor).loc;
 				var actorPos = actorLoc.pos;
-				var targetEntityName = actor.actor().activity.targetEntity().name;
+				var targetEntityName = Actor.of(actor).activity.targetEntity().name;
 				var target = place.entityByName(targetEntityName);
-				var targetPos = target.locatable().loc.pos;
+				var targetPos = Locatable.of(target).loc.pos;
 				var displacementToTarget = targetPos.clone().subtract(actorPos);
 				var directionToMove = displacementToTarget.normalize();
 				actorPos.add(directionToMove);

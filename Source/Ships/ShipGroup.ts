@@ -1,5 +1,5 @@
 
-interface ShipGroup extends EntityPropertyBase
+interface ShipGroup extends EntityProperty
 {
 	factionName: string;
 	name: string;
@@ -20,7 +20,7 @@ interface ShipGroup extends EntityPropertyBase
 	toStringDescription(world: WorldExtended): string;
 }
 
-class ShipGroupBase implements ShipGroup
+class ShipGroupBase extends EntityPropertyBase<ShipGroupBase> implements ShipGroup
 {
 	static fromEntity(entity: Entity): ShipGroup
 	{
@@ -61,7 +61,7 @@ class ShipGroupBase implements ShipGroup
 	{
 		var entityActor = uwpe.entity;
 
-		var actor = entityActor.actor();
+		var actor = Actor.of(entityActor);
 
 		var targetEntity = actor.activity.targetEntity();
 		if (targetEntity == null)
@@ -91,13 +91,13 @@ class ShipGroupBase implements ShipGroup
 	{
 		var entityActor = uwpe.entity;
 
-		var actor = entityActor.actor();
+		var actor = Actor.of(entityActor);
 
 		var targetEntity = actor.activity.targetEntity();
 
-		var targetPos = targetEntity.locatable().loc.pos;
+		var targetPos = Locatable.of(targetEntity).loc.pos;
 
-		var actorLoc = entityActor.locatable().loc;
+		var actorLoc = Locatable.of(entityActor).loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 
@@ -125,7 +125,7 @@ class ShipGroupBase implements ShipGroup
 		(
 			"Die",
 			(uwpe: UniverseWorldPlaceEntities) =>
-				uwpe.entity.killable().kill()
+				Killable.of(uwpe.entity).kill()
 		);
 	}
 
@@ -143,8 +143,8 @@ class ShipGroupBase implements ShipGroup
 	): void
 	{
 		var entityActor = uwpe.entity;
-		var actor = entityActor.actor();
-		var actorLoc = entityActor.locatable().loc;
+		var actor = Actor.of(entityActor);
+		var actorLoc = Locatable.of(entityActor).loc;
 		var actorPlace = actorLoc.place(uwpe.world);
 		var actorPos = actorLoc.pos;
 		var activity = actor.activity;
@@ -164,7 +164,7 @@ class ShipGroupBase implements ShipGroup
 		}
 		else
 		{
-			targetPos = entityTarget.locatable().loc.pos;
+			targetPos = Locatable.of(entityTarget).loc.pos;
 		}
 
 		var displacementToTarget = targetPos.clone().subtract(actorPos);
@@ -196,7 +196,7 @@ class ShipGroupBase implements ShipGroup
 		var place = uwpe.place;
 		var entity = uwpe.entity;
 
-		place.entityRemove(entity);
+		place.entityToRemoveAdd(entity);
 
 		var shipGroup = ShipGroupFinite.fromEntity(entity);
 		var shipGroupsInPlace: ShipGroup[] = null;
@@ -388,7 +388,7 @@ class ShipGroupFinite extends ShipGroupBase
 		{
 			var shipGroupEntity =
 				place.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
-			pos = shipGroupEntity.locatable().loc.pos;
+			pos = Locatable.of(shipGroupEntity).loc.pos;
 		}
 		else if (placeTypeName == PlaceHyperspaceMap.name)
 		{
@@ -396,7 +396,7 @@ class ShipGroupFinite extends ShipGroupBase
 			var placeHyperspace = placeHyperspaceMap.placeHyperspaceToReturnTo;
 			var shipGroupEntity =
 				placeHyperspace.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
-			pos = shipGroupEntity.locatable().loc.pos;
+			pos = Locatable.of(shipGroupEntity).loc.pos;
 		}
 		else if (placeTypeName == PlaceStarsystem.name)
 		{
@@ -548,10 +548,7 @@ class ShipGroupFinite extends ShipGroupBase
 		var collidable = Collidable.fromCollider(collider);
 		var boundable = Boundable.fromCollidable(collidable);
 
-		var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
-
-		var constrainable =
-			new Constrainable([constraintSpeedMax]);
+		var constrainable = Constrainable.create();
 
 		var shipDefn = faction.shipDefn(world);
 		var shipVisual = shipDefn.visual;
@@ -559,13 +556,13 @@ class ShipGroupFinite extends ShipGroupBase
 		var drawable = Drawable.fromVisual(shipVisual);
 
 		// Note that ships may really only be killable in combat.
-		var killable = new Killable(1, null, ShipGroupBase.kill);
+		var killable = Killable.fromIntegrityMaxAndDie(1, ShipGroupBase.kill);
 
 		var	pos = this.pos;
 		var loc = Disposition.fromPos(pos);
 		var locatable = new Locatable(loc);
 
-		var movable = Movable.default();
+		var movable = Movable.fromSpeedMax(1);
 
 		var faction = this.faction(world);
 		var talker = faction.toTalker();
@@ -602,7 +599,7 @@ class ShipGroupFinite extends ShipGroupBase
 			uwpe.entity2Set(entityShipGroup);
 		}
 
-		var playerPos = entityPlayer.locatable().loc.pos;
+		var playerPos = Locatable.of(entityPlayer).loc.pos;
 
 		var place = uwpe.place;
 		var placeTypeName = place.constructor.name;

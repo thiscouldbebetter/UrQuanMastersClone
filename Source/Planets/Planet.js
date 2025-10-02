@@ -1,6 +1,7 @@
 "use strict";
-class Planet {
+class Planet extends EntityPropertyBase {
     constructor(name, defnName, radiusOuter, offsetFromPrimaryAsPolar, factionName, characteristics) {
+        super();
         this.name = name;
         this.defnName = defnName;
         this.radiusOuter = radiusOuter;
@@ -19,11 +20,11 @@ class Planet {
         var place = uwpe.place;
         var actor = uwpe.entity;
         var planet = actor;
-        var planetPos = planet.locatable().loc.pos;
+        var planetPos = Locatable.of(planet).loc.pos;
         var entitiesShips = place.entitiesByPropertyName(Ship.name);
         for (var i = 0; i < entitiesShips.length; i++) {
             var ship = entitiesShips[i];
-            var shipLoc = ship.locatable().loc;
+            var shipLoc = Locatable.of(ship).loc;
             var shipPos = shipLoc.pos;
             var displacement = shipPos.clone().subtractWrappedToRangeMax(planetPos, place.size());
             var distance = displacement.magnitude();
@@ -133,7 +134,7 @@ class Planet {
             orbitRadius =
                 this.offsetFromPrimaryAsPolar.radius * orbitMultiplier;
             var offsetToOrbitCenter = this.offsetFromPrimaryAsPolar
-                .toCoords(Coords.create())
+                .toCoords()
                 .invert()
                 .multiplyScalar(orbitMultiplier);
             orbitCenterPos =
@@ -144,7 +145,7 @@ class Planet {
             orbitRadius =
                 this.offsetFromPrimaryAsPolar.radius * orbitMultiplier;
             orbitCenterPos = vicinityCenterPos;
-            var offsetFromPrimary = Polar.fromAzimuthInTurnsAndRadius(this.offsetFromPrimaryAsPolar.azimuthInTurns + .5, orbitRadius).wrap().toCoords(Coords.create());
+            var offsetFromPrimary = Polar.fromAzimuthInTurnsAndRadius(this.offsetFromPrimaryAsPolar.azimuthInTurns + .5, orbitRadius).wrap().toCoords();
             posWithinVicinity.add(offsetFromPrimary);
         }
         var orbitVisualPath = VisualCircle.fromRadiusAndColorBorder(orbitRadius, orbitColor);
@@ -174,7 +175,7 @@ class Planet {
         return entity;
     }
     toEntityForStarsystem(world, primary, primaryPos) {
-        var pos = primaryPos.clone().add(this.offsetFromPrimaryAsPolar.toCoords(Coords.create()));
+        var pos = primaryPos.clone().add(this.offsetFromPrimaryAsPolar.toCoords());
         var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
         var planetDefn = this.defn();
         var visual = new VisualGroup([
@@ -182,7 +183,7 @@ class Planet {
             ),
             planetDefn.visualStarsystem
         ]);
-        var collider = new Sphere(Coords.create(), this.radiusOuter);
+        var collider = Sphere.fromRadius(this.radiusOuter);
         var returnValue = new Entity(this.name, [
             Collidable.fromCollider(collider),
             Drawable.fromVisual(visual),
@@ -200,7 +201,7 @@ class Planet {
         return this._place;
     }
     pos() {
-        return this.offsetFromPrimaryAsPolar.toCoords(Coords.create());
+        return this.offsetFromPrimaryAsPolar.toCoords();
     }
     // Clonable.
     clone() { throw new Error("todo"); }

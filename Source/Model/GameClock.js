@@ -1,6 +1,7 @@
 "use strict";
-class GameClock {
+class GameClock extends EntityPropertyBase {
     constructor(gameSecondsPerRealSecond) {
+        super();
         this.gameSecondsPerRealSecond = gameSecondsPerRealSecond;
     }
     static fromGameSecondsPerRealSecond(gameSecondsPerRealSecond) {

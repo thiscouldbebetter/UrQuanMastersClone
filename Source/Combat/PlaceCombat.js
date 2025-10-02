@@ -48,15 +48,15 @@ class PlaceCombat extends PlaceBase {
         var radius = visual.radius;
         var activity = new Activity(Planet.activityDefnGravitate().name, null);
         var actor = new Actor(activity);
-        var collider = new Sphere(Coords.create(), radius);
-        var collidable = Collidable.from3(collider, [Collidable.name], // entityPropertyNamesToCollideWith
+        var collider = Sphere.fromRadius(radius);
+        var collidable = Collidable.fromColliderPropertyNamesAndCollide(collider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.planetCollide);
         visual = new VisualWrapped(this.size(), visual);
         var drawable = Drawable.fromVisual(visual);
         var sizeHalf = this.size().clone().half();
         var pos = sizeHalf.clone();
         var locatable = Locatable.fromPos(pos);
-        var planetEntity = new Entity(Planet.name, [
+        var planetEntity = Entity.fromNameAndProperties(Planet.name, [
             actor,
             collidable,
             drawable,
@@ -94,16 +94,16 @@ class PlaceCombat extends PlaceBase {
     planetCollide(uwpe) {
         var entityPlanet = uwpe.entity;
         var entityOther = uwpe.entity2;
-        var planetPos = entityPlanet.locatable().loc.pos;
-        var otherLoc = entityOther.locatable().loc;
+        var planetPos = Locatable.of(entityPlanet).loc.pos;
+        var otherLoc = Locatable.of(entityOther).loc;
         var otherPos = otherLoc.pos;
         var displacement = otherPos.clone().subtract(planetPos);
         var distance = displacement.magnitude();
         var direction = displacement.divideScalar(distance);
-        var planetCollider = entityPlanet.collidable().collider;
-        var planetRadius = planetCollider.radius;
-        var otherCollider = entityOther.collidable().collider;
-        var sumOfRadii = planetRadius + otherCollider.radius;
+        var planetCollider = Collidable.of(entityPlanet).collider;
+        var planetRadius = planetCollider.radius();
+        var otherCollider = Collidable.of(entityOther).collider;
+        var sumOfRadii = planetRadius + otherCollider.radius();
         if (distance < sumOfRadii) {
             var impulse = direction.multiplyScalar(sumOfRadii - distance);
             otherLoc.vel.add(impulse.double());
@@ -118,18 +118,18 @@ class PlaceCombat extends PlaceBase {
         }
         else {
             var colorBlack = Color.Instances().Black;
-            display.drawBackground(colorBlack, colorBlack);
+            display.drawBackgroundWithColorsBackAndBorder(colorBlack, colorBlack);
             var midpointBetweenCombatants;
             var camera = this._camera;
             var cameraPos = camera.loc.pos;
             if (ships.length == 1) {
-                midpointBetweenCombatants = ships[0].locatable().loc.pos;
+                midpointBetweenCombatants = Locatable.of(ships[0]).loc.pos;
             }
             else // if ships.length == 2
              {
                 midpointBetweenCombatants =
                     this.combat.midpointOfPointsWrappedToRange(cameraPos, // midpointToOverwrite
-                    ships[0].locatable().loc.pos, ships[1].locatable().loc.pos, this.size());
+                    Locatable.of(ships[0]).loc.pos, Locatable.of(ships[1]).loc.pos, this.size());
             }
             cameraPos.overwriteWith(midpointBetweenCombatants);
         }
@@ -144,10 +144,10 @@ class PlaceCombat extends PlaceBase {
             var shipEntity = entityToSpawn;
             var shipEntitiesExisting = this.entitiesByPropertyName(Ship.name);
             var shipEntityOther = shipEntitiesExisting.find(x => x.id != entityToSpawn.id);
-            var shipOtherPos = (shipEntityOther == null ? Coords.create() : shipEntityOther.locatable().loc.pos);
+            var shipOtherPos = (shipEntityOther == null ? Coords.create() : Locatable.of(shipEntityOther).loc.pos);
             var planet = this.entitiesByPropertyName(Planet.name)[0];
-            var planetPos = planet.locatable().loc.pos;
-            var shipPos = entityToSpawn.locatable().loc.pos;
+            var planetPos = Locatable.of(planet).loc.pos;
+            var shipPos = Locatable.of(entityToSpawn).loc.pos;
             var distanceMin = 100;
             while (shipPos.clone().subtract(planetPos).magnitude() < distanceMin
                 || shipPos.clone().subtract(shipOtherPos).magnitude() < distanceMin) {
@@ -157,10 +157,10 @@ class PlaceCombat extends PlaceBase {
             }
             var shipsFighting = this.combat.shipsFighting;
             if (ship == shipsFighting[0]) {
-                shipEntity.actor().activity.defnNameSet(Player.activityDefn().name);
+                Actor.of(shipEntity).activity.defnNameSet(Player.activityDefn().name);
             }
             else if (ship == shipsFighting[1]) {
-                shipEntity.actor().activity.defnNameSet(
+                Actor.of(shipEntity).activity.defnNameSet(
                 //Combat.activityDefnEnemy().name
                 ActivityDefn.Instances().DoNothing.name);
             }

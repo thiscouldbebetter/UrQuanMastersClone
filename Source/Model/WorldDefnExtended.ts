@@ -109,8 +109,8 @@ class WorldDefnExtended extends WorldDefn
 			}
 			else
 			{
-				var player = placeHyperspace.player();
-				var playerPos = player.locatable().pos();
+				var player = Playable.entityFromPlace(placeHyperspace);
+				var playerPos = Locatable.of(player).pos();
 				var portalPos = playerPos.clone();
 				var linkPortalToParaspace = new LinkPortal
 				(

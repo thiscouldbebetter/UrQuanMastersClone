@@ -1,6 +1,7 @@
 "use strict";
-class Starsystem {
+class Starsystem extends EntityPropertyBase {
     constructor(name, starSizeIndex, starColor, posInHyperspace, sizeInner, factionName, planets, shipGroups) {
+        super();
         this.name = name;
         this.starSizeIndex = starSizeIndex;
         this.starColor = starColor;

@@ -32,8 +32,8 @@ class Combat {
         var actorShip = Ship.fromEntity(actor);
         var entitiesShips = place.entitiesShips();
         var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
-        var targetPos = target.locatable().loc.pos;
-        var actorLoc = actor.locatable().loc;
+        var targetPos = Locatable.of(target).loc.pos;
+        var actorLoc = Locatable.of(actor).loc;
         var actorPos = actorLoc.pos;
         var actorVel = actorLoc.vel;
         var combat = place.combat;
@@ -136,7 +136,7 @@ class Combat {
             + numberOfShipsLost + " ships lost.\n"
             + numberOfShipsDestroyed + " ships destroyed.\n"
             + creditsSalvaged + " credits worth of resources salvaged.\n";
-        var returnValue = universe.controlBuilder.message4(universe, size, DataBinding.fromContext(message), () => this.exit(universe));
+        var returnValue = universe.controlBuilder.messageFromUniverseSizeTextAndAcknowledge(universe, size, DataBinding.fromContext(message), () => this.exit(universe));
         return returnValue;
     }
     toControlShipSelect(uwpe, size) {
@@ -172,7 +172,7 @@ class Combat {
             new ControlLabel("labelTitle", Coords.fromXY(marginSize.x, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Ship Select"), fontTitle),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2), titleSize, DataBinding.fromContext(this.shipGroups[0].name + ":"), FontNameAndHeight.fromHeightInPixels(fontHeight)),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2), titleSize, DataBinding.fromContext(this.shipGroups[0].name + ":"), FontNameAndHeight.fromHeightInPixels(fontHeight)),
             listShipsYours,
             new ControlButton("buttonSelectYours", Coords.fromXY(marginSize.x, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, DataBinding.fromContextAndGet(combat, () => "Select"), font, true, // hasBorder
             DataBinding.fromContextAndGet(combat, (c) => (c.shipsFighting[0] == null)), // isEnabled,
@@ -191,7 +191,7 @@ class Combat {
                 shipGroup.shipSelected = ship;
             }, false // canBeHeldDown
             ),
-            ControlLabel.from4Uncentered(Coords.fromXY(listSize.x + marginSize.x * 2, titleSize.y + marginSize.y * 2), titleSize, DataBinding.fromContext(this.shipGroups[1].name + ":"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(listSize.x + marginSize.x * 2, titleSize.y + marginSize.y * 2), titleSize, DataBinding.fromContext(this.shipGroups[1].name + ":"), font),
             listShipsTheirs,
             new ControlButton("buttonSelectTheirs", Coords.fromXY(marginSize.x * 2 + listSize.x, size.y - buttonSizeFight.y - buttonSizeSelect.y - marginSize.y * 2), buttonSizeSelect, DataBinding.fromContext("Select"), font, true, // hasBorder
             DataBinding.fromFalse(), // isEnabled,
@@ -221,7 +221,7 @@ class Combat {
             }, false // canBeHeldDown
             ),
         ];
-        var returnValue = ControlContainer.from4("containerShipSelect", Coords.Instances().Zeroes, size, containerChildren);
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerShipSelect", Coords.Instances().Zeroes, size, containerChildren);
         return returnValue;
     }
     toControlSidebar(uwpe) {
@@ -231,7 +231,7 @@ class Combat {
             shipsFighting[0].toControlSidebar(containerSidebarSize, 0, uwpe),
             shipsFighting[1].toControlSidebar(containerSidebarSize, 1, uwpe),
         ];
-        var containerSidebar = ControlContainer.from4("containerSidebar", Coords.fromXY(300, 0), containerSidebarSize, childControls);
+        var containerSidebar = ControlContainer.fromNamePosSizeAndChildren("containerSidebar", Coords.fromXY(300, 0), containerSidebarSize, childControls);
         return containerSidebar;
     }
 }

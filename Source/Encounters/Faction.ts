@@ -1,5 +1,5 @@
 
-class Faction implements EntityPropertyBase
+class Faction extends EntityPropertyBase<Faction>
 {
 	name: string;
 	nameOriginal: string;
@@ -24,6 +24,8 @@ class Faction implements EntityPropertyBase
 		shipGroupActivity: Activity
 	)
 	{
+		super();
+
 		this.name = name;
 		this.nameOriginal = nameOriginal;
 		this.color = color;

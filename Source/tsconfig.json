@@ -57,13 +57,11 @@
 
     "newLine": "LF"
   },
-  "exclude":
-  [
-    "Framework/Source/Imports.ts",
-    "Framework/Source/main.ts",
-    "Framework/Source/Demo/",
-    "Framework/Source/Media/Text/BinaryFileToImageTranscoder/Source/Imports.ts",
-    "Framework/Stub/",
-    "Framework/Tests/"
-  ]
+	"exclude":
+	[
+		"Framework/Source/Main.ts",
+		"Framework/Source/Demo/",
+		"Framework/Stub/",
+		"Framework/Source/Tests/"
+	]
 }

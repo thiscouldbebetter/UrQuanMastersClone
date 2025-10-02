@@ -118,7 +118,7 @@ class PlaceHyperspaceMap extends PlaceBase
 				this._camera.coordsTransformWorldToView(drawPos);
 
 				var factionZoneRadiusScaled =
-					factionZoneAsSphere.radius * magnificationFactor;
+					factionZoneAsSphere.radius() * magnificationFactor;
 
 				var factionColor = faction.color;
 				display.drawCircle
@@ -126,7 +126,7 @@ class PlaceHyperspaceMap extends PlaceBase
 					drawPos, factionZoneRadiusScaled, null, factionColor, null
 				);
 
-				display.drawText
+				display.drawTextWithFontAtPosWithColorsFillAndOutline
 				(
 					faction.name,
 					FontNameAndHeight.fromHeightInPixels(10),
@@ -142,7 +142,7 @@ class PlaceHyperspaceMap extends PlaceBase
 
 		var entityForPlayer =
 			this.placeHyperspaceToReturnTo.entityByName(Player.name);
-		var playerPos = entityForPlayer.locatable().loc.pos;
+		var playerPos = Locatable.of(entityForPlayer).loc.pos;
 		drawPos.overwriteWith(playerPos);
 		this._camera.coordsTransformWorldToView(drawPos);
 		var locatorDimension = starRadius * 8 * magnificationFactor;
@@ -177,7 +177,7 @@ class PlaceHyperspaceMap extends PlaceBase
 		{
 			var entityForPlayer =
 				this.placeHyperspaceToReturnTo.entityByName(Player.name);
-			var playerPos = entityForPlayer.locatable().loc.pos;
+			var playerPos = Locatable.of(entityForPlayer).loc.pos;
 			this.reticlePos = playerPos.clone();
 		}
 
@@ -340,7 +340,7 @@ class PlaceHyperspaceMap extends PlaceBase
 
 		var containerPlayer = world.player.toControlSidebar(world);
 
-		var containerReticle = ControlContainer.from4
+		var containerReticle = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerReticle",
 			Coords.fromXY
@@ -364,7 +364,7 @@ class PlaceHyperspaceMap extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, marginSize.y * 2),
 					titleSize,
@@ -372,7 +372,7 @@ class PlaceHyperspaceMap extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 2),
 					titleSize,
@@ -384,7 +384,7 @@ class PlaceHyperspaceMap extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, marginSize.y * 3),
 					titleSize,
@@ -392,7 +392,7 @@ class PlaceHyperspaceMap extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 3),
 					titleSize,
@@ -407,7 +407,7 @@ class PlaceHyperspaceMap extends PlaceBase
 			]
 		);
 
-		var containerSidebar = ControlContainer.from4
+		var containerSidebar = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerRight",
 			Coords.fromXY
@@ -423,7 +423,7 @@ class PlaceHyperspaceMap extends PlaceBase
 			]
 		);
 
-		var controlRoot = ControlContainer.from4
+		var controlRoot = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerMain",
 			Coords.fromXY(0, 0), // pos
@@ -444,7 +444,7 @@ class PlaceHyperspaceMap extends PlaceBase
 					font
 				),
 
-				ControlVisual.from4
+				ControlVisual.fromNamePosSizeAndVisual
 				(
 					"visualMap",
 					Coords.fromXY
@@ -453,7 +453,7 @@ class PlaceHyperspaceMap extends PlaceBase
 						marginSize.y * 2 + titleSize.y
 					),
 					containerMapSize,
-					DataBinding.fromContext<VisualBase>
+					DataBinding.fromContext<Visual>
 					(
 						new VisualImageImmediate
 						(

@@ -1,6 +1,7 @@
 "use strict";
-class LinkPortal {
+class LinkPortal extends EntityPropertyBase {
     constructor(name, posInSpace, destinationPlaceName, destinationPos) {
+        super();
         this.name = name;
         this.posInSpace = posInSpace;
         this.destinationPlaceName = destinationPlaceName;
@@ -24,7 +25,7 @@ class LinkPortal {
             var spaceBeingEntered = this.destinationPlaceName.startsWith("Hyper")
                 ? world.hyperspace
                 : world.paraspace;
-            var playerLoc = entityPlayer.locatable().loc;
+            var playerLoc = Locatable.of(entityPlayer).loc;
             var playerPosNext = linkPortal.destinationPos.clone();
             var playerDisposition = Disposition.fromPosOrientationAndPlaceName(playerPosNext, playerLoc.orientation.clone(), spaceBeingEntered.name);
             placeNext = new PlaceHyperspace(universe, spaceBeingEntered, null, // starsystemDeparted
@@ -34,7 +35,7 @@ class LinkPortal {
             var factionName = this.destinationPlaceName.split("-")[1];
             var faction = world.factionByName(factionName);
             entityLinkPortal.propertyAdd(faction.toTalker());
-            var playerPos = entityPlayer.locatable().loc.pos;
+            var playerPos = Locatable.of(entityPlayer).loc.pos;
             var encounter = new Encounter(null, // planet
             factionName, entityPlayer, entityLinkPortal, place, // placeToReturnTo
             playerPos);
@@ -48,9 +49,7 @@ class LinkPortal {
     }
     toEntity(radiusInHyperspace) {
         var collider = Sphere.fromRadius(radiusInHyperspace);
-        var collidable = Collidable.from3 // todo
-        (collider, [], null // this.collideWithPlayer
-        );
+        var collidable = Collidable.fromColliderPropertyNamesAndCollide(collider, [], null);
         var boundable = Boundable.fromCollidable(collidable);
         var color = Color.Instances().Red; // todo
         var visual = VisualCircle.fromRadiusAndColorFill(radiusInHyperspace, color);

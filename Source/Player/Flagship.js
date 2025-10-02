@@ -242,7 +242,7 @@ class Flagship {
         var childControlWidth = containerSidebarSize.x - marginWidth * 2;
         var labelSize = Coords.fromXY(childControlWidth, fontHeight);
         var containerFlagshipSize = Coords.fromXY(containerSidebarSize.x - marginSize.x * 2, (containerSidebarSize.y - marginSize.x * 3) * 0.4);
-        var containerFlagship = ControlContainer.from4("containerFlagship", Coords.fromXY(marginSize.x, marginSize.y), // hack - pos
+        var containerFlagship = ControlContainer.fromNamePosSizeAndChildren("containerFlagship", Coords.fromXY(marginSize.x, marginSize.y), // hack - pos
         containerFlagshipSize, 
         // children
         [
@@ -250,20 +250,20 @@ class Flagship {
             labelSize, true, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext(flagship.name), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, DataBinding.fromContext("Crew:"), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 2), labelSize, DataBinding.fromContextAndGet(flagship, (c) => c.crewCurrentOverMax()), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, DataBinding.fromContext("Fuel:"), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 3), labelSize, DataBinding.fromContextAndGet(flagship, (c) => c.fuelCurrentOverMax()), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, DataBinding.fromContext("Landers:"), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 6, labelSize.y * 4), labelSize, DataBinding.fromContextAndGet(flagship, (c) => "" + c.numberOfLanders), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, DataBinding.fromContext("Cargo:"), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 5, labelSize.y * 5), labelSize, DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax(world)), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, DataBinding.fromContext("Loc:"), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 6), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => c.posInHyperspace(world).toStringXY()), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, DataBinding.fromContext("Date:"), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 7), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[0]), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, DataBinding.fromContext("Time:"), font),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 8), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, DataBinding.fromContext("Crew:"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 2), labelSize, DataBinding.fromContextAndGet(flagship, (c) => c.crewCurrentOverMax()), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, DataBinding.fromContext("Fuel:"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 3), labelSize, DataBinding.fromContextAndGet(flagship, (c) => c.fuelCurrentOverMax()), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, DataBinding.fromContext("Landers:"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 6, labelSize.y * 4), labelSize, DataBinding.fromContextAndGet(flagship, (c) => "" + c.numberOfLanders), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, DataBinding.fromContext("Cargo:"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 5, labelSize.y * 5), labelSize, DataBinding.fromContextAndGet(flagship, (c) => c.cargoCurrentOverMax(world)), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, DataBinding.fromContext("Loc:"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 6), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => c.posInHyperspace(world).toStringXY()), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, DataBinding.fromContext("Date:"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 7), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[0]), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, DataBinding.fromContext("Time:"), font),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, labelSize.y * 8), labelSize, DataBinding.fromContextAndGet(world.player.shipGroup, (c) => world.gameTimeAsString().split("T")[1].split(":").slice(0, 2).join(":")), font),
         ]);
         return containerFlagship;
     }

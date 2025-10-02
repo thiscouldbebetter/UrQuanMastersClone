@@ -1,10 +1,12 @@
 
-class Mappable implements EntityPropertyBase
+class Mappable extends EntityPropertyBase<Mappable>
 {
-	visual: VisualBase;
+	visual: Visual;
 
-	constructor(visual: VisualBase)
+	constructor(visual: Visual)
 	{
+		super();
+
 		this.visual = visual;
 	}
 

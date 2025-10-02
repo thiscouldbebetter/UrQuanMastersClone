@@ -97,7 +97,7 @@ class PlacePlanetOrbit extends PlaceBase {
             var contact = scanContacts[i];
             var contactMappable = Mappable.fromEntity(contact);
             if (contactMappable != null) {
-                var contactLocatable = contact.locatable();
+                var contactLocatable = Locatable.of(contact);
                 var contactLoc = contactLocatable.loc;
                 var contactPos = contactLoc.pos;
                 contactPosSaved.overwriteWith(contactPos);
@@ -152,37 +152,37 @@ class PlacePlanetOrbit extends PlaceBase {
         var containerScanSize = Coords.fromXY(containerRightSize.x - marginSize.x * 2, buttonScanSize.y * 3 + marginSize.y * 2);
         var containerMapSize = Coords.fromXY(containerMainSize.x - marginSize.x * 3 - containerRightSize.x, (containerRightSize.y - marginSize.y) / 2);
         var containerInfoSize = Coords.fromXY((containerMapSize.x - marginSize.x) / 2, containerMapSize.y);
-        var containerInfo = ControlContainer.from4("containerInfo", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerInfoSize, 
+        var containerInfo = ControlContainer.fromNamePosSizeAndChildren("containerInfo", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerInfoSize, 
         // children
         [
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y), labelSize, DataBinding.fromContext("Name: " + planet.name), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, DataBinding.fromContext("Mass: "
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y), labelSize, DataBinding.fromContext("Name: " + planet.name), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 2), labelSize, DataBinding.fromContext("Mass: "
                 + characteristics.mass.toExponential(3).replace("e", " x 10^").replace("+", "")
                 + " kg"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, DataBinding.fromContext("Radius: " + characteristics.radius + " km"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, DataBinding.fromContext("Surface Gravity: " + characteristics.gravity + "g"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, DataBinding.fromContext("Orbit: "
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 3), labelSize, DataBinding.fromContext("Radius: " + characteristics.radius + " km"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 4), labelSize, DataBinding.fromContext("Surface Gravity: " + characteristics.gravity + "g"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 5), labelSize, DataBinding.fromContext("Orbit: "
                 + characteristics.orbit.toExponential(3).replace("e", " x 10^").replace("+", "")
                 + " km"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, DataBinding.fromContext("Day: " + characteristics.dayInHours + " hours"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, DataBinding.fromContext("Year: " + characteristics.yearInEarthDays + " Earth days"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, DataBinding.fromContext("Temperature: " + characteristics.temperature + " C"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 9), labelSize, DataBinding.fromContext("Weather: Class " + characteristics.weather), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, labelSize.y * 10), labelSize, DataBinding.fromContext("Tectonics: Class " + planet.characteristics.tectonics), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 6), labelSize, DataBinding.fromContext("Day: " + characteristics.dayInHours + " hours"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 7), labelSize, DataBinding.fromContext("Year: " + characteristics.yearInEarthDays + " Earth days"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 8), labelSize, DataBinding.fromContext("Temperature: " + characteristics.temperature + " C"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 9), labelSize, DataBinding.fromContext("Weather: Class " + characteristics.weather), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, labelSize.y * 10), labelSize, DataBinding.fromContext("Tectonics: Class " + planet.characteristics.tectonics), fontShort),
         ]);
         var visualPlanetFromOrbit = this.planet.defn().visualOrbit;
         var visualGlobe = new VisualGroup([
             VisualRectangle.fromSizeAndColorFill(containerInfoSize, Color.Instances().Black),
             visualPlanetFromOrbit
         ]);
-        var containerGlobe = ControlContainer.from4("containerGlobe", Coords.fromXY(marginSize.x * 2 + containerInfoSize.x, marginSize.y * 2 + titleSize.y), containerInfoSize, 
+        var containerGlobe = ControlContainer.fromNamePosSizeAndChildren("containerGlobe", Coords.fromXY(marginSize.x * 2 + containerInfoSize.x, marginSize.y * 2 + titleSize.y), containerInfoSize, 
         // children
         [
-            ControlVisual.from4("visualGlobe", Coords.fromXY(0, 0), containerInfoSize, DataBinding.fromContext(visualGlobe))
+            ControlVisual.fromNamePosSizeAndVisual("visualGlobe", Coords.fromXY(0, 0), containerInfoSize, DataBinding.fromContext(visualGlobe))
         ]);
         var containerPlayer = world.player.toControlSidebar(world);
         var canLandAsBinding = DataBinding.fromBooleanWithContext(this.planet.defn().canLand, null);
-        var containerRight = ControlContainer.from4("containerRight", Coords.fromXY(marginSize.x * 2 + containerMapSize.x, marginSize.y * 2 + titleSize.y), containerRightSize, 
+        var containerRight = ControlContainer.fromNamePosSizeAndChildren("containerRight", Coords.fromXY(marginSize.x * 2 + containerMapSize.x, marginSize.y * 2 + titleSize.y), containerRightSize, 
         // children
         [
             containerPlayer,
@@ -193,38 +193,38 @@ class PlacePlanetOrbit extends PlaceBase {
                 - labelSize.y), labelSize, false, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Scan:"), fontShort),
-            ControlContainer.from4("containerScan", Coords.fromXY(marginSize.x, containerRightSize.y
+            ControlContainer.fromNamePosSizeAndChildren("containerScan", Coords.fromXY(marginSize.x, containerRightSize.y
                 - marginSize.y * 2
                 - buttonSizeRight.y
                 - containerScanSize.y), containerScanSize, [
-                ControlButton.from8("buttonScanMineral", Coords.fromXY(marginSize.x, marginSize.y), buttonScanSize, "Mineral", fontShort, true, // hasBorder,
+                ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonScanMineral", Coords.fromXY(marginSize.x, marginSize.y), buttonScanSize, "Mineral", fontShort, true, // hasBorder,
                 canLandAsBinding, // isEnabled,
                 () => placePlanetOrbit.scanMinerals(universe)),
-                ControlButton.from8("buttonScanLife", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y), buttonScanSize, "Life", fontShort, true, // hasBorder,
+                ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonScanLife", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y), buttonScanSize, "Life", fontShort, true, // hasBorder,
                 canLandAsBinding, // isEnabled,
                 () => placePlanetOrbit.scanLife(universe)),
-                ControlButton.from8("buttonScanEnergy", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y * 2), buttonScanSize, "Energy", fontShort, true, // hasBorder,
+                ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonScanEnergy", Coords.fromXY(marginSize.x, marginSize.y + buttonScanSize.y * 2), buttonScanSize, "Energy", fontShort, true, // hasBorder,
                 canLandAsBinding, // isEnabled,
                 () => placePlanetOrbit.scanEnergy(universe)),
             ]),
-            ControlButton.from8("buttonLand", Coords.fromXY(marginSize.x, containerRightSize.y - marginSize.y - buttonSizeRight.y), buttonSizeRight, "Land", fontShort, true, // hasBorder,
+            ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonLand", Coords.fromXY(marginSize.x, containerRightSize.y - marginSize.y - buttonSizeRight.y), buttonSizeRight, "Land", fontShort, true, // hasBorder,
             canLandAsBinding, // isEnabled,
             () => placePlanetOrbit.land(universe)),
         ]);
-        var controlRoot = ControlContainer.from4("containerPlanetOrbit", Coords.fromXY(0, 0), // pos
+        var controlRoot = ControlContainer.fromNamePosSizeAndChildren("containerPlanetOrbit", Coords.fromXY(0, 0), // pos
         containerMainSize, [
             new ControlLabel("labelOrbit", Coords.fromXY(0, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Orbit"), font),
             containerInfo,
             containerGlobe,
-            ControlContainer.from4("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 3 + titleSize.y + containerMapSize.y), containerMapSize, 
+            ControlContainer.fromNamePosSizeAndChildren("containerMap", Coords.fromXY(marginSize.x, marginSize.y * 3 + titleSize.y + containerMapSize.y), containerMapSize, 
             // children
             [
-                ControlVisual.from4("visualSurface", Coords.Instances().Zeroes, containerMapSize, DataBinding.fromContext(new VisualImageScaled(containerMapSize, new VisualImageFromLibrary("PlanetSurface")))),
+                ControlVisual.fromNamePosSizeAndVisual("visualSurface", Coords.Instances().Zeroes, containerMapSize, DataBinding.fromContext(new VisualImageScaled(containerMapSize, new VisualImageFromLibrary("PlanetSurface")))),
             ]),
             containerRight,
-            ControlButton.from8("buttonBack", marginSize, buttonBackSize, "<", fontShort, true, // hasBorder,
+            ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonBack", marginSize, buttonBackSize, "<", fontShort, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
             () => placePlanetOrbit.returnToPlaceParent(universe)),
         ]);

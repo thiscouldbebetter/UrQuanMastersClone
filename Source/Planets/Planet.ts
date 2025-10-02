@@ -1,5 +1,5 @@
 
-class Planet implements EntityProperty<Planet>, Satellite
+class Planet extends EntityPropertyBase<Planet> implements Satellite
 {
 	name: string;
 	defnName: string;
@@ -20,6 +20,8 @@ class Planet implements EntityProperty<Planet>, Satellite
 		characteristics: PlanetCharacteristics
 	)
 	{
+		super();
+
 		this.name = name;
 		this.defnName = defnName;
 		this.radiusOuter = radiusOuter;
@@ -68,14 +70,14 @@ class Planet implements EntityProperty<Planet>, Satellite
 		var actor = uwpe.entity;
 
 		var planet = actor;
-		var planetPos = planet.locatable().loc.pos;
+		var planetPos = Locatable.of(planet).loc.pos;
 
 		var entitiesShips = place.entitiesByPropertyName(Ship.name);
 
 		for (var i = 0; i < entitiesShips.length; i++)
 		{
 			var ship = entitiesShips[i];
-			var shipLoc = ship.locatable().loc;
+			var shipLoc = Locatable.of(ship).loc;
 			var shipPos = shipLoc.pos;
 			var displacement =
 				shipPos.clone().subtractWrappedToRangeMax(planetPos, place.size() );
@@ -237,7 +239,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 		var planetDefn = this.defn();
 
-		var globeVisual: VisualBase;
+		var globeVisual: Visual;
 
 		var posWithinVicinity = vicinityCenterPos.clone();
 
@@ -253,7 +255,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 			var offsetToOrbitCenter =
 				this.offsetFromPrimaryAsPolar
-					.toCoords(Coords.create() )
+					.toCoords()
 					.invert()
 					.multiplyScalar(orbitMultiplier);
 
@@ -273,7 +275,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			(
 				this.offsetFromPrimaryAsPolar.azimuthInTurns + .5,
 				orbitRadius
-			).wrap().toCoords(Coords.create());
+			).wrap().toCoords();
 
 			posWithinVicinity.add(offsetFromPrimary);
 		}
@@ -328,7 +330,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 	{
 		var pos = primaryPos.clone().add
 		(
-			this.offsetFromPrimaryAsPolar.toCoords(Coords.create())
+			this.offsetFromPrimaryAsPolar.toCoords()
 		);
 
 		var orbitColor = (primary == null ? this.orbitColor() : primary.orbitColor());
@@ -348,7 +350,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 			planetDefn.visualStarsystem
 		]);
 
-		var collider = new Sphere(Coords.create(), this.radiusOuter);
+		var collider = Sphere.fromRadius(this.radiusOuter);
 
 		var returnValue = new Entity
 		(
@@ -382,7 +384,7 @@ class Planet implements EntityProperty<Planet>, Satellite
 
 	pos(): Coords
 	{
-		return this.offsetFromPrimaryAsPolar.toCoords(Coords.create() );
+		return this.offsetFromPrimaryAsPolar.toCoords();
 	}
 
 	// Clonable.

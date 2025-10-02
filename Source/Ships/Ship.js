@@ -1,6 +1,7 @@
 "use strict";
-class Ship {
+class Ship extends EntityPropertyBase {
     constructor(defnName) {
+        super();
         this.defnName = defnName;
         this.name =
             "Ship " + ("" + Math.random()).split(".").join(""); // todo
@@ -39,7 +40,7 @@ class Ship {
             var attackDefn = shipDefn.attackDefn;
             if (ship.energy >= attackDefn.energyToUse) {
                 ship.energy -= attackDefn.energyToUse;
-                attackDefn.activate(universe, world, place, actor);
+                attackDefn.activate2(universe, world, place, actor);
             }
         });
         return returnValue;
@@ -151,14 +152,14 @@ class Ship {
                 shipGroup.shipLostAdd(ship);
             }
         }
-        var visualToRecycle = entityShipToDie.drawable().visual;
+        var visualToRecycle = Drawable.of(entityShipToDie).visual;
         visualToRecycle.child =
             VisualCircle.fromRadiusAndColorFill(32, Color.Instances().Red);
-        entityShipToDie.locatable().loc.vel.clear();
+        Locatable.of(entityShipToDie).loc.vel.clear();
         var entityExplosion = new Entity("Explosion", [
             new Ephemeral(64, place.roundOver),
             Drawable.fromVisual(visualToRecycle),
-            entityShipToDie.locatable(),
+            Locatable.of(entityShipToDie),
         ]);
         place.entityToSpawnAdd(entityExplosion);
     }
@@ -181,15 +182,14 @@ class Ship {
         var place = uwpe.place;
         var actor = Actor.default();
         var entityDimension = 32; // todo
-        var shipCollider = new Sphere(Coords.zeroes(), entityDimension / 2);
+        var shipCollider = Sphere.fromRadius(entityDimension / 2);
         var collidable = new Collidable(false, // canCollideAgainWithoutSeparating
+        false, // exemptFromEffectsOfOther
         null, // ticks
         shipCollider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.collide);
         var constraintWrapToRange = new Constraint_WrapToPlaceSize();
-        var constraintSpeedMax = new Constraint_SpeedMaxXY(5); // An absolute upper limit.
         var constrainable = new Constrainable([
-            constraintSpeedMax,
             constraintWrapToRange
         ]);
         var defn = this.defn(world);
@@ -197,11 +197,11 @@ class Ship {
         var shipVisual = new VisualWrapped(place.size(), shipVisualBody);
         var drawable = Drawable.fromVisual(shipVisual);
         var itemHolder = ItemHolder.create();
-        var killable = new Killable(this.crew, null, this.die);
+        var killable = Killable.fromIntegrityMaxAndDie(this.crew, this.die);
         var shipPos = Coords.create();
         var shipLoc = Disposition.fromPos(shipPos);
         var locatable = new Locatable(shipLoc);
-        var movable = Movable.default();
+        var movable = Movable.fromSpeedMax(5);
         var shipEntityProperties = new Array(actor, collidable, constrainable, drawable, itemHolder, killable, locatable, movable, this);
         var shipEntity = new Entity(this.name, shipEntityProperties);
         return shipEntity;
@@ -242,7 +242,7 @@ class Ship {
             : Ship.fromEntity(entity));
         var world = uwpe.world;
         var shipDefn = ship.defn(world);
-        var shipLoc = entity.locatable().loc;
+        var shipLoc = Locatable.of(entity).loc;
         var shipForward = shipLoc.orientation.forward;
         shipLoc.accel.overwriteWith(shipForward).multiplyScalar(shipDefn.acceleration(uwpe));
         var shipVel = shipLoc.vel;
@@ -253,7 +253,7 @@ class Ship {
     }
     turnInDirection(uwpe, direction) {
         var entity = uwpe.entity;
-        var entityLoc = entity.locatable().loc;
+        var entityLoc = Locatable.of(entity).loc;
         var entityOrientation = entityLoc.orientation;
         var entityForward = entityOrientation.forward;
         var entityShip = Ship.fromEntity(entity);
@@ -263,7 +263,11 @@ class Ship {
         var world = uwpe.world;
         var shipDefn = ship.defn(world);
         var turnsPerTick = shipDefn.turnsPerTick(uwpe);
-        var entityForwardNew = Ship._polar.fromCoords(entityForward).addToAzimuthInTurns(turnsPerTick * direction).wrap().toCoords(entityForward);
+        var entityForwardNew = Ship._polar
+            .fromCoords(entityForward)
+            .addToAzimuthInTurns(turnsPerTick * direction)
+            .wrap()
+            .overwriteCoords(entityForward);
         entityOrientation.forwardSet(entityForwardNew);
     }
     turnLeft(uwpe) {
@@ -294,18 +298,18 @@ class Ship {
         var world = uwpe.world;
         var defn = this.defn(world);
         var childControls = [
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y), // pos
             labelSizeWide, DataBinding.fromContext(defn.factionName), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSizeShort.y), // pos
             labelSizeShort, DataBinding.fromContext("Crew:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 2 + labelSizeShort.y), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 2 + labelSizeShort.y), // pos
             labelSizeShort, DataBinding.fromContextAndGet(ship, (c) => c.crewCurrentOverMax(uwpe)), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
             labelSizeShort, DataBinding.fromContext("Energy:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x / 2 + labelSizeShort.x, marginSize.y * 3 + labelSizeShort.y * 2), // pos
             labelSizeShort, DataBinding.fromContextAndGet(ship, (c) => c.energyCurrentOverMax(uwpe)), fontShort),
         ];
-        var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, childControls);
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerShip", Coords.fromXY(marginSize.x, marginSize.y + (containerShipSize.y + marginSize.y) * indexTopOrBottom), containerShipSize, childControls);
         return returnValue;
     }
     // Equatable.

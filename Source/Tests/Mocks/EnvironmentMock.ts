@@ -1,19 +1,7 @@
 
 class EnvironmentMock
 {
-	/*
-	universeBuild(callback: (u: Universe) => void): void
-	{
-		var contentDirectoryPath = "../../../Content/";
-		var mediaLibrary = new Game().mediaLibraryBuild(contentDirectoryPath);
-		mediaLibrary.waitForItemsAllToLoad
-		(
-			() => this.universeBuild_MediaLibraryLoaded(mediaLibrary, callback)
-		);
-	}
-	*/
-
-	universeBuild//_MediaLibraryLoaded
+	universeBuild
 	(
 		callback: (u: Universe) => void
 	): void
@@ -46,6 +34,7 @@ class EnvironmentMock
 			soundHelper,
 			mediaLibrary,
 			controlBuilder,
+			ProfileHelper.minimal(),
 			worldCreator
 		);
 

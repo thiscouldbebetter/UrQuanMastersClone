@@ -1,5 +1,5 @@
 
-class Resource implements EntityProperty<Resource>
+class Resource extends EntityPropertyBase<Resource>
 {
 	defnName: string;
 	quantity: number;
@@ -7,6 +7,8 @@ class Resource implements EntityProperty<Resource>
 
 	constructor(defnName: string, quantity: number, pos: Coords)
 	{
+		super();
+
 		this.defnName = defnName;
 		this.quantity = quantity || 0;
 		this.pos = pos;
@@ -36,7 +38,7 @@ class Resource implements EntityProperty<Resource>
 
 		var resourceRadius = resourceRadiusBase * Math.sqrt(resourceQuantity);
 
-		var resourceCollider = new Sphere(Coords.zeroes(), resourceRadius);
+		var resourceCollider = Sphere.fromRadius(resourceRadius);
 		var resourceCollidable = Collidable.fromCollider(resourceCollider);
 
 		var resourceDefn = ResourceDefn.byName(resourceDefnName);
@@ -51,11 +53,11 @@ class Resource implements EntityProperty<Resource>
 			],
 			null
 		);
-		var resourceVisual: VisualBase = new VisualCircleGradient
+		var resourceVisual: Visual = new VisualCircleGradient
 		(
 			resourceRadius, resourceGradient, null
 		);
-		var camera = place.camera();
+		var camera = Camera.entityFromPlace(place);
 		if (camera != null)
 		{
 			resourceVisual = new VisualWrapped
@@ -68,7 +70,7 @@ class Resource implements EntityProperty<Resource>
 		var resourcePos = resource.pos;
 		var resourceLocatable = Locatable.fromPos(resourcePos);
 
-		var visualScanContact: VisualBase = new VisualCircleGradient
+		var visualScanContact: Visual = new VisualCircleGradient
 		(
 			resourceRadius / 2, resourceGradient, null
 		);
@@ -102,7 +104,7 @@ class Resource implements EntityProperty<Resource>
 		);
 		var resourceMappable = new Mappable(visualScanContact);
 
-		var resourceEntity = new Entity
+		var resourceEntity = Entity.fromNameAndProperties
 		(
 			Resource.name + Math.random(),
 			[

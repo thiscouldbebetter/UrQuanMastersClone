@@ -2,11 +2,11 @@
 class PlanetDefn
 {
 	name: string;
-	visualStarsystem: VisualBase;
-	visualVicinityPrimary: VisualBase;
-	visualVicinitySatellite: VisualBase;
-	visualOrbit: VisualBase;
-	visualsSurface: VisualBase[];
+	visualStarsystem: Visual;
+	visualVicinityPrimary: Visual;
+	visualVicinitySatellite: Visual;
+	visualOrbit: Visual;
+	visualsSurface: Visual[];
 	canLand: boolean;
 	lifeChance: number;
 	resourceDistributions: ResourceDistribution[]
@@ -14,8 +14,8 @@ class PlanetDefn
 	constructor
 	(
 		name: string,
-		visualsStarsystemVicinityOrbit: VisualBase[],
-		visualsSurface: VisualBase[],
+		visualsStarsystemVicinityOrbit: Visual[],
+		visualsSurface: Visual[],
 		canLand: boolean,
 		lifeChance: number,
 		resourceDistributions: ResourceDistribution[]
@@ -136,7 +136,7 @@ class PlanetDefn_Instances
 		{
 			var colorOuter = color.clone().add(colorBlack).add(colorBlack);
 
-			var returnVisual: VisualBase = 
+			var returnVisual: Visual = 
 				new VisualCircleGradient
 				(
 					radius,

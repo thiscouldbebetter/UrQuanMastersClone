@@ -1,13 +1,11 @@
 "use strict";
-class Fuelable {
+class Fuelable extends EntityPropertyBase {
     // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
     propertyName() { return Fuelable.name; }
     updateForTimerTick(uwpe) {
         var world = uwpe.world;
         var entityFuelable = uwpe.entity;
-        var entityLoc = entityFuelable.locatable().loc;
+        var entityLoc = Locatable.of(entityFuelable).loc;
         var entityVel = entityLoc.vel;
         var entitySpeed = entityVel.magnitude();
         var fuelConsumedPerSpeed = .1;

@@ -75,7 +75,7 @@ class Encounter
 			var playerFromPlaceNext = placeNext.entityByName(Player.name);
 			if (playerFromPlaceNext != null)
 			{
-				var playerLoc = playerFromPlaceNext.locatable().loc;
+				var playerLoc = Locatable.of(playerFromPlaceNext).loc;
 				playerLoc.pos.overwriteWith(this.posToReturnTo);
 				playerLoc.vel.clear();
 			}
@@ -99,7 +99,8 @@ class Encounter
 
 		if (placeTypeName == PlaceHyperspace.name)
 		{
-			returnPos = (place as PlaceBase).player().locatable().loc.pos;
+			var player = Playable.entityFromPlace(place as PlaceBase);
+			returnPos = Locatable.of(player).loc.pos;
 		}
 		else if (placeTypeName == PlaceStarsystem.name)
 		{
@@ -136,7 +137,7 @@ class Encounter
 
 		var entityPlayer = encounter.entityPlayer;
 		var entityTalker = encounter.entityOther;
-		var talker = entityTalker.talker();
+		var talker = Talker.of(entityTalker);
 		talker.conversationDefnName = conversationResourceName;
 		talker.quit = conversationQuit;
 		var uwpe = new UniverseWorldPlaceEntities(universe, world, place, entityTalker, entityPlayer);

@@ -1,6 +1,7 @@
 "use strict";
-class Mappable {
+class Mappable extends EntityPropertyBase {
     constructor(visual) {
+        super();
         this.visual = visual;
     }
     static fromEntity(entity) {

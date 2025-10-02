@@ -2,11 +2,51 @@
 <body>
 
 <!-- hack -->
+<script type="text/javascript" src="Framework/Source/_Imports.js"></script>
+<script type="text/javascript" src="Framework/Source/_BuildRecord.js"></script>
+<script type="text/javascript" src="Framework/Source/Configuration.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/BitHandling/Source/Base64Encoder.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/BitHandling/Source/BitStream.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/BitHandling/Source/ByteConverter.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/BitHandling/Source/ByteStream.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Extensions/ArrayHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Extensions/StringHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/FileFormats/ByteStreamBigEndian.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/FileFormats/ModFile.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Instrument.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Octave.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Pitch.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Song.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Note.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Sequence.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Track.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Model/Tracker.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/SoundSources/SoundSource.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/SoundSources/SoundSourceChild.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/SoundSources/SoundSourceType.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/SoundSources/SoundSource_WavFile.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/MusicTracker/Source/Extensions/ArrayHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/SoundEffectSynthesizer/Source/SoundSequence.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/SoundEffectSynthesizer/Source/SoundSequenceNote.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/SoundEffectSynthesizer/Source/SoundSequenceVoice.js"></script>
+
+<script type="text/javascript" src="Framework/Source/_Libraries/WavFileViewer/Source/SoundFromWavFile.js"></script>
+<script type="text/javascript" src="Framework/Source/_Libraries/WavFileViewer/Source/WavFile.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Model/EntityProperty.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Helpers/ArrayHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Helpers/NumberHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Helpers/StringHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Helpers/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Controls/ControlActionNames.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlBase.js"></script>
@@ -26,8 +66,11 @@
 <script type="text/javascript" src="Framework/Source/Controls/ControlTextBox.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlVisual.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/DataBinding.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/VenueCarousel.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/VenueControls.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/VenueMessage.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Controls/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Display/Color.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Display2D.js"></script>
@@ -38,6 +81,7 @@
 
 <script type="text/javascript" src="Framework/Source/Display/Animation/Animatable2.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Display/Visuals/Visual.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualAnchor.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualArc.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualCircle.js"></script>
@@ -58,6 +102,8 @@
 
 <script type="text/javascript" src="Framework/Source/Display/Visuals/Animation/VisualAnimation.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Display/_Imports.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Geometry/Camera.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Disposition.js"></script>
@@ -73,14 +119,14 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_FrictionDry.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_FrictionXY.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_SpeedMaxXY.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_TrimToPlaceSize.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSize.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeXTrimY.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Shape.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeBase.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Arc.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Box.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/BoxRotated.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/BoxAxisAligned.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Cylinder.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Edge.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Face.js"></script>
@@ -89,11 +135,9 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/PathBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Plane.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Ray.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeBase.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeContainer.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAll.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeGroupAny.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeInverse.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Shell.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Sphere.js"></script>
@@ -108,6 +152,8 @@
 
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Meshes/Mesh.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Geometry/_Imports.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transforms.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Locate.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_Orient.js"></script>
@@ -119,6 +165,8 @@
 <script type="text/javascript" src="Framework/Source/Input/ActionToInputsMapping.js"></script>
 <script type="text/javascript" src="Framework/Source/Input/Input.js"></script>
 <script type="text/javascript" src="Framework/Source/Input/InputHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Input/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Media/BinaryFile.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Font.js"></script>
@@ -136,32 +184,12 @@
 <script type="text/javascript" src="Framework/Source/Media/Audio/SoundFromLibrary.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/SoundHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/SoundNone.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/Audio/SoundPlayback.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/VisualSound.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Extensions/ArrayHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Extensions/StringHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/Base64Encoder.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/ByteConverter.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/ByteStreamBigEndian.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/ByteStreamLittleEndian.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/Constants.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/Sound.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/ModFile.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/FileFormats/WavFile.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Instrument.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Octave.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Pitch.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Song.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Note.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Sequence.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Track.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/Model/Tracker.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSource.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSourceChild.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSourceType.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Audio/MusicTracker/Source/SoundSources/SoundSource_WavFile.js"></script>
-
 <script type="text/javascript" src="Framework/Source/Media/Text/TextString.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Media/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
@@ -207,21 +235,25 @@
 <script type="text/javascript" src="Framework/Source/Model/Talk/TalkNodeDefn.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Talk/Talker.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Model/_Imports.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Profiles/Profile.js"></script>
+<script type="text/javascript" src="Framework/Source/Profiles/ProfileHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Profiles/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Storage/FileHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/Serializer.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/StorageHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/VenueFileUpload.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Storage/Compressor/BitStream.js"></script>
-<script type="text/javascript" src="Framework/Source/Storage/Compressor/ByteStreamFromString.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/Compressor/CompressorLZW.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Tests/Assert.js"></script>
+<script type="text/javascript" src="Framework/Source/Testing/Assert.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Utility/DateTime.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/Debug.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/DebugSettings.js"></script
 <script type="text/javascript" src="Framework/Source/Utility/DiceRoll.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/IDHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/PlatformHelper.js"></script>
@@ -234,7 +266,7 @@
 <script type="text/javascript" src="Framework/Source/Utility/ValueBreakGroup.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/VenueTask.js"></script>
 
-<script type="text/javascript" src="Imports.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/_Imports.js"></script>
 
 <script type="text/javascript" src="Combat/Combat.js"></script>
 <script type="text/javascript" src="Combat/PlaceCombat.js"></script>

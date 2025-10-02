@@ -80,7 +80,7 @@ class PlaceEncounter extends PlaceBase
 					choiceActions.push( () => this.encounter.fight(universe) );
 				}
 
-				var controlRoot = universe.controlBuilder.choice5
+				var controlRoot = universe.controlBuilder.choiceUniverseSizeMessageOptionNamesAndFunctions
 				(
 					universe,
 					universe.display.sizeInPixels.clone(),

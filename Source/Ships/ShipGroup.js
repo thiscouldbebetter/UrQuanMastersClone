@@ -1,5 +1,5 @@
 "use strict";
-class ShipGroupBase {
+class ShipGroupBase extends EntityPropertyBase {
     static fromEntity(entity) {
         return entity.propertyByName(ShipGroupBase.name);
     }
@@ -21,7 +21,7 @@ class ShipGroupBase {
     }
     static activityDefnApproachPlayer_Perform(uwpe) {
         var entityActor = uwpe.entity;
-        var actor = entityActor.actor();
+        var actor = Actor.of(entityActor);
         var targetEntity = actor.activity.targetEntity();
         if (targetEntity == null) {
             var place = uwpe.place;
@@ -36,10 +36,10 @@ class ShipGroupBase {
     }
     static activityDefnApproachTarget_Perform(uwpe) {
         var entityActor = uwpe.entity;
-        var actor = entityActor.actor();
+        var actor = Actor.of(entityActor);
         var targetEntity = actor.activity.targetEntity();
-        var targetPos = targetEntity.locatable().loc.pos;
-        var actorLoc = entityActor.locatable().loc;
+        var targetPos = Locatable.of(targetEntity).loc.pos;
+        var actorLoc = Locatable.of(entityActor).loc;
         var actorPos = actorLoc.pos;
         var actorVel = actorLoc.vel;
         actorVel.overwriteWith(targetPos).subtract(actorPos);
@@ -51,15 +51,15 @@ class ShipGroupBase {
         }
     }
     static activityDefnDie() {
-        return new ActivityDefn("Die", (uwpe) => uwpe.entity.killable().kill());
+        return new ActivityDefn("Die", (uwpe) => Killable.of(uwpe.entity).kill());
     }
     static activityDefnLeave() {
         return new ActivityDefn("Leave", ShipGroupBase.activityDefnLeave_Perform);
     }
     static activityDefnLeave_Perform(uwpe) {
         var entityActor = uwpe.entity;
-        var actor = entityActor.actor();
-        var actorLoc = entityActor.locatable().loc;
+        var actor = Actor.of(entityActor);
+        var actorLoc = Locatable.of(entityActor).loc;
         var actorPlace = actorLoc.place(uwpe.world);
         var actorPos = actorLoc.pos;
         var activity = actor.activity;
@@ -73,7 +73,7 @@ class ShipGroupBase {
             activity.targetEntitySet(entityTarget);
         }
         else {
-            targetPos = entityTarget.locatable().loc.pos;
+            targetPos = Locatable.of(entityTarget).loc.pos;
         }
         var displacementToTarget = targetPos.clone().subtract(actorPos);
         var distanceToTarget = displacementToTarget.magnitude();
@@ -97,7 +97,7 @@ class ShipGroupBase {
         var world = uwpe.world;
         var place = uwpe.place;
         var entity = uwpe.entity;
-        place.entityRemove(entity);
+        place.entityToRemoveAdd(entity);
         var shipGroup = ShipGroupFinite.fromEntity(entity);
         var shipGroupsInPlace = null;
         var placeTypeName = place.constructor.name;
@@ -203,13 +203,13 @@ class ShipGroupFinite extends ShipGroupBase {
         var placeTypeName = place.constructor.name;
         if (placeTypeName == PlaceHyperspace.name) {
             var shipGroupEntity = place.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
-            pos = shipGroupEntity.locatable().loc.pos;
+            pos = Locatable.of(shipGroupEntity).loc.pos;
         }
         else if (placeTypeName == PlaceHyperspaceMap.name) {
             var placeHyperspaceMap = place;
             var placeHyperspace = placeHyperspaceMap.placeHyperspaceToReturnTo;
             var shipGroupEntity = placeHyperspace.entitiesAll().find(x => ShipGroupFinite.fromEntity(x) == this);
-            pos = shipGroupEntity.locatable().loc.pos;
+            pos = Locatable.of(shipGroupEntity).loc.pos;
         }
         else if (placeTypeName == PlaceStarsystem.name) {
             var placeStarsystem = place;
@@ -307,17 +307,16 @@ class ShipGroupFinite extends ShipGroupBase {
         );
         var collidable = Collidable.fromCollider(collider);
         var boundable = Boundable.fromCollidable(collidable);
-        var constraintSpeedMax = new Constraint_SpeedMaxXY(1);
-        var constrainable = new Constrainable([constraintSpeedMax]);
+        var constrainable = Constrainable.create();
         var shipDefn = faction.shipDefn(world);
         var shipVisual = shipDefn.visual;
         var drawable = Drawable.fromVisual(shipVisual);
         // Note that ships may really only be killable in combat.
-        var killable = new Killable(1, null, ShipGroupBase.kill);
+        var killable = Killable.fromIntegrityMaxAndDie(1, ShipGroupBase.kill);
         var pos = this.pos;
         var loc = Disposition.fromPos(pos);
         var locatable = new Locatable(loc);
-        var movable = Movable.default();
+        var movable = Movable.fromSpeedMax(1);
         var faction = this.faction(world);
         var talker = faction.toTalker();
         var returnEntity = new Entity(this.name, [
@@ -342,7 +341,7 @@ class ShipGroupFinite extends ShipGroupBase {
             entityShipGroup = this.toEntity(world, world.place());
             uwpe.entity2Set(entityShipGroup);
         }
-        var playerPos = entityPlayer.locatable().loc.pos;
+        var playerPos = Locatable.of(entityPlayer).loc.pos;
         var place = uwpe.place;
         var placeTypeName = place.constructor.name;
         var planet;

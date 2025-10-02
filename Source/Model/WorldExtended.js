@@ -74,7 +74,7 @@ class WorldExtended extends World {
             territory, shipDefnName, diplomaticRelationshipTypeWithPlayerDefault, Activity.fromDefnName(ShipGroupBase.activityDefnApproachPlayer().name));
         };
         var soi = (centerX, centerY, radius) => {
-            var sphere = new Sphere(Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10), radius * hyperspaceSize.x);
+            var sphere = Sphere.fromCenterAndRadius(Coords.fromXY(centerX, 1000 - centerY).multiplyScalar(10), radius * hyperspaceSize.x);
             var territory = new FactionTerritory(sphere);
             return territory;
         };
@@ -203,16 +203,16 @@ class WorldExtended extends World {
         var actionsCombat = Combat.actions();
         var actionToInputsMappings = Ship.actionToInputsMappings();
         var placeDefns = [
-            PlaceDefn.from5(PlaceCombat.name, "Music_Combat", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
-            PlaceDefn.from5(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, [] // propertyNamesToProcess
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlaceCombat.name, "Music_Combat", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Ship.name])),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlaceEncounter.name, "Music_Encounter", actions, actionToInputsMappings, [] // propertyNamesToProcess
             ),
-            PlaceDefn.from5(PlaceHyperspace.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
-            PlaceDefn.from5(PlaceHyperspaceMap.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlacePlanetOrbit.name, "Music_Planet", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlacePlanetSurface.name, "Music_Planet", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
-            PlaceDefn.from5(PlacePlanetVicinity.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlaceStarsystem.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
-            PlaceDefn.from5(PlaceStation.name, "Music_Music", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlaceHyperspace.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([Fuelable.name])),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlaceHyperspaceMap.name, "Music_Hyperspace", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlacePlanetOrbit.name, "Music_Planet", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlacePlanetSurface.name, "Music_Planet", actionsCombat, actionToInputsMappings, entityPropertyNamesToProcess.slice(0).concat([EntityGenerator.name])),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlacePlanetVicinity.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlaceStarsystem.name, "Music_Starsystem", actions, actionToInputsMappings, entityPropertyNamesToProcess),
+            PlaceDefn.fromNameMusicActionsMappingsAndPropertyNames(PlaceStation.name, "Music_Music", actions, actionToInputsMappings, entityPropertyNamesToProcess),
         ];
         return placeDefns;
     }

@@ -91,15 +91,15 @@ class PlaceCombat extends PlaceBase
 	constructor_PlanetEntityBuild(planet: Planet): Entity
 	{
 		var planetDefn = planet.defn();
-		var visual: VisualBase = planetDefn.visualVicinityPrimary;
+		var visual: Visual = planetDefn.visualVicinityPrimary;
 		var radius = (visual as VisualCircleGradient).radius;
 
 		var activity =
 			new Activity(Planet.activityDefnGravitate().name, null);
 		var actor = new Actor(activity);
 
-		var collider = new Sphere(Coords.create(), radius);
-		var collidable = Collidable.from3
+		var collider = Sphere.fromRadius(radius);
+		var collidable = Collidable.fromColliderPropertyNamesAndCollide
 		(
 			collider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
@@ -114,7 +114,7 @@ class PlaceCombat extends PlaceBase
 		var pos = sizeHalf.clone();
 		var locatable = Locatable.fromPos(pos);
 
-		var planetEntity = new Entity
+		var planetEntity = Entity.fromNameAndProperties
 		(
 			Planet.name,
 			[
@@ -174,19 +174,19 @@ class PlaceCombat extends PlaceBase
 		var entityPlanet = uwpe.entity;
 		var entityOther = uwpe.entity2;
 
-		var planetPos = entityPlanet.locatable().loc.pos;
+		var planetPos = Locatable.of(entityPlanet).loc.pos;
 
-		var otherLoc = entityOther.locatable().loc;
+		var otherLoc = Locatable.of(entityOther).loc;
 		var otherPos = otherLoc.pos;
 		var displacement = otherPos.clone().subtract(planetPos);
 		var distance = displacement.magnitude();
 		var direction = displacement.divideScalar(distance);
 		var planetCollider =
-			entityPlanet.collidable().collider as Sphere;
-		var planetRadius = planetCollider.radius;
+			Collidable.of(entityPlanet).collider as Sphere;
+		var planetRadius = planetCollider.radius();
 		var otherCollider =
-			entityOther.collidable().collider as Sphere;
-		var sumOfRadii = planetRadius + otherCollider.radius;
+			Collidable.of(entityOther).collider as Sphere;
+		var sumOfRadii = planetRadius + otherCollider.radius();
 		if (distance < sumOfRadii)
 		{
 			var impulse = direction.multiplyScalar(sumOfRadii - distance);
@@ -209,7 +209,7 @@ class PlaceCombat extends PlaceBase
 		else
 		{
 			var colorBlack = Color.Instances().Black;
-			display.drawBackground(colorBlack, colorBlack);
+			display.drawBackgroundWithColorsBackAndBorder(colorBlack, colorBlack);
 
 			var midpointBetweenCombatants;
 
@@ -218,7 +218,7 @@ class PlaceCombat extends PlaceBase
 
 			if (ships.length == 1)
 			{
-				midpointBetweenCombatants = ships[0].locatable().loc.pos;
+				midpointBetweenCombatants = Locatable.of(ships[0]).loc.pos;
 			}
 			else // if ships.length == 2
 			{
@@ -227,8 +227,8 @@ class PlaceCombat extends PlaceBase
 					this.combat.midpointOfPointsWrappedToRange
 					(
 						cameraPos, // midpointToOverwrite
-						ships[0].locatable().loc.pos,
-						ships[1].locatable().loc.pos,
+						Locatable.of(ships[0]).loc.pos,
+						Locatable.of(ships[1]).loc.pos,
 						this.size()
 					);
 			}
@@ -257,13 +257,13 @@ class PlaceCombat extends PlaceBase
 			var shipEntityOther = shipEntitiesExisting.find(x => x.id != entityToSpawn.id);
 			var shipOtherPos =
 			(
-				shipEntityOther == null ? Coords.create() : shipEntityOther.locatable().loc.pos
+				shipEntityOther == null ? Coords.create() : Locatable.of(shipEntityOther).loc.pos
 			);
 
 			var planet = this.entitiesByPropertyName(Planet.name)[0];
-			var planetPos = planet.locatable().loc.pos;
+			var planetPos = Locatable.of(planet).loc.pos;
 
-			var shipPos = entityToSpawn.locatable().loc.pos;
+			var shipPos = Locatable.of(entityToSpawn).loc.pos;
 			var distanceMin = 100;
 			while
 			(
@@ -279,11 +279,11 @@ class PlaceCombat extends PlaceBase
 			var shipsFighting = this.combat.shipsFighting;
 			if (ship == shipsFighting[0])
 			{
-				shipEntity.actor().activity.defnNameSet(Player.activityDefn().name);
+				Actor.of(shipEntity).activity.defnNameSet(Player.activityDefn().name);
 			}
 			else if (ship == shipsFighting[1])
 			{
-				shipEntity.actor().activity.defnNameSet
+				Actor.of(shipEntity).activity.defnNameSet
 				(
 					//Combat.activityDefnEnemy().name
 					ActivityDefn.Instances().DoNothing.name

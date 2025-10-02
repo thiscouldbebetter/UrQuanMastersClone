@@ -59,16 +59,16 @@ class PlaceHyperspaceMap extends PlaceBase {
                 var factionZoneAsSphere = factionZone;
                 drawPos.overwriteWith(factionZoneAsSphere.center);
                 this._camera.coordsTransformWorldToView(drawPos);
-                var factionZoneRadiusScaled = factionZoneAsSphere.radius * magnificationFactor;
+                var factionZoneRadiusScaled = factionZoneAsSphere.radius() * magnificationFactor;
                 var factionColor = faction.color;
                 display.drawCircle(drawPos, factionZoneRadiusScaled, null, factionColor, null);
-                display.drawText(faction.name, FontNameAndHeight.fromHeightInPixels(10), drawPos, factionColor, Color.Instances().Gray, false, // areColorsReversed,
+                display.drawTextWithFontAtPosWithColorsFillAndOutline(faction.name, FontNameAndHeight.fromHeightInPixels(10), drawPos, factionColor, Color.Instances().Gray, false, // areColorsReversed,
                 true, // isCentered,
                 null);
             }
         }
         var entityForPlayer = this.placeHyperspaceToReturnTo.entityByName(Player.name);
-        var playerPos = entityForPlayer.locatable().loc.pos;
+        var playerPos = Locatable.of(entityForPlayer).loc.pos;
         drawPos.overwriteWith(playerPos);
         this._camera.coordsTransformWorldToView(drawPos);
         var locatorDimension = starRadius * 8 * magnificationFactor;
@@ -91,7 +91,7 @@ class PlaceHyperspaceMap extends PlaceBase {
         var world = uwpe.world;
         if (this.reticlePos == null) {
             var entityForPlayer = this.placeHyperspaceToReturnTo.entityByName(Player.name);
-            var playerPos = entityForPlayer.locatable().loc.pos;
+            var playerPos = Locatable.of(entityForPlayer).loc.pos;
             this.reticlePos = playerPos.clone();
         }
         if (this.venueControls == null) {
@@ -184,27 +184,27 @@ class PlaceHyperspaceMap extends PlaceBase {
         );
         this.displayMap = displayMap.initialize(universe);
         var containerPlayer = world.player.toControlSidebar(world);
-        var containerReticle = ControlContainer.from4("containerReticle", Coords.fromXY(marginSize.x, marginSize.y * 2 + containerPlayer.size.y), containerPlayer.size, [
+        var containerReticle = ControlContainer.fromNamePosSizeAndChildren("containerReticle", Coords.fromXY(marginSize.x, marginSize.y * 2 + containerPlayer.size.y), containerPlayer.size, [
             new ControlLabel("labelReticle", Coords.fromXY(containerPlayer.size.x / 2, marginSize.y), titleSize, true, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Reticle"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2), titleSize, DataBinding.fromContext("Pos:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2), titleSize, DataBinding.fromContextAndGet(this, (c) => c.reticlePosAsStringXY()), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3), titleSize, DataBinding.fromContext("Fuel:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 3), titleSize, DataBinding.fromContextAndGet(this, (c) => "" + c.fuelFromPlayerShipGroupToReticle(world)), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 2), titleSize, DataBinding.fromContext("Pos:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2), titleSize, DataBinding.fromContextAndGet(this, (c) => c.reticlePosAsStringXY()), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 3), titleSize, DataBinding.fromContext("Fuel:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 3), titleSize, DataBinding.fromContextAndGet(this, (c) => "" + c.fuelFromPlayerShipGroupToReticle(world)), fontShort),
         ]);
-        var containerSidebar = ControlContainer.from4("containerRight", Coords.fromXY(marginSize.x * 2 + containerMapSize.x, marginSize.y * 2 + titleSize.y), containerRightSize, 
+        var containerSidebar = ControlContainer.fromNamePosSizeAndChildren("containerRight", Coords.fromXY(marginSize.x * 2 + containerMapSize.x, marginSize.y * 2 + titleSize.y), containerRightSize, 
         // children
         [
             containerPlayer,
             containerReticle
         ]);
-        var controlRoot = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
+        var controlRoot = ControlContainer.fromNamePosSizeAndChildren("containerMain", Coords.fromXY(0, 0), // pos
         containerSize, [
             new ControlLabel("labelHyperspaceMap", Coords.fromXY(marginSize.x, marginSize.y), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Hyperspace Map"), font),
-            ControlVisual.from4("visualMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerMapSize, DataBinding.fromContext(new VisualImageImmediate(Image2.fromSystemImage("[fromCanvas]", this.displayMap.canvas), null // ?
+            ControlVisual.fromNamePosSizeAndVisual("visualMap", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y), containerMapSize, DataBinding.fromContext(new VisualImageImmediate(Image2.fromSystemImage("[fromCanvas]", this.displayMap.canvas), null // ?
             ))),
             containerSidebar,
             ControlButton.from5(marginSize, buttonSize, "<", font, () => {

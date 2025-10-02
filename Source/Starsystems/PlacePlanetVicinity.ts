@@ -117,7 +117,7 @@ class PlacePlanetVicinity extends PlaceBase
 				(
 					new ShapeInverse
 					(
-						new Box(Coords.create(), this.size() )
+						BoxAxisAligned.fromSize(this.size() )
 					)
 				)
 			]
@@ -133,23 +133,21 @@ class PlacePlanetVicinity extends PlaceBase
 		var activity = new Activity(activityDefnName, null);
 		var actor = new Actor(activity);
 
-		var collider = new Sphere(Coords.create(), entityDimension / 2);
-		var collidable = Collidable.from3
+		var collider = Sphere.fromRadius(entityDimension / 2);
+		var collidable = Collidable.fromColliderPropertyNamesAndCollide
 		(
 			collider,
 			[ Collidable.name ], // entityPropertyNamesToCollideWith
 			this.playerCollide
 		);
 
-		var constraintSpeedMax = new Constraint_SpeedMaxXY(1); // todo
-
-		var constrainable = new Constrainable([constraintSpeedMax]);
+		var constrainable = Constrainable.create();
 
 		var itemHolder = ItemHolder.create();
 
 		var locatable = new Locatable(playerLoc);
 
-		var movable = Movable.default();
+		var movable = Movable.fromSpeedMax(1);
 
 		var playable = new Playable();
 
@@ -194,10 +192,10 @@ class PlacePlanetVicinity extends PlaceBase
 		var display = universe.display;
 
 		var colors = Color.Instances();
-		display.drawBackground(colors.Black, colors.Gray);
+		display.drawBackgroundWithColorsBackAndBorder(colors.Black, colors.Gray);
 
 		var player = this.entityByName(Player.name);
-		var playerLoc = player.locatable().loc;
+		var playerLoc = Locatable.of(player).loc;
 
 		var camera = this._camera;
 		camera.loc.pos.overwriteWith
@@ -287,7 +285,7 @@ class PlacePlanetVicinity extends PlaceBase
 		}
 		else
 		{
-			var playerPos = entityPlayer.locatable().loc.pos;
+			var playerPos = Locatable.of(entityPlayer).loc.pos;
 			var encounter = new Encounter
 			(
 				planet,
@@ -307,11 +305,11 @@ class PlacePlanetVicinity extends PlaceBase
 		universe: Universe, world: WorldExtended, entityPlayer: Entity, entityPlanet: Entity
 	): void
 	{
-		var playerLoc = entityPlayer.locatable().loc;
-		var planetPos = entityPlanet.locatable().loc.pos;
+		var playerLoc = Locatable.of(entityPlayer).loc;
+		var planetPos = Locatable.of(entityPlanet).loc.pos;
 		playerLoc.pos.overwriteWith(planetPos);
 		playerLoc.vel.clear();
-		entityPlayer.collidable().entityAlreadyCollidedWithAddIfNotPresent(entityPlanet);
+		Collidable.of(entityPlayer).entityAlreadyCollidedWithAddIfNotPresent(entityPlanet);
 		var planet = Planet.fromEntity(entityPlanet);
 		var placePlanetOrbit = new PlacePlanetOrbit
 		(
@@ -322,7 +320,7 @@ class PlacePlanetVicinity extends PlaceBase
 
 	playerCollide_ShipGroup(uwpe: UniverseWorldPlaceEntities, entityShipGroup: Entity): void
 	{
-		entityShipGroup.collidable().ticksUntilCanCollide = 100; // hack
+		Collidable.of(entityShipGroup).ticksUntilCanCollide = 100; // hack
 		var shipGroup = ShipGroupFinite.fromEntity(entityShipGroup);
 		var placeEncounter = shipGroup.toEncounter(uwpe).toPlace();
 		uwpe.world.placeNextSet(placeEncounter);
@@ -336,7 +334,7 @@ class PlacePlanetVicinity extends PlaceBase
 		var posNext =
 			planet
 				.offsetFromPrimaryAsPolar
-				.toCoords(Coords.create())
+				.toCoords()
 				.add
 				(
 					starsystem.sizeInner.clone().half()
@@ -344,7 +342,7 @@ class PlacePlanetVicinity extends PlaceBase
 		var dispositionNext = new Disposition
 		(
 			posNext,
-			entityPlayer.locatable().loc.orientation.clone(),
+			Locatable.of(entityPlayer).loc.orientation.clone(),
 			null
 		);
 		var starsystemAsPlace = starsystem.toPlace
@@ -366,7 +364,7 @@ class PlacePlanetVicinity extends PlaceBase
 		var playerAsControlSidebar =
 			world.player.toControlSidebar(world);
 
-		var containerSidebar = ControlContainer.from4
+		var containerSidebar = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerSidebar",
 			Coords.fromXY(300, 0), // todo

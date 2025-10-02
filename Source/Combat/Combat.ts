@@ -61,8 +61,8 @@ class Combat
 
 		var entitiesShips = place.entitiesShips();
 		var target = (entitiesShips[0] == actor ? entitiesShips[1] : entitiesShips[0]);
-		var targetPos = target.locatable().loc.pos;
-		var actorLoc = actor.locatable().loc;
+		var targetPos = Locatable.of(target).loc.pos;
+		var actorLoc = Locatable.of(actor).loc;
 		var actorPos = actorLoc.pos;
 		var actorVel = actorLoc.vel;
 		var combat = place.combat;
@@ -236,7 +236,7 @@ class Combat
 			+ numberOfShipsDestroyed + " ships destroyed.\n"
 			+ creditsSalvaged + " credits worth of resources salvaged.\n";
 
-		var returnValue = universe.controlBuilder.message4
+		var returnValue = universe.controlBuilder.messageFromUniverseSizeTextAndAcknowledge
 		(
 			universe,
 			size,
@@ -349,7 +349,7 @@ class Combat
 				fontTitle
 			),
 
-			ControlLabel.from4Uncentered
+			ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY(marginSize.x, titleSize.y + marginSize.y * 2),
 				titleSize,
@@ -410,7 +410,7 @@ class Combat
 				false // canBeHeldDown
 			),
 
-			ControlLabel.from4Uncentered
+			ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY
 				(
@@ -496,7 +496,7 @@ class Combat
 			),
 		]
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerShipSelect",
 			Coords.Instances().Zeroes,
@@ -519,7 +519,7 @@ class Combat
 			shipsFighting[1].toControlSidebar(containerSidebarSize, 1, uwpe),
 		];
 
-		var containerSidebar = ControlContainer.from4
+		var containerSidebar = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerSidebar",
 			Coords.fromXY(300, 0),

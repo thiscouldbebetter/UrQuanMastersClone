@@ -508,7 +508,7 @@ class PlaceStationDock extends PlaceBase
 		var shipComponentDefnsKnownBackbone =
 			player.shipComponentDefnsKnownBackbone();
 
-		var containerComponents = ControlContainer.from4
+		var containerComponents = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerComponents",
 			Coords.fromXY
@@ -519,7 +519,7 @@ class PlaceStationDock extends PlaceBase
 			containerLeftSize,
 			// children
 			[
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -531,7 +531,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlList.from8
+				ControlList.fromNamePosSizeItemsTextFontSelectedValue
 				(
 					"listComponents",
 					Coords.fromXY
@@ -572,7 +572,7 @@ class PlaceStationDock extends PlaceBase
 					() => this.componentBuildBackbone(uwpe)
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -584,7 +584,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -600,7 +600,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlList.from8
+				ControlList.fromNamePosSizeItemsTextFontSelectedValue
 				(
 					"listComponentsInstalled",
 					Coords.fromXY
@@ -641,7 +641,7 @@ class PlaceStationDock extends PlaceBase
 					() => this.componentScrapBackbone(uwpe)
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -653,7 +653,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlList.from8
+				ControlList.fromNamePosSizeItemsTextFontSelectedValue
 				(
 					"listWeapons",
 					Coords.fromXY
@@ -697,7 +697,7 @@ class PlaceStationDock extends PlaceBase
 					},
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -709,7 +709,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -751,7 +751,7 @@ class PlaceStationDock extends PlaceBase
 					this.componentScrapThruster.bind(this)
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -763,7 +763,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -810,7 +810,7 @@ class PlaceStationDock extends PlaceBase
 
 		var shipPlansAvailable = player.shipDefnsAvailable(universe);
 
-		var containerShips = ControlContainer.from4
+		var containerShips = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerShips",
 			Coords.fromXY
@@ -821,7 +821,7 @@ class PlaceStationDock extends PlaceBase
 			containerLeftSize,
 			// children
 			[
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -832,7 +832,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlList.from8
+				ControlList.fromNamePosSizeItemsTextFontSelectedValue
 				(
 					"listShipPlansAvailable",
 					Coords.fromXY
@@ -873,7 +873,7 @@ class PlaceStationDock extends PlaceBase
 					this.shipBuild.bind(this)
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -885,7 +885,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -901,7 +901,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlList.from8
+				ControlList.fromNamePosSizeItemsTextFontSelectedValue
 				(
 					"listShipsInFleet",
 					Coords.fromXY
@@ -970,7 +970,7 @@ class PlaceStationDock extends PlaceBase
 			]
 		);
 
-		var containerResources = ControlContainer.from4
+		var containerResources = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerResources",
 			Coords.fromXY
@@ -981,7 +981,7 @@ class PlaceStationDock extends PlaceBase
 			containerRightSize,
 			// children
 			[
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					marginSize,
 					labelSize,
@@ -989,7 +989,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 7, marginSize.y),
 					labelSize,
@@ -1000,7 +1000,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y),
 					labelSize,
@@ -1008,7 +1008,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y),
 					labelSize,
@@ -1045,7 +1045,7 @@ class PlaceStationDock extends PlaceBase
 					this.fuelSellOneUnit.bind(this)
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -1057,7 +1057,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY
 					(
@@ -1113,7 +1113,7 @@ class PlaceStationDock extends PlaceBase
 					fontShort
 				),
 
-				ControlList.from8
+				ControlList.fromNamePosSizeItemsTextFontSelectedValue
 				(
 					"listMinerals",
 					Coords.fromXY
@@ -1136,7 +1136,7 @@ class PlaceStationDock extends PlaceBase
 					DataBinding.fromContext(null) // bindingForItemValue
 				),
 
-				ControlButton.from8
+				ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 				(
 					"buttonResourcesOffload",
 					Coords.fromXY
@@ -1158,7 +1158,7 @@ class PlaceStationDock extends PlaceBase
 			]
 		);
 
-		var controlRoot = ControlContainer.from4
+		var controlRoot = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerDock",
 			Coords.fromXY(0, 0), // pos

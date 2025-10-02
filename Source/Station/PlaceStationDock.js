@@ -317,77 +317,77 @@ class PlaceStationDock extends PlaceBase {
         var listShipsSize = Coords.fromXY(buttonSizeShips.x, (containerLeftSize.y - labelSize.y - buttonSizeShips.y - marginSize.y * 4)); // size
         var shipComponentsInstalled = player.flagship.componentsBackbone();
         var shipComponentDefnsKnownBackbone = player.shipComponentDefnsKnownBackbone();
-        var containerComponents = ControlContainer.from4("containerComponents", Coords.fromXY(marginSize.x, marginSize.y + titleSize.y), containerLeftSize, 
+        var containerComponents = ControlContainer.fromNamePosSizeAndChildren("containerComponents", Coords.fromXY(marginSize.x, marginSize.y + titleSize.y), containerLeftSize, 
         // children
         [
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Available:"), fontShort),
-            ControlList.from8("listComponents", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentDefnsKnownBackbone), DataBinding.fromGet((c) => c.name), // bindingForItemText
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Available:"), fontShort),
+            ControlList.fromNamePosSizeItemsTextFontSelectedValue("listComponents", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentDefnsKnownBackbone), DataBinding.fromGet((c) => c.name), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToBuild, (c, v) => c.componentToBuild = v), // bindingForItemSelected
             DataBinding.fromContext(null) // ?
             ),
             ControlButton.from5(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Build", fontShort, () => this.componentBuildBackbone(uwpe)),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Installed:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 8 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.componentsBackboneCurrentOverMax()), fontShort),
-            ControlList.from8("listComponentsInstalled", Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentsInstalled), DataBinding.fromGet((c) => c.name), // bindingForItemText
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Installed:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 8 + listComponentsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.componentsBackboneCurrentOverMax()), fontShort),
+            ControlList.fromNamePosSizeItemsTextFontSelectedValue("listComponentsInstalled", Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipComponentsInstalled), DataBinding.fromGet((c) => c.name), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.componentToScrap, (c, v) => c.componentToScrap = v), // bindingForItemSelected
             DataBinding.fromContext(null)),
             ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listComponentsSize.x, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Scrap", fontShort, () => this.componentScrapBackbone(uwpe)),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y), labelSize, DataBinding.fromContext("Weapons:"), fontShort),
-            ControlList.from8("listWeapons", Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipWeaponSlots), DataBinding.fromGet((c) => c.nameAndComponentInstalled() // bindingForItemText
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y), labelSize, DataBinding.fromContext("Weapons:"), fontShort),
+            ControlList.fromNamePosSizeItemsTextFontSelectedValue("listWeapons", Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 2 + labelSize.y), listComponentsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipWeaponSlots), DataBinding.fromGet((c) => c.nameAndComponentInstalled() // bindingForItemText
             ), fontShort, new DataBinding(placeStationDock, (c) => c.weaponSlotToMove, (c, v) => c.weaponSlotToMove = v), // bindingForItemSelected
             DataBinding.fromContext(null) // ?
             ),
             ControlButton.from5(Coords.fromXY(marginSize.x * 3 + listComponentsSize.x * 2, marginSize.y * 3 + labelSize.y + listComponentsSize.y), buttonSizeComponents, "Up", fontShort, () => {
                 // todo
             }),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Thrusters:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 8, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.thrustersCurrentOverMax()), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Thrusters:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 8, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.thrustersCurrentOverMax()), fontShort),
             ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentBuildThruster.bind(this)),
             ControlButton.from5(Coords.fromXY(containerLeftSize.x / 2 - marginSize.x * 2 - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentScrapThruster.bind(this)),
-            ControlLabel.from4Uncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Turning Jets:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x * 9, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.turningJetsCurrentOverMax()), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContext("Turning Jets:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(containerLeftSize.x / 2 + marginSize.x * 9, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => c.turningJetsCurrentOverMax()), fontShort),
             ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "+", fontShort, this.componentBuildTurningJets.bind(this)),
             ControlButton.from5(Coords.fromXY(containerLeftSize.x - marginSize.x - buttonSizeSmall.x * 1, marginSize.y * 4 + labelSize.y + listComponentsSize.y + buttonSizeComponents.y), buttonSizeSmall, "-", fontShort, this.componentScrapTurningJets.bind(this)),
         ]);
         var shipPlansAvailable = player.shipDefnsAvailable(universe);
-        var containerShips = ControlContainer.from4("containerShips", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y + containerLeftSize.y), containerLeftSize, 
+        var containerShips = ControlContainer.fromNamePosSizeAndChildren("containerShips", Coords.fromXY(marginSize.x, marginSize.y * 2 + titleSize.y + containerLeftSize.y), containerLeftSize, 
         // children
         [
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Available:"), fontShort),
-            ControlList.from8("listShipPlansAvailable", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipPlansAvailable), DataBinding.fromGet((c) => c.fullNameAndValue()), // bindingForItemText
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y), labelSize, DataBinding.fromContext("Available:"), fontShort),
+            ControlList.fromNamePosSizeItemsTextFontSelectedValue("listShipPlansAvailable", Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipPlansAvailable), DataBinding.fromGet((c) => c.fullNameAndValue()), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.shipDefnToBuild, (c, v) => c.shipDefnToBuild = v), DataBinding.fromContext(null)),
             ControlButton.from5(Coords.fromXY(marginSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShips, "Build", fontShort, this.shipBuild.bind(this)),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Fleet:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 6 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.shipsCurrentOverMax()), fontShort),
-            ControlList.from8("listShipsInFleet", Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipsInFleet), DataBinding.fromGet((c) => c.fullNameAndCrew(uwpe)), // bindingForItemText
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContext("Fleet:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 6 + listShipsSize.x, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.shipsCurrentOverMax()), fontShort),
+            ControlList.fromNamePosSizeItemsTextFontSelectedValue("listShipsInFleet", Coords.fromXY(marginSize.x * 2 + listShipsSize.x, marginSize.y * 2 + labelSize.y), listShipsSize, DataBinding.fromContextAndGet(placeStationDock, (c) => shipsInFleet), DataBinding.fromGet((c) => c.fullNameAndCrew(uwpe)), // bindingForItemText
             fontShort, new DataBinding(placeStationDock, (c) => c.shipInFleetSelected, (c, v) => c.shipInFleetSelected = v), DataBinding.fromContext(null) // ?
             ),
             ControlButton.from5(Coords.fromXY(marginSize.x * 2 + listShipsSize.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Scrap", fontShort, this.shipScrap.bind(this)),
             ControlButton.from5(Coords.fromXY(marginSize.x * 3 + listShipsSize.x + buttonSizeShipsSmall.x, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Crew+", fontShort, this.crewAdd.bind(this)),
             ControlButton.from5(Coords.fromXY(marginSize.x * 4 + listShipsSize.x + buttonSizeShipsSmall.x * 2, containerLeftSize.y - marginSize.y - buttonSizeShips.y), buttonSizeShipsSmall, "Crew-", fontShort, this.crewRemove.bind(this)),
         ]);
-        var containerResources = ControlContainer.from4("containerResources", Coords.fromXY(marginSize.x * 2 + containerLeftSize.x, marginSize.y + titleSize.y), containerRightSize, 
+        var containerResources = ControlContainer.fromNamePosSizeAndChildren("containerResources", Coords.fromXY(marginSize.x * 2 + containerLeftSize.x, marginSize.y + titleSize.y), containerRightSize, 
         // children
         [
-            ControlLabel.from4Uncentered(marginSize, labelSize, DataBinding.fromContext("Resources:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => "" + c.flagship.resourceCredits), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContext("Fuel:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.flagship.fuelCurrentOverMax()), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(marginSize, labelSize, DataBinding.fromContext("Resources:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 7, marginSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => "" + c.flagship.resourceCredits), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContext("Fuel:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 4, marginSize.y * 2 + labelSize.y), labelSize, DataBinding.fromContextAndGet(player, (c) => c.flagship.fuelCurrentOverMax()), fontShort),
             ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "+", fontShort, this.fuelBuyOneUnit.bind(this)),
             ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 2 + labelSize.y), buttonSizeSmall, "-", fontShort, this.fuelSellOneUnit.bind(this)),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContext("Landers:"), fontShort),
-            ControlLabel.from4Uncentered(Coords.fromXY(marginSize.x * 6, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => "" + c.numberOfLanders), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContext("Landers:"), fontShort),
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(marginSize.x * 6, marginSize.y * 3 + labelSize.y * 2), labelSize, DataBinding.fromContextAndGet(player.flagship, (c) => "" + c.numberOfLanders), fontShort),
             ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x * 2, marginSize.y * 3 + labelSize.y * 2), buttonSizeSmall, "+", fontShort, this.landerAdd.bind(this)),
             ControlButton.from5(Coords.fromXY(containerRightSize.x - marginSize.x - buttonSizeSmall.x, marginSize.y * 3 + labelSize.y * 2), buttonSizeSmall, "-", fontShort, this.landerRemove.bind(this)),
             new ControlLabel("labelMinerals", Coords.fromXY(marginSize.x, marginSize.y * 4 + labelSize.y * 3), labelSize, false, // isTextCentered
             false, // isTextCenteredVertically
             DataBinding.fromContext("Minerals:"), fontShort),
-            ControlList.from8("listMinerals", Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 4), Coords.fromXY(containerRightSize.x - marginSize.x * 2, containerRightSize.y - marginSize.y * 7 - labelSize.y * 4 - buttonSizeRight.y), // size
+            ControlList.fromNamePosSizeItemsTextFontSelectedValue("listMinerals", Coords.fromXY(marginSize.x, marginSize.y * 5 + labelSize.y * 4), Coords.fromXY(containerRightSize.x - marginSize.x * 2, containerRightSize.y - marginSize.y * 7 - labelSize.y * 4 - buttonSizeRight.y), // size
             DataBinding.fromContext(playerItemHolder.items), DataBinding.fromGet((c) => c.toString(null)), // bindingForItemText
             fontShort, DataBinding.fromContext(null), // bindingForItemSelected
             DataBinding.fromContext(null) // bindingForItemValue
             ),
-            ControlButton.from8("buttonResourcesOffload", Coords.fromXY(marginSize.x, containerRightSize.y - marginSize.y - buttonSizeRight.y // todo
+            ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonResourcesOffload", Coords.fromXY(marginSize.x, containerRightSize.y - marginSize.y - buttonSizeRight.y // todo
             ), buttonSizeRight, "Offload", fontShort, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
             () => // click
@@ -395,7 +395,7 @@ class PlaceStationDock extends PlaceBase {
                 placeStationDock.offload(universe);
             }),
         ]);
-        var controlRoot = ControlContainer.from4("containerDock", Coords.fromXY(0, 0), // pos
+        var controlRoot = ControlContainer.fromNamePosSizeAndChildren("containerDock", Coords.fromXY(0, 0), // pos
         containerDockSize, [
             new ControlLabel("labelDock", Coords.fromXY(containerDockSize.x / 2, titleSize.y / 2), titleSize, true, // isTextCentered
             false, // isTextCenteredVertically

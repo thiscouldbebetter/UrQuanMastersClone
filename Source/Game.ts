@@ -35,9 +35,10 @@ class Game
 		var sounds =
 		[
 			new SoundFromFile("Sound", audioDirectory + "Effects/Sound.wav"),
+			new SoundFromFile("Effects_Producer", audioDirectory + "Effects/Sound.wav"),
 
 			new SoundFromFile("Music_Music", audioDirectory + "Music/Music.mp3"),
-			new SoundFromFile("Music_Producer", audioDirectory + "Music/Music.mp3"),
+
 			//new SoundFromFile("Music_Title", audioDirectory + "Music/Music.mp3"),
 			sffm("Music_Title", importDirectoryPath + "cutscene/intro/introx.mod"),
 
@@ -279,47 +280,83 @@ class Game
 		var universe = Universe.create
 		(
 			"SpaceAdventureClone",
-			"0.0.0-20241110",
+			"0.0.0-20250930",
 			timerHelper,
 			display,
 			new SoundHelperLive(),
 			mediaLibrary,
 			controlBuilder,
+			ProfileHelper.maximal(),
 			WorldCreator.fromWorldCreate(WorldExtended.create)
 		);
 
 		var colors = Color.Instances();
-		var colorBlackName = colors.Black.name;
+		var slidesAsColorTextPairs = 
+		[
+			[ colors.Black, "At first, it was black." ],
+			[ colors.Red, "Then, it turned red." ],
+			[ colors.Cyan, "Then it turned, I want to say, cyan?" ],
+			[ colors.Black, "Then it was black again." ],
+			[ colors.Black, "Whew!  That was quite a ride." ],
+			[ colors.Black, "Anyway, here's a game." ]
+		];
 
-		var controlSlideshowIntro = universe.controlBuilder.slideshow
+		var slideSize = displaySizeInPixelsDefault.clone();
+
+		var slidesAsVenues = slidesAsColorTextPairs.map
 		(
-			universe,
-			displaySizeInPixelsDefault,
-			[
-				[ colorBlackName, "At first, it was black." ],
-				[ colors.Red.name, "Then, it turned red." ],
-				[ colors.Cyan.name, "Then it turned, I want to say, cyan?" ],
-				[ colorBlackName, "Then it was black again." ],
-				[ colorBlackName, "Whew!  That was quite a ride." ],
-				[ colorBlackName, "Anyway, here's a game." ],
-			],
-			universe.venueNext()
+			slideAsColorAndText =>
+			{
+				var slideColor = slideAsColorAndText[0] as Color;
+				var slideText = slideAsColorAndText[1] as string;
+
+				var backgroundAsVisual =
+					VisualRectangle.fromSizeAndColorFill(slideSize, slideColor);
+				var backgroundAsControl =
+					ControlVisual.fromPosAndVisual
+					(
+						Coords.zeroes(), DataBinding.fromContext<Visual>(backgroundAsVisual)
+					);
+
+				var textAsControl = ControlLabel.fromPosAndTextString(Coords.zeroes(), slideText);
+
+				var slideAsControl = ControlContainer.fromPosSizeAndChildren
+				(
+					Coords.zeroes(),
+					slideSize,
+					[
+						backgroundAsControl,
+						textAsControl
+					]
+				);
+
+				var slideAsVenue = VenueControls.fromControl(slideAsControl);
+
+				return slideAsVenue;
+			}
 		);
-		universe.venueNextSet
+
+		var inputs = Input.Instances();
+
+		var venueAfterSlideshow = universe.venueNext();
+
+		var venueSlideshow = VenueCarousel.fromNameLoopSecondsInputsAdvanceAndSkipSlidesAndDone
 		(
-			new VenueControls
-			(
-				controlSlideshowIntro, false // ignoreInputs
-			)
+			"Introduction",
+			false,
+			10, //secondsPerSlideMax
+			inputs.Enter,
+			inputs.Escape,
+			slidesAsVenues,
+			(u: Universe) => { u.venueTransitionTo(venueAfterSlideshow) } 
 		);
-		universe.venueNextSet
-		(
-			controlBuilder.venueTransitionalFromTo(null, universe.venueNext() )
-		);
+
+		universe.venueTransitionTo(venueSlideshow);
 
 		var universeDebugOrStart;
-		if (universe.debuggingModeName != null)
+		if (universe.debugSettings.placeToStartAtName() != null)
 		{
+			// todo
 			universeDebugOrStart = () => this.debug(universe);
 		}
 		else
@@ -340,9 +377,9 @@ class Game
 		universe.world = world;
 		universe.venueNextSet(new VenueWorld(world) );
 
-		var debuggingModeName = universe.debuggingModeName;
+		var debuggingModeName = universe.debugSettings.placeToStartAtName();
 
-		if (debuggingModeName == "Combat")
+		if (debuggingModeName == Combat.name)
 		{
 			this.debug_Combat(universe);
 		}
@@ -350,27 +387,27 @@ class Game
 		{
 			this.debug_Docks(universe);
 		}
-		else if (debuggingModeName == "Hyperspace")
+		else if (debuggingModeName == Hyperspace.name)
 		{
 			this.debug_Hyperspace(universe);
 		}
-		else if (debuggingModeName == "HyperspaceMap")
+		else if (debuggingModeName == Hyperspace.name + "Map")
 		{
 			this.debug_HyperspaceMap(universe);
 		}
-		else if (debuggingModeName == "Planet")
+		else if (debuggingModeName == Planet.name)
 		{
 			this.debug_Planet(universe);
 		}
-		else if (debuggingModeName == "Planet2")
+		else if (debuggingModeName == Planet.name + "2")
 		{
 			this.debug_Planet2(universe);
 		}
-		else if (debuggingModeName == "PlanetEnergy")
+		else if (debuggingModeName == Planet.name + "Energy")
 		{
 			this.debug_PlanetEnergy(universe);
 		}
-		else if (debuggingModeName == "StarsystemSol")
+		else if (debuggingModeName == Starsystem.name + "Sol")
 		{
 			this.debug_StarsystemSol(universe);
 		}

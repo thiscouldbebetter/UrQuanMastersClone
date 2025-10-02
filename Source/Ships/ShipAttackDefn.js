@@ -1,6 +1,7 @@
 "use strict";
-class ShipAttackDefn {
+class ShipAttackDefn extends EntityPropertyBase {
     constructor(name, energyToUse, projectileRadius, angleInTurns, speed, ticksToLive, diesOnImpact, damage, visualProjectile, visualImpact, effectWhenInvoked, perform, effectOnImpact) {
+        super();
         this.name = name;
         this.energyToUse = energyToUse;
         this.projectileRadius = projectileRadius;
@@ -19,25 +20,26 @@ class ShipAttackDefn {
     static fromEntity(entity) {
         return entity.propertyByName(ShipAttackDefn.name);
     }
-    activate(universe, world, place, actor) {
+    activate2(universe, world, place, actor) {
         var attackDefn = this;
-        var projectileCollider = new Sphere(Coords.create(), attackDefn.projectileRadius);
+        var projectileCollider = Sphere.fromRadius(attackDefn.projectileRadius);
         var projectileCollidable = new Collidable(false, // canCollideAgainWithoutSeparating
+        null, // ?
         null, // ticks
         projectileCollider, [Killable.name], this.projectileCollide);
-        var actorVisual = actor.drawable().visual;
-        var projectileVisual = new VisualWrapped(actorVisual.sizeToWrapTo, attackDefn.visualProjectile);
+        var actorVisual = Drawable.of(actor).visual;
+        var projectileVisual = new VisualWrapped2(actorVisual.sizeToWrapTo, attackDefn.visualProjectile);
         var projectileDrawable = Drawable.fromVisual(projectileVisual);
-        var projectileKillable = new Killable(1, null, null);
-        var actorLoc = actor.locatable().loc;
+        var projectileKillable = Killable.fromIntegrityMax(1);
+        var actorLoc = Locatable.of(actor).loc;
         var actorOrientation = actorLoc.orientation;
         var actorForward = actorOrientation.forward;
         var projectileDirectionAsPolar = Polar.create().fromCoords(actorForward);
         projectileDirectionAsPolar.azimuthInTurns += attackDefn.angleInTurns;
         projectileDirectionAsPolar.azimuthInTurns =
             NumberHelper.wrapToRangeMinMax(projectileDirectionAsPolar.azimuthInTurns, 0, 1);
-        var projectileDirection = projectileDirectionAsPolar.toCoords(Coords.create());
-        var actorRadius = actor.collidable().collider.radius;
+        var projectileDirection = projectileDirectionAsPolar.toCoords();
+        var actorRadius = Collidable.of(actor).collider.radius();
         var actorPos = actorLoc.pos;
         var projectilePos = actorPos.clone().add(projectileDirection.clone().multiplyScalar(actorRadius).double());
         var projectileLoc = Disposition.fromPos(projectilePos);
@@ -57,19 +59,19 @@ class ShipAttackDefn {
         var entityOther = uwpe.entity2;
         var attackDefn = ShipAttackDefn.fromEntity(entityProjectile);
         if (attackDefn.diesOnImpact) {
-            var killable = entityProjectile.killable();
+            var killable = Killable.of(entityProjectile);
             killable.kill();
-            var drawable = entityProjectile.drawable();
+            var drawable = Drawable.of(entityProjectile);
             var visualWrapped = drawable.visual;
             visualWrapped.child = attackDefn.visualImpact;
             var entityImpact = new Entity("Impact", [
                 new Ephemeral(10, null), // hack
-                entityProjectile.locatable(),
-                entityProjectile.drawable()
+                Locatable.of(entityProjectile),
+                Drawable.of(entityProjectile)
             ]);
             place.entityToSpawnAdd(entityImpact);
         }
-        var entityOtherKillable = entityOther.killable();
+        var entityOtherKillable = Killable.of(entityOther);
         if (entityOtherKillable != null) {
             var projectileDamagePerHit = attackDefn.damage;
             entityOtherKillable.integrity -= projectileDamagePerHit;
@@ -79,14 +81,4 @@ class ShipAttackDefn {
             }
         }
     }
-    // Clonable.
-    clone() { throw new Error("todo"); }
-    overwriteWith(other) { throw new Error("todo"); }
-    // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
-    propertyName() { return ShipAttackDefn.name; }
-    updateForTimerTick(uwpe) { }
-    // Equatable.
-    equals(other) { return false; }
 }

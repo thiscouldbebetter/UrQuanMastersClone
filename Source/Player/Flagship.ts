@@ -414,7 +414,7 @@ class Flagship
 			(containerSidebarSize.y - marginSize.x * 3) * 0.4
 		);
 
-		var containerFlagship = ControlContainer.from4
+		var containerFlagship = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerFlagship",
 			Coords.fromXY(marginSize.x, marginSize.y), // hack - pos
@@ -432,7 +432,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 2),
 					labelSize,
@@ -440,7 +440,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 2),
 					labelSize,
@@ -451,7 +451,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 3),
 					labelSize,
@@ -459,7 +459,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 3),
 					labelSize,
@@ -470,7 +470,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 4),
 					labelSize,
@@ -478,7 +478,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 6, labelSize.y * 4),
 					labelSize,
@@ -489,7 +489,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 5),
 					labelSize,
@@ -497,7 +497,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 5, labelSize.y * 5),
 					labelSize,
@@ -509,7 +509,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 6),
 					labelSize,
@@ -517,7 +517,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 6),
 					labelSize,
@@ -529,7 +529,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 7),
 					labelSize,
@@ -537,7 +537,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 7),
 					labelSize,
@@ -549,7 +549,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x, labelSize.y * 8),
 					labelSize,
@@ -557,7 +557,7 @@ class Flagship
 					font
 				),
 
-				ControlLabel.from4Uncentered
+				ControlLabel.fromPosSizeTextFontUncentered
 				(
 					Coords.fromXY(marginSize.x * 4, labelSize.y * 8),
 					labelSize,

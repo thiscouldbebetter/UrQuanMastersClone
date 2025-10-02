@@ -1,5 +1,5 @@
 
-class LinkPortal implements EntityProperty<LinkPortal>
+class LinkPortal extends EntityPropertyBase<LinkPortal>
 {
 	name: string;
 	posInSpace: Coords;
@@ -14,6 +14,8 @@ class LinkPortal implements EntityProperty<LinkPortal>
 		destinationPos: Coords
 	)
 	{
+		super();
+
 		this.name = name;
 		this.posInSpace = posInSpace;
 		this.destinationPlaceName = destinationPlaceName;
@@ -48,7 +50,7 @@ class LinkPortal implements EntityProperty<LinkPortal>
 				? world.hyperspace
 				: world.paraspace;
 
-			var playerLoc = entityPlayer.locatable().loc;
+			var playerLoc = Locatable.of(entityPlayer).loc;
 			var playerPosNext = linkPortal.destinationPos.clone();
 			var playerDisposition = Disposition.fromPosOrientationAndPlaceName
 			(
@@ -70,7 +72,7 @@ class LinkPortal implements EntityProperty<LinkPortal>
 			var factionName = this.destinationPlaceName.split("-")[1];
 			var faction = world.factionByName(factionName);
 			entityLinkPortal.propertyAdd(faction.toTalker() );
-			var playerPos = entityPlayer.locatable().loc.pos;
+			var playerPos = Locatable.of(entityPlayer).loc.pos;
 			var encounter = new Encounter
 			(
 				null, // planet
@@ -94,11 +96,9 @@ class LinkPortal implements EntityProperty<LinkPortal>
 	toEntity(radiusInHyperspace: number): Entity
 	{
 		var collider = Sphere.fromRadius(radiusInHyperspace);
-		var collidable = Collidable.from3 // todo
+		var collidable = Collidable.fromColliderPropertyNamesAndCollide
 		(
-			collider,
-			[],
-			null // this.collideWithPlayer
+			collider, [], null
 		);
 		var boundable = Boundable.fromCollidable(collidable);
 

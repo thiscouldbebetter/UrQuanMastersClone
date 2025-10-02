@@ -1,11 +1,7 @@
 
-class Fuelable implements EntityPropertyBase
+class Fuelable extends EntityPropertyBase<Fuelable>
 {
 	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 
 	propertyName(): string { return Fuelable.name; }
 
@@ -14,7 +10,7 @@ class Fuelable implements EntityPropertyBase
 		var world = uwpe.world as WorldExtended;
 		var entityFuelable = uwpe.entity;
 
-		var entityLoc = entityFuelable.locatable().loc;
+		var entityLoc = Locatable.of(entityFuelable).loc;
 		var entityVel = entityLoc.vel;
 		var entitySpeed = entityVel.magnitude();
 		var fuelConsumedPerSpeed = .1;
