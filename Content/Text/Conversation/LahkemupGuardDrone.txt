@@ -7,5 +7,5 @@ soundMusicName=Music_Faction_Lahkemup
 SayNothing|Option|[Done]|Done
 |Prompt
 
-Done|Script|cr.talker().actor().activity.defnNameSet('Leave')
+Done|Script|Actor.of(cr.talker() ).activity.defnNameSet('Leave')
 |Quit
