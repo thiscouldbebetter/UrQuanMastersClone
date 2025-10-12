@@ -105,7 +105,7 @@ class SystemTests extends TestFixture {
         // accosts the player before the player is done waiting.
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Verify that a guard drone is present.
-        const guardDroneName = "LahkemupGuardDrone";
+        const guardDroneName = "LahkemupGuardDrone Ship Group";
         var guardDrone = place().entityByName(guardDroneName);
         Assert.isNotNull(guardDrone);
         // Wait for the guard drone to approach the player
@@ -270,7 +270,7 @@ class SystemTests extends TestFixture {
         this.leavePlanetOrbitAndWait(universe);
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetVicinity.name, world);
         // Verify that the guard drone doesn't spontaneously reappear.
-        const guardDroneName = "LahkemupGuardDrone";
+        const guardDroneName = "LahkemupGuardDrone Ship Group";
         var guardDrone = world.place().entityByName(guardDroneName);
         Assert.isNull(guardDrone);
         // Return to the station.
@@ -564,7 +564,7 @@ class SystemTests extends TestFixture {
         var placePlanetSurface = world.place();
         this.assertPlaceCurrentIsOfTypeForWorld(placePlanetSurface.name, world);
         this.moveToEntityWithNameAndWait(universe, deviceTtorstingCasterName);
-        this.acknowledgeMessage(universe);
+        this.acknowledgeMessageAndWait(universe);
         // Acknowledging the message returns the lander to orbit automatically.
         this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
         // Check to see that the caster is now on board the flagship.
@@ -977,14 +977,14 @@ class SystemTests extends TestFixture {
         throw new Error("todo");
     }
     // Helper methods.
-    acknowledgeMessage(universe) {
+    acknowledgeMessageAndWait(universe) {
         this.assertVenueCurrentIsOfTypeForUniverse(VenueMessage.name, universe);
         var venueMessage = universe.venueCurrent();
         var world = universe.world;
         var place = world.place();
         var uwpe = new UniverseWorldPlaceEntities(universe, world, place, null, null);
         venueMessage.acknowledge(uwpe);
-        this.waitForTicks(universe, 5);
+        this.waitForTicks(universe, 10);
     }
     assertPlaceCurrentIsOfTypeForWorld(placeTypeNameExpected, world) {
         return this.assertPlaceCurrentIsOfTypesForWorld([placeTypeNameExpected], world);
@@ -1398,7 +1398,7 @@ class SystemTests extends TestFixture {
         // Go to the energy source.
         this.moveToEntityWithNameAndWait(universe, energySourceName);
         // The lander should display a report message, which must be acknowledged...
-        this.acknowledgeMessage(universe);
+        this.acknowledgeMessageAndWait(universe);
         universe.updateForTimerTick();
     }
     returnToOrbit(universe, world, place) {

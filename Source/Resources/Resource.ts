@@ -60,7 +60,7 @@ class Resource extends EntityPropertyBase<Resource>
 		var camera = Camera.entityFromPlace(place);
 		if (camera != null)
 		{
-			resourceVisual = new VisualWrapped
+			resourceVisual = new VisualWrapped2
 			(
 				place.planet.sizeSurface(), resourceVisual
 			);

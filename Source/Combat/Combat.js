@@ -12,6 +12,9 @@ class Combat {
         this._displacementWrappedAbsolute = Coords.create();
         this._midpointBetweenPoints = Coords.create();
     }
+    static fromSizeEncounterAndShipGroups(size, encounter, shipGroups) {
+        return new Combat(size, encounter, shipGroups);
+    }
     static actions() {
         var returnValues = [
             Ship.actionShowMenu(),

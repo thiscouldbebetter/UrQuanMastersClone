@@ -27,7 +27,7 @@ class EnergySource extends EntityPropertyBase {
         var dimension = 5;
         var collider = Sphere.fromRadius(dimension);
         var collidable = Collidable.fromCollider(collider);
-        var visualDetailed = new VisualWrapped(planet.sizeSurface(), this.visual);
+        var visualDetailed = new VisualWrapped2(planet.sizeSurface(), this.visual);
         var drawable = Drawable.fromVisual(visualDetailed);
         var item = Item.fromDefnName(this.name);
         var locatable = Locatable.fromPos(this.pos);
@@ -39,7 +39,7 @@ class EnergySource extends EntityPropertyBase {
         ], Color.Instances().Cyan);
         visualScanContact = new VisualHidable(this.toEntity_IsVisible, visualScanContact);
         var mappable = new Mappable(visualScanContact);
-        var returnValue = new Entity(this.name, [
+        var returnValue = Entity.fromNameAndProperties(this.name, [
             collidable,
             drawable,
             this, // energySource

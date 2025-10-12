@@ -289,17 +289,11 @@ class Game {
         ];
         var playerShips = Ship.manyFromDefns(playerShipDefns);
         var enemyShips = Ship.manyFromDefns(enemyShipDefns);
-        var combat = new Combat(combatSize, encounter, 
+        var combat = Combat.fromSizeEncounterAndShipGroups(combatSize, encounter, 
         // shipGroups
         [
-            new ShipGroupFinite("Player", null, // factionName
-            null, // pos
-            null, // shipsMax
-            playerShips),
-            new ShipGroupFinite("Other", null, // factionName
-            null, // pos
-            null, // shipsMax
-            enemyShips)
+            ShipGroupFinite.fromFactionNameAndShips("Player", playerShips),
+            ShipGroupFinite.fromFactionNameAndShips("Other", enemyShips)
         ]).initialize(universe, world, null);
         var placeCombat = combat.toPlace(world);
         world.placeCurrentSet(placeCombat);

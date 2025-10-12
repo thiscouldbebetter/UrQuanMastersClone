@@ -96,9 +96,9 @@ class PlacePlanetSurface extends PlaceBase
 		visualBackgroundImage =
 			new VisualImageScaled(planetSizeSurface, visualBackgroundImage);
 		var visualBackground =
-			new VisualWrapped(planetSizeSurface, visualBackgroundImage);
+			new VisualWrapped2(planetSizeSurface, visualBackgroundImage);
 
-		var entityBackground = new Entity
+		var entityBackground = Entity.fromNameAndProperties
 		(
 			"Background",
 			[
@@ -205,11 +205,12 @@ class PlacePlanetSurface extends PlaceBase
 					this.hazardCollide
 				);
 
-				var entityHazard = new Entity
+				var entityHazard = Entity.fromNameAndProperties
 				(
 					hazardTypeName,
 					[
 						Animatable2.create(),
+						Audible.create(),
 						collidable,
 						drawable,
 						ephemeral,
@@ -271,7 +272,7 @@ class PlacePlanetSurface extends PlaceBase
 		(
 			entityDimension, playerColor, colors.Black
 		);
-		playerVisual = new VisualWrapped(this.size(), playerVisual);
+		playerVisual = new VisualWrapped2(this.size(), playerVisual);
 		var playerDrawable = Drawable.fromVisual(playerVisual);
 
 		var crewAvailableForLander = 12; // todo
@@ -284,7 +285,7 @@ class PlacePlanetSurface extends PlaceBase
 
 		var playerPos = this.size().clone().half(); // todo
 		var playerLoc = Disposition.fromPos(playerPos);
-		var playerLocatable = new Locatable(playerLoc);
+		var playerLocatable = Locatable.fromDisposition(playerLoc);
 
 		var playerMappable = new Mappable(playerVisual);
 
@@ -292,9 +293,9 @@ class PlacePlanetSurface extends PlaceBase
 
 		var playerPlayable = new Playable();
 
-		var playerShipLander = new Ship("Lander");
+		var playerShipLander = Ship.fromDefnName("Lander");
 
-		var playerEntity = new Entity
+		var playerEntity = Entity.fromNameAndProperties
 		(
 			"Player",
 			[

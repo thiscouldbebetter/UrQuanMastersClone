@@ -91,7 +91,14 @@ class PlacePlanetVicinity extends PlaceBase
 		}
 
 		var entitiesForShipGroups =
-			this.planet.shipGroupsInVicinity().map(x => x.toEntity(world, this) );
+			this.planet
+				.shipGroupsInVicinity()
+				.map(x => x.toEntity(world, this) );
+
+		entitiesForShipGroups.forEach
+		(
+			x => Collidable.of(x).collideEntitiesSet(this.shipGroupNonPlayerCollide)
+		);
 
 		entities.push(...entitiesForShipGroups);
 
@@ -108,24 +115,29 @@ class PlacePlanetVicinity extends PlaceBase
 		var cameraAsEntity = CameraHelper.toEntity(this._camera);
 		entities.push(cameraAsEntity);
 
-		var wallsEntity = new Entity
+		var wallsCollidable = Collidable.fromShape
+		(
+			ShapeInverse.fromChild
+			(
+				BoxAxisAligned.fromSize(this.size() )
+			)
+		);
+
+		var wallsEntity = Entity.fromNameAndProperties
 		(
 			PlacePlanetVicinity.EntityBoundaryWallName,
 			[
 				Locatable.fromPos(this.size().clone().half() ),
-				Collidable.fromShape
-				(
-					new ShapeInverse
-					(
-						BoxAxisAligned.fromSize(this.size() )
-					)
-				)
+				wallsCollidable
 			]
 		);
 		entities.push(wallsEntity);
 	}
 
-	constructor_PlayerEntityBuild(entityDimension: number, world: WorldExtended, playerLoc: Disposition): Entity
+	constructor_PlayerEntityBuild
+	(
+		entityDimension: number, world: WorldExtended, playerLoc: Disposition
+	): Entity
 	{
 		// player - Can this be merged with similar code in PlaceStarsystem?
 
@@ -158,7 +170,7 @@ class PlacePlanetVicinity extends PlaceBase
 		var visual = shipDefn.visual;
 		var drawable = Drawable.fromVisual(visual);
 
-		var playerEntity = new Entity
+		var playerEntity = Entity.fromNameAndProperties
 		(
 			Player.name,
 			[
@@ -260,7 +272,10 @@ class PlacePlanetVicinity extends PlaceBase
 
 		if (planetHasFaction == false)
 		{
-			this.playerCollide_Planet_WithNoFaction(universe, world, entityPlayer, entityPlanet);
+			this.playerCollide_Planet_WithNoFaction
+			(
+				universe, world, entityPlayer, entityPlanet
+			);
 		}
 		else
 		{
@@ -339,17 +354,62 @@ class PlacePlanetVicinity extends PlaceBase
 				(
 					starsystem.sizeInner.clone().half()
 				);
-		var dispositionNext = new Disposition
+		var dispositionNext = Disposition.fromPosAndOrientation
 		(
 			posNext,
-			Locatable.of(entityPlayer).loc.orientation.clone(),
-			null
+			Locatable.of(entityPlayer).loc.orientation.clone()
 		);
 		var starsystemAsPlace = starsystem.toPlace
 		(
 			world, dispositionNext, planet
 		);
 		world.placeNextSet(starsystemAsPlace);
+	}
+
+	shipGroupNonPlayerCollide(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var world = uwpe.world as WorldExtended;
+		var place = uwpe.place as PlacePlanetVicinity;
+
+		if (uwpe.entity2.name.startsWith("ShipGroup") )
+		{
+			uwpe.entitiesSwap();
+		}
+
+		var entityPlayer = uwpe.entity;
+		var entityOther = uwpe.entity2;
+
+		var entityOtherName = entityOther.name;
+
+		if (entityOtherName == PlacePlanetVicinity.EntityBoundaryWallName)
+		{
+			place.shipGroupNonPlayerCollide_Walls(world, entityPlayer);
+		}
+	}
+
+
+	shipGroupNonPlayerCollide_Walls(world: WorldExtended, shipGroupAsEntity: Entity): void
+	{
+		var placeStarsystem = this.placeStarsystem;
+		var starsystem = placeStarsystem.starsystem;
+		var planet = this.planet;
+		var posNext =
+			planet
+				.offsetFromPrimaryAsPolar
+				.toCoords()
+				.add
+				(
+					starsystem.sizeInner.clone().half()
+				);
+		var disposition = Locatable.of(shipGroupAsEntity).loc;
+		var dispositionNext = Disposition.fromPosAndOrientation
+		(
+			posNext,
+			disposition.orientation.clone()
+		);
+		disposition.overwriteWith(dispositionNext);
+		this.entityToRemoveAdd(shipGroupAsEntity);
+		this.placeStarsystem.entityToSpawnAdd(shipGroupAsEntity);
 	}
 
 	starsystem(): Starsystem

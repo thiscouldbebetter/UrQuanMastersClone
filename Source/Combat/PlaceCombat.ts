@@ -106,7 +106,7 @@ class PlaceCombat extends PlaceBase
 			this.planetCollide
 		);
 
-		visual = new VisualWrapped(this.size(), visual);
+		visual = new VisualWrapped2(this.size(), visual);
 
 		var drawable = Drawable.fromVisual(visual);
 

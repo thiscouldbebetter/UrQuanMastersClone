@@ -29,6 +29,14 @@ class Combat
 		this._midpointBetweenPoints = Coords.create();
 	}
 
+	static fromSizeEncounterAndShipGroups
+	(
+		size: Coords, encounter: Encounter, shipGroups: ShipGroup[]
+	): Combat
+	{
+		return new Combat(size, encounter, shipGroups);
+	}
+
 	static actions(): Action[]
 	{
 		var returnValues =

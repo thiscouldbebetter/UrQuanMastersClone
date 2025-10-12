@@ -203,7 +203,7 @@ class PlaceStationDock extends PlaceBase {
                 var shipValue = shipDefnToBuild.costToBuild;
                 if (flagship.resourceCredits >= shipValue) {
                     flagship.resourceCredits -= shipValue;
-                    var ship = new Ship(shipDefnToBuild.name);
+                    var ship = Ship.fromDefnName(shipDefnToBuild.name);
                     ship.initialize(new UniverseWorldPlaceEntities(universe, world, this, null, null));
                     shipGroup.ships.push(ship);
                 }

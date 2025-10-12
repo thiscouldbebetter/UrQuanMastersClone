@@ -304,7 +304,7 @@ class ShipGroupFinite extends ShipGroupBase
 
 		this.name = name || factionName + " Ship Group"
 		this.factionName = factionName;
-		this.pos = pos;
+		this.pos = pos || Coords.create();
 		this.shipsMax = shipsMax || Number.POSITIVE_INFINITY;
 		this.ships = ships;
 
@@ -320,7 +320,7 @@ class ShipGroupFinite extends ShipGroupBase
 		(
 			null, // name
 			factionName,
-			Coords.zeroes(), // pos
+			null, // pos
 			null, // shipsMax
 			ships
 		);
@@ -365,7 +365,6 @@ class ShipGroupFinite extends ShipGroupBase
 
 		return shipGroup;
 	}
-
 
 	faction(world: WorldExtended): Faction
 	{
@@ -533,7 +532,7 @@ class ShipGroupFinite extends ShipGroupBase
 
 		var entityDimension = 10;
 
-		var colliderAsFace = new Face
+		var colliderAsFace = Face.fromVertices
 		([
 			Coords.fromXY(0, -1).multiplyScalar(entityDimension).half(),
 			Coords.fromXY(1, 1).multiplyScalar(entityDimension).half(),
@@ -541,11 +540,10 @@ class ShipGroupFinite extends ShipGroupBase
 		]);
 		var collider = Mesh.fromFace
 		(
-			Coords.zeroes(), // center
-			colliderAsFace,
-			1 // thickness
+			colliderAsFace
 		);
 		var collidable = Collidable.fromCollider(collider);
+
 		var boundable = Boundable.fromCollidable(collidable);
 
 		var constrainable = Constrainable.create();
@@ -560,14 +558,14 @@ class ShipGroupFinite extends ShipGroupBase
 
 		var	pos = this.pos;
 		var loc = Disposition.fromPos(pos);
-		var locatable = new Locatable(loc);
+		var locatable = Locatable.fromDisposition(loc);
 
 		var movable = Movable.fromSpeedMax(1);
 
 		var faction = this.faction(world);
 		var talker = faction.toTalker();
 
-		var returnEntity = new Entity
+		var returnEntity = Entity.fromNameAndProperties
 		(
 			this.name,
 			[

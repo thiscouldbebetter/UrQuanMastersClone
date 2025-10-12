@@ -108,7 +108,7 @@ class Ship extends EntityPropertyBase {
         for (var i = 0; i < defns.length; i++) {
             var defn = defns[i];
             var defnName = defn.name;
-            var ship = new Ship(defnName);
+            var ship = Ship.fromDefnName(defnName);
             ships.push(ship);
         }
         return ships;
@@ -194,7 +194,7 @@ class Ship extends EntityPropertyBase {
         ]);
         var defn = this.defn(world);
         var shipVisualBody = defn.visual;
-        var shipVisual = new VisualWrapped(place.size(), shipVisualBody);
+        var shipVisual = new VisualWrapped2(place.size(), shipVisualBody);
         var drawable = Drawable.fromVisual(shipVisual);
         var itemHolder = ItemHolder.create();
         var killable = Killable.fromIntegrityMaxAndDie(this.crew, this.die);

@@ -48,7 +48,7 @@ class PlaceStarsystem extends PlaceBase {
         entities.push(cameraAsEntity);
         var wallsEntity = new Entity("Walls", [
             new Locatable(Disposition.fromPos(this.size().clone().half())),
-            Collidable.fromCollider(new ShapeInverse(BoxAxisAligned.fromSize(this.size())))
+            Collidable.fromCollider(ShapeInverse.fromChild(BoxAxisAligned.fromSize(this.size())))
         ]);
         entities.push(wallsEntity);
         // Sidebar.
@@ -63,8 +63,8 @@ class PlaceStarsystem extends PlaceBase {
     constructor_PlayerEntityBuild(playerLoc, world, entityDimension) {
         // player - Can this be merged with similar code in PlacePlanetVicinity?
         var activityDefnName = Player.activityDefn().name;
-        var activity = new Activity(activityDefnName, null);
-        var actor = new Actor(activity);
+        var activity = Activity.fromDefnName(activityDefnName);
+        var actor = Actor.fromActivity(activity);
         var collider = Sphere.fromRadius(entityDimension / 2);
         var collidable = Collidable.fromColliderPropertyNamesAndCollide(collider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.playerCollide);

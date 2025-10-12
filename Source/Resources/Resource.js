@@ -29,7 +29,7 @@ class Resource extends EntityPropertyBase {
         var resourceVisual = new VisualCircleGradient(resourceRadius, resourceGradient, null);
         var camera = Camera.entityFromPlace(place);
         if (camera != null) {
-            resourceVisual = new VisualWrapped(place.planet.sizeSurface(), resourceVisual);
+            resourceVisual = new VisualWrapped2(place.planet.sizeSurface(), resourceVisual);
         }
         var resourceDrawable = Drawable.fromVisual(resourceVisual);
         var resourcePos = resource.pos;

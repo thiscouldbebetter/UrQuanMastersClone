@@ -113,7 +113,7 @@ class PlaceStarsystem extends PlaceBase
 				),
 				Collidable.fromCollider
 				(
-					new ShapeInverse
+					ShapeInverse.fromChild
 					(
 						BoxAxisAligned.fromSize(this.size() )
 					)
@@ -140,13 +140,16 @@ class PlaceStarsystem extends PlaceBase
 
 	// Constructor helpers.
 
-	constructor_PlayerEntityBuild(playerLoc: Disposition, world: WorldExtended, entityDimension: number): Entity
+	constructor_PlayerEntityBuild
+	(
+		playerLoc: Disposition, world: WorldExtended, entityDimension: number
+	): Entity
 	{
 		// player - Can this be merged with similar code in PlacePlanetVicinity?
 
 		var activityDefnName = Player.activityDefn().name;
-		var activity = new Activity(activityDefnName, null);
-		var actor = new Actor(activity);
+		var activity = Activity.fromDefnName(activityDefnName);
+		var actor = Actor.fromActivity(activity);
 
 		var collider = Sphere.fromRadius(entityDimension / 2);
 		var collidable = Collidable.fromColliderPropertyNamesAndCollide

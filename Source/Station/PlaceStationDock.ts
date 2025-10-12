@@ -306,7 +306,7 @@ class PlaceStationDock extends PlaceBase
 				if (flagship.resourceCredits >= shipValue)
 				{
 					flagship.resourceCredits -= shipValue;
-					var ship = new Ship(shipDefnToBuild.name);
+					var ship = Ship.fromDefnName(shipDefnToBuild.name);
 					ship.initialize
 					(
 						new UniverseWorldPlaceEntities

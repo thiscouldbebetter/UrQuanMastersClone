@@ -375,7 +375,7 @@ class PlaceHyperspace extends PlaceBase
 				factionName,
 				shipGroupPos,
 				null, // shipsMax
-				[ new Ship(shipDefnName) ]
+				[ Ship.fromDefnName(shipDefnName) ]
 			);
 
 			this.shipGroupAdd(shipGroup, world);

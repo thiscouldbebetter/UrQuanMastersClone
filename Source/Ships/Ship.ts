@@ -203,7 +203,7 @@ class Ship extends EntityPropertyBase<Ship>
 		{
 			var defn = defns[i];
 			var defnName = defn.name;
-			var ship = new Ship(defnName);
+			var ship = Ship.fromDefnName(defnName);
 			ships.push(ship);
 		}
 
@@ -337,7 +337,7 @@ class Ship extends EntityPropertyBase<Ship>
 
 		var defn = this.defn(world);
 		var shipVisualBody = defn.visual;
-		var shipVisual = new VisualWrapped
+		var shipVisual = new VisualWrapped2
 		(
 			place.size(), shipVisualBody
 		);

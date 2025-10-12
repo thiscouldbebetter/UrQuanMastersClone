@@ -463,26 +463,20 @@ class Game
 		var playerShips = Ship.manyFromDefns(playerShipDefns);
 		var enemyShips = Ship.manyFromDefns(enemyShipDefns);
 
-		var combat = new Combat
+		var combat = Combat.fromSizeEncounterAndShipGroups
 		(
 			combatSize,
 			encounter,
 			// shipGroups
 			[
-				new ShipGroupFinite
+				ShipGroupFinite.fromFactionNameAndShips
 				(
 					"Player",
-					null, // factionName
-					null, // pos
-					null, // shipsMax
 					playerShips
 				),
-				new ShipGroupFinite
+				ShipGroupFinite.fromFactionNameAndShips
 				(
 					"Other",
-					null, // factionName
-					null, // pos
-					null, // shipsMax
 					enemyShips
 				)
 			]

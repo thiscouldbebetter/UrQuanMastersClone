@@ -155,7 +155,7 @@ class ShipGroupFinite extends ShipGroupBase {
         super();
         this.name = name || factionName + " Ship Group";
         this.factionName = factionName;
-        this.pos = pos;
+        this.pos = pos || Coords.create();
         this.shipsMax = shipsMax || Number.POSITIVE_INFINITY;
         this.ships = ships;
         this.shipSelected = this.shipFirst();
@@ -164,7 +164,7 @@ class ShipGroupFinite extends ShipGroupBase {
     }
     static fromFactionNameAndShips(factionName, ships) {
         return new ShipGroupFinite(null, // name
-        factionName, Coords.zeroes(), // pos
+        factionName, null, // pos
         null, // shipsMax
         ships);
     }
@@ -297,14 +297,12 @@ class ShipGroupFinite extends ShipGroupBase {
         // var actor = new Actor(faction.shipGroupActivity);
         var actor = Actor.fromActivityDefn(ShipGroupBase.activityDefnApproachPlayer());
         var entityDimension = 10;
-        var colliderAsFace = new Face([
+        var colliderAsFace = Face.fromVertices([
             Coords.fromXY(0, -1).multiplyScalar(entityDimension).half(),
             Coords.fromXY(1, 1).multiplyScalar(entityDimension).half(),
             Coords.fromXY(-1, 1).multiplyScalar(entityDimension).half(),
         ]);
-        var collider = Mesh.fromFace(Coords.zeroes(), // center
-        colliderAsFace, 1 // thickness
-        );
+        var collider = Mesh.fromFace(colliderAsFace);
         var collidable = Collidable.fromCollider(collider);
         var boundable = Boundable.fromCollidable(collidable);
         var constrainable = Constrainable.create();
@@ -315,11 +313,11 @@ class ShipGroupFinite extends ShipGroupBase {
         var killable = Killable.fromIntegrityMaxAndDie(1, ShipGroupBase.kill);
         var pos = this.pos;
         var loc = Disposition.fromPos(pos);
-        var locatable = new Locatable(loc);
+        var locatable = Locatable.fromDisposition(loc);
         var movable = Movable.fromSpeedMax(1);
         var faction = this.faction(world);
         var talker = faction.toTalker();
-        var returnEntity = new Entity(this.name, [
+        var returnEntity = Entity.fromNameAndProperties(this.name, [
             actor,
             boundable,
             collidable,

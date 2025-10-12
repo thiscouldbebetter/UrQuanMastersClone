@@ -144,7 +144,7 @@ class SystemTests extends TestFixture
 
 		// Verify that a guard drone is present.
 
-		const guardDroneName = "LahkemupGuardDrone";
+		const guardDroneName = "LahkemupGuardDrone Ship Group";
 		var guardDrone = place().entityByName(guardDroneName);
 		Assert.isNotNull(guardDrone);
 
@@ -406,7 +406,7 @@ class SystemTests extends TestFixture
 
 		// Verify that the guard drone doesn't spontaneously reappear.
 
-		const guardDroneName = "LahkemupGuardDrone";
+		const guardDroneName = "LahkemupGuardDrone Ship Group"
 		var guardDrone = world.place().entityByName(guardDroneName);
 		Assert.isNull(guardDrone);
 
@@ -862,7 +862,7 @@ class SystemTests extends TestFixture
 		var placePlanetSurface = world.place() as PlacePlanetSurface;
 		this.assertPlaceCurrentIsOfTypeForWorld(placePlanetSurface.name, world);
 		this.moveToEntityWithNameAndWait(universe, deviceTtorstingCasterName);
-		this.acknowledgeMessage(universe);
+		this.acknowledgeMessageAndWait(universe);
 		// Acknowledging the message returns the lander to orbit automatically.
 		this.assertPlaceCurrentIsOfTypeForWorld(PlacePlanetOrbit.name, world);
 
@@ -1467,7 +1467,7 @@ class SystemTests extends TestFixture
 
 	// Helper methods.
 
-	acknowledgeMessage(universe: Universe): void
+	acknowledgeMessageAndWait(universe: Universe): void
 	{
 		this.assertVenueCurrentIsOfTypeForUniverse(VenueMessage.name, universe);
 		var venueMessage = universe.venueCurrent() as VenueMessage<any>;
@@ -1475,7 +1475,7 @@ class SystemTests extends TestFixture
 		var place = world.place();
 		var uwpe = new UniverseWorldPlaceEntities(universe, world, place, null, null);
 		venueMessage.acknowledge(uwpe);
-		this.waitForTicks(universe, 5);
+		this.waitForTicks(universe, 10);
 	}
 
 	assertPlaceCurrentIsOfTypeForWorld
@@ -2044,7 +2044,12 @@ class SystemTests extends TestFixture
 		return this.moveToEntityWithNameAndWait_CheckPartial(universe, targetEntityName, false);
 	}
 
-	moveToEntityWithNameAndWait_CheckPartial(universe: Universe, targetEntityName: string, partialMatchAllowed: boolean): void
+	moveToEntityWithNameAndWait_CheckPartial
+	(
+		universe: Universe,
+		targetEntityName: string,
+		partialMatchAllowed: boolean
+	): void
 	{
 		// This is pretty cheaty right now.  The player just teleports directly to the desired position.
 
@@ -2120,7 +2125,7 @@ class SystemTests extends TestFixture
 		this.moveToEntityWithNameAndWait(universe, energySourceName);
 
 		// The lander should display a report message, which must be acknowledged...
-		this.acknowledgeMessage(universe);
+		this.acknowledgeMessageAndWait(universe);
 
 		universe.updateForTimerTick();
 	}

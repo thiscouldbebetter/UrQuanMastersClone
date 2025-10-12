@@ -51,7 +51,7 @@ class PlaceCombat extends PlaceBase {
         var collider = Sphere.fromRadius(radius);
         var collidable = Collidable.fromColliderPropertyNamesAndCollide(collider, [Collidable.name], // entityPropertyNamesToCollideWith
         this.planetCollide);
-        visual = new VisualWrapped(this.size(), visual);
+        visual = new VisualWrapped2(this.size(), visual);
         var drawable = Drawable.fromVisual(visual);
         var sizeHalf = this.size().clone().half();
         var pos = sizeHalf.clone();

@@ -38,7 +38,10 @@ class PlacePlanetVicinity extends PlaceBase {
             var playerEntity = this.constructor_PlayerEntityBuild(entityDimension, world, playerLoc);
             entities.push(playerEntity);
         }
-        var entitiesForShipGroups = this.planet.shipGroupsInVicinity().map(x => x.toEntity(world, this));
+        var entitiesForShipGroups = this.planet
+            .shipGroupsInVicinity()
+            .map(x => x.toEntity(world, this));
+        entitiesForShipGroups.forEach(x => Collidable.of(x).collideEntitiesSet(this.shipGroupNonPlayerCollide));
         entities.push(...entitiesForShipGroups);
         this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(300), // hack
         null, // focalLength
@@ -46,9 +49,10 @@ class PlacePlanetVicinity extends PlaceBase {
         );
         var cameraAsEntity = CameraHelper.toEntity(this._camera);
         entities.push(cameraAsEntity);
-        var wallsEntity = new Entity(PlacePlanetVicinity.EntityBoundaryWallName, [
+        var wallsCollidable = Collidable.fromShape(ShapeInverse.fromChild(BoxAxisAligned.fromSize(this.size())));
+        var wallsEntity = Entity.fromNameAndProperties(PlacePlanetVicinity.EntityBoundaryWallName, [
             Locatable.fromPos(this.size().clone().half()),
-            Collidable.fromShape(new ShapeInverse(BoxAxisAligned.fromSize(this.size())))
+            wallsCollidable
         ]);
         entities.push(wallsEntity);
     }
@@ -70,7 +74,7 @@ class PlacePlanetVicinity extends PlaceBase {
         var shipDefn = ship.defn(world);
         var visual = shipDefn.visual;
         var drawable = Drawable.fromVisual(visual);
-        var playerEntity = new Entity(Player.name, [
+        var playerEntity = Entity.fromNameAndProperties(Player.name, [
             actor,
             collidable,
             constrainable,
@@ -173,9 +177,36 @@ class PlacePlanetVicinity extends PlaceBase {
             .offsetFromPrimaryAsPolar
             .toCoords()
             .add(starsystem.sizeInner.clone().half());
-        var dispositionNext = new Disposition(posNext, Locatable.of(entityPlayer).loc.orientation.clone(), null);
+        var dispositionNext = Disposition.fromPosAndOrientation(posNext, Locatable.of(entityPlayer).loc.orientation.clone());
         var starsystemAsPlace = starsystem.toPlace(world, dispositionNext, planet);
         world.placeNextSet(starsystemAsPlace);
+    }
+    shipGroupNonPlayerCollide(uwpe) {
+        var world = uwpe.world;
+        var place = uwpe.place;
+        if (uwpe.entity2.name.startsWith("ShipGroup")) {
+            uwpe.entitiesSwap();
+        }
+        var entityPlayer = uwpe.entity;
+        var entityOther = uwpe.entity2;
+        var entityOtherName = entityOther.name;
+        if (entityOtherName == PlacePlanetVicinity.EntityBoundaryWallName) {
+            place.shipGroupNonPlayerCollide_Walls(world, entityPlayer);
+        }
+    }
+    shipGroupNonPlayerCollide_Walls(world, shipGroupAsEntity) {
+        var placeStarsystem = this.placeStarsystem;
+        var starsystem = placeStarsystem.starsystem;
+        var planet = this.planet;
+        var posNext = planet
+            .offsetFromPrimaryAsPolar
+            .toCoords()
+            .add(starsystem.sizeInner.clone().half());
+        var disposition = Locatable.of(shipGroupAsEntity).loc;
+        var dispositionNext = Disposition.fromPosAndOrientation(posNext, disposition.orientation.clone());
+        disposition.overwriteWith(dispositionNext);
+        this.entityToRemoveAdd(shipGroupAsEntity);
+        this.placeStarsystem.entityToSpawnAdd(shipGroupAsEntity);
     }
     starsystem() {
         return this.placeStarsystem.starsystem;

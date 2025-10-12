@@ -218,10 +218,10 @@ class WorldExtended extends World {
     }
     static create_Player(starsystemStart) {
         var playerShipDefnName = "Flagship";
-        var playerShip = new Ship(playerShipDefnName);
+        var playerShip = Ship.fromDefnName(playerShipDefnName);
         var playerShips = [
             playerShip,
-            new Ship("Broadsider")
+            Ship.fromDefnName("Broadsider")
         ];
         var playerShipGroup = new ShipGroupFinite("Player", "Player", // factionName
         starsystemStart.posInHyperspace.clone(), // pos
@@ -260,7 +260,7 @@ class WorldExtended extends World {
         starsystemsSupergiant.forEach(starsystem => {
             var shipGroup = new ShipGroupFinite(factionMurch.name + " " + "Ship Group", factionMurch.name, Coords.random(universe.randomizer).multiply(starsystem.sizeInner), null, // shipsMax
             [
-                new Ship(factionMurch.shipDefnName)
+                Ship.fromDefnName(factionMurch.shipDefnName)
             ]);
             starsystem.shipGroupAdd(shipGroup);
         });
@@ -268,7 +268,7 @@ class WorldExtended extends World {
         var factionTriunion = factions.find(x => x.name == "Triunion");
         var shipGroupTriunion = new ShipGroupFinite(factionTriunion.name + " " + "Ship Group", factionTriunion.name, Coords.random(universe.randomizer).multiply(starsystemForTriunionEnvoys.sizeInner), null, // shipsMax
         [
-            new Ship(factionMurch.shipDefnName)
+            Ship.fromDefnName(factionMurch.shipDefnName)
         ]);
         starsystemForTriunionEnvoys.shipGroupAdd(shipGroupTriunion);
     }

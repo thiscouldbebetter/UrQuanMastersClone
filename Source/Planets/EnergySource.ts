@@ -57,7 +57,7 @@ class EnergySource extends EntityPropertyBase<EnergySource>
 		var collider = Sphere.fromRadius(dimension);
 		var collidable = Collidable.fromCollider(collider);
 
-		var visualDetailed = new VisualWrapped(planet.sizeSurface(), this.visual);
+		var visualDetailed = new VisualWrapped2(planet.sizeSurface(), this.visual);
 		var drawable = Drawable.fromVisual(visualDetailed);
 
 		var item = Item.fromDefnName(this.name);
@@ -84,7 +84,7 @@ class EnergySource extends EntityPropertyBase<EnergySource>
 
 		var mappable = new Mappable(visualScanContact);
 
-		var returnValue = new Entity
+		var returnValue = Entity.fromNameAndProperties
 		(
 			this.name,
 			[
@@ -219,7 +219,10 @@ class EnergySource_Instances
 			mediaLibrary.textStringGetByName(EnergySource.name + "AbandonedMoonbase").value;
 
 		var venueMessage =
-			VenueMessage.fromTextAcknowledgeAndVenuePrev(abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo);
+			VenueMessage.fromTextAcknowledgeAndVenuePrev
+			(
+				abandonedMoonbaseMessage, acknowledgeReport, venueToReturnTo
+			);
 
 		universe.venueTransitionTo(venueMessage);
 	}
@@ -294,7 +297,10 @@ class EnergySource_Instances
 			mediaLibrary.textStringGetByName(EnergySource.name + textMauluskaOrphan).value;
 
 		var venueMessage =
-			VenueMessage.fromTextAcknowledgeAndVenuePrev(message, acknowledgeReport, venueToReturnTo);
+			VenueMessage.fromTextAcknowledgeAndVenuePrev
+			(
+				message, acknowledgeReport, venueToReturnTo
+			);
 
 		universe.venueTransitionTo(venueMessage);
 	}

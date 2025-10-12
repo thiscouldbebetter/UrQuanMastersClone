@@ -56,9 +56,8 @@ class Starsystem extends EntityPropertyBase {
             var faction = this.faction(world);
             if (faction != null) {
                 var shipDefnName = faction.shipDefnName;
-                var ship = new Ship(shipDefnName);
-                var shipGroup = new ShipGroupFinite(faction.name + " " + ShipGroupBase.name, faction.name, // factionName
-                Coords.create(), null, // shipsMax
+                var ship = Ship.fromDefnName(shipDefnName);
+                var shipGroup = ShipGroupFinite.fromFactionNameAndShips(faction.name, // factionName
                 [ship]);
                 this._shipGroups.push(shipGroup);
             }
@@ -83,10 +82,8 @@ class Starsystem extends EntityPropertyBase {
         planetEarth.satelliteInsertAtIndex(station, 0);
         // Add a guard drone in the Earth system.
         var enemyShipDefnName = "GuardDrone";
-        var enemyShip = new Ship(enemyShipDefnName);
-        var enemyShipGroup = new ShipGroupFinite("LahkemupGuardDrone", "LahkemupGuardDrone", // factionName
-        Coords.create(), // todo
-        null, // shipsMax
+        var enemyShip = Ship.fromDefnName(enemyShipDefnName);
+        var enemyShipGroup = ShipGroupFinite.fromFactionNameAndShips("LahkemupGuardDrone", // factionName
         [enemyShip]);
         planetEarth.shipGroupInVicinityAdd(enemyShipGroup);
     }

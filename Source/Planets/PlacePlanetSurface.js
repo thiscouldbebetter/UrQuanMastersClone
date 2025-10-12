@@ -41,8 +41,8 @@ class PlacePlanetSurface extends PlaceBase {
         var planetSizeSurface = this.planet.sizeSurface();
         visualBackgroundImage =
             new VisualImageScaled(planetSizeSurface, visualBackgroundImage);
-        var visualBackground = new VisualWrapped(planetSizeSurface, visualBackgroundImage);
-        var entityBackground = new Entity("Background", [
+        var visualBackground = new VisualWrapped2(planetSizeSurface, visualBackgroundImage);
+        var entityBackground = Entity.fromNameAndProperties("Background", [
             Locatable.fromPos(planetSizeSurface.clone().half()),
             Drawable.fromVisual(visualBackground)
         ]);
@@ -95,8 +95,9 @@ class PlacePlanetSurface extends PlaceBase {
                 var drawable = Drawable.fromVisual(visual);
                 var ephemeral = Ephemeral.fromTicksToLive(20);
                 var collidable = Collidable.fromColliderAndCollideEntities(collider, this.hazardCollide);
-                var entityHazard = new Entity(hazardTypeName, [
+                var entityHazard = Entity.fromNameAndProperties(hazardTypeName, [
                     Animatable2.create(),
+                    Audible.create(),
                     collidable,
                     drawable,
                     ephemeral,
@@ -133,19 +134,19 @@ class PlacePlanetSurface extends PlaceBase {
         var colors = Color.Instances();
         var playerColor = colors.Gray;
         var playerVisual = ShipDefn.visual(entityDimension, playerColor, colors.Black);
-        playerVisual = new VisualWrapped(this.size(), playerVisual);
+        playerVisual = new VisualWrapped2(this.size(), playerVisual);
         var playerDrawable = Drawable.fromVisual(playerVisual);
         var crewAvailableForLander = 12; // todo
         var playerKillable = Killable.fromIntegrityMaxAndDie(crewAvailableForLander, this.playerDie);
         var playerLander = Lander.fromKillableCrew(playerKillable);
         var playerPos = this.size().clone().half(); // todo
         var playerLoc = Disposition.fromPos(playerPos);
-        var playerLocatable = new Locatable(playerLoc);
+        var playerLocatable = Locatable.fromDisposition(playerLoc);
         var playerMappable = new Mappable(playerVisual);
         var playerMovable = Movable.fromSpeedMax(10);
         var playerPlayable = new Playable();
-        var playerShipLander = new Ship("Lander");
-        var playerEntity = new Entity("Player", [
+        var playerShipLander = Ship.fromDefnName("Lander");
+        var playerEntity = Entity.fromNameAndProperties("Player", [
             playerActor,
             playerBoundable,
             playerCollidable,

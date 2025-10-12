@@ -498,11 +498,11 @@ class WorldExtended extends World
 	static create_Player(starsystemStart: Starsystem): Player
 	{
 		var playerShipDefnName = "Flagship";
-		var playerShip = new Ship(playerShipDefnName);
+		var playerShip = Ship.fromDefnName(playerShipDefnName);
 		var playerShips =
 		[
 			playerShip,
-			new Ship("Broadsider")
+			Ship.fromDefnName("Broadsider")
 		];
 
 		var playerShipGroup = new ShipGroupFinite
@@ -572,7 +572,7 @@ class WorldExtended extends World
 					Coords.random(universe.randomizer).multiply(starsystem.sizeInner),
 					null, // shipsMax
 					[
-						new Ship(factionMurch.shipDefnName)
+						Ship.fromDefnName(factionMurch.shipDefnName)
 					]
 				);
 
@@ -590,7 +590,7 @@ class WorldExtended extends World
 			Coords.random(universe.randomizer).multiply(starsystemForTriunionEnvoys.sizeInner),
 			null, // shipsMax
 			[
-				new Ship(factionMurch.shipDefnName)
+				Ship.fromDefnName(factionMurch.shipDefnName)
 			]
 		);
 

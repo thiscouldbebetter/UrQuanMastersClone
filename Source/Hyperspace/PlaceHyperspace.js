@@ -200,7 +200,7 @@ class PlaceHyperspace extends PlaceBase {
             var shipDefnName = faction.shipDefnName; // todo
             var factionName = faction.name;
             var shipGroup = new ShipGroupFinite(factionName + " Ship Group", factionName, shipGroupPos, null, // shipsMax
-            [new Ship(shipDefnName)]);
+            [Ship.fromDefnName(shipDefnName)]);
             this.shipGroupAdd(shipGroup, world);
         }
     }
