@@ -46,10 +46,10 @@ class PlaceCombat extends PlaceBase {
         var planetDefn = planet.defn();
         var visual = planetDefn.visualVicinityPrimary;
         var radius = visual.radius;
-        var activity = new Activity(Planet.activityDefnGravitate().name, null);
+        var activity = Activity.fromDefnName(Planet.activityDefnGravitate().name);
         var actor = new Actor(activity);
         var collider = Sphere.fromRadius(radius);
-        var collidable = Collidable.fromColliderPropertyNamesAndCollide(collider, [Collidable.name], // entityPropertyNamesToCollideWith
+        var collidable = Collidable.fromColliderPropertyNamesAndCollide(collider, [Ship.name], // entityPropertyNamesToCollideWith
         this.planetCollide);
         visual = new VisualWrapped2(this.size(), visual);
         var drawable = Drawable.fromVisual(visual);
@@ -94,19 +94,23 @@ class PlaceCombat extends PlaceBase {
     planetCollide(uwpe) {
         var entityPlanet = uwpe.entity;
         var entityOther = uwpe.entity2;
-        var planetPos = Locatable.of(entityPlanet).loc.pos;
-        var otherLoc = Locatable.of(entityOther).loc;
-        var otherPos = otherLoc.pos;
-        var displacement = otherPos.clone().subtract(planetPos);
-        var distance = displacement.magnitude();
-        var direction = displacement.divideScalar(distance);
-        var planetCollider = Collidable.of(entityPlanet).collider;
-        var planetRadius = planetCollider.radius();
-        var otherCollider = Collidable.of(entityOther).collider;
-        var sumOfRadii = planetRadius + otherCollider.radius();
-        if (distance < sumOfRadii) {
-            var impulse = direction.multiplyScalar(sumOfRadii - distance);
-            otherLoc.vel.add(impulse.double());
+        var entityOtherIsShip = Ship.of(entityOther) != null;
+        if (entityOtherIsShip) // hack
+         {
+            var planetPos = Locatable.of(entityPlanet).loc.pos;
+            var otherLoc = Locatable.of(entityOther).loc;
+            var otherPos = otherLoc.pos;
+            var displacement = otherPos.clone().subtract(planetPos);
+            var distance = displacement.magnitude();
+            var direction = displacement.divideScalar(distance);
+            var planetCollider = Collidable.of(entityPlanet).collider;
+            var planetRadius = planetCollider.radius();
+            var otherCollider = Collidable.of(entityOther).collider;
+            var sumOfRadii = planetRadius + otherCollider.radius();
+            if (distance < sumOfRadii) {
+                var impulse = direction.multiplyScalar(sumOfRadii - distance);
+                otherLoc.vel.add(impulse.double());
+            }
         }
     }
     // Place overrides

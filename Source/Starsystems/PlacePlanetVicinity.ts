@@ -95,10 +95,13 @@ class PlacePlanetVicinity extends PlaceBase
 				.shipGroupsInVicinity()
 				.map(x => x.toEntity(world, this) );
 
+		/*
+		// This may not be necessary.  See comment within .shipGroupNonPlayerCollide().
 		entitiesForShipGroups.forEach
 		(
 			x => Collidable.of(x).collideEntitiesSet(this.shipGroupNonPlayerCollide)
 		);
+		*/
 
 		entities.push(...entitiesForShipGroups);
 
@@ -368,6 +371,8 @@ class PlacePlanetVicinity extends PlaceBase
 
 	shipGroupNonPlayerCollide(uwpe: UniverseWorldPlaceEntities): void
 	{
+		// This may not be necessary,
+		// as it may be better handled through the ShipGroup's Actor property.
 		var world = uwpe.world as WorldExtended;
 		var place = uwpe.place as PlacePlanetVicinity;
 

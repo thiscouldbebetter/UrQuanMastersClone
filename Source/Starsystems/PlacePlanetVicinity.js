@@ -41,7 +41,13 @@ class PlacePlanetVicinity extends PlaceBase {
         var entitiesForShipGroups = this.planet
             .shipGroupsInVicinity()
             .map(x => x.toEntity(world, this));
-        entitiesForShipGroups.forEach(x => Collidable.of(x).collideEntitiesSet(this.shipGroupNonPlayerCollide));
+        /*
+        // This may not be necessary.  See comment within .shipGroupNonPlayerCollide().
+        entitiesForShipGroups.forEach
+        (
+            x => Collidable.of(x).collideEntitiesSet(this.shipGroupNonPlayerCollide)
+        );
+        */
         entities.push(...entitiesForShipGroups);
         this._camera = new Camera(Coords.fromXY(1, 1).multiplyScalar(300), // hack
         null, // focalLength
@@ -182,6 +188,8 @@ class PlacePlanetVicinity extends PlaceBase {
         world.placeNextSet(starsystemAsPlace);
     }
     shipGroupNonPlayerCollide(uwpe) {
+        // This may not be necessary,
+        // as it may be better handled through the ShipGroup's Actor property.
         var world = uwpe.world;
         var place = uwpe.place;
         if (uwpe.entity2.name.startsWith("ShipGroup")) {

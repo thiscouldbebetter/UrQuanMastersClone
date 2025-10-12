@@ -27,6 +27,9 @@ class Game {
             sffm("Music_Starsystem", importDirectoryPath + "nav/space.mod"),
             sffm("Music_Faction_Terran", importDirectoryPath + "comm/commander/commander.mod"),
             sffm("Music_Faction_Lahkemup", importDirectoryPath + "comm/urquan/urquan.mod"),
+            // todo - All using the Terran sound.
+            sffm("Music_Faction_Raknoid", importDirectoryPath + "comm/commander/commander.mod"),
+            sffm("Music_Faction_Triunion", importDirectoryPath + "comm/commander/commander.mod"),
         ];
         var videos = [
             new Video("Movie", contentDirectoryPath + "Video/Movie.webm"),

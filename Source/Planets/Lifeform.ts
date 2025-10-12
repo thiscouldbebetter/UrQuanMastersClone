@@ -68,7 +68,7 @@ class Lifeform extends EntityPropertyBase<Lifeform>
 		var lifeformDamager = Damager.default();
 
 		var lifeformVisual: Visual = lifeformDefn.visual;
-		lifeformVisual = new VisualWrapped(planet.sizeSurface(), lifeformVisual);
+		lifeformVisual = new VisualWrapped2(planet.sizeSurface(), lifeformVisual);
 		var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
 
 		var lifeformKillable = Killable.fromIntegrityMaxAndDie

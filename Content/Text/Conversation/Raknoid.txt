@@ -1,7 +1,7 @@
 name=Raknoid
 contentTextStringName=Conversation-Raknoid
 imagePortraitName=Conversation-Portrait-Raknoid
-soundMusicName=Music_Faction_EarthStation // todo
+soundMusicName=Music_Faction_Raknoid
 
 |VariablesImport|u.world.player.variableLookup
 

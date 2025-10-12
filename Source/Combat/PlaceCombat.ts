@@ -95,14 +95,14 @@ class PlaceCombat extends PlaceBase
 		var radius = (visual as VisualCircleGradient).radius;
 
 		var activity =
-			new Activity(Planet.activityDefnGravitate().name, null);
+			Activity.fromDefnName(Planet.activityDefnGravitate().name);
 		var actor = new Actor(activity);
 
 		var collider = Sphere.fromRadius(radius);
 		var collidable = Collidable.fromColliderPropertyNamesAndCollide
 		(
 			collider,
-			[ Collidable.name ], // entityPropertyNamesToCollideWith
+			[ Ship.name ], // entityPropertyNamesToCollideWith
 			this.planetCollide
 		);
 
@@ -173,24 +173,27 @@ class PlaceCombat extends PlaceBase
 	{
 		var entityPlanet = uwpe.entity;
 		var entityOther = uwpe.entity2;
-
-		var planetPos = Locatable.of(entityPlanet).loc.pos;
-
-		var otherLoc = Locatable.of(entityOther).loc;
-		var otherPos = otherLoc.pos;
-		var displacement = otherPos.clone().subtract(planetPos);
-		var distance = displacement.magnitude();
-		var direction = displacement.divideScalar(distance);
-		var planetCollider =
-			Collidable.of(entityPlanet).collider as Sphere;
-		var planetRadius = planetCollider.radius();
-		var otherCollider =
-			Collidable.of(entityOther).collider as Sphere;
-		var sumOfRadii = planetRadius + otherCollider.radius();
-		if (distance < sumOfRadii)
+		var entityOtherIsShip = Ship.of(entityOther) != null;
+		if (entityOtherIsShip) // hack
 		{
-			var impulse = direction.multiplyScalar(sumOfRadii - distance);
-			otherLoc.vel.add(impulse.double());
+			var planetPos = Locatable.of(entityPlanet).loc.pos;
+
+			var otherLoc = Locatable.of(entityOther).loc;
+			var otherPos = otherLoc.pos;
+			var displacement = otherPos.clone().subtract(planetPos);
+			var distance = displacement.magnitude();
+			var direction = displacement.divideScalar(distance);
+			var planetCollider =
+				Collidable.of(entityPlanet).collider as Sphere;
+			var planetRadius = planetCollider.radius();
+			var otherCollider =
+				Collidable.of(entityOther).collider as Sphere;
+			var sumOfRadii = planetRadius + otherCollider.radius();
+			if (distance < sumOfRadii)
+			{
+				var impulse = direction.multiplyScalar(sumOfRadii - distance);
+				otherLoc.vel.add(impulse.double());
+			}
 		}
 	}
 

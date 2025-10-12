@@ -4,11 +4,13 @@ class CameraHelper {
         var viewColliderSize = camera.viewSize.clone();
         viewColliderSize.z = Number.POSITIVE_INFINITY;
         var viewCollider = BoxAxisAligned.fromSize(viewColliderSize);
-        var collidable = Collidable.fromCollider(viewCollider);
+        var collidable = Collidable
+            .fromCollider(viewCollider)
+            .exemptFromCollisionEffectsOfOtherSet(true);
         var boundable = new Boundable(viewCollider.clone());
-        var locatable = new Locatable(camera.loc);
+        var locatable = Locatable.fromDisposition(camera.loc);
         var movable = Movable.default();
-        return new Entity(Camera.name, [
+        return Entity.fromNameAndProperties(Camera.name, [
             camera,
             boundable,
             collidable,

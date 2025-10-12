@@ -35,7 +35,7 @@ class Lifeform extends EntityPropertyBase {
         lifeformCollidable.canCollideAgainWithoutSeparating = true;
         var lifeformDamager = Damager.default();
         var lifeformVisual = lifeformDefn.visual;
-        lifeformVisual = new VisualWrapped(planet.sizeSurface(), lifeformVisual);
+        lifeformVisual = new VisualWrapped2(planet.sizeSurface(), lifeformVisual);
         var lifeformDrawable = Drawable.fromVisual(lifeformVisual);
         var lifeformKillable = Killable.fromIntegrityMaxAndDie(lifeformDefn.durability, this.die);
         var lifeformLocatable = Locatable.fromPos(this.pos);

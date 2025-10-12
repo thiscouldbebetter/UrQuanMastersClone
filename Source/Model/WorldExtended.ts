@@ -396,6 +396,7 @@ class WorldExtended extends World
 			Constrainable.name,
 			Collidable.name,
 			Boundable.name,
+			Movable.name,
 
 			GameClock.name,
 

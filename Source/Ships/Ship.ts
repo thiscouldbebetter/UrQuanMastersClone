@@ -42,6 +42,11 @@ class Ship extends EntityPropertyBase<Ship>
 		return ships;
 	}
 
+	static of(shipEntity: Entity): Ship
+	{
+		return shipEntity.propertyByName(Ship.name) as Ship;
+	}
+
 	// temporary variables
 
 	static _polar = Polar.create();

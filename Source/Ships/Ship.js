@@ -22,6 +22,9 @@ class Ship extends EntityPropertyBase {
         }
         return ships;
     }
+    static of(shipEntity) {
+        return shipEntity.propertyByName(Ship.name);
+    }
     // static methods
     static actionAccelerate() {
         return new Action("Accelerate", (uwpe) => {
